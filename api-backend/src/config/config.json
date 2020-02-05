@@ -1,0 +1,62 @@
+{
+  "development": {
+    "username": "root",
+    "password": null,
+    "database": "e_live",
+    "host": "127.0.0.1",
+    "port": "3306",
+    "dialect": "mysql",
+    "dialectOptions": {
+      "useUTC": false
+    },
+    "timezone": "+08:00",
+    "logging": true,
+    "define": {
+      "defaultScope": {
+        "attributes": {
+          "exclude": ["createdAt", "updatedAt"]
+        }
+      }
+    }
+  },
+  "testing": {
+    "username": "root",
+    "password": null,
+    "database": "e_live",
+    "host": "127.0.0.1",
+    "port": "3306",
+    "dialect": "mysql",
+    "dialectOptions": {
+      "useUTC": false
+    },
+    "timezone": "+08:00",
+    "logging": false,
+    "define": {
+      "defaultScope": {
+        "attributes": {
+          "exclude": ["createdAt", "updatedAt"]
+        }
+      }
+    }
+  },
+  "production": {
+    "username": "root",
+    "password": null,
+    "database": "e_live",
+    "host": "127.0.0.1",
+    "port": "3306",
+    "dialect": "mysql",
+    "dialectOptions": {
+      "useUTC": false
+    },
+    "timezone": "+08:00",
+    "logging": false,
+    "define": {
+      "defaultScope": {
+        "attributes": {
+          "exclude": ["createdAt", "updatedAt"]
+        }
+      }
+    }
+  }
+}

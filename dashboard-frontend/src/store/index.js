@@ -1,0 +1,43 @@
+import Vue from "vue";
+import Vuex from "vuex";
+
+// Modules
+import alerts from './modules/utilities/alerts'
+import snackbars from './modules/utilities/snackbars'
+import toolbar from './modules/toolbar'
+import userAuthentication from './modules/userAuthentication'
+import users from './modules/users'
+import roles from './modules/roles'
+import productCategories from './modules/productCategories'
+import productSubCategories from './modules/productSubCategories'
+import productImages from './modules/productImages'
+import productBannerImages from './modules/productBannerImages'
+import productAvailableSizes from './modules/productAvailableSizes'
+import productDiscountedPriceRanges from './modules/productDiscountedPriceRanges'
+import products from './modules/products'
+import inventories from './modules/inventories'
+
+Vue.use(Vuex);
+
+export default new Vuex.Store({
+  state: {},
+  getters: {},
+  mutations: {},
+  actions: {},
+  modules: {
+    alerts,
+    snackbars,
+    toolbar,
+    userAuthentication,
+    users,
+    roles,
+    productCategories,
+    productSubCategories,
+    productImages,
+    productBannerImages,
+    productAvailableSizes,
+    productDiscountedPriceRanges,
+    products,
+    inventories
+  }
+});
