@@ -93,7 +93,7 @@ export default {
         obj.forEach(element => {
           this.items[1].children.push({
             text: element.name,
-            to: `/${this.camelCase(element.name)}/${element.id}`
+            to: `/category/${element.id}`
           });
         });
       }

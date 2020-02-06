@@ -7,6 +7,7 @@ import snackbars from './modules/utilities/snackbars'
 import productBannerImages from './modules/productBannerImages'
 import productImages from './modules/productImages'
 import productCategories from './modules/productCategories'
+import productSubCategories from './modules/productSubCategories'
 import products from './modules/products'
 
 Vue.use(Vuex)
@@ -24,6 +25,7 @@ export default new Vuex.Store({
     productBannerImages,
     productImages,
     productCategories,
+    productSubCategories,
     products
   }
 })

@@ -55,7 +55,7 @@
                             <v-expand-transition>
                               <div
                                 v-if="hover"
-                                class="d-flex transition-fast-in-fast-out orange darken-2 v-card--reveal display-1 white--text"
+                                class="d-flex transition-fast-in-fast-out grey darken-4 v-card--reveal display-1 white--text"
                                 style="height: 100%;"
                               >P14.99</div>
                             </v-expand-transition>
@@ -81,7 +81,7 @@
                             <v-expand-transition>
                               <div
                                 v-if="hover"
-                                class="d-flex transition-fast-in-fast-out orange darken-2 v-card--reveal display-1 white--text"
+                                class="d-flex transition-fast-in-fast-out grey darken-4 v-card--reveal display-1 white--text"
                                 style="height: 100%;"
                               >P14.99</div>
                             </v-expand-transition>
@@ -107,7 +107,7 @@
                             <v-expand-transition>
                               <div
                                 v-if="hover"
-                                class="d-flex transition-fast-in-fast-out orange darken-2 v-card--reveal display-1 white--text"
+                                class="d-flex transition-fast-in-fast-out grey darken-4 v-card--reveal display-1 white--text"
                                 style="height: 100%;"
                               >P14.99</div>
                             </v-expand-transition>
@@ -133,7 +133,7 @@
                             <v-expand-transition>
                               <div
                                 v-if="hover"
-                                class="d-flex transition-fast-in-fast-out orange darken-2 v-card--reveal display-1 white--text"
+                                class="d-flex transition-fast-in-fast-out grey darken-4 v-card--reveal display-1 white--text"
                                 style="height: 100%;"
                               >P14.99</div>
                             </v-expand-transition>
@@ -159,7 +159,7 @@
                             <v-expand-transition>
                               <div
                                 v-if="hover"
-                                class="d-flex transition-fast-in-fast-out orange darken-2 v-card--reveal display-1 white--text"
+                                class="d-flex transition-fast-in-fast-out grey darken-4 v-card--reveal display-1 white--text"
                                 style="height: 100%;"
                               >P14.99</div>
                             </v-expand-transition>
@@ -185,7 +185,7 @@
                             <v-expand-transition>
                               <div
                                 v-if="hover"
-                                class="d-flex transition-fast-in-fast-out orange darken-2 v-card--reveal display-1 white--text"
+                                class="d-flex transition-fast-in-fast-out grey darken-4 v-card--reveal display-1 white--text"
                                 style="height: 100%;"
                               >P14.99</div>
                             </v-expand-transition>
@@ -220,7 +220,7 @@
                               <v-expand-transition>
                                 <div
                                   v-if="hover"
-                                  class="d-flex transition-fast-in-fast-out orange darken-2 v-card--reveal display-1 white--text"
+                                  class="d-flex transition-fast-in-fast-out grey darken-4 v-card--reveal display-1 white--text"
                                   style="height: 100%;"
                                 >{{ `P${productHomeImage.products.price}` }}</div>
                               </v-expand-transition>
