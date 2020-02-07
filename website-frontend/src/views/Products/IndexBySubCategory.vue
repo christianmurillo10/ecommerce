@@ -155,6 +155,16 @@
                     </template>
                   </v-layout>
                 </v-flex>
+                <v-flex xs12 sm12 md12 lg12>
+                  <v-container>
+                    <v-layout row wrap>
+                      <v-spacer></v-spacer>
+                      <div class="text-center">
+                        <v-pagination v-model="page" :length="15" :total-visible="7"></v-pagination>
+                      </div>
+                    </v-layout>
+                  </v-container>
+                </v-flex>
               </v-container>
             </v-flex>
           </v-layout>
