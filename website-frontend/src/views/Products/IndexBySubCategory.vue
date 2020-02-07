@@ -101,7 +101,10 @@
                 <v-flex xs12 sm12 md12 lg12>
                   <v-container>
                     <v-layout row wrap>
-                      <div class="headline">Results for <b>Item Name</b> (0)</div>
+                      <div class="headline">
+                        Results for
+                        <b>Item Name</b> (0)
+                      </div>
                       <v-spacer></v-spacer>
                       <div class="text-center">
                         <v-pagination v-model="page" :length="15" :total-visible="7"></v-pagination>
@@ -124,15 +127,10 @@
                                 />
                               </v-container>
 
-                              <v-card-title>
-                                Product Long Title For Long Example {{ card }}
-                                <!-- <v-spacer></v-spacer>
-                            <v-btn icon>
-                              <v-icon>mdi-heart</v-icon>
-                                </v-btn>-->
-                              </v-card-title>
-
                               <v-card-text>
+                                <div class="subtitle-1 black--text">Product Long Title For Long Example {{ card }}</div>
+                                <div class="subtitle-1 font-weight-bold black--text">&#8369 0.00</div>
+
                                 <v-row align="center" class="mx-0">
                                   <v-rating
                                     :value="4.5"
@@ -145,8 +143,6 @@
 
                                   <div class="grey--text ml-4">4.5 (413)</div>
                                 </v-row>
-
-                                <div class="my-4 subtitle-1 black--text">&#8369 0.00</div>
                               </v-card-text>
                             </v-card>
                           </v-hover>
