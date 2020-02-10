@@ -10,10 +10,6 @@ router.route('/findAllByProductCategoryIdWithLimitOffsetAndFileName/:productCate
 router.route('/findAllbyProductSubCategoryIdWithLimitOffsetAndFileName/:productCategoryId/:limit/:offset').get(productsController.findAllbyProductSubCategoryIdWithLimitOffsetAndFileName);
 router.route('/:id').get(productsController.findById);
 
-
-router.route('/findAllbyProductCategoryId/:productCategoryId').get(productsController.findAllbyProductCategoryId);
-router.route('/findAllbyProductSubCategoryId/:productSubCategoryId').get(productsController.findAllbyProductSubCategoryId);
-
 // For dashboard frontend
 router.route('/').get(productsController.findAll);
 router.route('/search/:value').get(productsController.search);
