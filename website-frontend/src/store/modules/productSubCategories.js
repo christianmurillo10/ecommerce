@@ -1,7 +1,8 @@
 import axios from "axios";
 
 const state = {
-  productSubCategoryList: []
+  productSubCategoryList: [],
+  productSubCategoryDataById: null
 };
 
 const getters = {
@@ -39,7 +40,7 @@ const actions = {
         axios
           .get(url, header)
           .then(response => {
-            resolve(response);
+            commit("SET_DATA_BY_ID", response.data.result);
           });
       } catch (err) {
         reject(err);
@@ -54,6 +55,13 @@ const mutations = {
       state.productSubCategoryList = payload;
     } else {
       state.productSubCategoryList = [];
+    }
+  },
+  SET_DATA_BY_ID(state, payload) {
+    if (payload) {
+      state.productSubCategoryDataById = payload;
+    } else {
+      state.productSubCategoryDataById = null;
     }
   }
 };

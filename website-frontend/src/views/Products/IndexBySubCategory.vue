@@ -10,20 +10,17 @@
                   <v-card-title>FILTERS</v-card-title>
 
                   <v-divider class="mx-4"></v-divider>
-                  <v-card-title>Related Categories</v-card-title>
+                  <v-card-title>Related Categories:</v-card-title>
                   <v-card-text>
                     <v-list rounded dense>
                       <v-list-item-group color="primary">
-                        <v-list-item>
-                          <v-list-item-content>
-                            <v-list-item-title v-text="'Category 1'"></v-list-item-title>
-                          </v-list-item-content>
-                        </v-list-item>
-                        <v-list-item>
-                          <v-list-item-content>
-                            <v-list-item-title v-text="'Category 1'"></v-list-item-title>
-                          </v-list-item-content>
-                        </v-list-item>
+                        <template v-for="(productSubCategory, i) in productSubCategoryList">
+                          <v-list-item :key="i">
+                            <v-list-item-content>
+                              <v-list-item-title v-text="productSubCategory.name"></v-list-item-title>
+                            </v-list-item-content>
+                          </v-list-item>
+                        </template>
                       </v-list-item-group>
                     </v-list>
                   </v-card-text>
@@ -93,6 +90,12 @@
               <v-container>
                 <v-flex xs12 sm12 md12 lg12>
                   <v-breadcrumbs :items="items">
+                    <template v-slot:item="{ item }">
+                      <v-breadcrumbs-item
+                        :to="item.to"
+                        :disabled="item.disabled"
+                      >{{ item.text.toUpperCase() }}</v-breadcrumbs-item>
+                    </template>
                     <template v-slot:divider>
                       <v-icon>mdi-forward</v-icon>
                     </template>
@@ -103,7 +106,7 @@
                     <v-layout row wrap>
                       <div class="headline">
                         Results for
-                        <b>Item Name</b> (0)
+                        <b>{{ itemResult }}</b> (0)
                       </div>
                       <v-spacer></v-spacer>
                       <div class="text-center">
@@ -128,7 +131,9 @@
                               </v-container>
 
                               <v-card-text>
-                                <div class="subtitle-1 black--text">Product Long Title For Long Example {{ card }}</div>
+                                <div
+                                  class="subtitle-1 black--text"
+                                >Product Long Title For Long Example {{ card }}</div>
                                 <div class="subtitle-1 font-weight-bold black--text">&#8369 0.00</div>
 
                                 <v-row align="center" class="mx-0">
@@ -175,26 +180,32 @@ import { mapState, mapActions } from "vuex";
 
 export default {
   data: () => ({
+    categoryHeader: null,
+    categoryId: null,
+    subCategoryId: null,
+    itemResult: null,
+    items: [
+      {
+        text: "Home",
+        disabled: false,
+        to: "/"
+      },
+      {
+        text: "Category",
+        disabled: false,
+        to: "/category/:categoryId"
+      },
+      {
+        text: "Sub Category",
+        disabled: true,
+        to: "/subCategory/:subCategoryId"
+      }
+    ],
+
+
     page: 1,
     price_from: "",
     price_to: "",
-    items: [
-      {
-        text: "Dashboard",
-        disabled: false,
-        href: "breadcrumbs_dashboard"
-      },
-      {
-        text: "Link 1",
-        disabled: false,
-        href: "breadcrumbs_link_1"
-      },
-      {
-        text: "Link 2",
-        disabled: true,
-        href: "breadcrumbs_link_2"
-      }
-    ],
     cards: ["1", "2", "3", "4", "5", "6", "7", "8", "9"],
     socials: [
       {
@@ -212,11 +223,54 @@ export default {
     ]
   }),
 
-  mounted() {},
+  mounted() {
+    this.loadByRouteId();
+  },
 
-  computed: {},
+  computed: {
+    ...mapState("productCategories", ["productCategoryDataById"]),
+    ...mapState("productSubCategories", [
+      "productSubCategoryList",
+      "productSubCategoryDataById"
+    ])
+  },
+
+  watch: {
+    "$route.params.categoryId": function() {
+      this.loadByRouteId();
+    },
+    "$route.params.subCategoryId": function() {
+      this.loadByRouteId();
+    },
+    productCategoryDataById(val) {
+      this.categoryHeader = val.name;
+      this.items[1].text = val.name;
+      this.items[1].to = `/category/${val.id}`;
+    },
+    productSubCategoryDataById(val) {
+      this.items[2].text = val.name;
+      this.itemResult = val.name;
+    }
+  },
 
   methods: {
+    ...mapActions("productCategories", {
+      getProductCategoryDataById: "getDataById"
+    }),
+    ...mapActions("productSubCategories", {
+      getProductSubCategoryDataByProductCategoryId:
+        "getDataByProductCategoryId",
+      getProductSubCategoryDataById: "getDataById"
+    }),
+
+    loadByRouteId() {
+      this.categoryId = this.$route.params.categoryId;
+      this.subCategoryId = this.$route.params.subCategoryId;
+      this.getProductSubCategoryDataByProductCategoryId(this.categoryId);
+      this.getProductCategoryDataById(this.categoryId);
+      this.getProductSubCategoryDataById(this.subCategoryId);
+    },
+
     getImage() {
       const min = 550;
       const max = 560;
