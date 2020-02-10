@@ -234,17 +234,17 @@
               <v-card-text>
                 <v-flex xs12 sm12 md12 lg12>
                   <v-layout row wrap>
-                    <template v-for="(productHomeImage, i) in productHomeImageList">
+                    <template v-for="(productHome, i) in productHomeList">
                       <v-flex xs12 sm12 md2 lg2 :key="i">
                         <v-hover>
                           <v-card slot-scope="{ hover }" :class="`elevation-${hover ? 12 : 2}`">
                             <v-container>
-                              <v-img :src="productHomeImage.file_path" height="150px" />
+                              <v-img :src="productHome.file_path" height="150px" />
                             </v-container>
 
                             <v-card-text>
-                              <div class="subtitle-1 black--text">{{ productHomeImage.products.name }}</div>
-                              <div class="subtitle-1 font-weight-bold black--text"> {{ `&#8369 ${productHomeImage.products.price}` }}</div>
+                              <div class="subtitle-1 black--text">{{ productHome.name }}</div>
+                              <div class="subtitle-1 font-weight-bold black--text"> {{ `&#8369 ${productHome.price}` }}</div>
                               <v-row align="center" class="mx-0">
                                 <v-rating
                                   :value="4.5"
@@ -281,12 +281,12 @@ export default {
 
   mounted() {
     this.getProductBannerImageData();
-    this.getProductImageDataGroupByProductIdAsc(6);
+    this.getProductDataWithLimitOffsetAndFileName({limit: 6, offset: 0});
   },
 
   computed: {
     ...mapState("productBannerImages", ["productBannerImageList"]),
-    ...mapState("productImages", ["productHomeImageList"]),
+    ...mapState("products", ["productHomeList"]),
     ...mapState("productCategories", ["productCategoryList"])
   },
 
@@ -294,8 +294,8 @@ export default {
     ...mapActions("productBannerImages", {
       getProductBannerImageData: "getData"
     }),
-    ...mapActions("productImages", {
-      getProductImageDataGroupByProductIdAsc: "getDataGroupByProductIdAsc"
+    ...mapActions("products", {
+      getProductDataWithLimitOffsetAndFileName: "getDataWithLimitOffsetAndFileName"
     })
   }
 };

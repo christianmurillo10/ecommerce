@@ -1,30 +1,36 @@
 import axios from "axios";
 
 const state = {
-  productList: []
+  productHomeList: []
 };
 
 const getters = {
-  getProductById: (state) => (id) => {
-    return state.productList.find(product => product.id === id);
+  getProductHomeById: (state) => (id) => {
+    return state.productHomeList.find(ProductHome => product.id === id);
   },
-  getProductNameById: (state) => (id) => {
-    return state.productList.find(product => product.id === id).name;
+  getProductHomeNameById: (state) => (id) => {
+    return state.productHomeList.find(product => product.id === id).name;
   },
-  getProductList: (state) => {
-    return state.productList;
+  getProductHomeList: (state) => {
+    return state.productHomeList;
   }
 };
 
 const actions = {
-  getData({ dispatch, commit, state, rootState, getters, rootGetters }) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/product/`;
+  getDataWithLimitOffsetAndFileName({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
+    let url = `${process.env.VUE_APP_API_BACKEND}/product/findAllWithLimitOffsetAndFileName/${payload.limit}/${payload.offset}`;
     let header = { headers: { Token: localStorage.getItem("token") } };
     return new Promise((resolve, reject) => {
       try {
         axios.get(url, header)
           .then(response => {
-            commit("SET_DATA", response.data.result);
+            let obj = response.data.result;
+            if (obj) {
+              obj.forEach(element => {
+                element.file_path = `${process.env.VUE_APP_API_BACKEND}/productImage/viewImage/${element.productImages[0].file_name}`;
+              });
+            }
+            commit("SET_DATA_HOME", obj);
           });
       } catch (err) {
         reject(err);
@@ -49,11 +55,11 @@ const actions = {
 };
 
 const mutations = {
-  SET_DATA(state, payload) {
+  SET_DATA_HOME(state, payload) {
     if (payload) {
-      state.productList = payload;
+      state.productHomeList = payload;
     } else {
-      state.productList = [];
+      state.productHomeList = [];
     }
   }
 };

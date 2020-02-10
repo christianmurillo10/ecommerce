@@ -15,7 +15,4 @@ router.route('/update/:id').put(authController.authorization, upload.single('ima
 router.route('/delete/:id').put(authController.authorization, productImagesController.delete);
 router.route('/search/:value').get(authController.authorization, productImagesController.search);
 
-// to remove
-router.route('/findAllGroupByProductIdAsc/:limit').get(productImagesController.findAllGroupByProductIdAsc);
-
 module.exports = router;

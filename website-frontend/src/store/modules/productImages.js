@@ -1,8 +1,7 @@
 import axios from "axios";
 
 const state = {
-  productImageList: [],
-  productHomeImageList: [],
+  productImageList: []
 };
 
 const getters = {
@@ -27,26 +26,6 @@ const actions = {
           .get(url, header)
           .then(response => {
             resolve(response);
-          });
-      } catch (err) {
-        reject(err);
-      }
-    });
-  },
-  getDataGroupByProductIdAsc({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/productImage/findAllGroupByProductIdAsc/${payload}`;
-    let header = { headers: { Token: localStorage.getItem("token") } };
-    return new Promise((resolve, reject) => {
-      try {
-        axios.get(url, header)
-          .then(response => {
-            let obj = response.data.result;
-            if (obj) {
-              obj.forEach(element => {
-                element.file_path = `${process.env.VUE_APP_API_BACKEND}/productImage/viewImage/${element.file_name}`;
-              });
-            }
-            commit("SET_DATA_HOME", obj);
           });
       } catch (err) {
         reject(err);
@@ -84,13 +63,6 @@ const mutations = {
       state.productImageList = payload;
     } else {
       state.productImageList = [];
-    }
-  },
-  SET_DATA_HOME(state, payload) {
-    if (payload) {
-      state.productHomeImageList = payload;
-    } else {
-      state.productHomeImageList = [];
     }
   }
 };

@@ -248,45 +248,6 @@ module.exports = {
   },
 
   /**
-   * Find all group by product_id ASC
-   * @route GET /productImage/findAllGroupByProductIdAsc/:limit
-   * @param req
-   * @param res
-   * @returns {never}
-   */
-  findAllGroupByProductIdAsc: async (req, res) => {
-    let params = req.params;
-    let data, criteria;
-
-    try {
-      // Pre-setting variables
-      let limit = parseInt(params.limit);
-      criteria = { where: { is_deleted: 0 }, group: ['product_id'], limit, include: [{ model: Model.Products, as: 'products' }, { model: Model.Users, as: 'users' }] };
-      // Execute findAll query
-      data = await Model.ProductImages.findAll(criteria);
-      if (!_.isEmpty(data[0])) {
-        res.json({
-          status: 200,
-          message: "Successfully find all data.",
-          result: data
-        });
-      } else {
-        res.json({
-          status: 200,
-          message: "No Data Found.",
-          result: false
-        });
-      }
-    } catch (err) {
-      res.json({
-        status: 401,
-        err: err,
-        message: "Failed to find all data."
-      });
-    }
-  },
-
-  /**
    * Find all by product id
    * @route GET /productImage/findAllbyProductId/:productId
    * @param req
