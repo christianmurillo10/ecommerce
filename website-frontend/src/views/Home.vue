@@ -208,6 +208,28 @@
           </v-flex>
           <v-flex xs12 sm12 md12 lg12>
             <v-card>
+              <v-card-title>(PROMO BANNERS HERE)</v-card-title>
+              <v-card-text>
+                <v-flex xs12 sm12 md12 lg12>
+                  <v-layout row wrap>
+                  </v-layout>
+                </v-flex>
+              </v-card-text>
+            </v-card>
+          </v-flex>
+          <v-flex xs12 sm12 md12 lg12>
+            <v-card>
+              <v-card-title>TOP PRODUCTS (VIA STAR)</v-card-title>
+              <v-card-text>
+                <v-flex xs12 sm12 md12 lg12>
+                  <v-layout row wrap>
+                  </v-layout>
+                </v-flex>
+              </v-card-text>
+            </v-card>
+          </v-flex>
+          <v-flex xs12 sm12 md12 lg12>
+            <v-card>
               <v-card-title>PRODUCTS</v-card-title>
               <v-card-text>
                 <v-flex xs12 sm12 md12 lg12>
