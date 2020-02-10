@@ -7,7 +7,6 @@ const authController = require('../controllers').auth;
 const productImagesController = require('../controllers').productImages;
 
 router.route('/viewImage/:fileName').get(productImagesController.viewImage);
-router.route('/findAllGroupByProductIdAsc/:limit').get(productImagesController.findAllGroupByProductIdAsc);
 router.route('/:id').get(productImagesController.findById);
 router.route('/findAllbyProductId/:productId').get(productImagesController.findAllbyProductId);
 router.route('/').get(authController.authorization, productImagesController.findAll);
@@ -15,5 +14,8 @@ router.route('/create').post(authController.authorization, upload.single('image'
 router.route('/update/:id').put(authController.authorization, upload.single('image'), productImagesController.update);
 router.route('/delete/:id').put(authController.authorization, productImagesController.delete);
 router.route('/search/:value').get(authController.authorization, productImagesController.search);
+
+// to remove
+router.route('/findAllGroupByProductIdAsc/:limit').get(productImagesController.findAllGroupByProductIdAsc);
 
 module.exports = router;

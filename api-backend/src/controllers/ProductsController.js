@@ -59,9 +59,9 @@ module.exports = {
       criteria = {
         where: { name: params.name },
         include: [
-          { model: Model.ProductCategories, as: "productCategories" },
-          { model: Model.ProductSubCategories, as: "productSubCategories" },
-          { model: Model.Users, as: "users" }
+          { model: Model.ProductCategories, as: "productCategories", attributes: ['name', 'description'] },
+          { model: Model.ProductSubCategories, as: "productSubCategories", attributes: ['name', 'description'] },
+          { model: Model.Users, as: "users", attributes: ['email', 'username'] }
         ]
       };
       initialValues = _.pick(params, [
@@ -259,9 +259,9 @@ module.exports = {
       criteria = {
         where: { is_deleted: 0 },
         include: [
-          { model: Model.ProductCategories, as: "productCategories" },
-          { model: Model.ProductSubCategories, as: "productSubCategories" },
-          { model: Model.Users, as: "users" }
+          { model: Model.ProductCategories, as: "productCategories", attributes: ['name', 'description'] },
+          { model: Model.ProductSubCategories, as: "productSubCategories", attributes: ['name', 'description'] },
+          { model: Model.Users, as: "users", attributes: ['email', 'username'] }
         ]
       };
       // Execute findAll query
@@ -289,39 +289,45 @@ module.exports = {
   },
 
   /**
-   * Find all with file_name
-   * @route GET /product
+   * Find all with limit, offset and file name
+   * @route GET /product/findAllWithLimitOffsetAndFileName/:limit/:offset
    * @param req
    * @param res
    * @returns {never}
    */
-  findAllWithFileName: async (req, res) => {
+  findAllWithLimitOffsetAndFileName: async (req, res) => {
+    let params = req.params;
     let data, criteria;
 
     try {
       // Pre-setting variables
-      query = `SELECT 
-                products.*,
-                productImages.file_name,
-                productImages.color
-              FROM products AS products
-                LEFT OUTER JOIN product_images AS productImages ON productImages.product_id = products.id
-                WHERE productImages.is_deleted = 0 GROUP BY productImages.product_id ASC;`;
-      // Execute native query
-      data = await Model.sequelize.query(query, {
-        type: Model.sequelize.QueryTypes.SELECT
-      });
-      if (!_.isEmpty(data)) {
+      let limit = parseInt(params.limit);
+      let offset = parseInt(params.offset);
+      criteria = {
+        attributes: ['id', 'name', 'description', 'price', 'product_category_id', 'product_sub_category_id'],
+        where: { is_deleted: 0 },
+        limit,
+        offset,
+        include: [
+          { model: Model.ProductCategories, as: "productCategories", attributes: ['name', 'description'] },
+          { model: Model.ProductSubCategories, as: "productSubCategories", attributes: ['name', 'description'] },
+          { model: Model.ProductImages, as: "productImages", attributes: ['file_name', 'color', 'order', 'product_id'], required: false }
+        ]
+      };
+      
+      // Execute findAll query
+      data = await Model.Products.findAll(criteria);
+      if (!_.isEmpty(data[0])) {
         res.json({
           status: 200,
-          message: "Successfully searched data.",
+          message: "Successfully find all data.",
           result: data
         });
       } else {
         res.json({
           status: 200,
           message: "No Data Found.",
-          result: []
+          result: false
         });
       }
     } catch (err) {
@@ -332,6 +338,158 @@ module.exports = {
       });
     }
   },
+
+  /**
+   * Find all by product category id with limit, offset and file name
+   * @route GET /product/findAllByProductCategoryIdWithLimitOffsetAndFileName/:productCategoryId/:limit/:offset
+   * @param req
+   * @param res
+   * @returns {never}
+   */
+  findAllByProductCategoryIdWithLimitOffsetAndFileName: async (req, res) => {
+    let params = req.params;
+    let data, criteria;
+
+    try {
+      // Pre-setting variables
+      let limit = parseInt(params.limit);
+      let offset = parseInt(params.offset);
+      criteria = {
+        attributes: ['id', 'name', 'description', 'price', 'product_category_id', 'product_sub_category_id'],
+        where: { product_category_id: params.productCategoryId, is_deleted: 0 },
+        limit,
+        offset,
+        include: [
+          { model: Model.ProductCategories, as: "productCategories", attributes: ['name', 'description'] },
+          { model: Model.ProductSubCategories, as: "productSubCategories", attributes: ['name', 'description'] },
+          { model: Model.ProductImages, as: "productImages", attributes: ['file_name', 'color', 'order', 'product_id'], required: false }
+        ]
+      };
+      
+      // Execute findAll query
+      data = await Model.Products.findAll(criteria);
+      if (!_.isEmpty(data[0])) {
+        res.json({
+          status: 200,
+          message: "Successfully find all data.",
+          result: data
+        });
+      } else {
+        res.json({
+          status: 200,
+          message: "No Data Found.",
+          result: false
+        });
+      }
+    } catch (err) {
+      res.json({
+        status: 401,
+        err: err,
+        message: "Failed to find all data."
+      });
+    }
+  },
+
+  /**
+   * Find all by product sub category id with limit, offset and file name
+   * @route GET /product/findAllbyProductSubCategoryIdWithLimitOffsetAndFileName/:productSubCategoryId/:limit/:offset
+   * @param req
+   * @param res
+   * @returns {never}
+   */
+  findAllbyProductSubCategoryIdWithLimitOffsetAndFileName: async (req, res) => {
+    let params = req.params;
+    let data, criteria;
+
+    try {
+      // Pre-setting variables
+      let limit = parseInt(params.limit);
+      let offset = parseInt(params.offset);
+      criteria = {
+        attributes: ['id', 'name', 'description', 'price', 'product_category_id', 'product_sub_category_id'],
+        where: { product_sub_category_id: params.productSubCategoryId, is_deleted: 0 },
+        limit,
+        offset,
+        include: [
+          { model: Model.ProductCategories, as: "productCategories", attributes: ['name', 'description'] },
+          { model: Model.ProductSubCategories, as: "productSubCategories", attributes: ['name', 'description'] },
+          { model: Model.ProductImages, as: "productImages", attributes: ['file_name', 'color', 'order', 'product_id'], required: false }
+        ]
+      };
+      
+      // Execute findAll query
+      data = await Model.Products.findAll(criteria);
+      if (!_.isEmpty(data[0])) {
+        res.json({
+          status: 200,
+          message: "Successfully find all data.",
+          result: data
+        });
+      } else {
+        res.json({
+          status: 200,
+          message: "No Data Found.",
+          result: false
+        });
+      }
+    } catch (err) {
+      res.json({
+        status: 401,
+        err: err,
+        message: "Failed to find all data."
+      });
+    }
+  },
+
+  /**
+   * Find by id
+   * @route GET /product/:id
+   * @param req
+   * @param res
+   * @returns {never}
+   */
+  findById: async (req, res) => {
+    let data;
+
+    try {
+      // Pre-setting variables
+      criteria = {
+        where: { is_deleted: 0 },
+        include: [
+          { model: Model.ProductCategories, as: "productCategories", attributes: ['name', 'description'] },
+          { model: Model.ProductSubCategories, as: "productSubCategories", attributes: ['name', 'description'] },
+          { model: Model.ProductImages, as: "productImages", attributes: ['file_name', 'color', 'order', 'product_id'], required: false },
+          { model: Model.Users, as: "users", attributes: ['email', 'username'] }
+        ]
+      };
+      // Execute findAll query
+      data = await Model.Products.findByPk(req.params.id, criteria);
+      if (!_.isEmpty(data)) {
+        res.json({
+          status: 200,
+          message: "Successfully find data.",
+          result: _.omit(data.get({ plain: true }), ["is_deleted"])
+        });
+      } else {
+        res.json({
+          status: 200,
+          message: "No Data Found.",
+          result: false
+        });
+      }
+    } catch (err) {
+      res.json({
+        status: 401,
+        err: err,
+        message: "Failed to find data."
+      });
+    }
+  },
+
+
+
+
+  
 
   /**
    * Find all by category id
@@ -476,50 +634,6 @@ module.exports = {
         status: 401,
         err: err,
         message: "Failed to find all data."
-      });
-    }
-  },
-
-  /**
-   * Find by id
-   * @route GET /product/:id
-   * @param req
-   * @param res
-   * @returns {never}
-   */
-  findById: async (req, res) => {
-    let data;
-
-    try {
-      // Pre-setting variables
-      criteria = {
-        where: { is_deleted: 0 },
-        include: [
-          { model: Model.ProductCategories, as: "productCategories" },
-          { model: Model.ProductSubCategories, as: "productSubCategories" },
-          { model: Model.Users, as: "users" }
-        ]
-      };
-      // Execute findAll query
-      data = await Model.Products.findByPk(req.params.id, criteria);
-      if (!_.isEmpty(data)) {
-        res.json({
-          status: 200,
-          message: "Successfully find data.",
-          result: _.omit(data.get({ plain: true }), ["is_deleted"])
-        });
-      } else {
-        res.json({
-          status: 200,
-          message: "No Data Found.",
-          result: false
-        });
-      }
-    } catch (err) {
-      res.json({
-        status: 401,
-        err: err,
-        message: "Failed to find data."
       });
     }
   }
