@@ -15,7 +15,12 @@
                     <v-list rounded dense>
                       <v-list-item-group color="primary">
                         <template v-for="(productSubCategory, i) in productSubCategoryList">
-                          <v-list-item :key="i">
+                          <v-list-item
+                            :key="i"
+                            :to="`/product/category/${categoryId}/subCategory/${productSubCategory.id}`"
+                            active-class="highlighted"
+                            :class="productSubCategory.id === subCategoryId ? 'highlighted' : ''"
+                          >
                             <v-list-item-content>
                               <v-list-item-title v-text="productSubCategory.name"></v-list-item-title>
                             </v-list-item-content>
@@ -202,25 +207,10 @@ export default {
       }
     ],
 
-
     page: 1,
     price_from: "",
     price_to: "",
-    cards: ["1", "2", "3", "4", "5", "6", "7", "8", "9"],
-    socials: [
-      {
-        icon: "mdi-facebook",
-        color: "indigo"
-      },
-      {
-        icon: "mdi-linkedin",
-        color: "cyan darken-1"
-      },
-      {
-        icon: "mdi-instagram",
-        color: "red lighten-3"
-      }
-    ]
+    cards: ["1", "2", "3", "4", "5", "6", "7", "8", "9"]
   }),
 
   mounted() {
