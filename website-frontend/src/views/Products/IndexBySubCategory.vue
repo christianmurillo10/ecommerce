@@ -17,7 +17,7 @@
                         <template v-for="(productSubCategory, i) in productSubCategoryList">
                           <v-list-item
                             :key="i"
-                            :to="`/product/category/${categoryId}/subCategory/${productSubCategory.id}`"
+                            :to="`/product/category/${categoryId}/subCategory/${productSubCategory.id}/page/${pagination.page}`"
                             active-class="highlighted"
                             :class="productSubCategory.id === subCategoryId ? 'highlighted' : ''"
                           >
@@ -120,6 +120,7 @@
                           v-model="pagination.page"
                           :length="pagination.length"
                           :total-visible="pagination.visible"
+                          :disabled="pagination.length === 1 ? true : false"
                           @input="onPageChange"
                         ></v-pagination>
                       </div>
@@ -173,6 +174,7 @@
                           v-model="pagination.page"
                           :length="pagination.length"
                           :total-visible="pagination.visible"
+                          :disabled="pagination.length === 1 ? true : false"
                           @input="onPageChange"
                         ></v-pagination>
                       </div>
@@ -250,6 +252,9 @@ export default {
     "$route.params.subCategoryId": function() {
       this.loadByRouteId();
     },
+    "$route.params.page": function() {
+      this.loadByRouteId();
+    },
     productCategoryDataById(val) {
       this.categoryHeader = val.name;
       this.items[1].text = val.name;
@@ -281,6 +286,7 @@ export default {
     loadByRouteId() {
       this.categoryId = this.$route.params.categoryId;
       this.subCategoryId = this.$route.params.subCategoryId;
+      this.pagination.page = parseInt(this.$route.params.page);
       this.getProductSubCategoryDataByProductCategoryId(this.categoryId);
       this.getProductCategoryDataById(this.categoryId);
       this.getProductSubCategoryDataById(this.subCategoryId);

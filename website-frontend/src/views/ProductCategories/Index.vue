@@ -26,7 +26,7 @@
                         <v-card
                           slot-scope="{ hover }"
                           :class="`elevation-${hover ? 12 : 2}`"
-                          :to="`/product/category/${categoryId}/subCategory/${productSubCategory.id}`"
+                          :to="`/product/category/${categoryId}/subCategory/${productSubCategory.id}/page/1`"
                         >
                           <v-card-title primary-title class="justify-center">
                             <h4 class="headline text-xs-center">{{ productSubCategory.name }}</h4>

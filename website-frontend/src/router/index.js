@@ -24,7 +24,7 @@ const routes = [
     component: ProductCategoryIndex
   },
   {
-    path: '/product/category/:categoryId/subCategory/:subCategoryId',
+    path: '/product/category/:categoryId/subCategory/:subCategoryId/page/:page',
     name: 'productByCategoryIdAndSubCategoryId',
     component: ProductIndexBySubCategory
   }
