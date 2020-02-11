@@ -314,7 +314,7 @@ module.exports = {
           { model: Model.ProductImages, as: "productImages", attributes: ['file_name', 'color', 'order', 'product_id'], required: false }
         ]
       };
-      
+
       // Execute findAll query
       data = await Model.Products.findAll(criteria);
       if (!_.isEmpty(data[0])) {
@@ -365,7 +365,7 @@ module.exports = {
           { model: Model.ProductImages, as: "productImages", attributes: ['file_name', 'color', 'order', 'product_id'], required: false }
         ]
       };
-      
+
       // Execute findAll query
       data = await Model.Products.findAll(criteria);
       if (!_.isEmpty(data[0])) {
@@ -399,7 +399,7 @@ module.exports = {
    */
   findAllbyProductSubCategoryIdWithLimitOffsetAndFileName: async (req, res) => {
     let params = req.params;
-    let data, criteria;
+    let data, criteria, countCriteria;
 
     try {
       // Pre-setting variables
@@ -416,14 +416,21 @@ module.exports = {
           { model: Model.ProductImages, as: "productImages", attributes: ['file_name', 'color', 'order', 'product_id'], required: false }
         ]
       };
-      
+      countCriteria = { where: { product_sub_category_id: params.productSubCategoryId, is_deleted: 0 } };
+
       // Execute findAll query
       data = await Model.Products.findAll(criteria);
       if (!_.isEmpty(data[0])) {
+        count = await Model.Products.count(countCriteria);
+        let obj = {
+          data: data,
+          count: count
+        }
+        
         res.json({
           status: 200,
           message: "Successfully find all data.",
-          result: data
+          result: obj
         });
       } else {
         res.json({
@@ -489,7 +496,7 @@ module.exports = {
 
 
 
-  
+
 
   /**
    * Find all by category id

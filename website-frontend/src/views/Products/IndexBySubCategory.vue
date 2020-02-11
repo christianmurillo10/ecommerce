@@ -111,11 +111,17 @@
                     <v-layout row wrap>
                       <div class="headline">
                         Results for
-                        <b>{{ itemResult }}</b> (0)
+                        <b>{{ itemResult }}</b>
+                        ({{ productBySubCategoryTotalCount }})
                       </div>
                       <v-spacer></v-spacer>
                       <div class="text-center">
-                        <v-pagination v-model="page" :length="15" :total-visible="7"></v-pagination>
+                        <v-pagination
+                          v-model="pagination.page"
+                          :length="pagination.length"
+                          :total-visible="pagination.visible"
+                          @input="onPageChange"
+                        ></v-pagination>
                       </div>
                     </v-layout>
                   </v-container>
@@ -123,23 +129,20 @@
 
                 <v-flex xs12 sm12 md12 lg12>
                   <v-layout row wrap>
-                    <template v-for="(card, i) in cards">
+                    <template v-for="(productBySubCategory, i) in productBySubCategoryList">
                       <v-flex xs12 sm12 md3 lg3 :key="i">
                         <v-container>
                           <v-hover>
                             <v-card slot-scope="{ hover }" :class="`elevation-${hover ? 12 : 2}`">
                               <v-container>
-                                <v-img
-                                  :src="`https://picsum.photos/200/300?image=${getImage()}`"
-                                  height="250px"
-                                />
+                                <v-img :src="productBySubCategory.file_path" height="250px" />
                               </v-container>
 
                               <v-card-text>
+                                <div class="subtitle-1 black--text">{{ productBySubCategory.name }}</div>
                                 <div
-                                  class="subtitle-1 black--text"
-                                >Product Long Title For Long Example {{ card }}</div>
-                                <div class="subtitle-1 font-weight-bold black--text">&#8369 0.00</div>
+                                  class="subtitle-1 font-weight-bold black--text"
+                                >{{ `&#8369 ${productBySubCategory.price}` }}</div>
 
                                 <v-row align="center" class="mx-0">
                                   <v-rating
@@ -166,7 +169,12 @@
                     <v-layout row wrap>
                       <v-spacer></v-spacer>
                       <div class="text-center">
-                        <v-pagination v-model="page" :length="15" :total-visible="7"></v-pagination>
+                        <v-pagination
+                          v-model="pagination.page"
+                          :length="pagination.length"
+                          :total-visible="pagination.visible"
+                          @input="onPageChange"
+                        ></v-pagination>
                       </div>
                     </v-layout>
                   </v-container>
@@ -189,6 +197,7 @@ export default {
     categoryId: null,
     subCategoryId: null,
     itemResult: null,
+    itemCount: 0,
     items: [
       {
         text: "Home",
@@ -206,11 +215,16 @@ export default {
         to: "/subCategory/:subCategoryId"
       }
     ],
+    pagination: {
+      limit: 20,
+      offset: 0,
+      page: 1,
+      length: 1,
+      visible: 7
+    },
 
-    page: 1,
     price_from: "",
-    price_to: "",
-    cards: ["1", "2", "3", "4", "5", "6", "7", "8", "9"]
+    price_to: ""
   }),
 
   mounted() {
@@ -222,6 +236,10 @@ export default {
     ...mapState("productSubCategories", [
       "productSubCategoryList",
       "productSubCategoryDataById"
+    ]),
+    ...mapState("products", [
+      "productBySubCategoryList",
+      "productBySubCategoryTotalCount"
     ])
   },
 
@@ -240,6 +258,9 @@ export default {
     productSubCategoryDataById(val) {
       this.items[2].text = val.name;
       this.itemResult = val.name;
+    },
+    productBySubCategoryTotalCount(val) {
+      this.pagination.length = val <= this.pagination.limit ? 1 : this.computePaginationLength(val);
     }
   },
 
@@ -252,6 +273,10 @@ export default {
         "getDataByProductCategoryId",
       getProductSubCategoryDataById: "getDataById"
     }),
+    ...mapActions("products", {
+      getProductDataByProductSubCategoryIdWithLimitOffsetAndFileName:
+        "getDataByProductSubCategoryIdWithLimitOffsetAndFileName"
+    }),
 
     loadByRouteId() {
       this.categoryId = this.$route.params.categoryId;
@@ -259,13 +284,26 @@ export default {
       this.getProductSubCategoryDataByProductCategoryId(this.categoryId);
       this.getProductCategoryDataById(this.categoryId);
       this.getProductSubCategoryDataById(this.subCategoryId);
+      this.getProductDataByProductSubCategoryIdWithLimitOffsetAndFileName({
+        productSubCategoryId: this.subCategoryId,
+        limit: this.pagination.limit,
+        offset: this.pagination.offset
+      });
     },
 
-    getImage() {
-      const min = 550;
-      const max = 560;
+    onPageChange() {
+      this.pagination.offset = this.pagination.page === 1 ? 0 : this.pagination.limit * this.pagination.page;
+      this.getProductDataByProductSubCategoryIdWithLimitOffsetAndFileName({
+        productSubCategoryId: this.subCategoryId,
+        limit: this.pagination.limit,
+        offset: this.pagination.offset
+      });
+    },
 
-      return Math.floor(Math.random() * (max - min + 1)) + min;
+    computePaginationLength(totalCount) {
+      let newPageLength = totalCount / this.pagination.limit;
+      let finalPageLength = Number.isInteger(newPageLength) === true ? newPageLength : Math.trunc(newPageLength) + 1;
+      return finalPageLength;
     }
   }
 };

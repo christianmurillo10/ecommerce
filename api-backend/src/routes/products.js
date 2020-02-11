@@ -7,7 +7,7 @@ const productsController = require('../controllers').products;
 // For website frontend
 router.route('/findAllWithLimitOffsetAndFileName/:limit/:offset').get(productsController.findAllWithLimitOffsetAndFileName);
 router.route('/findAllByProductCategoryIdWithLimitOffsetAndFileName/:productCategoryId/:limit/:offset').get(productsController.findAllByProductCategoryIdWithLimitOffsetAndFileName);
-router.route('/findAllbyProductSubCategoryIdWithLimitOffsetAndFileName/:productCategoryId/:limit/:offset').get(productsController.findAllbyProductSubCategoryIdWithLimitOffsetAndFileName);
+router.route('/findAllByProductSubCategoryIdWithLimitOffsetAndFileName/:productSubCategoryId/:limit/:offset').get(productsController.findAllbyProductSubCategoryIdWithLimitOffsetAndFileName);
 router.route('/:id').get(productsController.findById);
 
 // For dashboard frontend

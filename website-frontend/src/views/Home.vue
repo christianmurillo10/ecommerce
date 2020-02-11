@@ -244,7 +244,7 @@
 
                             <v-card-text>
                               <div class="subtitle-1 black--text">{{ productHome.name }}</div>
-                              <div class="subtitle-1 font-weight-bold black--text"> {{ `&#8369 ${productHome.price}` }}</div>
+                              <div class="subtitle-1 font-weight-bold black--text">{{ `&#8369 ${productHome.price}` }}</div>
                               <v-row align="center" class="mx-0">
                                 <v-rating
                                   :value="4.5"
