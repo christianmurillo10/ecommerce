@@ -28,7 +28,11 @@ const actions = {
             let obj = response.data.result;
             if (obj) {
               obj.forEach(element => {
-                element.file_path = `${process.env.VUE_APP_API_BACKEND}/productImage/viewImage/${element.productImages[0].file_name}`;
+                if (!_.isEmpty(element.productImages)) {
+                  element.file_path = `${process.env.VUE_APP_API_BACKEND}/productImage/viewImage/${element.productImages[0].file_name}`;
+                } else {
+                  element.file_path = require("../../assets/images/no-image.png");
+                }
               });
             }
             commit("SET_DATA_HOME", obj);
@@ -47,7 +51,11 @@ const actions = {
             let obj = response.data.result;
             if (obj.data) {
               obj.data.forEach(element => {
-                element.file_path = `${process.env.VUE_APP_API_BACKEND}/productImage/viewImage/${element.productImages[0].file_name}`;
+                if (!_.isEmpty(element.productImages)) {
+                  element.file_path = `${process.env.VUE_APP_API_BACKEND}/productImage/viewImage/${element.productImages[0].file_name}`;
+                } else {
+                  element.file_path = require("../../assets/images/no-image.png");
+                }
               });
             }
             commit("SET_DATA_BY_SUB_CATEGORY", obj);

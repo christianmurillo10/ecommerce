@@ -217,6 +217,47 @@ module.exports = {
   },
 
   /**
+   * Find all with sub categories
+   * @route GET /productCategory/findAllWithSubCategories
+   * @param req
+   * @param res
+   * @returns {never}
+   */
+  findAllWithSubCategories: async (req, res) => {
+    let data, criteria;
+
+    try {
+      // Pre-setting variables
+      criteria = {
+        attributes: ['id', 'name', 'description'],
+        where: { is_deleted: 0 },
+        include: [{ model: Model.ProductSubCategories, as: "productSubCategories", attributes: ['id', 'name', 'description'] }]
+      };
+      // Execute findAll query
+      data = await Model.ProductCategories.findAll(criteria);
+      if (!_.isEmpty(data[0])) {
+        res.json({
+          status: 200,
+          message: "Successfully find all data.",
+          result: data
+        });
+      } else {
+        res.json({
+          status: 200,
+          message: "No Data Found.",
+          result: false
+        });
+      }
+    } catch (err) {
+      res.json({
+        status: 401,
+        err: err,
+        message: "Failed to find all data."
+      });
+    }
+  },
+
+  /**
    * Find by id
    * @route GET /productCategory/:id
    * @param req

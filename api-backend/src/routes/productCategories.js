@@ -3,6 +3,7 @@ var router = express.Router();
 const authController = require('../controllers').auth;
 const productCategoriesController = require('../controllers').productCategories;
 
+router.route('/findAllWithSubCategories').get(productCategoriesController.findAllWithSubCategories);
 router.route('/').get(productCategoriesController.findAll);
 router.route('/:id').get(productCategoriesController.findById);
 router.route('/create').post(authController.authorization, productCategoriesController.create);

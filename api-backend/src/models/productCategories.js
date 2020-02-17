@@ -34,6 +34,11 @@ module.exports = (sequelize, DataTypes) => {
     tableName: "product_categories",
     timestamps: false
   });
-  ProductCategories.associate = (models) => {};
+  ProductCategories.associate = (models) => {
+    ProductCategories.hasMany(models.ProductSubCategories, {
+      foreignKey: 'product_category_id',
+      as: 'productSubCategories'
+    });
+  };
   return ProductCategories;
 };

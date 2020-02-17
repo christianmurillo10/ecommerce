@@ -2,6 +2,7 @@ import axios from "axios";
 
 const state = {
   productCategoryList: [],
+  productCategoryWithSubList: [],
   productCategoryDataById: null
 };
 
@@ -31,6 +32,19 @@ const actions = {
       }
     });
   },
+  getDataWithSubCategories({ dispatch, commit, state, rootState, getters, rootGetters }) {
+    let url = `${process.env.VUE_APP_API_BACKEND}/productCategory/findAllWithSubCategories`;
+    return new Promise((resolve, reject) => {
+      try {
+        axios.get(url)
+          .then(response => {
+            commit("SET_DATA_WITH_SUB_CATEGORIES", response.data.result);
+          });
+      } catch (err) {
+        reject(err);
+      }
+    });
+  },
   getDataById({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
     let url = `${process.env.VUE_APP_API_BACKEND}/productCategory/${payload}`;
     let header = { headers: { Token: localStorage.getItem("token") } };
@@ -54,6 +68,13 @@ const mutations = {
       state.productCategoryList = payload;
     } else {
       state.productCategoryList = [];
+    }
+  },
+  SET_DATA_WITH_SUB_CATEGORIES(state, payload) {
+    if (payload) {
+      state.productCategoryWithSubList = payload;
+    } else {
+      state.productCategoryWithSubList = [];
     }
   },
   SET_DATA_BY_ID(state, payload) {
