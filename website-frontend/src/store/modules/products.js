@@ -3,7 +3,8 @@ import axios from "axios";
 const state = {
   productHomeList: [],
   productBySubCategoryList: [],
-  productBySubCategoryTotalCount: 0
+  productBySubCategoryTotalCount: 0,
+  productDataById: null
 };
 
 const getters = {
@@ -73,7 +74,16 @@ const actions = {
         axios
           .get(url, header)
           .then(response => {
-            resolve(response);
+            let obj = response.data.result;
+            obj.productImages.forEach(element => {
+              if (!_.isEmpty(element)) {
+                element.file_path = `${process.env.VUE_APP_API_BACKEND}/productImage/viewImage/${element.file_name}`;
+              } else {
+                element.file_path = require("../../assets/images/no-image.png");
+              }
+            });
+            console.log("ASDASD", obj)
+            commit("SET_DATA_BY_ID", obj);
           });
       } catch (err) {
         reject(err);
@@ -97,6 +107,13 @@ const mutations = {
     } else {
       state.productBySubCategoryList = [];
       state.productBySubCategoryTotalCount = 0;
+    }
+  },
+  SET_DATA_BY_ID(state, payload) {
+    if (payload) {
+      state.productDataById = payload;
+    } else {
+      state.productDataById = null;
     }
   }
 };

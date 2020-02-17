@@ -134,7 +134,7 @@
                       <v-flex xs12 sm12 md3 lg3 :key="i">
                         <v-container>
                           <v-hover>
-                            <v-card slot-scope="{ hover }" :class="`elevation-${hover ? 12 : 2}`">
+                            <v-card slot-scope="{ hover }" :class="`elevation-${hover ? 12 : 2}`" :to="`/product/${productBySubCategory.id}`">
                               <v-container>
                                 <v-img :src="productBySubCategory.file_path" height="250px" />
                               </v-container>
