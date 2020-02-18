@@ -9,7 +9,7 @@
               <v-layout row wrap>
                 <v-flex xs12 sm12 md6 lg6>
                   <v-layout>
-                    <p class="font-weight-medium subtitle-2 pt-1">Follow us on</p>
+                    <p class="font-weight-medium subtitle-2 my-1">Follow us on</p>
                     <v-btn icon small>
                       <v-icon>mdi-facebook</v-icon>
                     </v-btn>
@@ -30,7 +30,7 @@
           </v-sheet>
         </v-flex>
       </v-layout>
-      <v-container class="col-lg-10 offset-lg-1 pt-2">
+      <v-container class="col-lg-10 offset-lg-1">
         <v-layout row wrap>
           <v-flex xs12 sm12 md4 lg4>
             <v-layout justify-start>
