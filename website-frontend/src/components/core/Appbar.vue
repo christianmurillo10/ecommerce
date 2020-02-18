@@ -13,7 +13,7 @@
                     <v-btn icon small>
                       <v-icon>mdi-facebook</v-icon>
                     </v-btn>
-                    <v-btn icon small to="/profile">
+                    <v-btn icon small>
                       <v-icon>mdi-instagram</v-icon>
                     </v-btn>
                   </v-layout>
