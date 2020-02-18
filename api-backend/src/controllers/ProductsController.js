@@ -466,6 +466,7 @@ module.exports = {
           { model: Model.ProductCategories, as: "productCategories", attributes: ['name', 'description'] },
           { model: Model.ProductSubCategories, as: "productSubCategories", attributes: ['name', 'description'] },
           { model: Model.ProductImages, as: "productImages", attributes: ['file_name', 'color', 'order', 'product_id'], required: false },
+          { model: Model.Inventories, as: "inventories", attributes: ['stock_available', 'product_id'], required: false },
           { model: Model.Users, as: "users", attributes: ['email', 'username'] }
         ]
       };
