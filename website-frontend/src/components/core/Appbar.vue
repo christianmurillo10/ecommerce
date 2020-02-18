@@ -52,12 +52,26 @@
           </v-flex>
           <v-flex xs12 sm12 md4 lg4>
             <v-layout justify-end>
-              <v-btn icon>
-                <v-icon>mdi-cart</v-icon>
-              </v-btn>
-              <v-btn icon to="/profile">
-                <v-icon>mdi-account</v-icon>
-              </v-btn>
+              <v-tooltip right>
+                <template v-slot:activator="{ on }">
+                  <v-btn icon v-on="on">
+                    <v-badge color="red" content="0">
+                      <v-icon>mdi-heart</v-icon>
+                    </v-badge>
+                  </v-btn>
+                </template>
+                <span>Wishlist</span>
+              </v-tooltip>
+              <v-tooltip right>
+                <template v-slot:activator="{ on }">
+                  <v-btn icon v-on="on">
+                    <v-badge color="green" content="0">
+                      <v-icon>mdi-cart</v-icon>
+                    </v-badge>
+                  </v-btn>
+                </template>
+                <span>Cart</span>
+              </v-tooltip>
             </v-layout>
           </v-flex>
         </v-layout>

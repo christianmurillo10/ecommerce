@@ -59,8 +59,6 @@
                         v-for="(productBannerImage, i) in productBannerImageList"
                         :key="i"
                         :src="productBannerImage.file_path"
-                        reverse-transition="fade-transition"
-                        transition="fade-transition"
                       ></v-carousel-item>
                     </v-carousel>
                   </v-card-text>
