@@ -3,8 +3,12 @@
   <v-navigation-drawer
     v-model="primaryDrawer.model"
     :temporary="primaryDrawer.type"
+    absolute
+    overflow
     app
     dark
+    mobile-break-point="991"
+    width="300"
   >
     <v-list dense class="ml-n0">
       <v-list-item>
@@ -93,7 +97,7 @@ export default {
         obj.forEach(element => {
           this.items[1].children.push({
             text: element.name,
-            to: `/category/${element.id}`
+            to: `/category/${element.id}/page/1`
           });
         });
       }

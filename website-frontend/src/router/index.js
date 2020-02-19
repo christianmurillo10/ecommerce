@@ -20,12 +20,12 @@ const routes = [
     component: Login
   },
   {
-    path: '/category/:id',
+    path: '/category/:id/page/:page',
     name: 'categoryById',
     component: ProductCategoryIndex
   },
   {
-    path: '/product/category/:categoryId/subCategory/:subCategoryId/page/:page',
+    path: '/category/:categoryId/subCategory/:subCategoryId/page/:page',
     name: 'productByCategoryIdAndSubCategoryId',
     component: ProductIndexBySubCategory
   },

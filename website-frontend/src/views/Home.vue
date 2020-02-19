@@ -16,7 +16,7 @@
                             <template v-slot:activator="{ on }">
                               <v-list-item
                                 class="ml-n3"
-                                :to="`category/${productCategoryWithSub.id}`"
+                                :to="`category/${productCategoryWithSub.id}/page/1`"
                                 v-on="on"
                               >
                                 <v-list-item-icon>
@@ -40,7 +40,7 @@
                                   >
                                     <v-btn
                                       text
-                                      :to="`/product/category/${productCategoryWithSub.id}/subCategory/${productSubCategory.id}/page/1`"
+                                      :to="`/category/${productCategoryWithSub.id}/subCategory/${productSubCategory.id}/page/1`"
                                     >{{ productSubCategory.name }}</v-btn>
                                   </v-flex>
                                 </v-layout>

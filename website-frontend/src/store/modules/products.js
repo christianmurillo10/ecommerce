@@ -2,6 +2,8 @@ import axios from "axios";
 
 const state = {
   productHomeList: [],
+  productByCategoryList: [],
+  productByCategoryTotalCount: 0,
   productBySubCategoryList: [],
   productBySubCategoryTotalCount: 0,
   productDataById: null
@@ -37,6 +39,29 @@ const actions = {
               });
             }
             commit("SET_DATA_HOME", obj);
+          });
+      } catch (err) {
+        reject(err);
+      }
+    });
+  },
+  getDataByProductCategoryIdWithLimitOffsetAndFileName({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
+    let url = `${process.env.VUE_APP_API_BACKEND}/product/findAllByProductCategoryIdWithLimitOffsetAndFileName/${payload.productCategoryId}/${payload.limit}/${payload.offset}`;
+    return new Promise((resolve, reject) => {
+      try {
+        axios.get(url)
+          .then(response => {
+            let obj = response.data.result;
+            if (obj.data) {
+              obj.data.forEach(element => {
+                if (!_.isEmpty(element.productImages)) {
+                  element.file_path = `${process.env.VUE_APP_API_BACKEND}/productImage/viewImage/${element.productImages[0].file_name}`;
+                } else {
+                  element.file_path = require("../../assets/images/no-image.png");
+                }
+              });
+            }
+            commit("SET_DATA_BY_CATEGORY", obj);
           });
       } catch (err) {
         reject(err);
@@ -82,7 +107,6 @@ const actions = {
                 element.file_path = require("../../assets/images/no-image.png");
               }
             });
-            console.log("ASDASD", obj)
             commit("SET_DATA_BY_ID", obj);
           });
       } catch (err) {
@@ -98,6 +122,15 @@ const mutations = {
       state.productHomeList = payload;
     } else {
       state.productHomeList = [];
+    }
+  },
+  SET_DATA_BY_CATEGORY(state, payload) {
+    if (payload.data) {
+      state.productByCategoryList = payload.data;
+      state.productByCategoryTotalCount = payload.count;
+    } else {
+      state.productByCategoryList = [];
+      state.productByCategoryTotalCount = 0;
     }
   },
   SET_DATA_BY_SUB_CATEGORY(state, payload) {

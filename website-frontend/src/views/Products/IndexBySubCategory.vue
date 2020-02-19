@@ -17,7 +17,7 @@
                         <template v-for="(productSubCategory, i) in productSubCategoryList">
                           <v-list-item
                             :key="i"
-                            :to="`/product/category/${categoryId}/subCategory/${productSubCategory.id}/page/${pagination.page}`"
+                            :to="`/category/${categoryId}/subCategory/${productSubCategory.id}/page/${pagination.page}`"
                             active-class="highlighted"
                             :class="productSubCategory.id === subCategoryId ? 'highlighted' : ''"
                           >
@@ -94,7 +94,7 @@
             <v-flex xs12 sm12 md9 lg9>
               <v-container>
                 <v-flex xs12 sm12 md12 lg12>
-                  <v-breadcrumbs :items="items">
+                  <v-breadcrumbs :items="breadcrumbs">
                     <template v-slot:item="{ item }">
                       <v-breadcrumbs-item
                         :to="item.to"
@@ -200,7 +200,7 @@ export default {
     subCategoryId: null,
     itemResult: null,
     itemCount: 0,
-    items: [
+    breadcrumbs: [
       {
         text: "Home",
         disabled: false,
@@ -209,12 +209,12 @@ export default {
       {
         text: "Category",
         disabled: false,
-        to: "/category/:categoryId"
+        to: "/category/:categoryId/page/1"
       },
       {
         text: "Sub Category",
         disabled: true,
-        to: "/subCategory/:subCategoryId"
+        to: "/subCategory/:subCategoryId/page/1"
       }
     ],
     pagination: {
@@ -257,11 +257,11 @@ export default {
     },
     productCategoryDataById(val) {
       this.categoryHeader = val.name;
-      this.items[1].text = val.name;
-      this.items[1].to = `/category/${val.id}`;
+      this.breadcrumbs[1].text = val.name;
+      this.breadcrumbs[1].to = `/category/${val.id}/page/1`;
     },
     productSubCategoryDataById(val) {
-      this.items[2].text = val.name;
+      this.breadcrumbs[2].text = val.name;
       this.itemResult = val.name;
     },
     productBySubCategoryTotalCount(val) {
