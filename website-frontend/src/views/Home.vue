@@ -78,12 +78,54 @@
                 <v-card-text>
                   <v-flex xs12 sm12 md12 lg12>
                     <v-layout row wrap>
-                      <template v-for="(productHome, i) in productHomeList">
+                      <v-slide-group class="px-4" show-arrows>
+                        <template v-for="(productHome, i) in productHomeList">
+                          <v-flex xs12 sm12 md2 lg2 :key="i">
+                            <v-slide-item>
+                              <v-hover>
+                                <v-card
+                                  slot-scope="{ hover }"
+                                  :class="`elevation-${hover ? 12 : 2}`"
+                                  class="ma-2"
+                                  height="350"
+                                  width="210"
+                                  :to="`/product/${productHome.id}`"
+                                >
+                                  <v-container>
+                                    <v-img :src="productHome.file_path" height="200px" />
+                                  </v-container>
+
+                                  <v-card-text>
+                                    <div class="subtitle-1 black--text">{{ productHome.name }}</div>
+                                    <div
+                                      class="subtitle-1 font-weight-bold black--text"
+                                    >{{ `&#8369 ${productHome.price}` }}</div>
+                                    <v-row align="center" class="mx-0">
+                                      <v-rating
+                                        :value="4.5"
+                                        color="amber"
+                                        dense
+                                        half-increments
+                                        readonly
+                                        size="14"
+                                      ></v-rating>
+
+                                      <div class="grey--text ml-4">4.5 (413)</div>
+                                    </v-row>
+                                  </v-card-text>
+                                </v-card>
+                              </v-hover>
+                            </v-slide-item>
+                          </v-flex>
+                        </template>
+                      </v-slide-group>
+
+                      <!-- <template v-for="(productHome, i) in productHomeList">
                         <v-flex xs12 sm12 md2 lg2 :key="i">
                           <v-hover>
                             <v-card slot-scope="{ hover }" :class="`elevation-${hover ? 12 : 2}`">
                               <v-container>
-                                <v-img :src="productHome.file_path" height="150px" />
+                                <v-img :src="productHome.file_path" height="200px" />
                               </v-container>
 
                               <v-card-text>
@@ -107,7 +149,7 @@
                             </v-card>
                           </v-hover>
                         </v-flex>
-                      </template>
+                      </template>-->
                     </v-layout>
                   </v-flex>
                 </v-card-text>
@@ -123,162 +165,47 @@
                 <v-card-text>
                   <v-flex xs12 sm12 md12 lg12>
                     <v-layout row wrap>
-                      <v-flex xs12 sm12 md2 lg2>
-                        <v-hover v-slot:default="{ hover }">
-                          <v-card class="mx-auto" color="grey lighten-4" max-width="600">
-                            <v-img
-                              :aspect-ratio="16 / 9"
-                              src="https://cdn.vuetifyjs.com/images/cards/kitchen.png"
-                            >
-                              <v-expand-transition>
-                                <div
-                                  v-if="hover"
-                                  class="d-flex transition-fast-in-fast-out grey darken-4 v-card--reveal display-1 white--text"
-                                  style="height: 100%;"
-                                >P14.99</div>
-                              </v-expand-transition>
-                            </v-img>
-                            <v-card-text class="pt-6" style="position: relative;">
-                              <h3
-                                class="title font-weight-light orange--text mb-2"
-                              >QW cooking utensils</h3>
-                              <div
-                                class="font-weight-light grey--text body-2 mb-2"
-                              >For the perfect meal</div>
-                            </v-card-text>
-                          </v-card>
-                        </v-hover>
-                      </v-flex>
-                      <v-flex xs12 sm12 md2 lg2>
-                        <v-hover v-slot:default="{ hover }">
-                          <v-card class="mx-auto" color="grey lighten-4" max-width="600">
-                            <v-img
-                              :aspect-ratio="16 / 9"
-                              src="https://cdn.vuetifyjs.com/images/cards/kitchen.png"
-                            >
-                              <v-expand-transition>
-                                <div
-                                  v-if="hover"
-                                  class="d-flex transition-fast-in-fast-out grey darken-4 v-card--reveal display-1 white--text"
-                                  style="height: 100%;"
-                                >P14.99</div>
-                              </v-expand-transition>
-                            </v-img>
-                            <v-card-text class="pt-6" style="position: relative;">
-                              <h3
-                                class="title font-weight-light orange--text mb-2"
-                              >QW cooking utensils</h3>
-                              <div
-                                class="font-weight-light grey--text body-2 mb-2"
-                              >For the perfect meal</div>
-                            </v-card-text>
-                          </v-card>
-                        </v-hover>
-                      </v-flex>
-                      <v-flex xs12 sm12 md2 lg2>
-                        <v-hover v-slot:default="{ hover }">
-                          <v-card class="mx-auto" color="grey lighten-4" max-width="600">
-                            <v-img
-                              :aspect-ratio="16 / 9"
-                              src="https://cdn.vuetifyjs.com/images/cards/kitchen.png"
-                            >
-                              <v-expand-transition>
-                                <div
-                                  v-if="hover"
-                                  class="d-flex transition-fast-in-fast-out grey darken-4 v-card--reveal display-1 white--text"
-                                  style="height: 100%;"
-                                >P14.99</div>
-                              </v-expand-transition>
-                            </v-img>
-                            <v-card-text class="pt-6" style="position: relative;">
-                              <h3
-                                class="title font-weight-light orange--text mb-2"
-                              >QW cooking utensils</h3>
-                              <div
-                                class="font-weight-light grey--text body-2 mb-2"
-                              >For the perfect meal</div>
-                            </v-card-text>
-                          </v-card>
-                        </v-hover>
-                      </v-flex>
-                      <v-flex xs12 sm12 md2 lg2>
-                        <v-hover v-slot:default="{ hover }">
-                          <v-card class="mx-auto" color="grey lighten-4" max-width="600">
-                            <v-img
-                              :aspect-ratio="16 / 9"
-                              src="https://cdn.vuetifyjs.com/images/cards/kitchen.png"
-                            >
-                              <v-expand-transition>
-                                <div
-                                  v-if="hover"
-                                  class="d-flex transition-fast-in-fast-out grey darken-4 v-card--reveal display-1 white--text"
-                                  style="height: 100%;"
-                                >P14.99</div>
-                              </v-expand-transition>
-                            </v-img>
-                            <v-card-text class="pt-6" style="position: relative;">
-                              <h3
-                                class="title font-weight-light orange--text mb-2"
-                              >QW cooking utensils</h3>
-                              <div
-                                class="font-weight-light grey--text body-2 mb-2"
-                              >For the perfect meal</div>
-                            </v-card-text>
-                          </v-card>
-                        </v-hover>
-                      </v-flex>
-                      <v-flex xs12 sm12 md2 lg2>
-                        <v-hover v-slot:default="{ hover }">
-                          <v-card class="mx-auto" color="grey lighten-4" max-width="600">
-                            <v-img
-                              :aspect-ratio="16 / 9"
-                              src="https://cdn.vuetifyjs.com/images/cards/kitchen.png"
-                            >
-                              <v-expand-transition>
-                                <div
-                                  v-if="hover"
-                                  class="d-flex transition-fast-in-fast-out grey darken-4 v-card--reveal display-1 white--text"
-                                  style="height: 100%;"
-                                >P14.99</div>
-                              </v-expand-transition>
-                            </v-img>
-                            <v-card-text class="pt-6" style="position: relative;">
-                              <h3
-                                class="title font-weight-light orange--text mb-2"
-                              >QW cooking utensils</h3>
-                              <div
-                                class="font-weight-light grey--text body-2 mb-2"
-                              >For the perfect meal</div>
-                            </v-card-text>
-                          </v-card>
-                        </v-hover>
-                      </v-flex>
-                      <v-flex xs12 sm12 md2 lg2>
-                        <v-hover v-slot:default="{ hover }">
-                          <v-card class="mx-auto" color="grey lighten-4" max-width="600">
-                            <v-img
-                              :aspect-ratio="16 / 9"
-                              src="https://cdn.vuetifyjs.com/images/cards/kitchen.png"
-                            >
-                              <v-expand-transition>
-                                <div
-                                  v-if="hover"
-                                  class="d-flex transition-fast-in-fast-out grey darken-4 v-card--reveal display-1 white--text"
-                                  style="height: 100%;"
-                                >P14.99</div>
-                              </v-expand-transition>
-                            </v-img>
-                            <v-card-text class="pt-6" style="position: relative;">
-                              <h3
-                                class="title font-weight-light orange--text mb-2"
-                              >QW cooking utensils</h3>
-                              <div
-                                class="font-weight-light grey--text body-2 mb-2"
-                              >For the perfect meal</div>
-                            </v-card-text>
-                          </v-card>
-                        </v-hover>
-                      </v-flex>
+                      <v-slide-group class="px-4" show-arrows>
+                        <template v-for="(productHome, i) in productHomeList">
+                          <v-flex xs12 sm12 md2 lg2 :key="i">
+                            <v-slide-item>
+                              <v-hover>
+                                <v-card
+                                  slot-scope="{ hover }"
+                                  :class="`elevation-${hover ? 12 : 2}`"
+                                  class="ma-2"
+                                  height="350"
+                                  width="210"
+                                  :to="`/product/${productHome.id}`"
+                                >
+                                  <v-container>
+                                    <v-img :src="productHome.file_path" height="200px" />
+                                  </v-container>
+
+                                  <v-card-text>
+                                    <div class="subtitle-1 black--text">{{ productHome.name }}</div>
+                                    <div
+                                      class="subtitle-1 font-weight-bold black--text"
+                                    >{{ `&#8369 ${productHome.price}` }}</div>
+                                    <v-row align="center" class="mx-0">
+                                      <v-rating
+                                        :value="4.5"
+                                        color="amber"
+                                        dense
+                                        half-increments
+                                        readonly
+                                        size="14"
+                                      ></v-rating>
+
+                                      <div class="grey--text ml-4">4.5 (413)</div>
+                                    </v-row>
+                                  </v-card-text>
+                                </v-card>
+                              </v-hover>
+                            </v-slide-item>
+                          </v-flex>
+                        </template>
+                      </v-slide-group>
                     </v-layout>
                   </v-flex>
                 </v-card-text>
@@ -328,7 +255,7 @@ export default {
   mounted() {
     this.getProductBannerImageData();
     this.getProductCategoriesDataWithSubCategories();
-    this.getProductDataWithLimitOffsetAndFileName({ limit: 6, offset: 0 });
+    this.getProductDataWithLimitOffsetAndFileName({ limit: 10, offset: 0 });
   },
 
   computed: {
