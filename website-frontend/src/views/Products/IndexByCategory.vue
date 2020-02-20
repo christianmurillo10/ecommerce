@@ -35,24 +35,33 @@
               <v-layout row wrap justify-center>
                 <v-card-title class="headline font-weight-bold">{{ header }}</v-card-title>
                 <v-card-text>
-                  <v-layout row wrap justify-center>
-                    <template v-for="(productSubCategory, i) in productSubCategoryList">
-                      <v-flex xs12 sm12 md2 lg2 :key="i">
-                        <v-hover>
-                          <v-card
-                            slot-scope="{ hover }"
-                            :class="`elevation-${hover ? 12 : 2}`"
-                            :to="`/category/${categoryId}/subCategory/${productSubCategory.id}/page/1`"
-                            class="grey lighten-4"
-                          >
-                            <v-card-title primary-title class="justify-center">
-                              <h4 class="headline text-xs-center">{{ productSubCategory.name }}</h4>
-                            </v-card-title>
-                          </v-card>
-                        </v-hover>
-                      </v-flex>
-                    </template>
-                  </v-layout>
+                  <v-flex xs12 sm12 md12 lg12>
+                    <v-layout row wrap justify-center>
+                      <v-slide-group class="px-4" show-arrows>
+                        <template v-for="(productSubCategory, i) in productSubCategoryList">
+                          <v-flex xs12 sm12 md2 lg2 :key="i">
+                            <v-slide-item>
+                              <v-hover>
+                                <v-card
+                                  slot-scope="{ hover }"
+                                  :class="`elevation-${hover ? 12 : 2}`"
+                                  :to="`/category/${categoryId}/subCategory/${productSubCategory.id}/page/1`"
+                                  class="grey lighten-4"
+                                  width="340"
+                                >
+                                  <v-card-title primary-title class="justify-center">
+                                    <h4
+                                      class="headline text-xs-center"
+                                    >{{ productSubCategory.name }}</h4>
+                                  </v-card-title>
+                                </v-card>
+                              </v-hover>
+                            </v-slide-item>
+                          </v-flex>
+                        </template>
+                      </v-slide-group>
+                    </v-layout>
+                  </v-flex>
                 </v-card-text>
               </v-layout>
             </v-card>
