@@ -134,13 +134,25 @@
                       <v-flex xs12 sm12 md3 lg3 :key="i">
                         <v-container>
                           <v-hover>
-                            <v-card slot-scope="{ hover }" :class="`elevation-${hover ? 12 : 2}`" :to="`/product/${productBySubCategory.id}`">
+                            <v-card
+                              slot-scope="{ hover }"
+                              :class="`elevation-${hover ? 12 : 2}`"
+                              :to="`/product/${productBySubCategory.id}`"
+                            >
                               <v-container>
                                 <v-img :src="productBySubCategory.file_path" height="250px" />
                               </v-container>
 
                               <v-card-text>
-                                <div class="subtitle-1 black--text">{{ productBySubCategory.name }}</div>
+                                <v-tooltip bottom>
+                                  <template v-slot:activator="{ on }">
+                                    <div
+                                      v-on="on"
+                                      class="subtitle-1 black--text"
+                                    >{{ truncateText(productBySubCategory.name, 29) }}</div>
+                                  </template>
+                                  <span>{{ productBySubCategory.name }}</span>
+                                </v-tooltip>
                                 <div
                                   class="subtitle-1 font-weight-bold black--text"
                                 >{{ `&#8369 ${productBySubCategory.price}` }}</div>
@@ -192,8 +204,11 @@
 
 <script>
 import { mapState, mapActions } from "vuex";
+import Mixins from "@/helpers/Mixins.js";
 
 export default {
+  mixins: [Mixins],
+
   data: () => ({
     categoryHeader: null,
     categoryId: null,
@@ -265,7 +280,8 @@ export default {
       this.itemResult = val.name;
     },
     productBySubCategoryTotalCount(val) {
-      this.pagination.length = val <= this.pagination.limit ? 1 : this.computePaginationLength(val);
+      this.pagination.length =
+        val <= this.pagination.limit ? 1 : this.computePaginationLength(val);
     }
   },
 
@@ -298,7 +314,10 @@ export default {
     },
 
     onPageChange() {
-      this.pagination.offset = this.pagination.page === 1 ? 0 : this.pagination.limit * this.pagination.page;
+      this.pagination.offset =
+        this.pagination.page === 1
+          ? 0
+          : this.pagination.limit * this.pagination.page;
       this.getProductDataByProductSubCategoryIdWithLimitOffsetAndFileName({
         productSubCategoryId: this.subCategoryId,
         limit: this.pagination.limit,
@@ -308,7 +327,10 @@ export default {
 
     computePaginationLength(totalCount) {
       let newPageLength = totalCount / this.pagination.limit;
-      let finalPageLength = Number.isInteger(newPageLength) === true ? newPageLength : Math.trunc(newPageLength) + 1;
+      let finalPageLength =
+        Number.isInteger(newPageLength) === true
+          ? newPageLength
+          : Math.trunc(newPageLength) + 1;
       return finalPageLength;
     }
   }

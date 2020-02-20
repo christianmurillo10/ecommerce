@@ -107,7 +107,15 @@
                             </v-container>
 
                             <v-card-text>
-                              <div class="subtitle-1 black--text">{{ productByCategory.name }}</div>
+                              <v-tooltip bottom>
+                                <template v-slot:activator="{ on }">
+                                  <div
+                                    v-on="on"
+                                    class="subtitle-1 black--text"
+                                  >{{ truncateText(productByCategory.name, 35) }}</div>
+                                </template>
+                                <span>{{ productByCategory.name }}</span>
+                              </v-tooltip>
                               <div
                                 class="subtitle-1 font-weight-bold black--text"
                               >{{ `&#8369 ${productByCategory.price}` }}</div>
@@ -155,8 +163,11 @@
 
 <script>
 import { mapState, mapActions } from "vuex";
+import Mixins from "@/helpers/Mixins.js";
 
 export default {
+  mixins: [Mixins],
+
   data: () => ({
     header: null,
     categoryId: null,

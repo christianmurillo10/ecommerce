@@ -96,7 +96,15 @@
                                   </v-container>
 
                                   <v-card-text>
-                                    <div class="subtitle-1 black--text">{{ productHome.name }}</div>
+                                    <v-tooltip bottom>
+                                      <template v-slot:activator="{ on }">
+                                        <div
+                                          v-on="on"
+                                          class="subtitle-1 black--text"
+                                        >{{ truncateText(productHome.name, 20) }}</div>
+                                      </template>
+                                      <span>{{ productHome.name }}</span>
+                                    </v-tooltip>
                                     <div
                                       class="subtitle-1 font-weight-bold black--text"
                                     >{{ `&#8369 ${productHome.price}` }}</div>
@@ -183,7 +191,15 @@
                                   </v-container>
 
                                   <v-card-text>
-                                    <div class="subtitle-1 black--text">{{ productHome.name }}</div>
+                                    <v-tooltip bottom>
+                                      <template v-slot:activator="{ on }">
+                                        <div
+                                          v-on="on"
+                                          class="subtitle-1 black--text"
+                                        >{{ truncateText(productHome.name, 20) }}</div>
+                                      </template>
+                                      <span>{{ productHome.name }}</span>
+                                    </v-tooltip>
                                     <div
                                       class="subtitle-1 font-weight-bold black--text"
                                     >{{ `&#8369 ${productHome.price}` }}</div>
@@ -248,8 +264,11 @@
 
 <script>
 import { mapState, mapActions } from "vuex";
+import Mixins from "@/helpers/Mixins.js";
 
 export default {
+  mixins: [Mixins],
+
   data: () => ({}),
 
   mounted() {

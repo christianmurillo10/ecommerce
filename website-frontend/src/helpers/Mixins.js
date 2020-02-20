@@ -49,6 +49,14 @@ export default {
       return value.replace(/[$&+,:;=?@#_|'<>.^*()%!-]/g, '').replace(/(?:^\w|[A-Z]|\b\w)/g, function (word, index) {
         return index == 0 ? word.toLowerCase() : word.toUpperCase();
       }).replace(/\s+/g, '');
+    },
+
+    truncateText(text, length) {
+      if (text.length > length) {
+        return text.substring(0, length) + "...";
+      } else {
+        return text;
+      }
     }
   }
 }
