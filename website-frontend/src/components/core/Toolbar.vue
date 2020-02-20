@@ -1,7 +1,7 @@
 <template>
   <v-layout row wrap>
-    <v-flex xs12 sm12 md12 lg12 class="hidden-sm-and-down">
-      <v-toolbar flat dense>
+    <v-flex xs12 sm12 md12 lg12>
+      <v-toolbar flat dense class="hidden-sm-and-down">
         <v-container class="col-lg-10 offset-lg-1">
           <v-layout row wrap>
             <v-flex xs12 sm12 md6 lg6>
@@ -25,8 +25,6 @@
           </v-layout>
         </v-container>
       </v-toolbar>
-    </v-flex>
-    <v-flex xs12 sm12 md12 lg12>
       <v-toolbar>
         <v-container class="col-lg-10 offset-lg-1">
           <v-layout row wrap>

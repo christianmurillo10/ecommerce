@@ -2,7 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 import Login from '../views/Login.vue'
-import ProductCategoryIndex from '../views/ProductCategories/Index.vue'
+import ProductIndexByCategory from '../views/Products/IndexByCategory.vue'
 import ProductIndexBySubCategory from '../views/Products/IndexBySubCategory.vue'
 import ProductView from '../views/Products/View.vue'
 
@@ -22,7 +22,7 @@ const routes = [
   {
     path: '/category/:id/page/:page',
     name: 'categoryById',
-    component: ProductCategoryIndex
+    component: ProductIndexByCategory
   },
   {
     path: '/category/:categoryId/subCategory/:subCategoryId/page/:page',
