@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <Drawer/>
-    <Appbar/>
+    <Toolbar/>
     <Content/>
     <Footer/>
   </v-app>
@@ -9,7 +9,7 @@
 
 <script>
 import Drawer from './components/core/Drawer';
-import Appbar from './components/core/Appbar';
+import Toolbar from './components/core/Toolbar';
 import Content from './components/core/Content';
 import Footer from './components/core/Footer';
 
@@ -18,7 +18,7 @@ export default {
 
   components: {
     Drawer,
-    Appbar,
+    Toolbar,
     Content,
     Footer
   },
