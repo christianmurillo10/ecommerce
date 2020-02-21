@@ -10,27 +10,6 @@
                   <v-card-title>FILTERS</v-card-title>
 
                   <v-divider class="mx-4"></v-divider>
-                  <v-card-title>Related Categories:</v-card-title>
-                  <v-card-text>
-                    <v-list rounded dense>
-                      <v-list-item-group color="primary">
-                        <template v-for="(productSubCategory, i) in productSubCategoryList">
-                          <v-list-item
-                            :key="i"
-                            :to="`/category/${categoryId}/subCategory/${productSubCategory.id}/page/${pagination.page}`"
-                            active-class="highlighted"
-                            :class="productSubCategory.id === subCategoryId ? 'highlighted' : ''"
-                          >
-                            <v-list-item-content>
-                              <v-list-item-title v-text="productSubCategory.name"></v-list-item-title>
-                            </v-list-item-content>
-                          </v-list-item>
-                        </template>
-                      </v-list-item-group>
-                    </v-list>
-                  </v-card-text>
-
-                  <v-divider class="mx-4"></v-divider>
                   <v-card-title>Rating</v-card-title>
                   <v-card-text>
                     <v-container>
@@ -94,25 +73,12 @@
             <v-flex xs12 sm12 md9 lg9>
               <v-container>
                 <v-flex xs12 sm12 md12 lg12>
-                  <v-breadcrumbs :items="breadcrumbs">
-                    <template v-slot:item="{ item }">
-                      <v-breadcrumbs-item
-                        :to="item.to"
-                        :disabled="item.disabled"
-                      >{{ item.text.toUpperCase() }}</v-breadcrumbs-item>
-                    </template>
-                    <template v-slot:divider>
-                      <v-icon>mdi-forward</v-icon>
-                    </template>
-                  </v-breadcrumbs>
-                </v-flex>
-                <v-flex xs12 sm12 md12 lg12>
                   <v-container>
                     <v-layout row wrap>
                       <div class="headline">
                         Results for
-                        <b>{{ itemResult }}</b>
-                        ({{ productBySubCategoryTotalCount }})
+                        <b>{{ keyword }}</b>
+                        ({{ productBySearchTotalCount }})
                       </div>
                       <v-spacer></v-spacer>
                       <div class="text-center">
@@ -130,17 +96,17 @@
 
                 <v-flex xs12 sm12 md12 lg12>
                   <v-layout row wrap>
-                    <template v-for="(productBySubCategory, i) in productBySubCategoryList">
+                    <template v-for="(productBySearch, i) in productBySearchList">
                       <v-flex xs12 sm12 md3 lg3 :key="i">
                         <v-container>
                           <v-hover>
                             <v-card
                               slot-scope="{ hover }"
                               :class="`elevation-${hover ? 12 : 2}`"
-                              :to="`/product/${productBySubCategory.id}`"
+                              :to="`/product/${productBySearch.id}`"
                             >
                               <v-container>
-                                <v-img :src="productBySubCategory.file_path" height="250px" />
+                                <v-img :src="productBySearch.file_path" height="250px" />
                               </v-container>
 
                               <v-card-text>
@@ -149,13 +115,13 @@
                                     <div
                                       v-on="on"
                                       class="subtitle-1 black--text"
-                                    >{{ truncateText(productBySubCategory.name, 29) }}</div>
+                                    >{{ truncateText(productBySearch.name, 29) }}</div>
                                   </template>
-                                  <span>{{ productBySubCategory.name }}</span>
+                                  <span>{{ productBySearch.name }}</span>
                                 </v-tooltip>
                                 <div
                                   class="subtitle-1 font-weight-bold black--text"
-                                >{{ `&#8369 ${productBySubCategory.price}` }}</div>
+                                >{{ `&#8369 ${productBySearch.price}` }}</div>
 
                                 <v-row align="center" class="mx-0">
                                   <v-rating
@@ -210,27 +176,7 @@ export default {
   mixins: [Mixins],
 
   data: () => ({
-    categoryHeader: null,
-    categoryId: null,
-    subCategoryId: null,
-    itemResult: null,
-    breadcrumbs: [
-      {
-        text: "Home",
-        disabled: false,
-        to: "/"
-      },
-      {
-        text: "Category",
-        disabled: false,
-        to: "/category/:categoryId/page/1"
-      },
-      {
-        text: "Sub Category",
-        disabled: true,
-        to: "/subCategory/:subCategoryId/page/1"
-      }
-    ],
+    keyword: null,
     pagination: {
       limit: 20,
       offset: 0,
@@ -248,65 +194,36 @@ export default {
   },
 
   computed: {
-    ...mapState("productCategories", ["productCategoryDataById"]),
-    ...mapState("productSubCategories", [
-      "productSubCategoryList",
-      "productSubCategoryDataById"
-    ]),
     ...mapState("products", [
-      "productBySubCategoryList",
-      "productBySubCategoryTotalCount"
+      "productBySearchList",
+      "productBySearchTotalCount"
     ])
   },
 
   watch: {
-    "$route.params.categoryId": function() {
-      this.loadByRouteId();
-    },
-    "$route.params.subCategoryId": function() {
+    "$route.params.keyword": function() {
       this.loadByRouteId();
     },
     "$route.params.page": function() {
       this.loadByRouteId();
     },
-    productCategoryDataById(val) {
-      this.categoryHeader = val.name;
-      this.breadcrumbs[1].text = val.name;
-      this.breadcrumbs[1].to = `/category/${val.id}/page/1`;
-    },
-    productSubCategoryDataById(val) {
-      this.breadcrumbs[2].text = val.name;
-      this.itemResult = val.name;
-    },
-    productBySubCategoryTotalCount(val) {
+    productBySearchTotalCount(val) {
       this.pagination.length =
         val <= this.pagination.limit ? 1 : this.computePaginationLength(val);
     }
   },
 
   methods: {
-    ...mapActions("productCategories", {
-      getProductCategoryDataById: "getDataById"
-    }),
-    ...mapActions("productSubCategories", {
-      getProductSubCategoryDataByProductCategoryId:
-        "getDataByProductCategoryId",
-      getProductSubCategoryDataById: "getDataById"
-    }),
     ...mapActions("products", {
-      getProductDataByProductSubCategoryIdWithLimitOffsetAndFileName:
-        "getDataByProductSubCategoryIdWithLimitOffsetAndFileName"
+      getProductDataBySearchWithLimitOffsetAndFileName:
+        "getDataBySearchWithLimitOffsetAndFileName"
     }),
 
     loadByRouteId() {
-      this.categoryId = this.$route.params.categoryId;
-      this.subCategoryId = this.$route.params.subCategoryId;
+      this.keyword = this.$route.params.keyword;
       this.pagination.page = parseInt(this.$route.params.page);
-      this.getProductSubCategoryDataByProductCategoryId(this.categoryId);
-      this.getProductCategoryDataById(this.categoryId);
-      this.getProductSubCategoryDataById(this.subCategoryId);
-      this.getProductDataByProductSubCategoryIdWithLimitOffsetAndFileName({
-        productSubCategoryId: this.subCategoryId,
+      this.getProductDataBySearchWithLimitOffsetAndFileName({
+        keyword: this.keyword,
         limit: this.pagination.limit,
         offset: this.pagination.offset
       });
@@ -317,8 +234,8 @@ export default {
         this.pagination.page === 1
           ? 0
           : this.pagination.limit * this.pagination.page;
-      this.getProductDataByProductSubCategoryIdWithLimitOffsetAndFileName({
-        productSubCategoryId: this.subCategoryId,
+      this.getProductDataBySearchWithLimitOffsetAndFileName({
+        keyword: this.keyword,
         limit: this.pagination.limit,
         offset: this.pagination.offset
       });

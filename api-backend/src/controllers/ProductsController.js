@@ -200,14 +200,14 @@ module.exports = {
 
   /**
    * Search
-   * @route GET /product/search/:value/:limit/:offset
+   * @route GET /product/search/:keyword/:limit/:offset
    * @param req
    * @param res
    * @returns {never}
    */
   search: async (req, res) => {
     const params = req.params;
-    let criteria, data;
+    let data, criteria, countCriteria;
 
     if (_.isUndefined(params))
       return res.badRequest({ err: "Invalid Parameter: [params]" });
@@ -220,7 +220,7 @@ module.exports = {
       let offset = parseInt(params.offset);
       criteria = {
         attributes: ['id', 'name', 'description', 'price', 'product_category_id', 'product_sub_category_id'],
-        where: { name: { $like: `%${params.value}%` }, is_deleted: 0 },
+        where: { name: { $like: `%${params.keyword}%` }, is_deleted: 0 },
         limit,
         offset,
         include: [
@@ -229,14 +229,21 @@ module.exports = {
           { model: Model.ProductImages, as: "productImages", attributes: ['file_name', 'color', 'order', 'product_id'], required: false }
         ]
       };
+      countCriteria = { where: { name: { $like: `%${params.keyword}%` }, is_deleted: 0 } };
+
       // Execute findAll query
       data = await Model.Products.findAll(criteria);
-
       if (!_.isEmpty(data[0])) {
+        count = await Model.Products.count(countCriteria);
+        let obj = {
+          data: data,
+          count: count
+        }
+
         res.json({
           status: 200,
-          message: "Successfully searched data.",
-          result: data
+          message: "Successfully find all data.",
+          result: obj
         });
       } else {
         res.json({

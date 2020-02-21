@@ -4,6 +4,7 @@ import Home from '../views/Home.vue'
 import Login from '../views/Login.vue'
 import ProductIndexByCategory from '../views/Products/IndexByCategory.vue'
 import ProductIndexBySubCategory from '../views/Products/IndexBySubCategory.vue'
+import ProductIndexBySearch from '../views/Products/IndexBySearch.vue'
 import ProductView from '../views/Products/View.vue'
 
 Vue.use(VueRouter)
@@ -21,13 +22,18 @@ const routes = [
   },
   {
     path: '/category/:id/page/:page',
-    name: 'categoryById',
+    name: 'productCategoryById',
     component: ProductIndexByCategory
   },
   {
     path: '/category/:categoryId/subCategory/:subCategoryId/page/:page',
     name: 'productByCategoryIdAndSubCategoryId',
     component: ProductIndexBySubCategory
+  },
+  {
+    path: '/search/:keyword/page/:page',
+    name: 'productBySearch',
+    component: ProductIndexBySearch
   },
   {
     path: '/product/:id',

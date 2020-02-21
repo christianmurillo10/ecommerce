@@ -37,20 +37,23 @@
               </v-layout>
             </v-flex>
             <v-flex xs4 sm4 md4 lg4>
-              <v-layout row wrap>
-                <v-text-field
-                  flat
-                  outlined
-                  hide-details
-                  clearable
-                  dense
-                  placeholder="Search"
-                  class="hidden-sm-and-down"
-                />
-                <v-btn outlined color="grey" height="40px">
-                  <v-icon>mdi-magnify</v-icon>
-                </v-btn>
-              </v-layout>
+              <v-form ref="form" @submit.prevent="search">
+                <v-layout row wrap>
+                  <v-text-field
+                    v-model="keywords"
+                    flat
+                    outlined
+                    hide-details
+                    clearable
+                    dense
+                    placeholder="Search"
+                    class="hidden-sm-and-down"
+                  />
+                  <v-btn outlined color="grey" height="40px" type="submit">
+                    <v-icon>mdi-magnify</v-icon>
+                  </v-btn>
+                </v-layout>
+              </v-form>
             </v-flex>
             <v-flex xs4 sm4 md4 lg4>
               <v-layout justify-end>
@@ -87,7 +90,9 @@
 import { mapState, mapGetters, mapActions } from "vuex";
 
 export default {
-  data: () => ({}),
+  data: () => ({
+    keywords: ""
+  }),
   computed: {
     ...mapState("appbar", ["primaryDrawer"]),
     avatar() {
@@ -95,7 +100,15 @@ export default {
     }
   },
   methods: {
-    ...mapActions("appbar", ["setPrimaryDrawerModel"])
+    ...mapActions("appbar", ["setPrimaryDrawerModel"]),
+
+    search() {
+      if (this.$refs.form.validate()) {
+        if (!_.isEmpty(this.keywords)) {
+          this.$router.push(`/search/${this.keywords}/page/1`);
+        }
+      }
+    }
   }
 };
 </script>

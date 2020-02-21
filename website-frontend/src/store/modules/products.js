@@ -6,6 +6,8 @@ const state = {
   productByCategoryTotalCount: 0,
   productBySubCategoryList: [],
   productBySubCategoryTotalCount: 0,
+  productBySearchList: [],
+  productBySearchTotalCount: 0,
   productDataById: null
 };
 
@@ -91,6 +93,29 @@ const actions = {
       }
     });
   },
+  getDataBySearchWithLimitOffsetAndFileName({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
+    let url = `${process.env.VUE_APP_API_BACKEND}/product/search/${payload.keyword}/${payload.limit}/${payload.offset}`;
+    return new Promise((resolve, reject) => {
+      try {
+        axios.get(url)
+          .then(response => {
+            let obj = response.data.result;
+            if (obj.data) {
+              obj.data.forEach(element => {
+                if (!_.isEmpty(element.productImages)) {
+                  element.file_path = `${process.env.VUE_APP_API_BACKEND}/productImage/viewImage/${element.productImages[0].file_name}`;
+                } else {
+                  element.file_path = require("../../assets/images/no-image.png");
+                }
+              });
+            }
+            commit("SET_DATA_BY_SEARCH", obj);
+          });
+      } catch (err) {
+        reject(err);
+      }
+    });
+  },
   getDataById({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
     let url = `${process.env.VUE_APP_API_BACKEND}/product/${payload}`;
     let header = { headers: { Token: localStorage.getItem("token") } };
@@ -140,6 +165,15 @@ const mutations = {
     } else {
       state.productBySubCategoryList = [];
       state.productBySubCategoryTotalCount = 0;
+    }
+  },
+  SET_DATA_BY_SEARCH(state, payload) {
+    if (payload.data) {
+      state.productBySearchList = payload.data;
+      state.productBySearchTotalCount = payload.count;
+    } else {
+      state.productBySearchList = [];
+      state.productBySearchTotalCount = 0;
     }
   },
   SET_DATA_BY_ID(state, payload) {
