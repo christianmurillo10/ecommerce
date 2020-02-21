@@ -8,6 +8,7 @@ const state = {
   productBySubCategoryTotalCount: 0,
   productBySearchList: [],
   productBySearchTotalCount: 0,
+  productSearchKeyword: "",
   productDataById: null
 };
 
@@ -174,6 +175,13 @@ const mutations = {
     } else {
       state.productBySearchList = [];
       state.productBySearchTotalCount = 0;
+    }
+  },
+  SET_DATA_SEARCH_KEYWORD(state, payload) {
+    if (payload) {
+      state.productSearchKeyword = payload;
+    } else {
+      state.productSearchKeyword = null;
     }
   },
   SET_DATA_BY_ID(state, payload) {

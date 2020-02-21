@@ -87,7 +87,7 @@
 </template>
 
 <script>
-import { mapState, mapGetters, mapActions } from "vuex";
+import { mapState, mapActions, mapMutations } from "vuex";
 
 export default {
   data: () => ({
@@ -95,16 +95,25 @@ export default {
   }),
   computed: {
     ...mapState("appbar", ["primaryDrawer"]),
+    ...mapState("products", ["productSearchKeyword"]),
     avatar() {
       return "/img/logo.png";
     }
   },
   methods: {
     ...mapActions("appbar", ["setPrimaryDrawerModel"]),
+    ...mapMutations("products", {
+      setProductSearchKeyword: "SET_DATA_SEARCH_KEYWORD"
+    }),
+    ...mapMutations("products", ["SET_DATA_SEARCH_KEYWORD"]),
 
     search() {
       if (this.$refs.form.validate()) {
-        if (!_.isEmpty(this.keywords)) {
+        if (
+          !_.isEmpty(this.keywords) &&
+          this.productSearchKeyword !== this.keywords
+        ) {
+          this.setProductSearchKeyword(this.keywords);
           this.$router.push(`/search/${this.keywords}/page/1`);
         }
       }
