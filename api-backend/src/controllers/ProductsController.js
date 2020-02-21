@@ -200,14 +200,14 @@ module.exports = {
 
   /**
    * Search
-   * @route POST /product/search/:value
+   * @route GET /product/search/:value/:limit/:offset
    * @param req
    * @param res
    * @returns {never}
    */
   search: async (req, res) => {
     const params = req.params;
-    let query, data;
+    let criteria, data;
 
     if (_.isUndefined(params))
       return res.badRequest({ err: "Invalid Parameter: [params]" });
@@ -216,13 +216,23 @@ module.exports = {
 
     try {
       // Pre-setting variables
-      query = `SELECT id, name, description, price, created_at, updated_at FROM products WHERE CONCAT(name, description, price) LIKE ? AND is_deleted = 0;`;
-      // Execute native query
-      data = await Model.sequelize.query(query, {
-        replacements: [`%${params.value}%`],
-        type: Model.sequelize.QueryTypes.SELECT
-      });
-      if (!_.isEmpty(data)) {
+      let limit = parseInt(params.limit);
+      let offset = parseInt(params.offset);
+      criteria = {
+        attributes: ['id', 'name', 'description', 'price', 'product_category_id', 'product_sub_category_id'],
+        where: { name: { $like: `%${params.value}%` }, is_deleted: 0 },
+        limit,
+        offset,
+        include: [
+          { model: Model.ProductCategories, as: "productCategories", attributes: ['name', 'description'] },
+          { model: Model.ProductSubCategories, as: "productSubCategories", attributes: ['name', 'description'] },
+          { model: Model.ProductImages, as: "productImages", attributes: ['file_name', 'color', 'order', 'product_id'], required: false }
+        ]
+      };
+      // Execute findAll query
+      data = await Model.Products.findAll(criteria);
+
+      if (!_.isEmpty(data[0])) {
         res.json({
           status: 200,
           message: "Successfully searched data.",
@@ -261,7 +271,7 @@ module.exports = {
         include: [
           { model: Model.ProductCategories, as: "productCategories", attributes: ['name', 'description'] },
           { model: Model.ProductSubCategories, as: "productSubCategories", attributes: ['name', 'description'] },
-          { model: Model.Users, as: "users", attributes: ['email', 'username'] }
+          { model: Model.ProductImages, as: "productImages", attributes: ['file_name', 'color', 'order', 'product_id'], required: false }
         ]
       };
       // Execute findAll query
