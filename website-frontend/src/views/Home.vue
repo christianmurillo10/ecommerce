@@ -80,15 +80,21 @@
                     <v-layout row wrap>
                       <v-slide-group class="px-4" show-arrows>
                         <template v-for="(productHome, i) in productHomeList">
-                          <v-flex xs12 sm12 md2 lg2 :key="i">
+                          <v-flex xs12 sm12 md3 lg3 :key="i">
                             <v-slide-item>
                               <v-hover>
-                                <v-card
+                                <!-- <v-card
                                   slot-scope="{ hover }"
                                   :class="`elevation-${hover ? 12 : 2}`"
                                   class="ma-2"
                                   height="350"
                                   width="210"
+                                  :to="`/product/${productHome.id}`"
+                                > -->
+                                <v-card
+                                  slot-scope="{ hover }"
+                                  :class="`elevation-${hover ? 12 : 2}`"
+                                  class="ma-2"
                                   :to="`/product/${productHome.id}`"
                                 >
                                   <v-container>
@@ -175,15 +181,21 @@
                     <v-layout row wrap>
                       <v-slide-group class="px-4" show-arrows>
                         <template v-for="(productHome, i) in productHomeList">
-                          <v-flex xs12 sm12 md2 lg2 :key="i">
+                          <v-flex xs12 sm12 md3 lg3 :key="i">
                             <v-slide-item>
                               <v-hover>
-                                <v-card
+                                <!-- <v-card
                                   slot-scope="{ hover }"
                                   :class="`elevation-${hover ? 12 : 2}`"
                                   class="ma-2"
                                   height="350"
                                   width="210"
+                                  :to="`/product/${productHome.id}`"
+                                > -->
+                                <v-card
+                                  slot-scope="{ hover }"
+                                  :class="`elevation-${hover ? 12 : 2}`"
+                                  class="ma-2"
                                   :to="`/product/${productHome.id}`"
                                 >
                                   <v-container>

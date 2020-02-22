@@ -68,10 +68,10 @@
                         </v-list-item>
                         <v-list-item>
                           <v-list-item-content>
-                            <v-flex xs6 sm6 md2 lg2>
+                            <v-flex xs6 sm6 md4 lg4>
                               <v-list-item-title>Price:</v-list-item-title>
                             </v-flex>
-                            <v-flex xs6 sm6 md3 lg3>
+                            <v-flex xs6 sm6 md8 lg8>
                               <v-list-item-title
                                 class="title"
                               >{{ `&#8369 ${productDataById.price}` }}</v-list-item-title>
@@ -81,10 +81,10 @@
                         </v-list-item>
                         <v-list-item>
                           <v-list-item-content>
-                            <v-flex xs6 sm6 md2 lg2>
+                            <v-flex xs6 sm6 md4 lg4>
                               <v-list-item-title>Stock:</v-list-item-title>
                             </v-flex>
-                            <v-flex xs6 sm6 md3 lg3>
+                            <v-flex xs6 sm6 md8 lg8>
                               <v-list-item-title
                                 class="title"
                               >{{ productDataById.inventories.stock_available }}</v-list-item-title>
@@ -94,10 +94,10 @@
                         </v-list-item>
                         <v-list-item>
                           <v-list-item-content>
-                            <v-flex xs6 sm6 md2 lg2>
+                            <v-flex xs6 sm6 md4 lg4>
                               <v-list-item-title class="mb-7">Quantity:</v-list-item-title>
                             </v-flex>
-                            <v-flex xs6 sm6 md3 lg3>
+                            <v-flex xs6 sm6 md4 lg4>
                               <v-text-field placeholder type="number" outlined dense></v-text-field>
                             </v-flex>
                             <v-divider></v-divider>
@@ -105,7 +105,7 @@
                         </v-list-item>
                         <v-list-item>
                           <v-list-item-content>
-                            <v-flex xs6 sm6 md2 lg2>
+                            <v-flex xs6 sm6 md4 lg4>
                               <v-list-item-title class="mb-7">Color:</v-list-item-title>
                             </v-flex>
                             <v-flex xs6 sm6 md8 lg8>
@@ -120,10 +120,10 @@
                         </v-list-item>
                         <v-list-item>
                           <v-list-item-content>
-                            <v-flex xs6 sm6 md2 lg2>
+                            <v-flex xs6 sm6 md4 lg4>
                               <v-list-item-title>Total Price:</v-list-item-title>
                             </v-flex>
-                            <v-flex xs6 sm6 md3 lg3>
+                            <v-flex xs6 sm6 md8 lg8>
                               <v-list-item-title class="title">{{ `&#8369 0` }}</v-list-item-title>
                             </v-flex>
                             <v-divider></v-divider>
@@ -131,13 +131,15 @@
                         </v-list-item>
                         <v-list-item>
                           <v-list-item-content>
-                            <v-flex xs6 sm6 md2 lg2>
-                              <v-btn color="blue-grey" outlined class="ma-2 white--text">BUY NOW</v-btn>
-                            </v-flex>
-                            <v-flex xs6 sm6 md2 lg2>
-                              <v-btn color="blue-grey" class="ma-2 white--text">
-                                <v-icon left dark>mdi-cart</v-icon>ADD TO CART
-                              </v-btn>
+                            <v-flex xs12 sm12 md12 lg12>
+                              <v-container>
+                                <v-layout row wrap>
+                                  <v-btn color="blue-grey" outlined class="ma-2 white--text">BUY NOW</v-btn>
+                                  <v-btn color="blue-grey" class="ma-2 white--text">
+                                    <v-icon left dark>mdi-cart</v-icon>ADD TO CART
+                                  </v-btn>
+                                </v-layout>
+                              </v-container>
                             </v-flex>
                             <v-divider></v-divider>
                           </v-list-item-content>
