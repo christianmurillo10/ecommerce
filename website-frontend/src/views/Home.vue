@@ -80,57 +80,49 @@
                     <v-layout row wrap>
                       <v-slide-group class="px-4" show-arrows>
                         <template v-for="(productHome, i) in productHomeList">
-                          <v-flex xs12 sm12 md3 lg3 :key="i">
-                            <v-slide-item>
-                              <v-hover>
-                                <!-- <v-card
-                                  slot-scope="{ hover }"
-                                  :class="`elevation-${hover ? 12 : 2}`"
-                                  class="ma-2"
-                                  height="350"
-                                  width="210"
-                                  :to="`/product/${productHome.id}`"
-                                > -->
-                                <v-card
-                                  slot-scope="{ hover }"
-                                  :class="`elevation-${hover ? 12 : 2}`"
-                                  class="ma-2"
-                                  :to="`/product/${productHome.id}`"
-                                >
-                                  <v-container>
-                                    <v-img :src="productHome.file_path" height="200px" />
-                                  </v-container>
+                          <v-slide-item :key="i">
+                            <v-hover>
+                              <v-card
+                                slot-scope="{ hover }"
+                                :class="`elevation-${hover ? 12 : 2}`"
+                                class="ma-2"
+                                height="350"
+                                width="210"
+                                :to="`/product/${productHome.id}`"
+                              >
+                                <v-container>
+                                  <v-img :src="productHome.file_path" height="200px" />
+                                </v-container>
 
-                                  <v-card-text>
-                                    <v-tooltip bottom>
-                                      <template v-slot:activator="{ on }">
-                                        <div
-                                          v-on="on"
-                                          class="subtitle-1 black--text"
-                                        >{{ truncateText(productHome.name, 20) }}</div>
-                                      </template>
-                                      <span>{{ productHome.name }}</span>
-                                    </v-tooltip>
-                                    <div
-                                      class="subtitle-1 font-weight-bold black--text"
-                                    >{{ `&#8369 ${productHome.price}` }}</div>
-                                    <v-row align="center" class="mx-0">
-                                      <v-rating
-                                        :value="4.5"
-                                        color="amber"
-                                        dense
-                                        half-increments
-                                        readonly
-                                        size="14"
-                                      ></v-rating>
+                                <v-card-text>
+                                  <v-tooltip bottom>
+                                    <template v-slot:activator="{ on }">
+                                      <div
+                                        v-on="on"
+                                        class="subtitle-1 black--text"
+                                      >{{ truncateText(productHome.name, 20) }}</div>
+                                    </template>
+                                    <span>{{ productHome.name }}</span>
+                                  </v-tooltip>
+                                  <div
+                                    class="subtitle-1 font-weight-bold black--text"
+                                  >{{ `&#8369 ${productHome.price}` }}</div>
+                                  <v-row align="center" class="mx-0">
+                                    <v-rating
+                                      :value="4.5"
+                                      color="amber"
+                                      dense
+                                      half-increments
+                                      readonly
+                                      size="14"
+                                    ></v-rating>
 
-                                      <div class="grey--text ml-4">4.5 (413)</div>
-                                    </v-row>
-                                  </v-card-text>
-                                </v-card>
-                              </v-hover>
-                            </v-slide-item>
-                          </v-flex>
+                                    <div class="grey--text ml-4">4.5 (413)</div>
+                                  </v-row>
+                                </v-card-text>
+                              </v-card>
+                            </v-hover>
+                          </v-slide-item>
                         </template>
                       </v-slide-group>
 
@@ -181,57 +173,49 @@
                     <v-layout row wrap>
                       <v-slide-group class="px-4" show-arrows>
                         <template v-for="(productHome, i) in productHomeList">
-                          <v-flex xs12 sm12 md3 lg3 :key="i">
-                            <v-slide-item>
-                              <v-hover>
-                                <!-- <v-card
-                                  slot-scope="{ hover }"
-                                  :class="`elevation-${hover ? 12 : 2}`"
-                                  class="ma-2"
-                                  height="350"
-                                  width="210"
-                                  :to="`/product/${productHome.id}`"
-                                > -->
-                                <v-card
-                                  slot-scope="{ hover }"
-                                  :class="`elevation-${hover ? 12 : 2}`"
-                                  class="ma-2"
-                                  :to="`/product/${productHome.id}`"
-                                >
-                                  <v-container>
-                                    <v-img :src="productHome.file_path" height="200px" />
-                                  </v-container>
+                          <v-slide-item :key="i">
+                            <v-hover>
+                              <v-card
+                                slot-scope="{ hover }"
+                                :class="`elevation-${hover ? 12 : 2}`"
+                                class="ma-2"
+                                height="350"
+                                width="210"
+                                :to="`/product/${productHome.id}`"
+                              >
+                                <v-container>
+                                  <v-img :src="productHome.file_path" height="200px" />
+                                </v-container>
 
-                                  <v-card-text>
-                                    <v-tooltip bottom>
-                                      <template v-slot:activator="{ on }">
-                                        <div
-                                          v-on="on"
-                                          class="subtitle-1 black--text"
-                                        >{{ truncateText(productHome.name, 20) }}</div>
-                                      </template>
-                                      <span>{{ productHome.name }}</span>
-                                    </v-tooltip>
-                                    <div
-                                      class="subtitle-1 font-weight-bold black--text"
-                                    >{{ `&#8369 ${productHome.price}` }}</div>
-                                    <v-row align="center" class="mx-0">
-                                      <v-rating
-                                        :value="4.5"
-                                        color="amber"
-                                        dense
-                                        half-increments
-                                        readonly
-                                        size="14"
-                                      ></v-rating>
+                                <v-card-text>
+                                  <v-tooltip bottom>
+                                    <template v-slot:activator="{ on }">
+                                      <div
+                                        v-on="on"
+                                        class="subtitle-1 black--text"
+                                      >{{ truncateText(productHome.name, 20) }}</div>
+                                    </template>
+                                    <span>{{ productHome.name }}</span>
+                                  </v-tooltip>
+                                  <div
+                                    class="subtitle-1 font-weight-bold black--text"
+                                  >{{ `&#8369 ${productHome.price}` }}</div>
+                                  <v-row align="center" class="mx-0">
+                                    <v-rating
+                                      :value="4.5"
+                                      color="amber"
+                                      dense
+                                      half-increments
+                                      readonly
+                                      size="14"
+                                    ></v-rating>
 
-                                      <div class="grey--text ml-4">4.5 (413)</div>
-                                    </v-row>
-                                  </v-card-text>
-                                </v-card>
-                              </v-hover>
-                            </v-slide-item>
-                          </v-flex>
+                                    <div class="grey--text ml-4">4.5 (413)</div>
+                                  </v-row>
+                                </v-card-text>
+                              </v-card>
+                            </v-hover>
+                          </v-slide-item>
                         </template>
                       </v-slide-group>
                     </v-layout>
