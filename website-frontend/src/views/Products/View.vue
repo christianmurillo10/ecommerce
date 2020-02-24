@@ -19,26 +19,26 @@
                         </v-container>
                       </v-flex>
                       <v-flex xs12 sm12 md12 lg12>
-                          <v-layout row wrap>
-                            <v-slide-group class="px-4" show-arrows>
-                              <v-slide-item
-                                v-for="(productImage, i) in productImagesDetails"
-                                :key="i"
-                              >
-                                <v-container>
-                                  <v-hover>
-                                    <v-img
-                                      slot-scope="{ hover }"
-                                      :class="`elevation-${hover ? 12 : 2}`"
-                                      :src="productImage.file_path"
-                                      height="40px"
-                                      width="60px"
-                                    />
-                                  </v-hover>
-                                </v-container>
-                              </v-slide-item>
-                            </v-slide-group>
-                          </v-layout>
+                        <v-layout row wrap>
+                          <v-slide-group class="px-4" show-arrows>
+                            <v-slide-item
+                              v-for="(productImage, i) in productImagesDetails"
+                              :key="i"
+                            >
+                              <v-container>
+                                <v-hover>
+                                  <v-img
+                                    slot-scope="{ hover }"
+                                    :class="`elevation-${hover ? 12 : 2}`"
+                                    :src="productImage.file_path"
+                                    height="40px"
+                                    width="60px"
+                                  />
+                                </v-hover>
+                              </v-container>
+                            </v-slide-item>
+                          </v-slide-group>
+                        </v-layout>
                       </v-flex>
                     </v-layout>
                   </v-container>
@@ -98,7 +98,13 @@
                               <v-list-item-title class="mb-7">Quantity:</v-list-item-title>
                             </v-flex>
                             <v-flex xs6 sm6 md4 lg4>
-                              <v-text-field placeholder type="number" outlined dense></v-text-field>
+                              <v-text-field
+                                v-model="formData.quantity"
+                                placeholder
+                                type="number"
+                                outlined
+                                dense
+                              ></v-text-field>
                             </v-flex>
                             <v-divider></v-divider>
                           </v-list-item-content>
@@ -109,10 +115,27 @@
                               <v-list-item-title class="mb-7">Color:</v-list-item-title>
                             </v-flex>
                             <v-flex xs6 sm6 md8 lg8>
-                              <v-chip-group column class="mb-7">
+                              <!-- <v-chip-group column class="mb-7">
                                 <template v-for="(productImage, i) in productImagesDetails">
-                                  <v-chip filter outlined :key="i">{{ productImage.color }}</v-chip>
+                                  <v-chip
+                                    v-model="formData.color"
+                                    filter
+                                    outlined
+                                    :key="i"
+                                  >{{ productImage.color }}</v-chip>
                                 </template>
+                              </v-chip-group>-->
+                              <v-chip-group
+                                v-model="formData.color"
+                                item-value="color"
+                                active-class="deep-purple--text text--accent-4"
+                                mandatory
+                              >
+                                <v-chip
+                                  v-for="(productImage, i) in productImagesDetails"
+                                  :key="i"
+                                  :value="productImage.color"
+                                >{{ productImage.color }}</v-chip>
                               </v-chip-group>
                             </v-flex>
                             <v-divider></v-divider>
@@ -124,7 +147,7 @@
                               <v-list-item-title>Total Price:</v-list-item-title>
                             </v-flex>
                             <v-flex xs6 sm6 md8 lg8>
-                              <v-list-item-title class="title">{{ `&#8369 0` }}</v-list-item-title>
+                              <v-list-item-title class="title">{{ `&#8369 ${totalPrice}` }}</v-list-item-title>
                             </v-flex>
                             <v-divider></v-divider>
                           </v-list-item-content>
@@ -135,7 +158,11 @@
                               <v-container>
                                 <v-layout row wrap>
                                   <v-btn color="blue-grey" outlined class="ma-2 white--text">BUY NOW</v-btn>
-                                  <v-btn color="blue-grey" class="ma-2 white--text">
+                                  <v-btn
+                                    color="blue-grey"
+                                    class="ma-2 white--text"
+                                    @click="addToCart()"
+                                  >
                                     <v-icon left dark>mdi-cart</v-icon>ADD TO CART
                                   </v-btn>
                                 </v-layout>
@@ -158,10 +185,20 @@
 </template>
 
 <script>
-import { mapState, mapActions } from "vuex";
+import { mapState, mapActions, mapMutations } from "vuex";
 
 export default {
   data: () => ({
+    defaultFormData: {
+      quantity: 1,
+      color: null,
+      total_price: 0.0
+    },
+    formData: {
+      quantity: 1,
+      color: null,
+      total_price: 0.0
+    },
     productImage: null,
     productImagesDetails: null
   }),
@@ -171,7 +208,11 @@ export default {
   },
 
   computed: {
-    ...mapState("products", ["productDataById"])
+    ...mapState("products", ["productDataById"]),
+    totalPrice() {
+      this.formData.total_price = this.productDataById.price * this.formData.quantity
+      return this.formData.total_price;
+    }
   },
 
   watch: {
@@ -184,7 +225,14 @@ export default {
   methods: {
     ...mapActions("products", {
       getProductDataById: "getDataById"
-    })
+    }),
+    ...mapMutations("customerCarts", {
+      addToCustomerCart: "ADD_TO_CART"
+    }),
+
+    addToCart() {
+      console.log("PASOK", this.formData);
+    }
   }
 };
 </script>
