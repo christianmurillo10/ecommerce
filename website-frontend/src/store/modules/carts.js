@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const state = {
-  customerCartList: []
+  cartList: []
 };
 
 const getters = {
@@ -21,7 +21,7 @@ const actions = {
 
 const mutations = {
   ADD_TO_CART(state, payload) {
-    state.customerCartList.push(payload);
+    state.cartList.push(payload);
   }
 };
 

@@ -45,134 +45,133 @@
                 </v-flex>
                 <v-flex xs12 sm12 md7 lg7>
                   <v-flex xs12 sm12 md12 lg12>
-                    <v-container>
-                      <v-layout row wrap>
-                        <v-list-item two-line>
-                          <v-list-item-content>
-                            <v-list-item-title class="headline">{{ productDataById.name }}</v-list-item-title>
-                            <v-list-item-subtitle>
-                              <v-row align="center" class="mx-0">
-                                <v-rating
-                                  :value="0"
-                                  color="amber"
+                    <v-form ref="form" @submit.prevent="addToCart" v-model="valid" lazy-validation>
+                      <v-container>
+                        <v-layout row wrap>
+                          <v-list-item two-line>
+                            <v-list-item-content>
+                              <v-list-item-title class="headline">{{ productDataById.name }}</v-list-item-title>
+                              <v-list-item-subtitle>
+                                <v-row align="center" class="mx-0">
+                                  <v-rating
+                                    :value="0"
+                                    color="amber"
+                                    dense
+                                    half-increments
+                                    readonly
+                                    size="14"
+                                  ></v-rating>
+                                  <div class="grey--text ml-2">(0 customer reviews)</div>
+                                </v-row>
+                              </v-list-item-subtitle>
+                              <v-divider></v-divider>
+                            </v-list-item-content>
+                          </v-list-item>
+                          <v-list-item>
+                            <v-list-item-content>
+                              <v-flex xs6 sm6 md4 lg4>
+                                <v-list-item-title>Price:</v-list-item-title>
+                              </v-flex>
+                              <v-flex xs6 sm6 md8 lg8>
+                                <v-list-item-title
+                                  class="title"
+                                >{{ `&#8369 ${productDataById.price}` }}</v-list-item-title>
+                              </v-flex>
+                              <v-divider></v-divider>
+                            </v-list-item-content>
+                          </v-list-item>
+                          <v-list-item>
+                            <v-list-item-content>
+                              <v-flex xs6 sm6 md4 lg4>
+                                <v-list-item-title>Stock:</v-list-item-title>
+                              </v-flex>
+                              <v-flex xs6 sm6 md8 lg8>
+                                <v-list-item-title
+                                  class="title"
+                                >{{ productDataById.inventories.stock_available }}</v-list-item-title>
+                              </v-flex>
+                              <v-divider></v-divider>
+                            </v-list-item-content>
+                          </v-list-item>
+                          <v-list-item>
+                            <v-list-item-content>
+                              <v-flex xs6 sm6 md4 lg4>
+                                <v-list-item-title class="mb-7">Quantity:</v-list-item-title>
+                              </v-flex>
+                              <v-flex xs6 sm6 md4 lg4>
+                                <v-text-field
+                                  v-model="formData.quantity"
+                                  placeholder
+                                  type="number"
+                                  outlined
                                   dense
-                                  half-increments
-                                  readonly
-                                  size="14"
-                                ></v-rating>
-                                <div class="grey--text ml-2">(0 customer reviews)</div>
-                              </v-row>
-                            </v-list-item-subtitle>
-                            <v-divider></v-divider>
-                          </v-list-item-content>
-                        </v-list-item>
-                        <v-list-item>
-                          <v-list-item-content>
-                            <v-flex xs6 sm6 md4 lg4>
-                              <v-list-item-title>Price:</v-list-item-title>
-                            </v-flex>
-                            <v-flex xs6 sm6 md8 lg8>
-                              <v-list-item-title
-                                class="title"
-                              >{{ `&#8369 ${productDataById.price}` }}</v-list-item-title>
-                            </v-flex>
-                            <v-divider></v-divider>
-                          </v-list-item-content>
-                        </v-list-item>
-                        <v-list-item>
-                          <v-list-item-content>
-                            <v-flex xs6 sm6 md4 lg4>
-                              <v-list-item-title>Stock:</v-list-item-title>
-                            </v-flex>
-                            <v-flex xs6 sm6 md8 lg8>
-                              <v-list-item-title
-                                class="title"
-                              >{{ productDataById.inventories.stock_available }}</v-list-item-title>
-                            </v-flex>
-                            <v-divider></v-divider>
-                          </v-list-item-content>
-                        </v-list-item>
-                        <v-list-item>
-                          <v-list-item-content>
-                            <v-flex xs6 sm6 md4 lg4>
-                              <v-list-item-title class="mb-7">Quantity:</v-list-item-title>
-                            </v-flex>
-                            <v-flex xs6 sm6 md4 lg4>
-                              <v-text-field
-                                v-model="formData.quantity"
-                                placeholder
-                                type="number"
-                                outlined
-                                dense
-                              ></v-text-field>
-                            </v-flex>
-                            <v-divider></v-divider>
-                          </v-list-item-content>
-                        </v-list-item>
-                        <v-list-item>
-                          <v-list-item-content>
-                            <v-flex xs6 sm6 md4 lg4>
-                              <v-list-item-title class="mb-7">Color:</v-list-item-title>
-                            </v-flex>
-                            <v-flex xs6 sm6 md8 lg8>
-                              <!-- <v-chip-group column class="mb-7">
-                                <template v-for="(productImage, i) in productImagesDetails">
+                                  :rules="validateItem.quantityRules"
+                                  :min="1"
+                                  :max="productDataById.inventories.stock_available"
+                                  required
+                                ></v-text-field>
+                              </v-flex>
+                              <v-divider></v-divider>
+                            </v-list-item-content>
+                          </v-list-item>
+                          <v-list-item>
+                            <v-list-item-content>
+                              <v-flex xs6 sm6 md4 lg4>
+                                <v-list-item-title class="mb-7">Color:</v-list-item-title>
+                              </v-flex>
+                              <v-flex xs6 sm6 md8 lg8>
+                                <v-chip-group v-model="formData.color" item-value="color" mandatory>
                                   <v-chip
-                                    v-model="formData.color"
+                                    v-for="(productImage, i) in productImagesDetails"
+                                    :key="i"
+                                    :value="productImage.color"
                                     filter
                                     outlined
-                                    :key="i"
                                   >{{ productImage.color }}</v-chip>
-                                </template>
-                              </v-chip-group>-->
-                              <v-chip-group
-                                v-model="formData.color"
-                                item-value="color"
-                                active-class="deep-purple--text text--accent-4"
-                                mandatory
-                              >
-                                <v-chip
-                                  v-for="(productImage, i) in productImagesDetails"
-                                  :key="i"
-                                  :value="productImage.color"
-                                >{{ productImage.color }}</v-chip>
-                              </v-chip-group>
-                            </v-flex>
-                            <v-divider></v-divider>
-                          </v-list-item-content>
-                        </v-list-item>
-                        <v-list-item>
-                          <v-list-item-content>
-                            <v-flex xs6 sm6 md4 lg4>
-                              <v-list-item-title>Total Price:</v-list-item-title>
-                            </v-flex>
-                            <v-flex xs6 sm6 md8 lg8>
-                              <v-list-item-title class="title">{{ `&#8369 ${totalPrice}` }}</v-list-item-title>
-                            </v-flex>
-                            <v-divider></v-divider>
-                          </v-list-item-content>
-                        </v-list-item>
-                        <v-list-item>
-                          <v-list-item-content>
-                            <v-flex xs12 sm12 md12 lg12>
-                              <v-container>
-                                <v-layout row wrap>
-                                  <v-btn color="blue-grey" outlined class="ma-2 white--text">BUY NOW</v-btn>
-                                  <v-btn
-                                    color="blue-grey"
-                                    class="ma-2 white--text"
-                                    @click="addToCart()"
-                                  >
-                                    <v-icon left dark>mdi-cart</v-icon>ADD TO CART
-                                  </v-btn>
-                                </v-layout>
-                              </v-container>
-                            </v-flex>
-                            <v-divider></v-divider>
-                          </v-list-item-content>
-                        </v-list-item>
-                      </v-layout>
-                    </v-container>
+                                </v-chip-group>
+                              </v-flex>
+                              <v-divider></v-divider>
+                            </v-list-item-content>
+                          </v-list-item>
+                          <v-list-item>
+                            <v-list-item-content>
+                              <v-flex xs6 sm6 md4 lg4>
+                                <v-list-item-title>Total Price:</v-list-item-title>
+                              </v-flex>
+                              <v-flex xs6 sm6 md8 lg8>
+                                <v-list-item-title class="title">{{ `&#8369 ${totalPrice}` }}</v-list-item-title>
+                              </v-flex>
+                              <v-divider></v-divider>
+                            </v-list-item-content>
+                          </v-list-item>
+                          <v-list-item>
+                            <v-list-item-content>
+                              <v-flex xs12 sm12 md12 lg12>
+                                <v-container>
+                                  <v-layout row wrap>
+                                    <v-btn
+                                      color="blue-grey"
+                                      outlined
+                                      class="ma-2 white--text"
+                                      :disabled="!valid"
+                                    >BUY NOW</v-btn>
+                                    <v-btn
+                                      color="blue-grey"
+                                      class="ma-2 white--text"
+                                      type="submit"
+                                      :disabled="!valid"
+                                    >
+                                      <v-icon left dark>mdi-cart</v-icon>ADD TO CART
+                                    </v-btn>
+                                  </v-layout>
+                                </v-container>
+                              </v-flex>
+                              <v-divider></v-divider>
+                            </v-list-item-content>
+                          </v-list-item>
+                        </v-layout>
+                      </v-container>
+                    </v-form>
                   </v-flex>
                 </v-flex>
               </v-layout>
@@ -199,6 +198,13 @@ export default {
       color: null,
       total_price: 0.0
     },
+    valid: true,
+    validateItem: {
+      quantityRules: [
+        v => !!v || "Quantity is required",
+        v => v <= 10 || "Quantity must be less than or equal 10"
+      ]
+    },
     productImage: null,
     productImagesDetails: null
   }),
@@ -210,8 +216,9 @@ export default {
   computed: {
     ...mapState("products", ["productDataById"]),
     totalPrice() {
-      this.formData.total_price = this.productDataById.price * this.formData.quantity
-      return this.formData.total_price;
+      this.formData.total_price =
+        this.productDataById.price * this.formData.quantity;
+      return this.formData.total_price.toFixed(2);
     }
   },
 
@@ -226,8 +233,8 @@ export default {
     ...mapActions("products", {
       getProductDataById: "getDataById"
     }),
-    ...mapMutations("customerCarts", {
-      addToCustomerCart: "ADD_TO_CART"
+    ...mapMutations("carts", {
+      addToCart: "ADD_TO_CART"
     }),
 
     addToCart() {
