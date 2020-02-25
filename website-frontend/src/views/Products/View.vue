@@ -163,6 +163,79 @@
                                     >
                                       <v-icon left dark>mdi-cart</v-icon>ADD TO CART
                                     </v-btn>
+
+                                    <!-- Dialog for Add to Cart -->
+                                    <v-dialog v-model="dialogAddToCart" max-width="800">
+                                      <v-card>
+                                        <v-card-title
+                                          class="headline success--text justify-center"
+                                        >Item added to your cart!</v-card-title>
+                                        <v-divider></v-divider>
+                                        <v-card-text>
+                                          <v-container>
+                                            <v-layout row wrap>
+                                              <v-flex xs12 sm12 md4 lg4>
+                                                <v-img :src="productImage" height="150px" />
+                                              </v-flex>
+                                              <v-flex xs12 sm12 md8 lg8>
+                                                <v-list-item>
+                                                  <v-list-item-content>
+                                                    <v-flex xs12 sm12 md12 lg12>
+                                                      <v-list-item-title
+                                                        class="title"
+                                                      >{{ this.productDataById.name }}</v-list-item-title>
+                                                    </v-flex>
+                                                    <v-flex xs12 sm12 md4 lg4>
+                                                      <v-list-item-title>Color:</v-list-item-title>
+                                                    </v-flex>
+                                                    <v-flex xs12 sm12 md6 lg6>
+                                                      <v-list-item-title>{{ formData.color }}</v-list-item-title>
+                                                    </v-flex>
+                                                    <v-flex xs12 sm12 md4 lg4>
+                                                      <v-list-item-title>Price:</v-list-item-title>
+                                                    </v-flex>
+                                                    <v-flex xs12 sm12 md6 lg6>
+                                                      <v-list-item-title>{{ productDataById.price }}</v-list-item-title>
+                                                    </v-flex>
+                                                    <v-flex xs12 sm12 md4 lg4>
+                                                      <v-list-item-title>Quantity:</v-list-item-title>
+                                                    </v-flex>
+                                                    <v-flex xs12 sm12 md6 lg6>
+                                                      <v-list-item-title>{{ formData.quantity }}</v-list-item-title>
+                                                    </v-flex>
+                                                    <v-flex xs12 sm12 md4 lg4>
+                                                      <v-list-item-title>Total Price:</v-list-item-title>
+                                                    </v-flex>
+                                                    <v-flex xs12 sm12 md6 lg6>
+                                                      <v-list-item-title>{{ formData.total_price }}</v-list-item-title>
+                                                    </v-flex>
+                                                  </v-list-item-content>
+                                                </v-list-item>
+                                              </v-flex>
+                                            </v-layout>
+                                          </v-container>
+                                        </v-card-text>
+                                        <v-divider></v-divider>
+                                        <v-card-actions class="justify-center">
+                                          <v-btn
+                                            color="blue-grey"
+                                            outlined
+                                            class="ma-2 white--text"
+                                            @click="dialogAddToCart = false"
+                                          >
+                                            <v-icon left dark>mdi-cart</v-icon>VIEW CART
+                                          </v-btn>
+                                          <v-btn
+                                            color="blue-grey"
+                                            class="ma-2 white--text"
+                                            @click="dialogAddToCart = false"
+                                          >
+                                            <v-icon left dark>mdi-basket</v-icon>CHECKOUT NOW
+                                          </v-btn>
+                                        </v-card-actions>
+                                      </v-card>
+                                    </v-dialog>
+                                    <!-- End of dialog for Add to Cart -->
                                   </v-layout>
                                 </v-container>
                               </v-flex>
@@ -188,6 +261,7 @@ import { mapState, mapActions, mapMutations } from "vuex";
 
 export default {
   data: () => ({
+    dialogAddToCart: false,
     defaultFormData: {
       quantity: 1,
       color: null,
@@ -242,12 +316,14 @@ export default {
         let obj = {
           id: this.productDataById.id,
           name: this.productDataById.name,
+          color: this.formData.color,
           quantity: this.formData.quantity,
           price: this.productDataById.price,
           total_price: this.formData.total_price,
-          file_path: this.productImage,
-        }
-        this.addCartData(obj)
+          file_path: this.productImage
+        };
+        this.addCartData(obj);
+        this.dialogAddToCart = true;
       }
     }
   }
