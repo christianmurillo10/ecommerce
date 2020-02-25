@@ -45,7 +45,7 @@
                 </v-flex>
                 <v-flex xs12 sm12 md7 lg7>
                   <v-flex xs12 sm12 md12 lg12>
-                    <v-form ref="form" @submit.prevent="addToCart" v-model="valid" lazy-validation>
+                    <v-form ref="form" @submit.prevent="submit" v-model="valid" lazy-validation>
                       <v-container>
                         <v-layout row wrap>
                           <v-list-item two-line>
@@ -233,12 +233,22 @@ export default {
     ...mapActions("products", {
       getProductDataById: "getDataById"
     }),
-    ...mapMutations("carts", {
-      addToCart: "ADD_TO_CART"
+    ...mapMutations("customerCarts", {
+      addCartData: "ADD_DATA"
     }),
 
-    addToCart() {
-      console.log("PASOK", this.formData);
+    submit() {
+      if (this.$refs.form.validate()) {
+        let obj = {
+          id: this.productDataById.id,
+          name: this.productDataById.name,
+          quantity: this.formData.quantity,
+          price: this.productDataById.price,
+          total_price: this.formData.total_price,
+          file_path: this.productImage,
+        }
+        this.addCartData(obj)
+      }
     }
   }
 };

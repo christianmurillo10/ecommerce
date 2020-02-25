@@ -68,7 +68,7 @@
                   <span>Wishlist</span>
                 </v-tooltip>
                 <v-menu
-                  v-model="menu"
+                  v-model="cart"
                   :close-on-content-click="false"
                   :nudge-width="200"
                   offset-y
@@ -78,7 +78,10 @@
                     <v-tooltip right>
                       <template v-slot:activator="{ on }">
                         <v-btn icon v-on:click="click" v-on="on">
-                          <v-badge color="green" :content="cartList.length">
+                          <v-badge
+                            color="green"
+                            :content="customerCartList.length !== 0 ? customerCartList.length : '0'"
+                          >
                             <v-icon>mdi-cart</v-icon>
                           </v-badge>
                         </v-btn>
@@ -87,7 +90,7 @@
                     </v-tooltip>
                   </template>
 
-                  <v-card width="350" v-if="cartList.length !== 0">
+                  <v-card width="350" v-if="customerCartList.length !== 0">
                     <v-layout row wrap justify-center>
                       <v-card-title class="title">Cart Items</v-card-title>
                     </v-layout>
@@ -98,16 +101,16 @@
                       <v-simple-table fixed-header height="200px">
                         <template v-slot:default>
                           <tbody>
-                            <tr v-for="item in cartList" :key="item.name">
+                            <tr v-for="item in customerCartList" :key="item.index">
                               <td>
                                 <v-img :src="item.file_path" max-height="60px" max-width="60px"></v-img>
                               </td>
                               <td>
                                 <v-row class="font-weight-medium">{{ item.name }}</v-row>
-                                <v-row>{{ `${item.quantity} x &#8369${item.price}` }}</v-row>
+                                <v-row>{{ `x${item.quantity} &#8369${item.total_price}` }}</v-row>
                               </td>
                               <td class="justify-center">
-                                <v-icon small @click="deleteItem(props.item.id)">mdi-delete</v-icon>
+                                <v-icon small @click="deleteCartData(item.index)">mdi-delete</v-icon>
                               </td>
                             </tr>
                           </tbody>
@@ -138,7 +141,7 @@
                           color="blue-grey"
                           outlined
                           class="ma-2 white--text"
-                          @click="menu = false"
+                          @click="cart = false"
                         >
                           <v-icon left dark>mdi-cart</v-icon>VIEW CART
                         </v-btn>
@@ -146,7 +149,7 @@
                           small
                           color="blue-grey"
                           class="ma-2 white--text"
-                          @click="menu = false"
+                          @click="cart = false"
                         >
                           <v-icon left dark>mdi-basket</v-icon>CHECKOUT
                         </v-btn>
@@ -174,75 +177,11 @@ import { mapState, mapActions, mapMutations } from "vuex";
 export default {
   data: () => ({
     keywords: "",
-    fav: true,
-    menu: false,
-    message: false,
-    hints: true,
-    cartList: [
-      {
-        name: "Frozen Yogurt Frozen Yogurt Frozen Yogurt",
-        quantity: 159,
-        price: 200,
-        file_path: require("../../assets/images/no-image.png")
-      },
-      {
-        name: "Ice cream sandwich",
-        quantity: 237,
-        price: 20,
-        file_path: require("../../assets/images/no-image.png")
-      },
-      {
-        name: "Eclair",
-        quantity: 262,
-        price: 100,
-        file_path: require("../../assets/images/no-image.png")
-      },
-      {
-        name: "Cupcake",
-        quantity: 305,
-        price: 25,
-        file_path: require("../../assets/images/no-image.png")
-      },
-      {
-        name: "Gingerbread",
-        quantity: 356,
-        price: 98,
-        file_path: require("../../assets/images/no-image.png")
-      },
-      {
-        name: "Jelly bean",
-        quantity: 375,
-        price: 156,
-        file_path: require("../../assets/images/no-image.png")
-      },
-      {
-        name: "Lollipop",
-        quantity: 392,
-        price: 10,
-        file_path: require("../../assets/images/no-image.png")
-      },
-      {
-        name: "Honeycomb",
-        quantity: 408,
-        price: 36,
-        file_path: require("../../assets/images/no-image.png")
-      },
-      {
-        name: "Donut",
-        quantity: 452,
-        price: 88,
-        file_path: require("../../assets/images/no-image.png")
-      },
-      {
-        name: "KitKat",
-        quantity: 518,
-        price: 250,
-        file_path: require("../../assets/images/no-image.png")
-      }
-    ]
+    cart: false
   }),
   computed: {
     ...mapState("appbar", ["primaryDrawer"]),
+    ...mapState("customerCarts", ["customerCartList"]),
     ...mapState("products", ["productSearchKeyword"]),
     avatar() {
       return "/img/logo.png";
@@ -253,7 +192,9 @@ export default {
     ...mapMutations("products", {
       setProductSearchKeyword: "SET_DATA_SEARCH_KEYWORD"
     }),
-    ...mapMutations("products", ["SET_DATA_SEARCH_KEYWORD"]),
+    ...mapMutations("customerCarts", {
+      deleteCartData: "DELETE_DATA"
+    }),
 
     search() {
       if (this.$refs.form.validate()) {
