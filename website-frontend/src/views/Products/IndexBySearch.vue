@@ -106,7 +106,12 @@
                               :to="`/product/${productBySearch.id}`"
                             >
                               <v-container>
-                                <v-img :src="productBySearch.file_path" height="250px" />
+                                <v-img
+                                  :src="productBySearch.file_path"
+                                  height="250px"
+                                  max-height="250px"
+                                  contain
+                                />
                               </v-container>
 
                               <v-card-text>

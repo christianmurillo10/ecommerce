@@ -140,7 +140,12 @@
                               :to="`/product/${productBySubCategory.id}`"
                             >
                               <v-container>
-                                <v-img :src="productBySubCategory.file_path" height="250px" />
+                                <v-img
+                                  :src="productBySubCategory.file_path"
+                                  height="250px"
+                                  max-height="250px"
+                                  contain
+                                />
                               </v-container>
 
                               <v-card-text>

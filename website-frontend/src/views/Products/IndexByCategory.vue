@@ -103,7 +103,12 @@
                             :to="`/product/${productByCategory.id}`"
                           >
                             <v-container>
-                              <v-img :src="productByCategory.file_path" height="250px" />
+                              <v-img
+                                :src="productByCategory.file_path"
+                                height="250px"
+                                max-height="250px"
+                                contain
+                              />
                             </v-container>
 
                             <v-card-text>

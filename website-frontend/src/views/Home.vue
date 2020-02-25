@@ -59,6 +59,9 @@
                         v-for="(productBannerImage, i) in productBannerImageList"
                         :key="i"
                         :src="productBannerImage.file_path"
+                        max-height="400"
+                        contain
+                        class="grey darken-4"
                       ></v-carousel-item>
                     </v-carousel>
                   </v-card-text>
@@ -91,7 +94,12 @@
                                 :to="`/product/${productHome.id}`"
                               >
                                 <v-container>
-                                  <v-img :src="productHome.file_path" height="200px" />
+                                  <v-img
+                                    :src="productHome.file_path"
+                                    height="200px"
+                                    max-height="200px"
+                                    contain
+                                  />
                                 </v-container>
 
                                 <v-card-text>
@@ -184,7 +192,12 @@
                                 :to="`/product/${productHome.id}`"
                               >
                                 <v-container>
-                                  <v-img :src="productHome.file_path" height="200px" />
+                                  <v-img
+                                    :src="productHome.file_path"
+                                    height="200px"
+                                    max-height="200px"
+                                    contain
+                                  />
                                 </v-container>
 
                                 <v-card-text>
