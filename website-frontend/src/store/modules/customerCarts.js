@@ -23,6 +23,14 @@ const mutations = {
     payload.index = index;
     state.customerCartList.push(payload);
   },
+  UPDATE_DATA(state, payload) {
+    let index = state.customerCartList.map(customerCart => customerCart.index).indexOf(payload.index);
+    let total_price = parseFloat(state.customerCartList[index].price) * payload.quantity;
+    Object.assign(state.customerCartList[index], {
+      quantity: payload.quantity,
+      total_price: total_price.toFixed(2)
+    });
+  },
   DELETE_DATA(state, payload) {
     let index = state.customerCartList.map(customerCart => customerCart.index).indexOf(payload);
     state.customerCartList.splice(index, 1);

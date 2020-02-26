@@ -141,7 +141,7 @@
                           color="blue-grey"
                           outlined
                           class="ma-2 white--text"
-                          @click="cart = false"
+                          to="/cart"
                         >
                           <v-icon left dark>mdi-cart</v-icon>VIEW CART
                         </v-btn>

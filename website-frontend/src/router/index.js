@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 import Login from '../views/Login.vue'
+import CustomerCart from '../views/CustomerCarts/Index.vue'
 import ProductIndexByCategory from '../views/Products/IndexByCategory.vue'
 import ProductIndexBySubCategory from '../views/Products/IndexBySubCategory.vue'
 import ProductIndexBySearch from '../views/Products/IndexBySearch.vue'
@@ -19,6 +20,11 @@ const routes = [
     path: '/login',
     name: 'login',
     component: Login
+  },
+  {
+    path: '/cart',
+    name: 'customerCart',
+    component: CustomerCart
   },
   {
     path: '/category/:id/page/:page',

@@ -98,12 +98,18 @@
                               <v-flex xs6 sm6 md4 lg4>
                                 <v-list-item-title class="mb-7">Quantity:</v-list-item-title>
                               </v-flex>
-                              <v-flex xs6 sm6 md4 lg4>
+                              <v-flex xs6 sm6 md3 lg3>
                                 <v-text-field
                                   v-model="formData.quantity"
                                   placeholder
                                   type="number"
+                                  class="inputQuantity"
+                                  append-icon="mdi-plus"
+                                  @click:append="increment"
+                                  prepend-inner-icon="mdi-minus"
+                                  @click:prepend-inner="decrement"
                                   outlined
+                                  rounded
                                   dense
                                   :rules="validateItem.quantityRules"
                                   :min="1"
@@ -167,11 +173,13 @@
                                     <!-- Dialog for Add to Cart -->
                                     <v-dialog v-model="dialogAddToCart" max-width="800">
                                       <v-card>
-                                        <v-card-title class="my-n3">
+                                        <v-card-title class="mb-n3">
                                           <v-spacer></v-spacer>
                                           <v-icon @click="dialogAddToCart = false">mdi-close</v-icon>
                                         </v-card-title>
-                                        <v-card-title class="display-1 success--text justify-center">
+                                        <v-card-title
+                                          class="display-1 success--text justify-center"
+                                        >
                                           <p>Item added to your cart!</p>
                                         </v-card-title>
                                         <v-divider></v-divider>
@@ -233,7 +241,7 @@
                                             color="blue-grey"
                                             outlined
                                             class="ma-2 white--text"
-                                            @click="dialogAddToCart = false"
+                                            to="/cart"
                                           >
                                             <v-icon left dark>mdi-cart</v-icon>VIEW CART
                                           </v-btn>
@@ -323,10 +331,17 @@ export default {
       addCartData: "ADD_DATA"
     }),
 
+    decrement() {
+      if (this.formData.quantity > 1) this.formData.quantity--;
+    },
+    increment() {
+      if (this.formData.quantity < 10) this.formData.quantity++;
+    },
+
     submit() {
       if (this.$refs.form.validate()) {
         let obj = {
-          id: this.productDataById.id,
+          product_id: this.productDataById.id,
           name: this.productDataById.name,
           color: this.formData.color,
           quantity: this.formData.quantity,
@@ -341,3 +356,13 @@ export default {
   }
 };
 </script>
+<style>
+.inputQuantity input[type="number"] {
+  text-align: center;
+  -moz-appearance: textfield;
+}
+.inputQuantity input::-webkit-outer-spin-button,
+.inputQuantity input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+}
+</style>
