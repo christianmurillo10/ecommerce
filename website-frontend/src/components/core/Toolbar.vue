@@ -126,7 +126,7 @@
                           <p class="font-weight-medium">Subtotal</p>
                         </v-layout>
                         <v-layout justify-end>
-                          <p class="font-weight-medium">&#8369 50000</p>
+                          <p class="font-weight-medium">{{ `&#8369${getCustomerCartTotalPrice}` }}</p>
                         </v-layout>
                       </v-layout>
                     </v-card-subtitle>
@@ -172,7 +172,7 @@
 </template>
 
 <script>
-import { mapState, mapActions, mapMutations } from "vuex";
+import { mapState, mapGetters, mapActions, mapMutations } from "vuex";
 
 export default {
   data: () => ({
@@ -182,6 +182,7 @@ export default {
   computed: {
     ...mapState("appbar", ["primaryDrawer"]),
     ...mapState("customerCarts", ["customerCartList"]),
+    ...mapGetters("customerCarts", ["getCustomerCartTotalPrice"]),
     ...mapState("products", ["productSearchKeyword"]),
     avatar() {
       return "/img/logo.png";

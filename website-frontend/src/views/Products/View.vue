@@ -167,9 +167,13 @@
                                     <!-- Dialog for Add to Cart -->
                                     <v-dialog v-model="dialogAddToCart" max-width="800">
                                       <v-card>
-                                        <v-card-title
-                                          class="headline success--text justify-center"
-                                        >Item added to your cart!</v-card-title>
+                                        <v-card-title class="my-n3">
+                                          <v-spacer></v-spacer>
+                                          <v-icon @click="dialogAddToCart = false">mdi-close</v-icon>
+                                        </v-card-title>
+                                        <v-card-title class="display-1 success--text justify-center">
+                                          <p>Item added to your cart!</p>
+                                        </v-card-title>
                                         <v-divider></v-divider>
                                         <v-card-text>
                                           <v-container>
@@ -189,25 +193,33 @@
                                                       <v-list-item-title>Color:</v-list-item-title>
                                                     </v-flex>
                                                     <v-flex xs12 sm12 md6 lg6>
-                                                      <v-list-item-title>{{ formData.color }}</v-list-item-title>
+                                                      <v-list-item-title
+                                                        class="font-weight-bold"
+                                                      >{{ formData.color }}</v-list-item-title>
                                                     </v-flex>
                                                     <v-flex xs12 sm12 md4 lg4>
                                                       <v-list-item-title>Price:</v-list-item-title>
                                                     </v-flex>
                                                     <v-flex xs12 sm12 md6 lg6>
-                                                      <v-list-item-title>{{ productDataById.price }}</v-list-item-title>
+                                                      <v-list-item-title
+                                                        class="font-weight-bold"
+                                                      >{{ `&#8369${productDataById.price}` }}</v-list-item-title>
                                                     </v-flex>
                                                     <v-flex xs12 sm12 md4 lg4>
                                                       <v-list-item-title>Quantity:</v-list-item-title>
                                                     </v-flex>
                                                     <v-flex xs12 sm12 md6 lg6>
-                                                      <v-list-item-title>{{ formData.quantity }}</v-list-item-title>
+                                                      <v-list-item-title
+                                                        class="font-weight-bold"
+                                                      >{{ formData.quantity }}</v-list-item-title>
                                                     </v-flex>
                                                     <v-flex xs12 sm12 md4 lg4>
                                                       <v-list-item-title>Total Price:</v-list-item-title>
                                                     </v-flex>
                                                     <v-flex xs12 sm12 md6 lg6>
-                                                      <v-list-item-title>{{ formData.total_price }}</v-list-item-title>
+                                                      <v-list-item-title
+                                                        class="font-weight-bold"
+                                                      >{{ `&#8369${totalPrice}` }}</v-list-item-title>
                                                     </v-flex>
                                                   </v-list-item-content>
                                                 </v-list-item>
@@ -319,7 +331,7 @@ export default {
           color: this.formData.color,
           quantity: this.formData.quantity,
           price: this.productDataById.price,
-          total_price: this.formData.total_price,
+          total_price: this.totalPrice,
           file_path: this.productImage
         };
         this.addCartData(obj);

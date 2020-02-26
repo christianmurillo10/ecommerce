@@ -5,14 +5,12 @@ const state = {
 };
 
 const getters = {
-  getProductCategoryById: (state) => (id) => {
-    return state.productCategoryList.find(productCategory => productCategory.id === id);
-  },
-  getProductCategoryNameById: (state) => (id) => {
-    return state.productCategoryList.find(productCategory => productCategory.id === id).name;
-  },
-  getProductCategoryList: (state) => {
-    return state.productCategoryList;
+  getCustomerCartTotalPrice: (state) => {
+    let totalPrice = 0;
+    state.customerCartList.forEach(element => {
+      totalPrice += parseFloat(element.total_price)
+    });
+    return totalPrice.toFixed(2);
   }
 };
 
