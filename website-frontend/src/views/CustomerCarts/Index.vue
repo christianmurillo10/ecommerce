@@ -8,7 +8,6 @@
               <v-container>
                 <v-card>
                   <v-card-title>MY CART</v-card-title>
-
                   <v-divider class="mx-4"></v-divider>
                   <v-card-text>
                     <v-simple-table>
@@ -27,7 +26,9 @@
                         <tbody>
                           <tr v-for="item in customerCartList" :key="item.index">
                             <td>
-                              <v-img :src="item.file_path" max-width="100px"></v-img>
+                              <router-link v-bind:to="`/product/${item.product_id}`">
+                                <v-img :src="item.file_path" max-width="100px"></v-img>
+                              </router-link>
                             </td>
                             <td>{{ item.name }}</td>
                             <td>{{ item.color }}</td>
@@ -59,7 +60,6 @@
                 </v-card>
               </v-container>
             </v-flex>
-
             <v-flex xs12 sm12 md4 lg4>
               <v-container>
                 <v-card>
@@ -73,9 +73,7 @@
                       text-color="white"
                     >{{customerCartList.length}} Items</v-chip>
                   </v-card-title>
-
                   <v-divider></v-divider>
-
                   <v-card-text>
                     <v-flex xs12 sm12 md12 lg12>
                       <v-simple-table>
@@ -160,6 +158,15 @@
                             </v-layout>
                           </v-flex>
                         </v-list-item>
+                      </v-flex>
+                      <v-flex xs12 sm12 md12 lg12>
+                        <v-layout row wrap class="text-center">
+                          <v-flex xs12 sm12 md12 lg12>
+                            <v-btn color="blue-grey" class="ma-2 white--text" @click="cart = false">
+                              <v-icon left dark>mdi-basket</v-icon>CHECKOUT
+                            </v-btn>
+                          </v-flex>
+                        </v-layout>
                       </v-flex>
                     </v-container>
                   </v-card-text>

@@ -103,7 +103,9 @@
                           <tbody>
                             <tr v-for="item in customerCartList" :key="item.index">
                               <td>
-                                <v-img :src="item.file_path" max-height="60px" max-width="60px"></v-img>
+                                <router-link v-bind:to="`/product/${item.product_id}`">
+                                  <v-img :src="item.file_path" max-height="60px" max-width="60px"></v-img>
+                                </router-link>
                               </td>
                               <td>
                                 <v-row class="font-weight-medium">{{ item.name }}</v-row>
@@ -136,13 +138,7 @@
                     <v-layout row wrap justify-center>
                       <v-card-actions>
                         <v-spacer></v-spacer>
-                        <v-btn
-                          small
-                          color="blue-grey"
-                          outlined
-                          class="ma-2 white--text"
-                          to="/cart"
-                        >
+                        <v-btn small color="blue-grey" outlined class="ma-2 white--text" to="/cart">
                           <v-icon left dark>mdi-cart</v-icon>VIEW CART
                         </v-btn>
                         <v-btn

@@ -315,6 +315,9 @@ export default {
   },
 
   watch: {
+    "$route.params.id": function() {
+      this.getProductDataById(this.$route.params.id);
+    },
     productDataById(val) {
       this.productImage = val.productImages[0].file_path;
       this.productImagesDetails = val.productImages;
