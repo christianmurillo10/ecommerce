@@ -112,8 +112,6 @@
                                   rounded
                                   dense
                                   :rules="validateItem.quantityRules"
-                                  :min="1"
-                                  :max="productDataById.inventories.stock_available"
                                   required
                                 ></v-text-field>
                               </v-flex>
