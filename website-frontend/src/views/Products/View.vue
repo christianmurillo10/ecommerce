@@ -20,22 +20,32 @@
                       </v-flex>
                       <v-flex xs12 sm12 md12 lg12>
                         <v-layout row wrap>
-                          <v-slide-group class="px-4" show-arrows>
+                          <v-slide-group mandatory class="px-4" show-arrows>
                             <v-slide-item
                               v-for="(productImage, i) in productImagesDetails"
                               :key="i"
+                              v-slot:default="{ active, toggle }"
                             >
-                              <v-container>
-                                <v-hover>
-                                  <v-img
-                                    slot-scope="{ hover }"
-                                    :class="`elevation-${hover ? 12 : 2}`"
-                                    :src="productImage.file_path"
-                                    height="40px"
-                                    width="60px"
-                                  />
-                                </v-hover>
-                              </v-container>
+                              <v-card
+                                :color="active ? 'blue-grey lighten-1' : ''"
+                                outlined
+                                class="ma-4"
+                                height="50px"
+                                width="70px"
+                                v-on:click="changeMainImage(productImage.file_path)"
+                                @click="toggle"
+                              >
+                                <v-card-text>
+                                  <v-row class="fill-height" align="center" justify="center">
+                                    <v-img
+                                      class="mt-n3"
+                                      :src="productImage.file_path"
+                                      height="40px"
+                                      width="60px"
+                                    />
+                                  </v-row>
+                                </v-card-text>
+                              </v-card>
                             </v-slide-item>
                           </v-slide-group>
                         </v-layout>
@@ -86,9 +96,7 @@
                                 <v-list-item-title>Stock:</v-list-item-title>
                               </v-flex>
                               <v-flex xs6 sm6 md8 lg8>
-                                <v-list-item-title
-                                  class="title"
-                                >{{ availableStock }}</v-list-item-title>
+                                <v-list-item-title class="title">{{ availableStock }}</v-list-item-title>
                               </v-flex>
                               <v-divider></v-divider>
                             </v-list-item-content>
@@ -333,6 +341,10 @@ export default {
     ...mapMutations("customerCarts", {
       addCartData: "ADD_DATA"
     }),
+
+    changeMainImage(filePath) {
+      this.productImage = filePath;
+    },
 
     decrement() {
       if (this.formData.quantity > 1) this.formData.quantity--;
