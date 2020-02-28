@@ -9,7 +9,7 @@ const state = {
   productBySearchList: [],
   productBySearchTotalCount: 0,
   productSearchKeyword: "",
-  productDataById: null
+  productDataById: {}
 };
 
 const getters = {

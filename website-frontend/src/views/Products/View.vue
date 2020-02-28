@@ -88,7 +88,7 @@
                               <v-flex xs6 sm6 md8 lg8>
                                 <v-list-item-title
                                   class="title"
-                                >{{ productDataById.inventories.stock_available }}</v-list-item-title>
+                                >{{ availableStock }}</v-list-item-title>
                               </v-flex>
                               <v-divider></v-divider>
                             </v-list-item-content>
@@ -297,11 +297,12 @@ export default {
         v => v <= 10 || "Quantity must be less than or equal 10"
       ]
     },
-    productImage: null,
-    productImagesDetails: null
+    productImage: "",
+    productImagesDetails: [],
+    availableStock: 0
   }),
 
-  mounted() {
+  created() {
     this.getProductDataById(this.$route.params.id);
   },
 
@@ -321,6 +322,7 @@ export default {
     productDataById(val) {
       this.productImage = val.productImages[0].file_path;
       this.productImagesDetails = val.productImages;
+      this.availableStock = val.inventories.stock_available;
     }
   },
 
