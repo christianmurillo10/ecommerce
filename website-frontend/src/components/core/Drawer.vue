@@ -32,11 +32,11 @@
           append-icon
         >
           <template v-slot:activator>
-            <v-list-item-content>
+            <v-list-item-content class="ml-n6">
               <v-list-item-title>{{ item.text }}</v-list-item-title>
             </v-list-item-content>
           </template>
-          <v-list-item v-for="(child, i) in item.children" link :key="i" :to="child.to">
+          <v-list-item v-for="(child, i) in item.children" link :key="i" :to="child.to" class="pl-12">
             <v-list-item-action v-if="child.icon">
               <v-icon>{{ child.icon }}</v-icon>
             </v-list-item-action>
@@ -49,7 +49,7 @@
           <v-list-item-action>
             <v-icon>{{ item.icon }}</v-icon>
           </v-list-item-action>
-          <v-list-item-content>
+          <v-list-item-content class="ml-n6">
             <v-list-item-title>{{ item.text }}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
@@ -75,7 +75,6 @@ export default {
         model: false,
         children: []
       },
-      { icon: "mdi-basket", text: "Products", to: "/" },
       {
         icon: "mdi-file-document-box-outline",
         text: "Terms and Conditions",
@@ -111,7 +110,7 @@ export default {
       return "/img/logo.png";
     },
     title() {
-      return "E-Commerce.";
+      return "Welcome to E-Commerce";
     }
   },
 

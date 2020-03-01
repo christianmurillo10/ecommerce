@@ -1,6 +1,6 @@
 <template>
   <!-- <v-footer color="orange lighten-1" dark> -->
-  <v-footer dark>
+  <v-footer dark padless>
     <v-container class="col-lg-10 offset-lg-1">
       <v-layout row wrap>
         <v-flex xs12 sm12 md4 lg4>
@@ -28,6 +28,7 @@
             </v-layout>
           </v-container>
         </v-flex>
+        <v-flex xs1 sm1 md1 lg1></v-flex>
         <v-flex xs12 sm12 md3 lg3>
           <v-container>
             <v-layout row wrap>
@@ -53,7 +54,8 @@
             </v-layout>
           </v-container>
         </v-flex>
-        <v-flex xs12 sm12 md2 lg2>
+        <v-flex xs1 sm1 md1 lg1></v-flex>
+        <v-flex xs3 sm3 md3 lg3>
           <v-container>
             <v-layout row wrap>
               <h4>QUICK LINKS</h4>
@@ -62,7 +64,14 @@
         </v-flex>
       </v-layout>
     </v-container>
-    <v-row justify="center" no-gutters>
+    <v-card flat tile width="100%" class="black text-center">
+      <!-- <v-divider></v-divider> -->
+
+      <v-card-text class="white--text">
+        © {{ new Date().getFullYear() }} — <strong> E-Commerce</strong>
+      </v-card-text>
+    </v-card>
+    <!-- <v-row justify="center" no-gutters>
       <v-btn
         v-for="link in links"
         :key="link"
@@ -78,7 +87,7 @@
           <strong>ARK</strong>
         </p>
       </v-col>
-    </v-row>
+    </v-row> -->
   </v-footer>
 </template>
 
@@ -86,7 +95,7 @@
 export default {
   data: () => ({
     companyDescription:
-      "ARK (Accessible Revenue Kiosk) is an online membership shopping destination that offers direct access to a wide selection of quality products at discounted prices and at the same time offers the opportunity for its members an accessible and sustainable income via the e-commerce industry.",
+      "E-Commerce is an online membership shopping destination that offers direct access to a wide selection of quality products at discounted prices and at the same time offers the opportunity for its members an accessible and sustainable income via the e-commerce industry.",
     contactInfo: {
       address:
         "4th floor Visual Color Building, 101 Kalayaan Avenue Central Quezon City 2nd District, Philippines",

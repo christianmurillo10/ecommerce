@@ -142,8 +142,8 @@
                               <v-container>
                                 <v-img
                                   :src="productBySubCategory.file_path"
-                                  height="250px"
-                                  max-height="250px"
+                                  height="200px"
+                                  max-height="200px"
                                   contain
                                 />
                               </v-container>
