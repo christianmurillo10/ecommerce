@@ -163,6 +163,20 @@
           </v-layout>
         </v-container>
       </v-toolbar>
+      <v-btn
+        v-scroll="onScroll"
+        v-show="fab"
+        fab
+        dark
+        fixed
+        bottom
+        right
+        small
+        color="primary"
+        @click="toTop"
+      >
+        <v-icon>mdi-chevron-up</v-icon>
+      </v-btn>
     </v-flex>
   </v-layout>
 </template>
@@ -173,7 +187,8 @@ import { mapState, mapGetters, mapActions, mapMutations } from "vuex";
 export default {
   data: () => ({
     keywords: "",
-    cart: false
+    cart: false,
+    fab: false
   }),
   computed: {
     ...mapState("appbar", ["primaryDrawer"]),
@@ -203,6 +218,14 @@ export default {
           this.$router.push(`/search/${this.keywords}/page/1`);
         }
       }
+    },
+    onScroll(e) {
+      if (typeof window === "undefined") return;
+      const top = window.pageYOffset || e.target.scrollTop || 0;
+      this.fab = top > 300;
+    },
+    toTop() {
+      this.$vuetify.goTo(0);
     }
   }
 };
