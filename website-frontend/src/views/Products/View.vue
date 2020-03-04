@@ -13,7 +13,25 @@
                         <v-container>
                           <v-layout row wrap>
                             <v-container>
-                              <v-img :src="productImage" height="300px" />
+                              <v-tooltip right>
+                                <template v-slot:activator="{ on }">
+                                  <v-btn v-on="on" icon x-large @click="$refs.zoomer.zoomIn()">
+                                    <v-icon>mdi-magnify-plus-outline</v-icon>
+                                  </v-btn>
+                                </template>
+                                <span>Zoom in</span>
+                              </v-tooltip>
+                              <v-tooltip right>
+                                <template v-slot:activator="{ on }">
+                                  <v-btn v-on="on" icon x-large @click="$refs.zoomer.zoomOut()">
+                                    <v-icon>mdi-magnify-minus-outline</v-icon>
+                                  </v-btn>
+                                </template>
+                                <span>Zoom out</span>
+                              </v-tooltip>
+                              <v-zoomer ref="zoomer" :max-scale="10">
+                                <v-img :src="productImage" height="300px" />
+                              </v-zoomer>
                             </v-container>
                           </v-layout>
                         </v-container>
@@ -307,7 +325,12 @@ export default {
     },
     productImage: "",
     productImagesDetails: [],
-    availableStock: 0
+    availableStock: 0,
+    imagesArr: [
+      "http://localhost:8002/productImage/viewImage/8-Green%201-1-2020-02-10.jpg",
+      "http://localhost:8002/productImage/viewImage/8-Green%202-2-2020-02-10.jpg"
+    ],
+    selIndex: 0
   }),
 
   created() {
