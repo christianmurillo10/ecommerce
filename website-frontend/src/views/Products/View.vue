@@ -325,12 +325,7 @@ export default {
     },
     productImage: "",
     productImagesDetails: [],
-    availableStock: 0,
-    imagesArr: [
-      "http://localhost:8002/productImage/viewImage/8-Green%201-1-2020-02-10.jpg",
-      "http://localhost:8002/productImage/viewImage/8-Green%202-2-2020-02-10.jpg"
-    ],
-    selIndex: 0
+    availableStock: 0
   }),
 
   created() {
