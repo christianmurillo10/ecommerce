@@ -7,10 +7,6 @@ module.exports = (sequelize, DataTypes) => {
       primaryKey: true,
       autoIncrement: true
     },
-    'file_url': {
-      type: DataTypes.STRING(100),
-      allowNull: false
-    },
     'file_name': {
       type: DataTypes.STRING(100),
       allowNull: false

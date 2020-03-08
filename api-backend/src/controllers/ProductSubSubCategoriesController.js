@@ -6,7 +6,7 @@ module.exports = {
    * @param req
    * @param res
    * @returns {Promise<void>}
-   * @routes POST /productCategory/create
+   * @routes POST /productSubSubCategory/create
    */
   create: async (req, res) => {
     const params = req.body;
@@ -20,37 +20,42 @@ module.exports = {
 
     // Override variables
     params.created_at = moment().utc(8).format('YYYY-MM-DD HH:mm:ss');
-
-    let date = moment(params.created_at).format('YYYY-MM-DD');
-    // icon
-    if (!_.isEmpty(params.icon_file_name)) {
-      let iconExtension = path.extname(params.icon_file_name);
-      let iconFileName = `icon-${params.name}-${date}${iconExtension}`;
-      params.icon_file_name = iconFileName;
-    }
-    // banner
-    if (!_.isEmpty(params.banner_file_name)) {
-      let bannerExtension = path.extname(params.banner_file_name);
-      let bannerFileName = `banner-${params.name}-${date}${bannerExtension}`;
-      params.banner_file_name = bannerFileName;
-    }
+    params.product_category_id = params.product_category_id.toLocaleString();
+    params.product_sub_category_id = params.product_sub_category_id.toLocaleString();
 
     try {
       // Validators
       if (_.isEmpty(params.name)) return res.json({ status: 200, message: "Name is required.", result: false });
+      if (_.isEmpty(params.description)) return res.json({ status: 200, message: "Description is required.", result: false });
+      if (_.isEmpty(params.product_category_id)) return res.json({ status: 200, message: "Product Category is required.", result: false });
+      if (_.isEmpty(params.product_sub_category_id)) return res.json({ status: 200, message: "Product Sub Category is required.", result: false });
 
       // Pre-setting variables
-      criteria = { where: { name: params.name, is_deleted: 0 } };
-      initialValues = _.pick(params, ['name', 'description', 'icon_file_name', 'banner_file_name', 'created_at']);
+      criteria = {
+        where: {
+          name: params.name, product_category_id: params.product_category_id, product_sub_category_id: params.product_sub_category_id
+        },
+        include: [{ model: Model.ProductCategories, as: 'productCategories' }, { model: Model.ProductSubCategories, as: 'productSubCategories' }]
+      };
+      initialValues = _.pick(params, [
+        'name',
+        'description',
+        'product_category_id',
+        'product_sub_category_id',
+        'created_at'
+      ]);
       // Execute findAll query
-      data = await Model.ProductCategories.findAll(criteria);
+      data = await Model.ProductSubSubCategories.findAll(criteria);
       if (_.isEmpty(data[0])) {
-        let finalData = await Model.ProductCategories.create(initialValues);
-        res.json({
-          status: 200,
-          message: "Successfully created data.",
-          result: _.omit(finalData.get({ plain: true }), ['is_deleted'])
-        });
+        await Model.ProductSubSubCategories.create(initialValues)
+          .then(() => Model.ProductSubSubCategories.findOrCreate(criteria))
+          .then(([finalData, created]) => {
+            res.json({
+              status: 200,
+              message: "Successfully created data.",
+              result: _.omit(finalData.get({ plain: true }), ['is_deleted'])
+            });
+          })
       } else {
         res.json({
           status: 200,
@@ -69,14 +74,14 @@ module.exports = {
 
   /**
    * Update
-   * @route PUT /productCategory/update/:id
+   * @route PUT /productSubSubCategory/update/:id
    * @param req
    * @param res
    * @returns {never}
    */
   update: async (req, res) => {
     const params = req.body;
-    let initialValues, data;
+    let initialValues, data, criteria;
 
     if (_.isUndefined(params))
       return res.badRequest({ err: "Invalid Parameter: [params]" });
@@ -84,37 +89,26 @@ module.exports = {
       return res.badRequest({ err: "Empty Parameter: [params]" });
 
     try {
-      // Execute findByPk query
-      data = await Model.ProductCategories.findByPk(req.params.id);
-      // Override variables
-      if (!_.isUndefined(req.file)) {
-        let date = moment(params.created_at).format('YYYY-MM-DD');
-        // icon
-        if (!_.isEmpty(params.icon_file_name)) {
-          let iconExtension = path.extname(params.icon_file_name);
-          let iconFileName = `icon-${params.name}-${date}${iconExtension}`;
-          params.icon_file_name = iconFileName;
-        }
-        // banner
-        if (!_.isEmpty(params.banner_file_name)) {
-          let bannerExtension = path.extname(params.banner_file_name);
-          let bannerFileName = `banner-${params.name}-${date}${bannerExtension}`;
-          params.banner_file_name = bannerFileName;
-        }
-      } else {
-        params.icon_file_name = data.icon_file_name;
-        params.banner_file_name = data.banner_file_name;
-      }
       // Pre-setting variables
-      initialValues = _.pick(params, ['name', 'description', 'icon_file_name', 'banner_file_name']);
-
+      criteria = { where: { is_deleted: 0 }, include: [{ model: Model.ProductCategories, as: 'productCategories' }, { model: Model.ProductSubCategories, as: 'productSubCategories' }] };
+      initialValues = _.pick(params, [
+        'name',
+        'description',
+        'product_category_id',
+        'product_sub_category_id'
+      ]);
+      // Execute findByPk query
+      data = await Model.ProductSubSubCategories.findByPk(req.params.id);
       if (!_.isEmpty(data)) {
-        let finalData = await data.update(initialValues);
-        res.json({
-          status: 200,
-          message: "Successfully updated data.",
-          result: finalData
-        });
+        await data.update(initialValues)
+          .then(() => Model.ProductSubSubCategories.findByPk(data.id, criteria)
+            .then(finalData => {
+              res.json({
+                status: 200,
+                message: "Successfully updated data.",
+                result: _.omit(finalData.get({ plain: true }), ['is_deleted'])
+              });
+            }));
       } else {
         res.json({
           status: 200,
@@ -133,7 +127,7 @@ module.exports = {
 
   /**
    * Delete
-   * @route PUT /productCategory/delete/:id
+   * @route PUT /productSubSubCategory/delete/:id
    * @param req
    * @param res
    * @returns {never}
@@ -143,7 +137,7 @@ module.exports = {
 
     try {
       // Execute findByPk query
-      data = await Model.ProductCategories.findByPk(req.params.id);
+      data = await Model.ProductSubSubCategories.findByPk(req.params.id);
       if (!_.isEmpty(data)) {
         let finalData = await data.update({ is_deleted: 1 });
         res.json({
@@ -169,7 +163,7 @@ module.exports = {
 
   /**
    * Search
-   * @route POST /productCategory/search/:value
+   * @route POST /productSubSubCategory/search/:value
    * @param req
    * @param res
    * @returns {never}
@@ -185,7 +179,16 @@ module.exports = {
 
     try {
       // Pre-setting variables
-      query = `SELECT id, name, description, icon_file_name, banner_file_name, created_at, updated_at FROM product_categories WHERE CONCAT(name) LIKE ? AND is_deleted = 0;`;
+      query = `SELECT 
+                id, 
+                name, 
+                description, 
+                product_category_id, 
+                product_sub_category_id, 
+                created_at, 
+                updated_at 
+              FROM product_sub_sub_categories 
+              WHERE CONCAT(name) LIKE ? AND is_deleted = 0;`;
       // Execute native query
       data = await Model.sequelize.query(query, {
         replacements: [`%${params.value}%`],
@@ -215,7 +218,7 @@ module.exports = {
 
   /**
    * Find all
-   * @route GET /productCategory
+   * @route GET /productSubSubCategory
    * @param req
    * @param res
    * @returns {never}
@@ -225,9 +228,9 @@ module.exports = {
 
     try {
       // Pre-setting variables
-      criteria = { where: { is_deleted: 0 } };
+      criteria = { where: { is_deleted: 0 }, include: [{ model: Model.ProductCategories, as: 'productCategories' }, { model: Model.ProductSubCategories, as: 'productSubCategories' }] };
       // Execute findAll query
-      data = await Model.ProductCategories.findAll(criteria);
+      data = await Model.ProductSubSubCategories.findAll(criteria);
       if (!_.isEmpty(data[0])) {
         res.json({
           status: 200,
@@ -251,24 +254,59 @@ module.exports = {
   },
 
   /**
-   * Find all with sub categories
-   * @route GET /productCategory/findAllWithSubCategories
+   * Find all by product category id
+   * @route GET /productSubSubCategory/findAllbyProductCategoryId/:productCategoryId
    * @param req
    * @param res
    * @returns {never}
    */
-  findAllWithSubCategories: async (req, res) => {
+  findAllbyProductCategoryId: async (req, res) => {
+    const params = req.params;
     let data, criteria;
 
     try {
       // Pre-setting variables
-      criteria = {
-        attributes: ['id', 'name', 'description'],
-        where: { is_deleted: 0 },
-        include: [{ model: Model.ProductSubCategories, as: "productSubCategories", attributes: ['id', 'name', 'description'] }]
-      };
+      criteria = { where: { product_category_id: params.productCategoryId, is_deleted: 0 }, include: [{ model: Model.ProductCategories, as: 'productCategories' }, { model: Model.ProductSubCategories, as: 'productSubCategories' }] };
       // Execute findAll query
-      data = await Model.ProductCategories.findAll(criteria);
+      data = await Model.ProductSubSubCategories.findAll(criteria);
+      if (!_.isEmpty(data[0])) {
+        res.json({
+          status: 200,
+          message: "Successfully find all data.",
+          result: data
+        });
+      } else {
+        res.json({
+          status: 200,
+          message: "No Data Found.",
+          result: false
+        });
+      }
+    } catch (err) {
+      res.json({
+        status: 401,
+        err: err,
+        message: "Failed to find all data."
+      });
+    }
+  },
+
+  /**
+   * Find all by product category id
+   * @route GET /productSubSubCategory/findAllbyProductSubCategoryId/:productSubCategoryId
+   * @param req
+   * @param res
+   * @returns {never}
+   */
+  findAllbyProductSubCategoryId: async (req, res) => {
+    const params = req.params;
+    let data, criteria;
+
+    try {
+      // Pre-setting variables
+      criteria = { where: { product_sub_category_id: params.productSubCategoryId, is_deleted: 0 }, include: [{ model: Model.ProductCategories, as: 'productCategories' }, { model: Model.ProductSubCategories, as: 'productSubCategories' }] };
+      // Execute findAll query
+      data = await Model.ProductSubSubCategories.findAll(criteria);
       if (!_.isEmpty(data[0])) {
         res.json({
           status: 200,
@@ -293,17 +331,19 @@ module.exports = {
 
   /**
    * Find by id
-   * @route GET /productCategory/:id
+   * @route GET /productSubSubCategory/:id
    * @param req
    * @param res
    * @returns {never}
    */
   findById: async (req, res) => {
-    let data;
+    let data, criteria;
 
     try {
+      // Pre-setting variables
+      criteria = { where: { is_deleted: 0 }, include: [{ model: Model.ProductCategories, as: 'productCategories' }, { model: Model.ProductSubCategories, as: 'productSubCategories' }] };
       // Execute findAll query
-      data = await Model.ProductCategories.findByPk(req.params.id);
+      data = await Model.ProductSubSubCategories.findByPk(req.params.id, criteria);
       if (!_.isEmpty(data)) {
         res.json({
           status: 200,

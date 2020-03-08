@@ -15,10 +15,6 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.TEXT,
       allowNull: true
     },
-    'file_url': {
-      type: DataTypes.STRING(100),
-      allowNull: true
-    },
     'file_name': {
       type: DataTypes.STRING(100),
       allowNull: true,

@@ -1,0 +1,15 @@
+var express = require('express');
+var router = express.Router();
+const authController = require('../controllers').auth;
+const productSubSubCategoriesController = require('../controllers').productSubSubCategories;
+
+router.route('/').get(productSubSubCategoriesController.findAll);
+router.route('/:id').get(productSubSubCategoriesController.findById);
+router.route('/findAllbyProductCategoryId/:productCategoryId').get(productSubSubCategoriesController.findAllbyProductCategoryId);
+router.route('/findAllbyProductSubCategoryId/:productSubCategoryId').get(productSubSubCategoriesController.findAllbyProductSubCategoryId);
+router.route('/create').post(authController.authorization, productSubSubCategoriesController.create);
+router.route('/update/:id').put(authController.authorization, productSubSubCategoriesController.update);
+router.route('/delete/:id').put(authController.authorization, productSubSubCategoriesController.delete);
+router.route('/search/:value').get(authController.authorization, productSubSubCategoriesController.search);
+
+module.exports = router;

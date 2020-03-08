@@ -15,18 +15,10 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.TEXT,
       allowNull: true
     },
-    'icon_file_url': {
-      type: DataTypes.STRING(100),
-      allowNull: true
-    },
     'icon_file_name': {
       type: DataTypes.STRING(100),
       allowNull: true,
       comment: 'image (32x32)'
-    },
-    'banner_file_url': {
-      type: DataTypes.STRING(100),
-      allowNull: true
     },
     'banner_file_name': {
       type: DataTypes.STRING(100),

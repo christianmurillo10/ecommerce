@@ -1,4 +1,6 @@
 const Model = require('../models');
+const fs = require('fs');
+const path = require('path');
 
 module.exports = {
   /**
@@ -6,7 +8,7 @@ module.exports = {
    * @param req
    * @param res
    * @returns {Promise<void>}
-   * @routes POST /productCategory/create
+   * @routes POST /productBrand/create
    */
   create: async (req, res) => {
     const params = req.body;
@@ -22,30 +24,26 @@ module.exports = {
     params.created_at = moment().utc(8).format('YYYY-MM-DD HH:mm:ss');
 
     let date = moment(params.created_at).format('YYYY-MM-DD');
-    // icon
-    if (!_.isEmpty(params.icon_file_name)) {
-      let iconExtension = path.extname(params.icon_file_name);
-      let iconFileName = `icon-${params.name}-${date}${iconExtension}`;
-      params.icon_file_name = iconFileName;
-    }
-    // banner
-    if (!_.isEmpty(params.banner_file_name)) {
-      let bannerExtension = path.extname(params.banner_file_name);
-      let bannerFileName = `banner-${params.name}-${date}${bannerExtension}`;
-      params.banner_file_name = bannerFileName;
-    }
+    let extension = path.extname(params.file_name);
+    let fileName = `${params.name}-${date}${extension}`;
+    params.file_name = fileName;
 
     try {
       // Validators
-      if (_.isEmpty(params.name)) return res.json({ status: 200, message: "Name is required.", result: false });
+      if (_.isEmpty(params.name)) return res.json({ status: 200, message: "Name required.", result: false });
+      if (_.isEmpty(params.file_name)) return res.json({ status: 200, message: "File Name is required.", result: false });
 
       // Pre-setting variables
       criteria = { where: { name: params.name, is_deleted: 0 } };
-      initialValues = _.pick(params, ['name', 'description', 'icon_file_name', 'banner_file_name', 'created_at']);
+      initialValues = _.pick(params, ['name', 'description', 'file_name', 'created_at']);
       // Execute findAll query
-      data = await Model.ProductCategories.findAll(criteria);
+      data = await Model.ProductBrands.findAll(criteria);
       if (_.isEmpty(data[0])) {
-        let finalData = await Model.ProductCategories.create(initialValues);
+        let finalData = await Model.ProductBrands.create(initialValues);
+        // For Upload Images
+        if (!_.isUndefined(req.file)) {
+          let fileUpload = await uploadImage(params.file_name, req.file);
+        }
         res.json({
           status: 200,
           message: "Successfully created data.",
@@ -69,7 +67,7 @@ module.exports = {
 
   /**
    * Update
-   * @route PUT /productCategory/update/:id
+   * @route PUT /productBrand/update/:id
    * @param req
    * @param res
    * @returns {never}
@@ -85,31 +83,25 @@ module.exports = {
 
     try {
       // Execute findByPk query
-      data = await Model.ProductCategories.findByPk(req.params.id);
+      data = await Model.ProductBrands.findByPk(req.params.id);
       // Override variables
       if (!_.isUndefined(req.file)) {
         let date = moment(params.created_at).format('YYYY-MM-DD');
-        // icon
-        if (!_.isEmpty(params.icon_file_name)) {
-          let iconExtension = path.extname(params.icon_file_name);
-          let iconFileName = `icon-${params.name}-${date}${iconExtension}`;
-          params.icon_file_name = iconFileName;
-        }
-        // banner
-        if (!_.isEmpty(params.banner_file_name)) {
-          let bannerExtension = path.extname(params.banner_file_name);
-          let bannerFileName = `banner-${params.name}-${date}${bannerExtension}`;
-          params.banner_file_name = bannerFileName;
-        }
+        let extension = path.extname(params.file_name);
+        let fileName = `${params.name}-${date}${extension}`;
+        params.file_name = fileName;
       } else {
-        params.icon_file_name = data.icon_file_name;
-        params.banner_file_name = data.banner_file_name;
+        params.file_name = data.file_name;
       }
       // Pre-setting variables
-      initialValues = _.pick(params, ['name', 'description', 'icon_file_name', 'banner_file_name']);
+      initialValues = _.pick(params, ['name', 'description', 'file_name']);
 
       if (!_.isEmpty(data)) {
         let finalData = await data.update(initialValues);
+        // For Upload Images
+        if (!_.isUndefined(req.file)) {
+          let fileUpload = await uploadImage(params.file_name, req.file);
+        }
         res.json({
           status: 200,
           message: "Successfully updated data.",
@@ -133,7 +125,7 @@ module.exports = {
 
   /**
    * Delete
-   * @route PUT /productCategory/delete/:id
+   * @route PUT /productBrand/delete/:id
    * @param req
    * @param res
    * @returns {never}
@@ -143,7 +135,7 @@ module.exports = {
 
     try {
       // Execute findByPk query
-      data = await Model.ProductCategories.findByPk(req.params.id);
+      data = await Model.ProductBrands.findByPk(req.params.id);
       if (!_.isEmpty(data)) {
         let finalData = await data.update({ is_deleted: 1 });
         res.json({
@@ -169,7 +161,7 @@ module.exports = {
 
   /**
    * Search
-   * @route POST /productCategory/search/:value
+   * @route POST /productBrand/search/:value
    * @param req
    * @param res
    * @returns {never}
@@ -185,7 +177,7 @@ module.exports = {
 
     try {
       // Pre-setting variables
-      query = `SELECT id, name, description, icon_file_name, banner_file_name, created_at, updated_at FROM product_categories WHERE CONCAT(name) LIKE ? AND is_deleted = 0;`;
+      query = `SELECT id, name, description, file_name, created_at, updated_at FROM product_brands WHERE CONCAT(name) LIKE ? AND is_deleted = 0;`;
       // Execute native query
       data = await Model.sequelize.query(query, {
         replacements: [`%${params.value}%`],
@@ -215,7 +207,7 @@ module.exports = {
 
   /**
    * Find all
-   * @route GET /productCategory
+   * @route GET /productBrand
    * @param req
    * @param res
    * @returns {never}
@@ -227,48 +219,7 @@ module.exports = {
       // Pre-setting variables
       criteria = { where: { is_deleted: 0 } };
       // Execute findAll query
-      data = await Model.ProductCategories.findAll(criteria);
-      if (!_.isEmpty(data[0])) {
-        res.json({
-          status: 200,
-          message: "Successfully find all data.",
-          result: data
-        });
-      } else {
-        res.json({
-          status: 200,
-          message: "No Data Found.",
-          result: false
-        });
-      }
-    } catch (err) {
-      res.json({
-        status: 401,
-        err: err,
-        message: "Failed to find all data."
-      });
-    }
-  },
-
-  /**
-   * Find all with sub categories
-   * @route GET /productCategory/findAllWithSubCategories
-   * @param req
-   * @param res
-   * @returns {never}
-   */
-  findAllWithSubCategories: async (req, res) => {
-    let data, criteria;
-
-    try {
-      // Pre-setting variables
-      criteria = {
-        attributes: ['id', 'name', 'description'],
-        where: { is_deleted: 0 },
-        include: [{ model: Model.ProductSubCategories, as: "productSubCategories", attributes: ['id', 'name', 'description'] }]
-      };
-      // Execute findAll query
-      data = await Model.ProductCategories.findAll(criteria);
+      data = await Model.ProductBrands.findAll(criteria);
       if (!_.isEmpty(data[0])) {
         res.json({
           status: 200,
@@ -293,7 +244,7 @@ module.exports = {
 
   /**
    * Find by id
-   * @route GET /productCategory/:id
+   * @route GET /productBrand/:id
    * @param req
    * @param res
    * @returns {never}
@@ -303,7 +254,7 @@ module.exports = {
 
     try {
       // Execute findAll query
-      data = await Model.ProductCategories.findByPk(req.params.id);
+      data = await Model.ProductBrands.findByPk(req.params.id);
       if (!_.isEmpty(data)) {
         res.json({
           status: 200,
@@ -325,4 +276,31 @@ module.exports = {
       });
     }
   },
+
+  /**
+   * Find by file_name
+   * @route GET /productBrand/viewImage/:fileName
+   * @param req
+   * @param res
+   * @returns {never}
+   */
+  viewImage: (req, res) => {
+    res.sendFile(path.join(__dirname, "../../images/productBrands/" + req.params.fileName));
+  },
 };
+
+/**
+ * Other Functions
+ */
+const uploadImage = (name, file) => {
+  try {
+    fs.writeFile('images/productBrands/' + name, file.buffer, function (err) {
+      if (err) throw err;
+    })
+
+    return true;
+  } catch (err) {
+    console.log(err);
+    return false;
+  }
+}
