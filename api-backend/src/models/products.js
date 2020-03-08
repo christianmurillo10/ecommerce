@@ -15,7 +15,26 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.TEXT,
       allowNull: true
     },
-    'price': {
+    'unit': {
+      type: DataTypes.STRING(100),
+      comment: 'Unit(e.g. kg, pc, etc.)',
+      allowNull: false
+    },
+    'tags': {
+      type: DataTypes.TEXT,
+      allowNull: true
+    },
+    'price_amount': {
+      type: DataTypes.DECIMAL(12, 2),
+      allowNull: false,
+      defaultValue: '0.00'
+    },
+    'vat_amount': {
+      type: DataTypes.DECIMAL(12, 2),
+      allowNull: false,
+      defaultValue: '0.00'
+    },
+    'discount_amount': {
       type: DataTypes.DECIMAL(12, 2),
       allowNull: false,
       defaultValue: '0.00'
@@ -27,6 +46,15 @@ module.exports = (sequelize, DataTypes) => {
         key: 'id'
       },
       comment: 'refd to users.id',
+      allowNull: false
+    },
+    'product_brand_id': {
+      type: DataTypes.INTEGER(11),
+      references: {
+        model: 'product_brands',
+        key: 'id'
+      },
+      comment: 'refd to product_brands.id',
       allowNull: false
     },
     'product_category_id': {
@@ -47,6 +75,15 @@ module.exports = (sequelize, DataTypes) => {
       comment: 'refd to product_sub_categories.id',
       allowNull: false
     },
+    'product_sub_sub_category_id': {
+      type: DataTypes.INTEGER(11),
+      references: {
+        model: 'product_sub_sub_categories',
+        key: 'id'
+      },
+      comment: 'refd to product_sub_sub_categories.id',
+      allowNull: false
+    },
     'created_at': {
       type: 'TIMESTAMP',
       allowNull: false,
@@ -56,6 +93,33 @@ module.exports = (sequelize, DataTypes) => {
       type: 'TIMESTAMP',
       allowNull: true,
       defaultValue: sequelize.literal('CURRENT_TIMESTAMP')
+    },
+    'vat_type': {
+      type: DataTypes.SMALLINT(1),
+      comment: '1=Amount 2=Percentage',
+      allowNull: false,
+      defaultValue: '1'
+    },
+    'discount_type': {
+      type: DataTypes.SMALLINT(1),
+      comment: '1=Amount 2=Percentage',
+      allowNull: false,
+      defaultValue: '1'
+    },
+    'is_today_deal': {
+      type: DataTypes.SMALLINT(1),
+      allowNull: false,
+      defaultValue: '0'
+    },
+    'is_featured': {
+      type: DataTypes.SMALLINT(1),
+      allowNull: false,
+      defaultValue: '0'
+    },
+    'is_published': {
+      type: DataTypes.SMALLINT(1),
+      allowNull: false,
+      defaultValue: '1'
     },
     'is_deleted': {
       type: DataTypes.SMALLINT(1),
@@ -68,6 +132,10 @@ module.exports = (sequelize, DataTypes) => {
   });
   
   Products.associate = (models) => {
+    Products.belongsTo(models.ProductBrands, {
+      foreignKey: 'product_brand_id',
+      as: 'productBrands'
+    });
     Products.belongsTo(models.ProductCategories, {
       foreignKey: 'product_category_id',
       as: 'productCategories'
@@ -75,6 +143,10 @@ module.exports = (sequelize, DataTypes) => {
     Products.belongsTo(models.ProductSubCategories, {
       foreignKey: 'product_sub_category_id',
       as: 'productSubCategories'
+    });
+    Products.belongsTo(models.ProductSubSubCategories, {
+      foreignKey: 'product_sub_sub_category_id',
+      as: 'productSubSubCategories'
     });
     Products.belongsTo(models.Users, {
       foreignKey: 'user_id',

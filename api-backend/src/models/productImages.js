@@ -7,11 +7,11 @@ module.exports = (sequelize, DataTypes) => {
       primaryKey: true,
       autoIncrement: true
     },
-    'file_name': {
+    'file_url': {
       type: DataTypes.STRING(100),
       allowNull: false
     },
-    'color': {
+    'file_name': {
       type: DataTypes.STRING(100),
       allowNull: false
     },
@@ -46,6 +46,12 @@ module.exports = (sequelize, DataTypes) => {
       type: 'TIMESTAMP',
       allowNull: true,
       defaultValue: sequelize.literal('CURRENT_TIMESTAMP')
+    },
+    'type': {
+      type: DataTypes.SMALLINT(1),
+      comment: '1=Main Image, 2=Thumbnail Image (290x300), 3=Featured (290x300), 4=Flash Deal (290x300)',
+      allowNull: false,
+      defaultValue: '1'
     },
     'is_deleted': {
       type: DataTypes.SMALLINT(1),
