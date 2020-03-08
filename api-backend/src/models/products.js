@@ -17,7 +17,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     'unit': {
       type: DataTypes.STRING(100),
-      comment: 'Unit(e.g. kg, pc, etc.)',
+      comment: 'ex: kg, pc, etc.',
       allowNull: false
     },
     'tags': {
