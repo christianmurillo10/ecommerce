@@ -1,6 +1,6 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
-  const ProductSubCategories = sequelize.define('ProductSubCategories', {
+  const ProductSubSubCategories = sequelize.define('ProductSubSubCategories', {
     'id': {
       type: DataTypes.INTEGER(11),
       allowNull: false,
@@ -24,6 +24,15 @@ module.exports = (sequelize, DataTypes) => {
       comment: 'refd to product_categories.id',
       allowNull: false
     },
+    'product_sub_category_id': {
+      type: DataTypes.INTEGER(11),
+      references: {
+        model: 'product_sub_categories',
+        key: 'id'
+      },
+      comment: 'refd to product_sub_categories.id',
+      allowNull: false
+    },
     'created_at': {
       type: 'TIMESTAMP',
       allowNull: false,
@@ -40,20 +49,20 @@ module.exports = (sequelize, DataTypes) => {
       defaultValue: '0'
     }
   }, {
-    tableName: "product_sub_categories",
+    tableName: "product_sub_sub_categories",
     timestamps: false
   });
   
-  ProductSubCategories.associate = (models) => {
-    ProductSubCategories.belongsTo(models.ProductCategories, {
+  ProductSubSubCategories.associate = (models) => {
+    ProductSubSubCategories.belongsTo(models.ProductCategories, {
       foreignKey: 'product_category_id',
       as: 'productCategories'
     });
-    ProductSubCategories.hasMany(models.ProductSubSubCategories, {
+    ProductSubSubCategories.belongsTo(models.ProductSubCategories, {
       foreignKey: 'product_sub_category_id',
-      as: 'productSubSubCategories'
+      as: 'productSubCategories'
     });
   };
 
-  return ProductSubCategories;
+  return ProductSubSubCategories;
 };
