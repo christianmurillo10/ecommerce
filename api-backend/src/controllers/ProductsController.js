@@ -20,58 +20,58 @@ module.exports = {
       return res.badRequest({ err: "Empty Parameter: [params]" });
 
     // Override variables
-    params.created_at = moment()
-      .utc(8)
-      .format("YYYY-MM-DD HH:mm:ss");
+    params.created_at = moment().utc(8).format("YYYY-MM-DD HH:mm:ss");
+    params.price_amount = params.price_amount.toLocaleString();
+    params.vat_amount = params.vat_amount.toLocaleString();
+    params.discount_amount = params.discount_amount.toLocaleString();
     params.user_id = req.user.id.toLocaleString();
-    params.price = params.price.toLocaleString();
+    params.product_brand_id = params.product_brand_id.toLocaleString();
     params.product_category_id = params.product_category_id.toLocaleString();
     params.product_sub_category_id = params.product_sub_category_id.toLocaleString();
+    params.product_sub_sub_category_id = params.product_sub_sub_category_id.toLocaleString();
+    params.vat_type = params.vat_type.toLocaleString();
+    params.discount_type = params.discount_type.toLocaleString();
 
     try {
       // Validators
-      if (_.isEmpty(params.name))
-        return res.json({
-          status: 200,
-          message: "Name is required.",
-          result: false
-        });
-      if (_.isEmpty(params.price))
-        return res.json({
-          status: 200,
-          message: "Price is required.",
-          result: false
-        });
-      if (_.isEmpty(params.product_category_id))
-        return res.json({
-          status: 200,
-          message: "Product Category is required.",
-          result: false
-        });
-      if (_.isEmpty(params.product_sub_category_id))
-        return res.json({
-          status: 200,
-          message: "Product Sub-Category is required.",
-          result: false
-        });
+      if (_.isEmpty(params.name)) return res.json({ status: 200, message: "Name is required.", result: false });
+      if (_.isEmpty(params.unit)) return res.json({ status: 200, message: "Unit is required.", result: false });
+      if (_.isEmpty(params.price_amount)) return res.json({ status: 200, message: "Price Amount is required.", result: false });
+      if (_.isEmpty(params.product_brand_id)) return res.json({ status: 200, message: "Product Brand is required.", result: false });
+      if (_.isEmpty(params.product_category_id)) return res.json({ status: 200, message: "Product Category is required.", result: false });
+      if (_.isEmpty(params.product_sub_category_id)) return res.json({ status: 200, message: "Product Sub-Category is required.", result: false });
+      if (_.isEmpty(params.product_sub_sub_category_id)) return res.json({ status: 200, message: "Product Sub Sub-Category is required.", result: false });
 
       // Pre-setting variables
       criteria = {
         where: { name: params.name },
         include: [
+          { model: Model.ProductBrands, as: "productBrands", attributes: ['name', 'description'] },
           { model: Model.ProductCategories, as: "productCategories", attributes: ['name', 'description'] },
           { model: Model.ProductSubCategories, as: "productSubCategories", attributes: ['name', 'description'] },
+          { model: Model.ProductSubSubCategories, as: "productSubSubCategories", attributes: ['name', 'description'] },
           { model: Model.Users, as: "users", attributes: ['email', 'username'] }
         ]
       };
       initialValues = _.pick(params, [
         "name",
         "description",
-        "price",
+        "unit",
+        "tags",
+        "price_amount",
+        "vat_amount",
+        "discount_amount",
+        "user_id",
+        "product_brand_id",
         "product_category_id",
         "product_sub_category_id",
-        "user_id",
-        "created_at"
+        "product_sub_sub_category_id",
+        "created_at",
+        "vat_type",
+        "discount_type",
+        "is_today_deal",
+        "is_featured",
+        "is_published"
       ]);
       // Execute findAll query
       data = await Model.Products.findAll(criteria);
@@ -86,9 +86,7 @@ module.exports = {
               user_id: params.user_id,
               product_id: plainData.id
             };
-            let inventories = await InventoriesController.addStockByProductId(
-              obj
-            );
+            let inventories = await InventoriesController.addStockByProductId(obj);
 
             res.json({
               status: 200,
@@ -133,9 +131,21 @@ module.exports = {
       initialValues = _.pick(params, [
         "name",
         "description",
-        "price",
+        "unit",
+        "tags",
+        "price_amount",
+        "vat_amount",
+        "discount_amount",
+        "user_id",
+        "product_brand_id",
         "product_category_id",
-        "product_sub_category_id"
+        "product_sub_category_id",
+        "product_sub_sub_category_id",
+        "vat_type",
+        "discount_type",
+        "is_today_deal",
+        "is_featured",
+        "is_published"
       ]);
       // Execute findByPk query
       data = await Model.Products.findByPk(req.params.id);
@@ -219,14 +229,35 @@ module.exports = {
       let limit = parseInt(params.limit);
       let offset = parseInt(params.offset);
       criteria = {
-        attributes: ['id', 'name', 'description', 'price', 'product_category_id', 'product_sub_category_id'],
+        attributes: [
+          'id',
+          'name',
+          'description',
+          'unit',
+          'tags',
+          'price_amount',
+          'vat_amount',
+          'discount_amount',
+          'product_brand_id',
+          'product_category_id',
+          'product_sub_category_id',
+          'product_sub_sub_category_id',
+          'created_at',
+          'vat_type',
+          'discount_type',
+          'is_today_deal',
+          'is_featured',
+          'is_published'
+        ],
         where: { name: { $like: `%${params.keyword}%` }, is_deleted: 0 },
         limit,
         offset,
         include: [
+          { model: Model.ProductBrands, as: "productBrands", attributes: ['name', 'description'] },
           { model: Model.ProductCategories, as: "productCategories", attributes: ['name', 'description'] },
           { model: Model.ProductSubCategories, as: "productSubCategories", attributes: ['name', 'description'] },
-          { model: Model.ProductImages, as: "productImages", attributes: ['file_name', 'color', 'order', 'product_id'], required: false }
+          { model: Model.ProductSubSubCategories, as: "productSubSubCategories", attributes: ['name', 'description'] },
+          { model: Model.ProductImages, as: "productImages", attributes: ['file_name', 'order', 'product_id'], required: false }
         ]
       };
       countCriteria = { where: { name: { $like: `%${params.keyword}%` }, is_deleted: 0 } };
@@ -274,10 +305,32 @@ module.exports = {
     try {
       // Pre-setting variables
       criteria = {
+        attributes: [
+          'id',
+          'name',
+          'description',
+          'unit',
+          'tags',
+          'price_amount',
+          'vat_amount',
+          'discount_amount',
+          'product_brand_id',
+          'product_category_id',
+          'product_sub_category_id',
+          'product_sub_sub_category_id',
+          'created_at',
+          'vat_type',
+          'discount_type',
+          'is_today_deal',
+          'is_featured',
+          'is_published'
+        ],
         where: { is_deleted: 0 },
         include: [
+          { model: Model.ProductBrands, as: "productBrands", attributes: ['name', 'description'] },
           { model: Model.ProductCategories, as: "productCategories", attributes: ['name', 'description'] },
           { model: Model.ProductSubCategories, as: "productSubCategories", attributes: ['name', 'description'] },
+          { model: Model.ProductSubSubCategories, as: "productSubSubCategories", attributes: ['name', 'description'] },
           { model: Model.ProductImages, as: "productImages", attributes: ['file_name', 'color', 'order', 'product_id'], required: false }
         ]
       };
@@ -321,13 +374,34 @@ module.exports = {
       let limit = parseInt(params.limit);
       let offset = parseInt(params.offset);
       criteria = {
-        attributes: ['id', 'name', 'description', 'price', 'product_category_id', 'product_sub_category_id'],
+        attributes: [
+          'id',
+          'name',
+          'description',
+          'unit',
+          'tags',
+          'price_amount',
+          'vat_amount',
+          'discount_amount',
+          'product_brand_id',
+          'product_category_id',
+          'product_sub_category_id',
+          'product_sub_sub_category_id',
+          'created_at',
+          'vat_type',
+          'discount_type',
+          'is_today_deal',
+          'is_featured',
+          'is_published'
+        ],
         where: { is_deleted: 0 },
         limit,
         offset,
         include: [
+          { model: Model.ProductBrands, as: "productBrands", attributes: ['name', 'description'] },
           { model: Model.ProductCategories, as: "productCategories", attributes: ['name', 'description'] },
           { model: Model.ProductSubCategories, as: "productSubCategories", attributes: ['name', 'description'] },
+          { model: Model.ProductSubSubCategories, as: "productSubSubCategories", attributes: ['name', 'description'] },
           { model: Model.ProductImages, as: "productImages", attributes: ['file_name', 'color', 'order', 'product_id'], required: false }
         ]
       };
@@ -372,13 +446,34 @@ module.exports = {
       let limit = parseInt(params.limit);
       let offset = parseInt(params.offset);
       criteria = {
-        attributes: ['id', 'name', 'description', 'price', 'product_category_id', 'product_sub_category_id'],
+        attributes: [
+          'id',
+          'name',
+          'description',
+          'unit',
+          'tags',
+          'price_amount',
+          'vat_amount',
+          'discount_amount',
+          'product_brand_id',
+          'product_category_id',
+          'product_sub_category_id',
+          'product_sub_sub_category_id',
+          'created_at',
+          'vat_type',
+          'discount_type',
+          'is_today_deal',
+          'is_featured',
+          'is_published'
+        ],
         where: { product_category_id: params.productCategoryId, is_deleted: 0 },
         limit,
         offset,
         include: [
+          { model: Model.ProductBrands, as: "productBrands", attributes: ['name', 'description'] },
           { model: Model.ProductCategories, as: "productCategories", attributes: ['name', 'description'] },
           { model: Model.ProductSubCategories, as: "productSubCategories", attributes: ['name', 'description'] },
+          { model: Model.ProductSubSubCategories, as: "productSubSubCategories", attributes: ['name', 'description'] },
           { model: Model.ProductImages, as: "productImages", attributes: ['file_name', 'color', 'order', 'product_id'], required: false }
         ]
       };
@@ -430,13 +525,34 @@ module.exports = {
       let limit = parseInt(params.limit);
       let offset = parseInt(params.offset);
       criteria = {
-        attributes: ['id', 'name', 'description', 'price', 'product_category_id', 'product_sub_category_id'],
+        attributes: [
+          'id',
+          'name',
+          'description',
+          'unit',
+          'tags',
+          'price_amount',
+          'vat_amount',
+          'discount_amount',
+          'product_brand_id',
+          'product_category_id',
+          'product_sub_category_id',
+          'product_sub_sub_category_id',
+          'created_at',
+          'vat_type',
+          'discount_type',
+          'is_today_deal',
+          'is_featured',
+          'is_published'
+        ],
         where: { product_sub_category_id: params.productSubCategoryId, is_deleted: 0 },
         limit,
         offset,
         include: [
+          { model: Model.ProductBrands, as: "productBrands", attributes: ['name', 'description'] },
           { model: Model.ProductCategories, as: "productCategories", attributes: ['name', 'description'] },
           { model: Model.ProductSubCategories, as: "productSubCategories", attributes: ['name', 'description'] },
+          { model: Model.ProductSubSubCategories, as: "productSubSubCategories", attributes: ['name', 'description'] },
           { model: Model.ProductImages, as: "productImages", attributes: ['file_name', 'color', 'order', 'product_id'], required: false }
         ]
       };
@@ -487,8 +603,10 @@ module.exports = {
       criteria = {
         where: { is_deleted: 0 },
         include: [
+          { model: Model.ProductBrands, as: "productBrands", attributes: ['name', 'description'] },
           { model: Model.ProductCategories, as: "productCategories", attributes: ['name', 'description'] },
           { model: Model.ProductSubCategories, as: "productSubCategories", attributes: ['name', 'description'] },
+          { model: Model.ProductSubSubCategories, as: "productSubSubCategories", attributes: ['name', 'description'] },
           { model: Model.ProductImages, as: "productImages", attributes: ['id', 'file_name', 'color', 'order', 'product_id'], required: false },
           { model: Model.Inventories, as: "inventories", attributes: ['stock_available', 'product_id'], required: false },
           { model: Model.Users, as: "users", attributes: ['email', 'username'] }
@@ -517,156 +635,4 @@ module.exports = {
       });
     }
   },
-
-
-
-
-
-
-  /**
-   * Find all by category id
-   * @route GET /product/findAllbyProductCategoryId/:productCategoryId
-   * @param req
-   * @param res
-   * @returns {never}
-   */
-  findAllbyProductCategoryId: async (req, res) => {
-    const params = req.params;
-    let data, criteria;
-
-    try {
-      // // Pre-setting variables
-      // criteria = {
-      //   where: { product_category_id: params.productCategoryId, is_deleted: 0 },
-      //   include: [
-      //     { model: Model.ProductCategories, as: "productCategories" },
-      //     { model: Model.ProductSubCategories, as: "productSubCategories" },
-      //     { model: Model.Users, as: "users" }
-      //   ]
-      // };
-      // // Execute findAll query
-      // data = await Model.Products.findAll(criteria);
-      // if (!_.isEmpty(data[0])) {
-      //   res.json({
-      //     status: 200,
-      //     message: "Successfully find all data.",
-      //     result: data
-      //   });
-      // } else {
-      //   res.json({
-      //     status: 200,
-      //     message: "No Data Found.",
-      //     result: false
-      //   });
-      // }
-
-      // Pre-setting variables
-      query = `SELECT 
-                products.*,
-                productImages.file_name,
-                productImages.color
-              FROM products AS products
-                LEFT OUTER JOIN product_images AS productImages ON productImages.product_id = products.id
-                WHERE products.product_category_id = ? AND productImages.is_deleted = 0 GROUP BY productImages.product_id ASC;`;
-      // Execute native query
-      data = await Model.sequelize.query(query, {
-        replacements: [params.productCategoryId],
-        type: Model.sequelize.QueryTypes.SELECT
-      });
-      if (!_.isEmpty(data)) {
-        res.json({
-          status: 200,
-          message: "Successfully searched data.",
-          result: data
-        });
-      } else {
-        res.json({
-          status: 200,
-          message: "No Data Found.",
-          result: []
-        });
-      }
-    } catch (err) {
-      res.json({
-        status: 401,
-        err: err,
-        message: "Failed to find all data."
-      });
-    }
-  },
-
-  /**
-   * Find all by category id
-   * @route GET /product/findAllbyProductSubCategoryId/:productSubCategoryId
-   * @param req
-   * @param res
-   * @returns {never}
-   */
-  findAllbyProductSubCategoryId: async (req, res) => {
-    const params = req.params;
-    let data, criteria;
-
-    try {
-      // // Pre-setting variables
-      // criteria = {
-      //   where: {
-      //     product_sub_category_id: params.productSubCategoryId,
-      //     is_deleted: 0
-      //   },
-      //   include: [
-      //     { model: Model.ProductCategories, as: "productCategories" },
-      //     { model: Model.ProductSubCategories, as: "productSubCategories" },
-      //     { model: Model.Users, as: "users" }
-      //   ]
-      // };
-      // // Execute findAll query
-      // data = await Model.Products.findAll(criteria);
-      // if (!_.isEmpty(data[0])) {
-      //   res.json({
-      //     status: 200,
-      //     message: "Successfully find all data.",
-      //     result: data
-      //   });
-      // } else {
-      //   res.json({
-      //     status: 200,
-      //     message: "No Data Found.",
-      //     result: false
-      //   });
-      // }
-
-      // Pre-setting variables
-      query = `SELECT 
-                products.*,
-                productImages.file_name,
-                productImages.color
-              FROM products AS products
-                LEFT OUTER JOIN product_images AS productImages ON productImages.product_id = products.id
-                WHERE products.product_sub_category_id = ? AND productImages.is_deleted = 0 GROUP BY productImages.product_id ASC;`;
-      // Execute native query
-      data = await Model.sequelize.query(query, {
-        replacements: [params.productSubCategoryId],
-        type: Model.sequelize.QueryTypes.SELECT
-      });
-      if (!_.isEmpty(data)) {
-        res.json({
-          status: 200,
-          message: "Successfully searched data.",
-          result: data
-        });
-      } else {
-        res.json({
-          status: 200,
-          message: "No Data Found.",
-          result: []
-        });
-      }
-    } catch (err) {
-      res.json({
-        status: 401,
-        err: err,
-        message: "Failed to find all data."
-      });
-    }
-  }
 };

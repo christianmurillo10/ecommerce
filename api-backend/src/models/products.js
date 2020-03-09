@@ -31,12 +31,12 @@ module.exports = (sequelize, DataTypes) => {
     },
     'vat_amount': {
       type: DataTypes.DECIMAL(12, 2),
-      allowNull: false,
+      allowNull: true,
       defaultValue: '0.00'
     },
     'discount_amount': {
       type: DataTypes.DECIMAL(12, 2),
-      allowNull: false,
+      allowNull: true,
       defaultValue: '0.00'
     },
     'user_id': {
@@ -97,23 +97,23 @@ module.exports = (sequelize, DataTypes) => {
     'vat_type': {
       type: DataTypes.SMALLINT(1),
       comment: '1=Amount 2=Percentage',
-      allowNull: false,
+      allowNull: true,
       defaultValue: '1'
     },
     'discount_type': {
       type: DataTypes.SMALLINT(1),
       comment: '1=Amount 2=Percentage',
-      allowNull: false,
+      allowNull: true,
       defaultValue: '1'
     },
     'is_today_deal': {
       type: DataTypes.SMALLINT(1),
-      allowNull: false,
+      allowNull: true,
       defaultValue: '0'
     },
     'is_featured': {
       type: DataTypes.SMALLINT(1),
-      allowNull: false,
+      allowNull: true,
       defaultValue: '0'
     },
     'is_published': {
