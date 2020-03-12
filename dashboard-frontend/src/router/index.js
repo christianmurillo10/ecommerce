@@ -5,6 +5,7 @@ import Login from "../views/Login";
 import Dashboard from "../views/Dashboard";
 import Users from "../views/users/Index";
 import Roles from "../views/roles/Index";
+import ProductBrands from "../views/productBrands/Index";
 import ProductCategories from "../views/productCategories/Index";
 import ProductSubCategories from "../views/productSubCategories/Index";
 import Products from "../views/products/Index";
@@ -41,6 +42,11 @@ let router = new Router({
       path: "/roles",
       name: "roles",
       component: Roles
+    },
+    {
+      path: "/productBrands",
+      name: "productBrands",
+      component: ProductBrands
     },
     {
       path: "/productCategories",

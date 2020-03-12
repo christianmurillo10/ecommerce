@@ -131,6 +131,10 @@ export default {
             submenus: true,
             subChilds: [
               {
+                to: "/productBrands",
+                text: "Brands"
+              },
+              {
                 to: "/productCategories",
                 text: "Categories"
               },

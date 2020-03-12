@@ -8,6 +8,7 @@ import toolbar from './modules/toolbar'
 import userAuthentication from './modules/userAuthentication'
 import users from './modules/users'
 import roles from './modules/roles'
+import productBrands from './modules/productBrands'
 import productCategories from './modules/productCategories'
 import productSubCategories from './modules/productSubCategories'
 import productImages from './modules/productImages'
@@ -31,6 +32,7 @@ export default new Vuex.Store({
     userAuthentication,
     users,
     roles,
+    productBrands,
     productCategories,
     productSubCategories,
     productImages,
