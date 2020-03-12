@@ -8,7 +8,7 @@ module.exports = {
    * @param req
    * @param res
    * @returns {Promise<void>}
-   * @routes POST /productBrand/create
+   * @routes POST /productBrands/create
    */
   create: async (req, res) => {
     const params = req.body;
@@ -67,7 +67,7 @@ module.exports = {
 
   /**
    * Update
-   * @route PUT /productBrand/update/:id
+   * @route PUT /productBrands/update/:id
    * @param req
    * @param res
    * @returns {never}
@@ -125,7 +125,7 @@ module.exports = {
 
   /**
    * Delete
-   * @route PUT /productBrand/delete/:id
+   * @route PUT /productBrands/delete/:id
    * @param req
    * @param res
    * @returns {never}
@@ -161,7 +161,7 @@ module.exports = {
 
   /**
    * Search
-   * @route POST /productBrand/search/:value
+   * @route POST /productBrands/search/:value
    * @param req
    * @param res
    * @returns {never}
@@ -207,7 +207,7 @@ module.exports = {
 
   /**
    * Find all
-   * @route GET /productBrand
+   * @route GET /productBrands
    * @param req
    * @param res
    * @returns {never}
@@ -244,7 +244,7 @@ module.exports = {
 
   /**
    * Find by id
-   * @route GET /productBrand/:id
+   * @route GET /productBrands/:id
    * @param req
    * @param res
    * @returns {never}
@@ -279,7 +279,7 @@ module.exports = {
 
   /**
    * Find by file_name
-   * @route GET /productBrand/viewImage/:fileName
+   * @route GET /productBrands/viewImage/:fileName
    * @param req
    * @param res
    * @returns {never}
