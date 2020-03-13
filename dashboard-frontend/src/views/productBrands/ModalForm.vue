@@ -13,7 +13,7 @@
           <v-layout wrap>
             <v-flex xs12 sm12 md12>
               <v-layout wrap justify-center>
-                <img :src="formData.file_path" height="200" />
+                <img :src="formData.file_path" height="80" width="120" />
               </v-layout>
             </v-flex>
             <v-flex xs12 sm12 md12>

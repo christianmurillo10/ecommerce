@@ -18,7 +18,7 @@
     </v-toolbar>
     <v-data-table :headers="headers" :items="productBrandList" class="elevation-1">
       <template v-slot:items="props">
-        <td class="text-xs-left"><img :src="props.item.file_path" height="150" /></td>
+        <td class="text-xs-left pt-1"><img :src="props.item.file_path" height="80" width="120" /></td>
         <td class="text-xs-left">{{ props.item.name }}</td>
         <td class="text-xs-left">{{ props.item.description }}</td>
         <td class="text-xs-center">

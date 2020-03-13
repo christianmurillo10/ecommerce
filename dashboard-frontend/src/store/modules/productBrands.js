@@ -85,14 +85,14 @@ const actions = {
     let header = { headers: { Token: localStorage.getItem("token") } };
     return new Promise((resolve, reject) => {
       try {
-        let obj = {
-          name: payload.name,
-          description: payload.description,
-          file_name: payload.file_name
-        };
+        var data = new FormData();
+        data.set('name', payload.name);
+        data.set('description', payload.description);
+        data.set('file_name', payload.file_name);
+        data.append('image', payload.file);
 
         axios
-          .put(url, obj, header)
+          .put(url, data, header)
           .then(response => {
             commit("UPDATE_DATA", response.data.result);
             resolve(response);
