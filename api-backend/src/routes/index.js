@@ -6,7 +6,7 @@ router.use('/user', require('./users'));
 router.use('/inventory', require('./inventories'));
 router.use('/inventoryHistory', require('./inventoryHistories'));
 router.use('/productBrands', require('./productBrands'));
-router.use('/productCategory', require('./productCategories'));
+router.use('/productCategories', require('./productCategories'));
 router.use('/productSubCategory', require('./productSubCategories'));
 router.use('/productSubSubCategory', require('./productSubSubCategories'));
 router.use('/productAvailableSize', require('./productAvailableSizes'));

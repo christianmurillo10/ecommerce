@@ -1,4 +1,6 @@
 const Model = require('../models');
+const fs = require('fs');
+const path = require('path');
 
 module.exports = {
   /**
@@ -6,7 +8,7 @@ module.exports = {
    * @param req
    * @param res
    * @returns {Promise<void>}
-   * @routes POST /productCategory/create
+   * @routes POST /productCategories/create
    */
   create: async (req, res) => {
     const params = req.body;
@@ -46,6 +48,10 @@ module.exports = {
       data = await Model.ProductCategories.findAll(criteria);
       if (_.isEmpty(data[0])) {
         let finalData = await Model.ProductCategories.create(initialValues);
+        // For Upload Images
+        if (!_.isUndefined(req.files)) {
+          let fileUpload = await uploadImage(params, req.files);
+        }
         res.json({
           status: 200,
           message: "Successfully created data.",
@@ -69,7 +75,7 @@ module.exports = {
 
   /**
    * Update
-   * @route PUT /productCategory/update/:id
+   * @route PUT /productCategories/update/:id
    * @param req
    * @param res
    * @returns {never}
@@ -110,6 +116,10 @@ module.exports = {
 
       if (!_.isEmpty(data)) {
         let finalData = await data.update(initialValues);
+        // For Upload Images
+        if (!_.isUndefined(req.files)) {
+          let fileUpload = await uploadImage(params, req.files);
+        }
         res.json({
           status: 200,
           message: "Successfully updated data.",
@@ -133,7 +143,7 @@ module.exports = {
 
   /**
    * Delete
-   * @route PUT /productCategory/delete/:id
+   * @route PUT /productCategories/delete/:id
    * @param req
    * @param res
    * @returns {never}
@@ -169,7 +179,7 @@ module.exports = {
 
   /**
    * Search
-   * @route POST /productCategory/search/:value
+   * @route POST /productCategories/search/:value
    * @param req
    * @param res
    * @returns {never}
@@ -215,7 +225,7 @@ module.exports = {
 
   /**
    * Find all
-   * @route GET /productCategory
+   * @route GET /productCategories
    * @param req
    * @param res
    * @returns {never}
@@ -252,7 +262,7 @@ module.exports = {
 
   /**
    * Find all with sub categories
-   * @route GET /productCategory/findAllWithSubCategories
+   * @route GET /productCategories/findAllWithSubCategories
    * @param req
    * @param res
    * @returns {never}
@@ -293,7 +303,7 @@ module.exports = {
 
   /**
    * Find by id
-   * @route GET /productCategory/:id
+   * @route GET /productCategories/:id
    * @param req
    * @param res
    * @returns {never}
@@ -326,3 +336,27 @@ module.exports = {
     }
   },
 };
+
+/**
+ * Other Functions
+ */
+const uploadImage = (data, files) => {
+  try {
+    if (files['icon-image'].length) {
+      fs.writeFile('images/productCategories/' + data.icon_file_name, files['icon-image'][0], function (err) {
+        if (err) throw err;
+      })
+    }
+
+    if (files['banner-image'].length) {
+      fs.writeFile('images/productCategories/' + data.banner_file_name, files['banner-image'][0], function (err) {
+        if (err) throw err;
+      })
+    }
+
+    return true;
+  } catch (err) {
+    console.log(err);
+    return false;
+  }
+}
