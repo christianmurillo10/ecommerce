@@ -12,6 +12,42 @@
         <v-container grid-list-md>
           <v-layout wrap>
             <v-flex xs12 sm12 md12>
+              <v-layout wrap justify-center>
+                <img :src="formData.icon_file_path" height="32" width="32" />
+              </v-layout>
+            </v-flex>
+            <v-flex xs12 sm12 md12>
+              <v-layout wrap justify-center>
+                <v-btn small @click="pickFileIcon">Upload Icon Image</v-btn>
+                <input
+                  type="file"
+                  style="display: none"
+                  ref="imageIcon"
+                  accept="image/*"
+                  @change="onFilePickedIcon"
+                />
+              </v-layout>
+            </v-flex>
+            <v-flex xs12 sm12 md12>
+              <v-layout wrap justify-center>
+                <img :src="formData.banner_file_path" height="230" width="968" />
+              </v-layout>
+            </v-flex>
+            <v-flex xs12 sm12 md12>
+              <v-layout wrap justify-center>
+                <v-btn small @click="pickFileBanner">Upload Banner Image</v-btn>
+                <input
+                  type="file"
+                  style="display: none"
+                  ref="imageBanner"
+                  accept="image/*"
+                  @change="onFilePickedBanner"
+                />
+              </v-layout>
+            </v-flex>
+
+
+            <v-flex xs12 sm12 md12>
               <v-text-field
                 v-model="formData.name"
                 :rules="validateItem.nameRules"
@@ -53,12 +89,18 @@ export default {
   data: () => ({
     defaultFormData: {
       name: null,
-      description: ""
+      description: "",
+      icon_file: null,
+      icon_file_path: require("../../assets/images/no-image.png"),
+      icon_file_name: null
     },
     formType: "new",
     formData: {
       name: null,
-      description: ""
+      description: "",
+      icon_file: null,
+      icon_file_path: require("../../assets/images/no-image.png"),
+      icon_file_name: null
     },
     valid: true,
     validateItem: {
@@ -90,11 +132,61 @@ export default {
       deleteProductCategoryData: "deleteData"
     }),
 
+    pickFileIcon() {
+      this.$refs.imageIcon.click();
+    },
+
+    onFilePickedIcon(e) {
+      const files = e.target.files;
+      if (files[0] !== undefined) {
+        this.formData.icon_file_name = files[0].name;
+        if (this.formData.icon_file_name.lastIndexOf(".") <= 0) {
+          return;
+        }
+        const fr = new FileReader();
+        fr.readAsDataURL(files[0]);
+        fr.addEventListener("load", () => {
+          this.formData.icon_file_path = fr.result;
+          this.formData.icon_file = files[0]; // this is an image file that can be sent to server...
+        });
+      } else {
+        this.formData.icon_file = this.defaultFormData.icon_file;
+        this.formData.icon_file_path = this.defaultFormData.icon_file_path;
+        this.formData.icon_file_name = this.defaultFormData.icon_file_name;
+      }
+    },
+
+    pickFileBanner() {
+      this.$refs.imageBanner.click();
+    },
+
+    onFilePickedBanner(e) {
+      const files = e.target.files;
+      if (files[0] !== undefined) {
+        this.formData.banner_file_name = files[0].name;
+        if (this.formData.banner_file_name.lastIndexOf(".") <= 0) {
+          return;
+        }
+        const fr = new FileReader();
+        fr.readAsDataURL(files[0]);
+        fr.addEventListener("load", () => {
+          this.formData.banner_file_path = fr.result;
+          this.formData.banner_file = files[0]; // this is an image file that can be sent to server...
+        });
+      } else {
+        this.formData.banner_file = this.defaultFormData.banner_file;
+        this.formData.banner_file_path = this.defaultFormData.banner_file_path;
+        this.formData.banner_file_name = this.defaultFormData.banner_file_name;
+      }
+    },
+
     editItem(id) {
       let data = this.getProductCategoryById(id);
       this.formData.id = data.id;
       this.formData.name = data.name;
       this.formData.description = data.description;
+      this.formData.icon_file_path = `${process.env.VUE_APP_API_BACKEND}/productCategories/viewImage/${data.icon_file_name}`;
+      this.formData.banner_file_path = `${process.env.VUE_APP_API_BACKEND}/productCategories/viewImage/${data.banner_file_name}`;
       this.formType = "update";
     },
 

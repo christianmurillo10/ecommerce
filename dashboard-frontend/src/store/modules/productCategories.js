@@ -1,4 +1,5 @@
 import axios from "axios";
+import FormData from 'form-data';
 
 const state = {
   productCategoryList: []
@@ -24,7 +25,17 @@ const actions = {
       try {
         axios.get(url, header)
           .then(response => {
-            commit("SET_DATA", response.data.result);
+            let obj = response.data.result
+
+            if (obj) {
+              obj.forEach(element => {
+                element.icon_file_path = `${process.env.VUE_APP_API_BACKEND}/productCategories/viewImage/${element.icon_file_name}`;
+                element.banner_file_path = `${process.env.VUE_APP_API_BACKEND}/productCategories/viewImage/${element.banner_file_name}`;
+              });
+            }
+
+            commit("SET_DATA", obj);
+            resolve(response);
           });
       } catch (err) {
         reject(err);
@@ -51,13 +62,16 @@ const actions = {
     let header = { headers: { Token: localStorage.getItem("token") } };
     return new Promise((resolve, reject) => {
       try {
-        let obj = {
-          name: payload.name,
-          description: payload.description
-        };
+        var data = new FormData();
+        data.set('name', payload.name);
+        data.set('description', payload.description);
+        data.set('icon_file_name', payload.icon_file_name);
+        data.set('banner_file_name', payload.banner_file_name);
+        data.append('icon-image', payload.icon_file);
+        data.append('banner-image', payload.banner_file);
 
         axios
-          .post(url, obj, header)
+          .post(url, data, header)
           .then(response => {
             if (response.data.result) {
               commit("ADD_DATA", response.data.result);
@@ -74,13 +88,16 @@ const actions = {
     let header = { headers: { Token: localStorage.getItem("token") } };
     return new Promise((resolve, reject) => {
       try {
-        let obj = {
-          name: payload.name,
-          description: payload.description
-        };
+        var data = new FormData();
+        data.set('name', payload.name);
+        data.set('description', payload.description);
+        data.set('icon_file_name', payload.icon_file_name);
+        data.set('banner_file_name', payload.banner_file_name);
+        data.append('icon-image', payload.icon_file);
+        data.append('banner-image', payload.banner_file);
 
         axios
-          .put(url, obj, header)
+          .put(url, data, header)
           .then(response => {
             commit("UPDATE_DATA", response.data.result);
             resolve(response);
@@ -117,13 +134,20 @@ const mutations = {
     }
   },
   ADD_DATA(state, payload) {
-    state.productCategoryList.push(payload);
+    let obj = payload;
+    obj.icon_file_path = `${process.env.VUE_APP_API_BACKEND}/productCategories/viewImage/${payload.icon_file_name}`;
+    obj.banner_file_path = `${process.env.VUE_APP_API_BACKEND}/productCategories/viewImage/${payload.banner_file_name}`;
+    state.productCategoryList.push(obj);
   },
   UPDATE_DATA(state, payload) {
     let index = state.productCategoryList.map(productCategory => productCategory.id).indexOf(payload.id);
     Object.assign(state.productCategoryList[index], {
       name: payload.name,
-      description: payload.description
+      description: payload.description,
+      icon_file_name: payload.icon_file_name,
+      banner_file_name: payload.banner_file_name,
+      icon_file_path: `${process.env.VUE_APP_API_BACKEND}/productCategories/viewImage/${payload.icon_file_name}`,
+      banner_file_path: `${process.env.VUE_APP_API_BACKEND}/productCategories/viewImage/${payload.banner_file_name}`
     });
   },
   DELETE_DATA(state, payload) {

@@ -343,13 +343,13 @@ module.exports = {
 const uploadImage = (data, files) => {
   try {
     if (files['icon-image'].length) {
-      fs.writeFile('images/productCategories/' + data.icon_file_name, files['icon-image'][0], function (err) {
+      fs.writeFile('images/productCategories/' + data.icon_file_name, files['icon-image'][0].buffer, function (err) {
         if (err) throw err;
       })
     }
 
     if (files['banner-image'].length) {
-      fs.writeFile('images/productCategories/' + data.banner_file_name, files['banner-image'][0], function (err) {
+      fs.writeFile('images/productCategories/' + data.banner_file_name, files['banner-image'][0].buffer, function (err) {
         if (err) throw err;
       })
     }
