@@ -45,8 +45,6 @@
                 />
               </v-layout>
             </v-flex>
-
-
             <v-flex xs12 sm12 md12>
               <v-text-field
                 v-model="formData.name"

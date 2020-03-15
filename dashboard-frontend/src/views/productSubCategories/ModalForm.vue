@@ -33,8 +33,6 @@
                 item-value="id"
                 v-model="formData.product_category_id"
                 label="Product Category"
-                persistent-hint
-                prepend-icon="list"
                 :rules="validateItem.productCategoryRules"
                 required
               ></v-autocomplete>
