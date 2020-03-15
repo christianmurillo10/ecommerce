@@ -6,6 +6,7 @@ const upload = multer();
 const authController = require('../controllers').auth;
 const productCategoriesController = require('../controllers').productCategories;
 
+router.route('/viewImage/:fileName').get(productCategoriesController.viewImage);
 router.route('/findAllWithSubCategories').get(productCategoriesController.findAllWithSubCategories);
 router.route('/').get(productCategoriesController.findAll);
 router.route('/:id').get(productCategoriesController.findById);

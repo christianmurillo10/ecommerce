@@ -335,6 +335,17 @@ module.exports = {
       });
     }
   },
+
+  /**
+   * Find by file_name
+   * @route GET /productCategories/viewImage/:fileName
+   * @param req
+   * @param res
+   * @returns {never}
+   */
+  viewImage: (req, res) => {
+    res.sendFile(path.join(__dirname, "../../images/productCategories/" + req.params.fileName));
+  },
 };
 
 /**

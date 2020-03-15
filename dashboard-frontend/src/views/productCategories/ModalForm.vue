@@ -92,7 +92,10 @@ export default {
       description: "",
       icon_file: null,
       icon_file_path: require("../../assets/images/no-image.png"),
-      icon_file_name: null
+      icon_file_name: null,
+      banner_file: null,
+      banner_file_path: require("../../assets/images/no-image.png"),
+      banner_file_name: null
     },
     formType: "new",
     formData: {
@@ -100,7 +103,10 @@ export default {
       description: "",
       icon_file: null,
       icon_file_path: require("../../assets/images/no-image.png"),
-      icon_file_name: null
+      icon_file_name: null,
+      banner_file: null,
+      banner_file_path: require("../../assets/images/no-image.png"),
+      banner_file_name: null
     },
     valid: true,
     validateItem: {
