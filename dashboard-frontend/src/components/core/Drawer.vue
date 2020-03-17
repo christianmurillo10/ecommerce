@@ -141,6 +141,10 @@ export default {
               {
                 to: "/productSubCategories",
                 text: "Sub-Categories"
+              },
+              {
+                to: "/productSubSubCategories",
+                text: "Sub-Sub-Categories"
               }
             ]
           }

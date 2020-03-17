@@ -8,6 +8,7 @@ import Roles from "../views/roles/Index";
 import ProductBrands from "../views/productBrands/Index";
 import ProductCategories from "../views/productCategories/Index";
 import ProductSubCategories from "../views/productSubCategories/Index";
+import ProductSubSubCategories from "../views/productSubSubCategories/Index";
 import Products from "../views/products/Index";
 import ProductsView from "../views/products/View";
 import ProductBannerImages from "../views/productBannerImages/Index";
@@ -57,6 +58,11 @@ let router = new Router({
       path: "/productSubCategories",
       name: "productSubCategories",
       component: ProductSubCategories
+    },
+    {
+      path: "/productSubSubCategories",
+      name: "productSubSubCategories",
+      component: ProductSubSubCategories
     },
     {
       path: "/products",

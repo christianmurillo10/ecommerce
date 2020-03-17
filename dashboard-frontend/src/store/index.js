@@ -11,6 +11,7 @@ import roles from './modules/roles'
 import productBrands from './modules/productBrands'
 import productCategories from './modules/productCategories'
 import productSubCategories from './modules/productSubCategories'
+import productSubSubCategories from './modules/productSubSubCategories'
 import productImages from './modules/productImages'
 import productBannerImages from './modules/productBannerImages'
 import productAvailableSizes from './modules/productAvailableSizes'
@@ -35,6 +36,7 @@ export default new Vuex.Store({
     productBrands,
     productCategories,
     productSubCategories,
+    productSubSubCategories,
     productImages,
     productBannerImages,
     productAvailableSizes,

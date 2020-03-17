@@ -6,7 +6,7 @@ module.exports = {
    * @param req
    * @param res
    * @returns {Promise<void>}
-   * @routes POST /productSubSubCategory/create
+   * @routes POST /productSubSubCategories/create
    */
   create: async (req, res) => {
     const params = req.body;
@@ -74,7 +74,7 @@ module.exports = {
 
   /**
    * Update
-   * @route PUT /productSubSubCategory/update/:id
+   * @route PUT /productSubSubCategories/update/:id
    * @param req
    * @param res
    * @returns {never}
@@ -127,7 +127,7 @@ module.exports = {
 
   /**
    * Delete
-   * @route PUT /productSubSubCategory/delete/:id
+   * @route PUT /productSubSubCategories/delete/:id
    * @param req
    * @param res
    * @returns {never}
@@ -163,7 +163,7 @@ module.exports = {
 
   /**
    * Search
-   * @route POST /productSubSubCategory/search/:value
+   * @route POST /productSubSubCategories/search/:value
    * @param req
    * @param res
    * @returns {never}
@@ -218,7 +218,7 @@ module.exports = {
 
   /**
    * Find all
-   * @route GET /productSubSubCategory
+   * @route GET /productSubSubCategories
    * @param req
    * @param res
    * @returns {never}
@@ -255,7 +255,7 @@ module.exports = {
 
   /**
    * Find all by product category id
-   * @route GET /productSubSubCategory/findAllbyProductCategoryId/:productCategoryId
+   * @route GET /productSubSubCategories/findAllbyProductCategoryId/:productCategoryId
    * @param req
    * @param res
    * @returns {never}
@@ -293,7 +293,7 @@ module.exports = {
 
   /**
    * Find all by product category id
-   * @route GET /productSubSubCategory/findAllbyProductSubCategoryId/:productSubCategoryId
+   * @route GET /productSubSubCategories/findAllbyProductSubCategoryId/:productSubCategoryId
    * @param req
    * @param res
    * @returns {never}
@@ -331,7 +331,7 @@ module.exports = {
 
   /**
    * Find by id
-   * @route GET /productSubSubCategory/:id
+   * @route GET /productSubSubCategories/:id
    * @param req
    * @param res
    * @returns {never}
