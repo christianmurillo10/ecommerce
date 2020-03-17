@@ -7,26 +7,25 @@
         <v-icon class="black--text">view_list</v-icon>Products
       </v-toolbar-title>
       <v-spacer></v-spacer>
-      <v-dialog v-model="dialog" max-width="500px">
-        <template v-slot:activator="{ on }">
-          <v-btn icon v-on="on">
-            <v-icon>add_box</v-icon>
-          </v-btn>
-        </template>
-        <ModalForm ref="modalForm" @setDialog="setDialog" />
-      </v-dialog>
+      <v-btn icon to="/products/create">
+        <v-icon>add_box</v-icon>
+      </v-btn>
     </v-toolbar>
     <v-data-table :headers="headers" :items="productList" class="elevation-1">
       <template v-slot:items="props">
         <td class="text-xs-left">
-          <router-link v-bind:to="'/products/view/' + props.item.id">{{ props.item.name }}</router-link>
+          <router-link v-bind:to="'/products/view/' + props.item.id">{{
+            props.item.name
+          }}</router-link>
         </td>
         <td class="text-xs-left">{{ props.item.description }}</td>
         <td class="text-xs-left">{{ props.item.price }}</td>
         <td class="text-xs-left">{{ props.item.productCategories.name }}</td>
         <td class="text-xs-left">{{ props.item.productSubCategories.name }}</td>
         <td class="justify-center layout px-0">
-          <v-icon small class="mr-2" @click="editItem(props.item.id)">edit</v-icon>
+          <v-icon small class="mr-2" @click="editItem(props.item.id)"
+            >edit</v-icon
+          >
           <v-icon small @click="deleteItem(props.item.id)">delete</v-icon>
         </td>
       </template>

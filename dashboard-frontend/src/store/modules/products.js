@@ -54,10 +54,20 @@ const actions = {
         let obj = {
           name: payload.name,
           description: payload.description,
-          stock: payload.stock,
-          price: payload.price,
+          unit: payload.unit,
+          tags: payload.tags,
+          price_amount: payload.price_amount,
+          vat_amount: payload.vat_amount,
+          discount_amount: payload.discount_amount,
+          product_brand_id: payload.product_brand_id,
           product_category_id: payload.product_category_id,
-          product_sub_category_id: payload.product_sub_category_id
+          product_sub_category_id: payload.product_sub_category_id,
+          product_sub_sub_category_id: payload.product_sub_sub_category_id,
+          vat_type: payload.vat_type,
+          discount_type: payload.discount_type,
+          is_today_deal: payload.is_today_deal,
+          is_featured: payload.is_featured,
+          is_published: payload.is_published
         };
 
         axios
@@ -81,9 +91,20 @@ const actions = {
         let obj = {
           name: payload.name,
           description: payload.description,
-          price: payload.price,
+          unit: payload.unit,
+          tags: payload.tags,
+          price_amount: payload.price_amount,
+          vat_amount: payload.vat_amount,
+          discount_amount: payload.discount_amount,
+          product_brand_id: payload.product_brand_id,
           product_category_id: payload.product_category_id,
-          product_sub_category_id: payload.product_sub_category_id
+          product_sub_category_id: payload.product_sub_category_id,
+          product_sub_sub_category_id: payload.product_sub_sub_category_id,
+          vat_type: payload.vat_type,
+          discount_type: payload.discount_type,
+          is_today_deal: payload.is_today_deal,
+          is_featured: payload.is_featured,
+          is_published: payload.is_published
         };
 
         axios
@@ -131,9 +152,20 @@ const mutations = {
     Object.assign(state.productList[index], {
       name: payload.name,
       description: payload.description,
-      price: payload.price,
+      unit: payload.unit,
+      tags: payload.tags,
+      price_amount: payload.price_amount,
+      vat_amount: payload.vat_amount,
+      discount_amount: payload.discount_amount,
+      product_brand_id: payload.product_brand_id,
       product_category_id: payload.product_category_id,
-      product_sub_category_id: payload.product_sub_category_id
+      product_sub_category_id: payload.product_sub_category_id,
+      product_sub_sub_category_id: payload.product_sub_sub_category_id,
+      vat_type: payload.vat_type,
+      discount_type: payload.discount_type,
+      is_today_deal: payload.is_today_deal,
+      is_featured: payload.is_featured,
+      is_published: payload.is_published
     });
   },
   DELETE_DATA(state, payload) {
