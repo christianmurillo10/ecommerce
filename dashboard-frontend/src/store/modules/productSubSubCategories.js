@@ -28,8 +28,8 @@ const actions = {
       }
     });
   },
-  getDataByProductCategoryId({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/productSubSubCategories/findAllbyProductCategoryId/${payload}`;
+  getDataByProductCategoryIdAndProductSubCategoryId({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
+    let url = `${process.env.VUE_APP_API_BACKEND}/productSubSubCategories/findAllbyProductCategoryIdAndProductSubCategoryId/${payload.categoryId}/${payload.subCategoryId}`;
     let header = { headers: { Token: localStorage.getItem("token") } };
     return new Promise((resolve, reject) => {
       try {
