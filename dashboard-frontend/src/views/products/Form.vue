@@ -39,11 +39,6 @@
                           ></v-text-field>
                         </v-flex>
                         <v-flex xs12 sm12 md12>
-                          <!-- <v-text-field
-                            v-model="formData.tags"
-                            :rules="validateItem.tagsRules"
-                            label="Tags"
-                          ></v-text-field> -->
                           <v-combobox
                             multiple
                             v-model="formData.tags"
