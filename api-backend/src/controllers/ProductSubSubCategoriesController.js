@@ -330,6 +330,44 @@ module.exports = {
   },
 
   /**
+   * Find all by product category id and product sub-category id
+   * @route GET /productSubSubCategories/findAllbyProductCategoryIdAndProductSubCategoryId/:productCategoryId/:productSubCategoryId
+   * @param req
+   * @param res
+   * @returns {never}
+   */
+  findAllbyProductCategoryIdAndProductSubCategoryId: async (req, res) => {
+    const params = req.params;
+    let data, criteria;
+
+    try {
+      // Pre-setting variables
+      criteria = { where: { product_category_id: params.productCategoryId, product_sub_category_id: params.productSubCategoryId, is_deleted: 0 }, include: [{ model: Model.ProductCategories, as: 'productCategories' }, { model: Model.ProductSubCategories, as: 'productSubCategories' }] };
+      // Execute findAll query
+      data = await Model.ProductSubSubCategories.findAll(criteria);
+      if (!_.isEmpty(data[0])) {
+        res.json({
+          status: 200,
+          message: "Successfully find all data.",
+          result: data
+        });
+      } else {
+        res.json({
+          status: 200,
+          message: "No Data Found.",
+          result: false
+        });
+      }
+    } catch (err) {
+      res.json({
+        status: 401,
+        err: err,
+        message: "Failed to find all data."
+      });
+    }
+  },
+
+  /**
    * Find by id
    * @route GET /productSubSubCategories/:id
    * @param req

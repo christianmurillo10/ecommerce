@@ -65,46 +65,50 @@
                           ></v-text-field>
                         </v-flex>
                         <v-flex xs12 sm12 md12>
-                          <v-flex xs12 sm12 md8>
-                            <v-text-field
-                              v-model="formData.vat_amount"
-                              label="VAT Amount"
-                              type="number"
-                            ></v-text-field>
-                          </v-flex>
-                          <v-flex xs12 sm12 md4>
-                            <v-autocomplete
-                              :items="getProductBrandList"
-                              item-text="name"
-                              item-value="id"
-                              v-model="formData.product_brand_id"
-                              label="Product Brand"
-                              persistent-hint
-                              :rules="validateItem.productBrandRules"
-                              required
-                            ></v-autocomplete>
-                          </v-flex>
+                          <v-layout wrap row>
+                            <v-flex xs12 sm12 md8>
+                              <v-text-field
+                                v-model="formData.vat_amount"
+                                label="VAT Amount"
+                                type="number"
+                              ></v-text-field>
+                            </v-flex>
+                            <v-flex xs12 sm12 md4>
+                              <v-autocomplete
+                                :items="getProductBrandList"
+                                item-text="name"
+                                item-value="id"
+                                v-model="formData.product_brand_id"
+                                label="Product Brand"
+                                persistent-hint
+                                :rules="validateItem.productBrandRules"
+                                required
+                              ></v-autocomplete>
+                            </v-flex>
+                          </v-layout>
                         </v-flex>
                         <v-flex xs12 sm12 md12>
-                          <v-flex xs12 sm12 md8>
-                            <v-text-field
-                              v-model="formData.discount_amount"
-                              label="Discount Amount"
-                              type="number"
-                            ></v-text-field>
-                          </v-flex>
-                          <v-flex xs12 sm12 md4>
-                            <v-autocomplete
-                              :items="getProductBrandList"
-                              item-text="name"
-                              item-value="id"
-                              v-model="formData.product_brand_id"
-                              label="Product Brand"
-                              persistent-hint
-                              :rules="validateItem.productBrandRules"
-                              required
-                            ></v-autocomplete>
-                          </v-flex>
+                          <v-layout wrap row>
+                            <v-flex xs12 sm12 md8>
+                              <v-text-field
+                                v-model="formData.discount_amount"
+                                label="Discount Amount"
+                                type="number"
+                              ></v-text-field>
+                            </v-flex>
+                            <v-flex xs12 sm12 md4>
+                              <v-autocomplete
+                                :items="getProductBrandList"
+                                item-text="name"
+                                item-value="id"
+                                v-model="formData.product_brand_id"
+                                label="Product Brand"
+                                persistent-hint
+                                :rules="validateItem.productBrandRules"
+                                required
+                              ></v-autocomplete>
+                            </v-flex>
+                          </v-layout>
                         </v-flex>
                         <v-flex xs12 sm12 md12>
                           <v-autocomplete
@@ -170,11 +174,6 @@
                   </v-container>
                 </v-tab-item>
                 <v-tab-item value="tab-description">
-                  <v-list-tile>
-                    <v-list-tile-title>
-                      <h3>Description:</h3>
-                    </v-list-tile-title>
-                  </v-list-tile>
                   <v-container grid-list-md>
                     <v-layout wrap>
                       <v-flex xs12 sm12 md12>
@@ -338,15 +337,20 @@ export default {
         let obj = {
           categoryId: categoryId,
           subCategoryId: subCategoryId
-        }
-        this.getProductSubCategoriesDataByProductCategoryIdAndProductSubCategoryId(obj);
+        };
+        this.getProductSubCategoriesDataByProductCategoryIdAndProductSubCategoryId(
+          obj
+        );
       }
     },
 
     editItem(id) {
       let data = this.getProductById(id);
       this.setProductSubCategoryList(data.product_category_id);
-      this.setProductSubSubCategoryList(data.product_category_id, data.product_sub_category_id);
+      this.setProductSubSubCategoryList(
+        data.product_category_id,
+        data.product_sub_category_id
+      );
       this.formData.id = data.id;
       this.formData.name = data.name;
       this.formData.description = data.description;
@@ -359,7 +363,8 @@ export default {
       this.formData.product_brand_id = data.product_brand_id;
       this.formData.product_category_id = data.product_category_id;
       this.formData.product_sub_category_id = data.product_sub_category_id;
-      this.formData.product_sub_sub_category_id = data.product_sub_sub_category_id;
+      this.formData.product_sub_sub_category_id =
+        data.product_sub_sub_category_id;
       this.formData.vat_type = data.vat_type;
       this.formData.discount_type = data.discount_type;
       this.formType = "update";
