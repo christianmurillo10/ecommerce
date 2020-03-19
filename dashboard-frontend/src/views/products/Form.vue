@@ -39,12 +39,24 @@
                           ></v-text-field>
                         </v-flex>
                         <v-flex xs12 sm12 md12>
-                          <v-text-field
+                          <!-- <v-text-field
                             v-model="formData.tags"
                             :rules="validateItem.tagsRules"
                             label="Tags"
-                            required
-                          ></v-text-field>
+                          ></v-text-field> -->
+                          <v-combobox
+                            multiple
+                            v-model="formData.tags"
+                            label="Tags"
+                            append-icon
+                            chips
+                            deletable-chips
+                            class="tag-input"
+                            :search-input.sync="tagSearchInput"
+                            @keyup.tab="updateTags"
+                            @paste="updateTags"
+                          >
+                          </v-combobox>
                         </v-flex>
                         <v-flex xs12 sm12 md12 v-if="this.formType === 'new'">
                           <v-text-field
@@ -69,20 +81,17 @@
                             <v-flex xs12 sm12 md8>
                               <v-text-field
                                 v-model="formData.vat_amount"
-                                label="VAT Amount"
+                                label="VAT"
                                 type="number"
                               ></v-text-field>
                             </v-flex>
                             <v-flex xs12 sm12 md4>
                               <v-autocomplete
-                                :items="getProductBrandList"
+                                :items="rateTypeList"
                                 item-text="name"
                                 item-value="id"
-                                v-model="formData.product_brand_id"
-                                label="Product Brand"
-                                persistent-hint
-                                :rules="validateItem.productBrandRules"
-                                required
+                                v-model="formData.vat_type"
+                                label="Type"
                               ></v-autocomplete>
                             </v-flex>
                           </v-layout>
@@ -92,20 +101,17 @@
                             <v-flex xs12 sm12 md8>
                               <v-text-field
                                 v-model="formData.discount_amount"
-                                label="Discount Amount"
+                                label="Discount"
                                 type="number"
                               ></v-text-field>
                             </v-flex>
                             <v-flex xs12 sm12 md4>
                               <v-autocomplete
-                                :items="getProductBrandList"
+                                :items="rateTypeList"
                                 item-text="name"
                                 item-value="id"
-                                v-model="formData.product_brand_id"
-                                label="Product Brand"
-                                persistent-hint
-                                :rules="validateItem.productBrandRules"
-                                required
+                                v-model="formData.discount_type"
+                                label="Type"
                               ></v-autocomplete>
                             </v-flex>
                           </v-layout>
@@ -116,7 +122,7 @@
                             item-text="name"
                             item-value="id"
                             v-model="formData.product_brand_id"
-                            label="Product Brand"
+                            label="Brand"
                             persistent-hint
                             :rules="validateItem.productBrandRules"
                             required
@@ -128,15 +134,11 @@
                             item-text="name"
                             item-value="id"
                             v-model="formData.product_category_id"
-                            label="Product Category"
+                            label="Category"
                             persistent-hint
                             :rules="validateItem.productCategoryRules"
                             required
-                            v-on:change="
-                              setProductSubCategoryList(
-                                formData.product_category_id
-                              )
-                            "
+                            v-on:change="setProductSubCategoryList()"
                           ></v-autocomplete>
                         </v-flex>
                         <v-flex xs12 sm12 md12>
@@ -145,16 +147,11 @@
                             item-text="name"
                             item-value="id"
                             v-model="formData.product_sub_category_id"
-                            label="Product Sub-Category"
+                            label="Sub-Category"
                             persistent-hint
                             :rules="validateItem.productSubCategoryRules"
                             required
-                            v-on:change="
-                              setProductSubSubCategoryList(
-                                formData.product_category_id,
-                                formData.product_sub_category_id
-                              )
-                            "
+                            v-on:change="setProductSubSubCategoryList()"
                           ></v-autocomplete>
                         </v-flex>
                         <v-flex xs12 sm12 md12>
@@ -163,10 +160,7 @@
                             item-text="name"
                             item-value="id"
                             v-model="formData.product_sub_sub_category_id"
-                            label="Product Sub-Sub-Category"
-                            persistent-hint
-                            :rules="validateItem.productSubSubCategoryRules"
-                            required
+                            label="Sub-Sub-Category"
                           ></v-autocomplete>
                         </v-flex>
                       </v-flex>
@@ -225,6 +219,11 @@ import { mapState, mapGetters, mapActions } from "vuex";
 
 export default {
   data: () => ({
+    tagSearchInput: "",
+    rateTypeList: [
+      { id: 1, name: "Amount" },
+      { id: 2, name: "Percentage" }
+    ],
     tabHeaders: [
       {
         key: "details",
@@ -247,7 +246,7 @@ export default {
       name: null,
       description: "",
       unit: null,
-      tags: null,
+      tags: [],
       stock: null,
       price_amount: null,
       vat_amount: null,
@@ -264,7 +263,7 @@ export default {
       name: null,
       description: "",
       unit: null,
-      tags: null,
+      tags: [],
       stock: null,
       price_amount: null,
       vat_amount: null,
@@ -282,8 +281,13 @@ export default {
         v => !!v || "Name is required",
         v => (v && v.length <= 50) || "Name must be less than 50 characters"
       ],
+      unitRules: [
+        v => !!v || "Unit is required",
+        v => (v && v.length <= 50) || "Unit must be less than 50 characters"
+      ],
       stockRules: [v => !!v || "Stock is required"],
-      priceRules: [v => !!v || "Price is required"],
+      priceAmountRules: [v => !!v || "Price Amount is required"],
+      productBrandRules: [v => !!v || "Product Brand is required"],
       productCategoryRules: [v => !!v || "Product Category is required"],
       productSubCategoryRules: [v => !!v || "Product Sub Category is required"]
     }
@@ -326,18 +330,39 @@ export default {
       deleteProductData: "deleteData"
     }),
 
-    setProductSubCategoryList(categoryId) {
-      if (categoryId) {
-        this.getProductSubCategoriesDataByProductCategoryId(categoryId);
+    updateTags() {
+      this.$nextTick(() => {
+        this.select.push(this.tagSearchInput.split(","));
+        this.$nextTick(() => {
+          this.tagSearchInput = "";
+        });
+      });
+    },
+
+    setProductSubCategoryList() {
+      let obj = {
+        categoryId: this.formData.product_category_id,
+        subCategoryId: this.formData.product_sub_category_id
+      };
+
+      if (obj.categoryId) {
+        this.formData.product_sub_category_id = this.defaultFormData.product_sub_category_id;
+        this.formData.product_sub_sub_category_id = this.defaultFormData.product_sub_sub_category_id;
+        this.getProductSubCategoriesDataByProductCategoryId(obj.categoryId);
+        this.getProductSubCategoriesDataByProductCategoryIdAndProductSubCategoryId(
+          obj
+        );
       }
     },
 
-    setProductSubSubCategoryList(categoryId, subCategoryId) {
-      if (categoryId !== null && subCategoryId !== null) {
-        let obj = {
-          categoryId: categoryId,
-          subCategoryId: subCategoryId
-        };
+    setProductSubSubCategoryList() {
+      let obj = {
+        categoryId: this.formData.product_category_id,
+        subCategoryId: this.formData.product_sub_category_id
+      };
+
+      if (obj.categoryId !== null && obj.subCategoryId !== null) {
+        this.formData.product_sub_sub_category_id = this.defaultFormData.product_sub_sub_category_id;
         this.getProductSubCategoriesDataByProductCategoryIdAndProductSubCategoryId(
           obj
         );
@@ -346,11 +371,6 @@ export default {
 
     editItem(id) {
       let data = this.getProductById(id);
-      this.setProductSubCategoryList(data.product_category_id);
-      this.setProductSubSubCategoryList(
-        data.product_category_id,
-        data.product_sub_category_id
-      );
       this.formData.id = data.id;
       this.formData.name = data.name;
       this.formData.description = data.description;
@@ -368,6 +388,8 @@ export default {
       this.formData.vat_type = data.vat_type;
       this.formData.discount_type = data.discount_type;
       this.formType = "update";
+      this.setProductSubCategoryList();
+      this.setProductSubSubCategoryList();
     },
 
     deleteItem(id) {
@@ -404,7 +426,11 @@ export default {
                 message: response.data.message
               };
 
-              if (!response.data.result) obj.type = "error";
+              if (!response.data.result) {
+                obj.type = "error";
+              } else {
+                this.$router.push("/products");
+              }
               this.setAlert(obj);
             })
             .catch(err => console.log(err));

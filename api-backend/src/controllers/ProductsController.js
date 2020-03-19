@@ -21,16 +21,17 @@ module.exports = {
 
     // Override variables
     params.created_at = moment().utc(8).format("YYYY-MM-DD HH:mm:ss");
+    params.tags = params.tags.length === 0 ? null : params.tags.toString();
     params.price_amount = params.price_amount.toLocaleString();
-    params.vat_amount = params.vat_amount.toLocaleString();
-    params.discount_amount = params.discount_amount.toLocaleString();
+    params.vat_amount = params.vat_amount === null ? null : params.vat_amount.toLocaleString();
+    params.discount_amount = params.discount_amount === null ? null : params.discount_amount.toLocaleString();
     params.user_id = req.user.id.toLocaleString();
     params.product_brand_id = params.product_brand_id.toLocaleString();
     params.product_category_id = params.product_category_id.toLocaleString();
     params.product_sub_category_id = params.product_sub_category_id.toLocaleString();
     params.product_sub_sub_category_id = params.product_sub_sub_category_id.toLocaleString();
-    params.vat_type = params.vat_type.toLocaleString();
-    params.discount_type = params.discount_type.toLocaleString();
+    params.vat_type = params.vat_type === null ? null : params.vat_type.toLocaleString();
+    params.discount_type = params.discount_type === null ? null : params.discount_type.toLocaleString();
 
     try {
       // Validators
