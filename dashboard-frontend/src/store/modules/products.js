@@ -18,7 +18,7 @@ const getters = {
 
 const actions = {
   getData({ dispatch, commit, state, rootState, getters, rootGetters }) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/product/`;
+    let url = `${process.env.VUE_APP_API_BACKEND}/products/`;
     let header = { headers: { Token: localStorage.getItem("token") } };
     return new Promise((resolve, reject) => {
       try {
@@ -32,7 +32,7 @@ const actions = {
     });
   },
   getDataById({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/product/${payload}`;
+    let url = `${process.env.VUE_APP_API_BACKEND}/products/${payload}`;
     let header = { headers: { Token: localStorage.getItem("token") } };
     return new Promise((resolve, reject) => {
       try {
@@ -47,7 +47,7 @@ const actions = {
     });
   },
   saveData({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/product/create`;
+    let url = `${process.env.VUE_APP_API_BACKEND}/products/create`;
     let header = { headers: { Token: localStorage.getItem("token") } };
     return new Promise((resolve, reject) => {
       try {
@@ -84,7 +84,7 @@ const actions = {
     });
   },
   updateData({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/product/update/${payload.id}`;
+    let url = `${process.env.VUE_APP_API_BACKEND}/products/updates/${payload.id}`;
     let header = { headers: { Token: localStorage.getItem("token") } };
     return new Promise((resolve, reject) => {
       try {
@@ -119,7 +119,7 @@ const actions = {
     });
   },
   deleteData({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/product/delete/${payload}`;
+    let url = `${process.env.VUE_APP_API_BACKEND}/products/delete/${payload}`;
     let header = { headers: { Token: localStorage.getItem("token") } };
     return new Promise((resolve, reject) => {
       try {

@@ -7,7 +7,7 @@ module.exports = {
    * @param req
    * @param res
    * @returns {Promise<void>}
-   * @routes POST /product/create
+   * @routes POST /products/create
    */
   create: async (req, res) => {
     const params = req.body;
@@ -113,7 +113,7 @@ module.exports = {
 
   /**
    * Update
-   * @route PUT /product/update/:id
+   * @route PUT /products/update/:id
    * @param req
    * @param res
    * @returns {never}
@@ -175,7 +175,7 @@ module.exports = {
 
   /**
    * Delete
-   * @route PUT /product/delete/:id
+   * @route PUT /products/delete/:id
    * @param req
    * @param res
    * @returns {never}
@@ -211,7 +211,7 @@ module.exports = {
 
   /**
    * Search
-   * @route GET /product/search/:keyword/:limit/:offset
+   * @route GET /products/search/:keyword/:limit/:offset
    * @param req
    * @param res
    * @returns {never}
@@ -295,7 +295,7 @@ module.exports = {
 
   /**
    * Find all
-   * @route GET /product
+   * @route GET /products
    * @param req
    * @param res
    * @returns {never}
@@ -331,8 +331,7 @@ module.exports = {
           { model: Model.ProductBrands, as: "productBrands", attributes: ['name', 'description'] },
           { model: Model.ProductCategories, as: "productCategories", attributes: ['name', 'description'] },
           { model: Model.ProductSubCategories, as: "productSubCategories", attributes: ['name', 'description'] },
-          { model: Model.ProductSubSubCategories, as: "productSubSubCategories", attributes: ['name', 'description'] },
-          { model: Model.ProductImages, as: "productImages", attributes: ['file_name', 'color', 'order', 'product_id'], required: false }
+          { model: Model.ProductSubSubCategories, as: "productSubSubCategories", attributes: ['name', 'description'] }
         ]
       };
       // Execute findAll query
@@ -361,7 +360,7 @@ module.exports = {
 
   /**
    * Find all with limit, offset and file name
-   * @route GET /product/findAllWithLimitOffsetAndFileName/:limit/:offset
+   * @route GET /products/findAllWithLimitOffsetAndFileName/:limit/:offset
    * @param req
    * @param res
    * @returns {never}
@@ -433,7 +432,7 @@ module.exports = {
 
   /**
    * Find all by product category id with limit, offset and file name
-   * @route GET /product/findAllByProductCategoryIdWithLimitOffsetAndFileName/:productCategoryId/:limit/:offset
+   * @route GET /products/findAllByProductCategoryIdWithLimitOffsetAndFileName/:productCategoryId/:limit/:offset
    * @param req
    * @param res
    * @returns {never}
@@ -512,7 +511,7 @@ module.exports = {
 
   /**
    * Find all by product sub category id with limit, offset and file name
-   * @route GET /product/findAllbyProductSubCategoryIdWithLimitOffsetAndFileName/:productSubCategoryId/:limit/:offset
+   * @route GET /products/findAllbyProductSubCategoryIdWithLimitOffsetAndFileName/:productSubCategoryId/:limit/:offset
    * @param req
    * @param res
    * @returns {never}
@@ -591,7 +590,7 @@ module.exports = {
 
   /**
    * Find by id
-   * @route GET /product/:id
+   * @route GET /products/:id
    * @param req
    * @param res
    * @returns {never}

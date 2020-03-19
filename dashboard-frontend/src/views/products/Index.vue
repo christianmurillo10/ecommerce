@@ -19,9 +19,11 @@
           }}</router-link>
         </td>
         <td class="text-xs-left">{{ props.item.description }}</td>
-        <td class="text-xs-left">{{ props.item.price }}</td>
+        <td class="text-xs-left">{{ props.item.price_amount }}</td>
+        <td class="text-xs-left">{{ props.item.productBrands.name }}</td>
         <td class="text-xs-left">{{ props.item.productCategories.name }}</td>
         <td class="text-xs-left">{{ props.item.productSubCategories.name }}</td>
+        <td class="text-xs-left">{{ props.item.productSubSubCategories.name }}</td>
         <td class="justify-center layout px-0">
           <v-icon small class="mr-2" @click="editItem(props.item.id)"
             >edit</v-icon
@@ -52,9 +54,11 @@ export default {
     headers: [
       { text: "Name", value: "name" },
       { text: "Description", value: "description" },
-      { text: "Price", value: "price" },
-      { text: "Product Category", value: "product_category_id" },
-      { text: "Product Sub Category", value: "product_sub_category_id" },
+      { text: "Price", value: "price_amount" },
+      { text: "Brand", value: "product_brand_id" },
+      { text: "Category", value: "product_category_id" },
+      { text: "Sub Category", value: "product_sub_category_id" },
+      { text: "Sub-Sub Category", value: "product_sub_Sub_category_id" },
       { text: "Actions", align: "center", value: "name", sortable: false }
     ]
   }),

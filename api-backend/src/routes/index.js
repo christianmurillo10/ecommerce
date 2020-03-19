@@ -11,7 +11,7 @@ router.use('/productSubCategories', require('./productSubCategories'));
 router.use('/productSubSubCategories', require('./productSubSubCategories'));
 router.use('/productAvailableSize', require('./productAvailableSizes'));
 router.use('/productDiscountedPriceRange', require('./productDiscountedPriceRanges'));
-router.use('/product', require('./products'));
+router.use('/products', require('./products'));
 router.use('/productImage', require('./productImages'));
 router.use('/productBannerImage', require('./productBannerImages'));
 
