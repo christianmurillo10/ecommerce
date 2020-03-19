@@ -29,12 +29,12 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       defaultValue: '0.00'
     },
-    'vat_amount': {
+    'vat_value': {
       type: DataTypes.DECIMAL(12, 2),
       allowNull: true,
       defaultValue: '0.00'
     },
-    'discount_amount': {
+    'discount_value': {
       type: DataTypes.DECIMAL(12, 2),
       allowNull: true,
       defaultValue: '0.00'

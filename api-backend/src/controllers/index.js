@@ -8,8 +8,6 @@ const productCategories = require('./ProductCategoriesController');
 const productSubCategories = require('./ProductSubCategoriesController');
 const productSubSubCategories = require('./ProductSubSubCategoriesController');
 const productOptions = require('./ProductOptionsController');
-const productAvailableSizes = require('./ProductAvailableSizesController');
-const productDiscountedPriceRanges = require('./ProductDiscountedPriceRangesController');
 const products = require('./ProductsController');
 const productImages = require('./ProductImagesController');
 const productBannerImages = require('./ProductBannerImagesController');
@@ -25,8 +23,6 @@ module.exports = {
     productSubCategories,
     productSubSubCategories,
     productOptions,
-    productAvailableSizes,
-    productDiscountedPriceRanges,
     products,
     productImages,
     productBannerImages

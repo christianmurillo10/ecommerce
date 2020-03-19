@@ -18,7 +18,7 @@
             props.item.name
           }}</router-link>
         </td>
-        <td class="text-xs-left">{{ props.item.description }}</td>
+        <td class="text-xs-left">{{ props.item.unit }}</td>
         <td class="text-xs-left">{{ props.item.price_amount }}</td>
         <td class="text-xs-left">{{ props.item.productBrands.name }}</td>
         <td class="text-xs-left">{{ props.item.productCategories.name }}</td>
@@ -53,7 +53,7 @@ export default {
     dialog: false,
     headers: [
       { text: "Name", value: "name" },
-      { text: "Description", value: "description" },
+      { text: "Unit", value: "unit" },
       { text: "Price", value: "price_amount" },
       { text: "Brand", value: "product_brand_id" },
       { text: "Category", value: "product_category_id" },

@@ -80,7 +80,7 @@
                           <v-layout wrap row>
                             <v-flex xs12 sm12 md8>
                               <v-text-field
-                                v-model="formData.vat_amount"
+                                v-model="formData.vat_value"
                                 label="VAT"
                                 type="number"
                               ></v-text-field>
@@ -100,7 +100,7 @@
                           <v-layout wrap row>
                             <v-flex xs12 sm12 md8>
                               <v-text-field
-                                v-model="formData.discount_amount"
+                                v-model="formData.discount_value"
                                 label="Discount"
                                 type="number"
                               ></v-text-field>
@@ -249,8 +249,8 @@ export default {
       tags: [],
       stock: null,
       price_amount: null,
-      vat_amount: null,
-      discount_amount: null,
+      vat_value: null,
+      discount_value: null,
       product_brand_id: null,
       product_category_id: null,
       product_sub_category_id: null,
@@ -266,8 +266,8 @@ export default {
       tags: [],
       stock: null,
       price_amount: null,
-      vat_amount: null,
-      discount_amount: null,
+      vat_value: null,
+      discount_value: null,
       product_brand_id: null,
       product_category_id: null,
       product_sub_category_id: null,
@@ -378,8 +378,8 @@ export default {
       this.formData.tags = data.tags;
       this.formData.stock = data.stock;
       this.formData.price_amount = data.price_amount;
-      this.formData.vat_amount = data.vat_amount;
-      this.formData.discount_amount = data.discount_amount;
+      this.formData.vat_value = data.vat_value;
+      this.formData.discount_value = data.discount_value;
       this.formData.product_brand_id = data.product_brand_id;
       this.formData.product_category_id = data.product_category_id;
       this.formData.product_sub_category_id = data.product_sub_category_id;

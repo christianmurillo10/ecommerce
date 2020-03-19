@@ -23,8 +23,8 @@ module.exports = {
     params.created_at = moment().utc(8).format("YYYY-MM-DD HH:mm:ss");
     params.tags = params.tags.length === 0 ? null : params.tags.toString();
     params.price_amount = params.price_amount.toLocaleString();
-    params.vat_amount = params.vat_amount === null ? null : params.vat_amount.toLocaleString();
-    params.discount_amount = params.discount_amount === null ? null : params.discount_amount.toLocaleString();
+    params.vat_value = params.vat_value === null ? null : params.vat_value.toLocaleString();
+    params.discount_value = params.discount_value === null ? null : params.discount_value.toLocaleString();
     params.user_id = req.user.id.toLocaleString();
     params.product_brand_id = params.product_brand_id.toLocaleString();
     params.product_category_id = params.product_category_id.toLocaleString();
@@ -60,8 +60,8 @@ module.exports = {
         "unit",
         "tags",
         "price_amount",
-        "vat_amount",
-        "discount_amount",
+        "vat_value",
+        "discount_value",
         "user_id",
         "product_brand_id",
         "product_category_id",
@@ -135,8 +135,8 @@ module.exports = {
         "unit",
         "tags",
         "price_amount",
-        "vat_amount",
-        "discount_amount",
+        "vat_value",
+        "discount_value",
         "user_id",
         "product_brand_id",
         "product_category_id",
@@ -237,8 +237,8 @@ module.exports = {
           'unit',
           'tags',
           'price_amount',
-          'vat_amount',
-          'discount_amount',
+          'vat_value',
+          'discount_value',
           'product_brand_id',
           'product_category_id',
           'product_sub_category_id',
@@ -313,8 +313,8 @@ module.exports = {
           'unit',
           'tags',
           'price_amount',
-          'vat_amount',
-          'discount_amount',
+          'vat_value',
+          'discount_value',
           'product_brand_id',
           'product_category_id',
           'product_sub_category_id',
@@ -381,8 +381,8 @@ module.exports = {
           'unit',
           'tags',
           'price_amount',
-          'vat_amount',
-          'discount_amount',
+          'vat_value',
+          'discount_value',
           'product_brand_id',
           'product_category_id',
           'product_sub_category_id',
@@ -453,8 +453,8 @@ module.exports = {
           'unit',
           'tags',
           'price_amount',
-          'vat_amount',
-          'discount_amount',
+          'vat_value',
+          'discount_value',
           'product_brand_id',
           'product_category_id',
           'product_sub_category_id',
@@ -532,8 +532,8 @@ module.exports = {
           'unit',
           'tags',
           'price_amount',
-          'vat_amount',
-          'discount_amount',
+          'vat_value',
+          'discount_value',
           'product_brand_id',
           'product_category_id',
           'product_sub_category_id',
@@ -607,7 +607,7 @@ module.exports = {
           { model: Model.ProductCategories, as: "productCategories", attributes: ['name', 'description'] },
           { model: Model.ProductSubCategories, as: "productSubCategories", attributes: ['name', 'description'] },
           { model: Model.ProductSubSubCategories, as: "productSubSubCategories", attributes: ['name', 'description'] },
-          { model: Model.ProductImages, as: "productImages", attributes: ['id', 'file_name', 'color', 'order', 'product_id'], required: false },
+          { model: Model.ProductImages, as: "productImages", attributes: ['id', 'file_name', 'order', 'product_id'], required: false },
           { model: Model.Inventories, as: "inventories", attributes: ['stock_available', 'product_id'], required: false },
           { model: Model.Users, as: "users", attributes: ['email', 'username'] }
         ]

@@ -14,8 +14,6 @@ import productSubCategories from './modules/productSubCategories'
 import productSubSubCategories from './modules/productSubSubCategories'
 import productImages from './modules/productImages'
 import productBannerImages from './modules/productBannerImages'
-import productAvailableSizes from './modules/productAvailableSizes'
-import productDiscountedPriceRanges from './modules/productDiscountedPriceRanges'
 import products from './modules/products'
 import inventories from './modules/inventories'
 
@@ -39,8 +37,6 @@ export default new Vuex.Store({
     productSubSubCategories,
     productImages,
     productBannerImages,
-    productAvailableSizes,
-    productDiscountedPriceRanges,
     products,
     inventories
   }
