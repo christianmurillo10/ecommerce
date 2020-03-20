@@ -25,9 +25,7 @@
         <td class="text-xs-left">{{ props.item.productSubCategories.name }}</td>
         <td class="text-xs-left">{{ props.item.productSubSubCategories.name }}</td>
         <td class="justify-center layout px-0">
-          <v-icon small class="mr-2" @click="editItem(props.item.id)"
-            >edit</v-icon
-          >
+          <v-icon small class="mr-2" @click="editItem(props.item.id)">edit</v-icon>
           <v-icon small @click="deleteItem(props.item.id)">delete</v-icon>
         </td>
       </template>
@@ -71,34 +69,31 @@ export default {
     ...mapState("products", ["productList"])
   },
 
-  watch: {
-    dialog(val) {
-      val || this.close();
-    }
-  },
-
   methods: {
+    ...mapActions("alerts", ["setAlert"]),
     ...mapActions("products", {
-      getProductData: "getData"
+      getProductData: "getData",
+      deleteProductData: "deleteData"
     }),
 
     editItem(id) {
-      this.setDialog(true);
-      this.$refs.modalForm.editItem(id);
+      this.$router.push(`/products/update/${id}`);
     },
 
     deleteItem(id) {
-      this.$refs.modalForm.deleteItem(id);
-    },
+      this.deleteProductData(id)
+        .then(response => {
+          let obj = {
+            alert: true,
+            type: "success",
+            message: response.data.message
+          };
 
-    close() {
-      this.setDialog(false);
-      this.$refs.modalForm.close();
+          if (!response.data.result) obj.type = "error";
+          this.setAlert(obj);
+        })
+        .catch(err => console.log(err));
     },
-
-    setDialog(value) {
-      this.dialog = value;
-    }
   }
 };
 </script>

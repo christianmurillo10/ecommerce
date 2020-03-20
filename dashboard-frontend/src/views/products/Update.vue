@@ -4,14 +4,14 @@
     <v-divider></v-divider>
     <v-toolbar color="#EEEEEE" dense>
       <v-toolbar-title>
-        <v-icon class="black--text">add_box</v-icon>Products - Create
+        <v-icon class="black--text">edit</v-icon>Products - Update
       </v-toolbar-title>
       <v-spacer></v-spacer>
       <v-btn icon to="/products">
         <v-icon>arrow_back</v-icon>
       </v-btn>
     </v-toolbar>
-    <Form ref="form" form-type="new" />
+    <Form ref="form" form-type="update" />
   </v-container>
 </template>
 

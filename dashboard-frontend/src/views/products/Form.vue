@@ -198,7 +198,7 @@
 
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="blue darken-1" flat @click="close">Cancel</v-btn>
+            <v-btn color="blue darken-1" flat to="/products">Cancel</v-btn>
             <v-btn color="blue darken-1" type="submit" flat :disabled="!valid"
               >Save</v-btn
             >
@@ -213,6 +213,10 @@
 import { mapState, mapGetters, mapActions } from "vuex";
 
 export default {
+  props: {
+    formType: String
+  },
+
   data: () => ({
     tagSearchInput: "",
     rateTypeList: [
@@ -253,7 +257,6 @@ export default {
       vat_type: null,
       discount_type: null
     },
-    formType: "new",
     formData: {
       name: null,
       description: "",
@@ -293,18 +296,13 @@ export default {
     ...mapGetters("productBrands", ["getProductBrandList"]),
     ...mapGetters("productCategories", ["getProductCategoryList"]),
     ...mapGetters("productSubCategories", ["getProductSubCategoryList"]),
-    ...mapGetters("productSubSubCategories", ["getProductSubSubCategoryList"]),
-    formTitle() {
-      return this.formType === "new" ? "New Product" : "Edit Product";
-    },
-    formIcon() {
-      return this.formType === "new" ? "add_box" : "edit";
-    }
+    ...mapGetters("productSubSubCategories", ["getProductSubSubCategoryList"])
   },
 
   created() {
     this.getProductBrandsData();
     this.getProductCategoriesData();
+    this.setFormType();
   },
 
   methods: {
@@ -320,9 +318,9 @@ export default {
         "getDataByProductCategoryIdAndProductSubCategoryId"
     }),
     ...mapActions("products", {
+      getProductDataById: "getDataById",
       saveProductData: "saveData",
-      updateProductData: "updateData",
-      deleteProductData: "deleteData"
+      updateProductData: "updateData"
     }),
 
     updateTags() {
@@ -341,12 +339,12 @@ export default {
       };
 
       if (obj.categoryId) {
-        this.formData.product_sub_category_id = this.defaultFormData.product_sub_category_id;
-        this.formData.product_sub_sub_category_id = this.defaultFormData.product_sub_sub_category_id;
+        if (this.formType === "new") {
+          this.formData.product_sub_category_id = this.defaultFormData.product_sub_category_id;
+          this.formData.product_sub_sub_category_id = this.defaultFormData.product_sub_sub_category_id;
+        }
         this.getProductSubCategoriesDataByProductCategoryId(obj.categoryId);
-        this.getProductSubCategoriesDataByProductCategoryIdAndProductSubCategoryId(
-          obj
-        );
+        this.getProductSubCategoriesDataByProductCategoryIdAndProductSubCategoryId(obj);
       }
     },
 
@@ -357,57 +355,34 @@ export default {
       };
 
       if (obj.categoryId !== null && obj.subCategoryId !== null) {
-        this.formData.product_sub_sub_category_id = this.defaultFormData.product_sub_sub_category_id;
-        this.getProductSubCategoriesDataByProductCategoryIdAndProductSubCategoryId(
-          obj
-        );
+        if (this.formType === "new") this.formData.product_sub_sub_category_id = this.defaultFormData.product_sub_sub_category_id;
+        this.getProductSubCategoriesDataByProductCategoryIdAndProductSubCategoryId(obj);
       }
     },
 
-    editItem(id) {
-      let data = this.getProductById(id);
-      this.formData.id = data.id;
-      this.formData.name = data.name;
-      this.formData.description = data.description;
-      this.formData.unit = data.unit;
-      this.formData.tags = data.tags;
-      this.formData.stock = data.stock;
-      this.formData.price_amount = data.price_amount;
-      this.formData.vat_value = data.vat_value;
-      this.formData.discount_value = data.discount_value;
-      this.formData.product_brand_id = data.product_brand_id;
-      this.formData.product_category_id = data.product_category_id;
-      this.formData.product_sub_category_id = data.product_sub_category_id;
-      this.formData.product_sub_sub_category_id =
-        data.product_sub_sub_category_id;
-      this.formData.vat_type = data.vat_type;
-      this.formData.discount_type = data.discount_type;
-      this.formType = "update";
-      this.setProductSubCategoryList();
-      this.setProductSubSubCategoryList();
-    },
+    async setFormType() {
+      if (this.formType === "update") {
+        let response = await this.getProductDataById(this.$route.params.id);
+        let data = response.data.result;
+        this.formData.id = data.id;
+        this.formData.name = data.name;
+        this.formData.description = data.description;
+        this.formData.unit = data.unit;
+        this.formData.tags = data.tags.split(',');
+        this.formData.stock = data.stock;
+        this.formData.price_amount = data.price_amount;
+        this.formData.vat_value = data.vat_value;
+        this.formData.discount_value = data.discount_value;
+        this.formData.product_brand_id = data.product_brand_id;
+        this.formData.product_category_id = data.product_category_id;
+        this.formData.product_sub_category_id = data.product_sub_category_id;
+        this.formData.product_sub_sub_category_id = data.product_sub_sub_category_id;
+        this.formData.vat_type = data.vat_type;
+        this.formData.discount_type = data.discount_type;
 
-    deleteItem(id) {
-      this.deleteProductData(id)
-        .then(response => {
-          let obj = {
-            alert: true,
-            type: "success",
-            message: response.data.message
-          };
-
-          if (!response.data.result) obj.type = "error";
-          this.setAlert(obj);
-        })
-        .catch(err => console.log(err));
-    },
-
-    close() {
-      this.$emit("setDialog", false);
-      this.formType = "new";
-      setTimeout(() => {
-        this.formData = Object.assign({}, this.defaultFormData);
-      }, 300);
+        this.setProductSubCategoryList();
+        this.setProductSubSubCategoryList();
+      }
     },
 
     save() {
@@ -415,36 +390,32 @@ export default {
         if (this.formType === "new") {
           this.saveProductData(this.formData)
             .then(response => {
-              let obj = {
-                alert: true,
-                type: "success",
-                message: response.data.message
-              };
-
-              if (!response.data.result) {
-                obj.type = "error";
-              } else {
-                this.$router.push("/products");
-              }
-              this.setAlert(obj);
+              this.callAlert(response, "/products");
             })
             .catch(err => console.log(err));
         } else if (this.formType === "update") {
           this.updateProductData(this.formData)
             .then(response => {
-              let obj = {
-                alert: true,
-                type: "success",
-                message: response.data.message
-              };
-
-              if (!response.data.result) obj.type = "error";
-              this.setAlert(obj);
+              this.callAlert(response, "/products");
             })
             .catch(err => console.log(err));
         }
-        this.close();
       }
+    },
+    
+    callAlert(response, url) {
+      let obj = {
+        alert: true,
+        type: "success",
+        message: response.data.message
+      };
+
+      if (!response.data.result) {
+        obj.type = "error";
+      } else {
+        this.$router.push(url);
+      }
+      this.setAlert(obj);
     }
   }
 };

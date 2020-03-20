@@ -127,6 +127,9 @@ module.exports = {
     if (_.isEmpty(params))
       return res.badRequest({ err: "Empty Parameter: [params]" });
 
+    // Override variables
+    params.tags = params.tags.length === 0 ? null : params.tags.toString();
+
     try {
       // Pre-setting variables
       initialValues = _.pick(params, [
