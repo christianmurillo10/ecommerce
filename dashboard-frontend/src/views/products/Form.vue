@@ -1,211 +1,204 @@
 <template>
   <v-card class="mx-auto my-12" :elevation="3" max-width="auto">
-    <v-container>
-      <v-flex xs12 sm12 md12 lg12>
-        <v-form
-          ref="form"
-          @submit.prevent="save"
-          v-model="valid"
-          lazy-validation
-        >
-          <v-card-text>
-            <v-tabs fixed-tabs show-arrows>
-              <v-tabs-slider color="yellow"></v-tabs-slider>
-              <v-tab
-                v-for="(header, i) in tabHeaders"
-                :key="i"
-                :href="'#tab-' + header.key"
-                >{{ header.title }}</v-tab
-              >
-              <v-tabs-items>
-                <v-tab-item value="tab-details">
-                  <v-container grid-list-md>
-                    <v-layout wrap>
-                      <v-flex xs12 sm12 md6 offset-md3>
-                        <v-flex xs12 sm12 md12>
-                          <v-text-field
-                            v-model="formData.name"
-                            :rules="validateItem.nameRules"
-                            label="Name"
-                            required
-                          ></v-text-field>
-                        </v-flex>
-                        <v-flex xs12 sm12 md12>
-                          <v-text-field
-                            v-model="formData.unit"
-                            :rules="validateItem.unitRules"
-                            label="Unit"
-                            required
-                          ></v-text-field>
-                        </v-flex>
-                        <v-flex xs12 sm12 md12>
-                          <v-combobox
-                            multiple
-                            v-model="formData.tags"
-                            label="Tags"
-                            append-icon
-                            chips
-                            deletable-chips
-                            class="tag-input"
-                            :search-input.sync="tagSearchInput"
-                            @keyup.tab="updateTags"
-                            @paste="updateTags"
-                          >
-                          </v-combobox>
-                        </v-flex>
-                        <v-flex xs12 sm12 md12 v-if="this.formType === 'new'">
-                          <v-text-field
-                            v-model="formData.stock"
-                            :rules="validateItem.stockRules"
-                            label="Stock"
-                            type="number"
-                            required
-                          ></v-text-field>
-                        </v-flex>
-                        <v-flex xs12 sm12 md12>
-                          <v-text-field
-                            v-model="formData.price_amount"
-                            :rules="validateItem.priceAmountRules"
-                            label="Price Amount"
-                            type="number"
-                            required
-                          ></v-text-field>
-                        </v-flex>
-                        <v-flex xs12 sm12 md12>
-                          <v-layout wrap row>
-                            <v-flex xs12 sm12 md8>
-                              <v-text-field
-                                v-model="formData.vat_value"
-                                label="VAT"
-                                type="number"
-                              ></v-text-field>
-                            </v-flex>
-                            <v-flex xs12 sm12 md4>
-                              <v-autocomplete
-                                :items="rateTypeList"
-                                item-text="name"
-                                item-value="id"
-                                v-model="formData.vat_type"
-                                label="Type"
-                              ></v-autocomplete>
-                            </v-flex>
-                          </v-layout>
-                        </v-flex>
-                        <v-flex xs12 sm12 md12>
-                          <v-layout wrap row>
-                            <v-flex xs12 sm12 md8>
-                              <v-text-field
-                                v-model="formData.discount_value"
-                                label="Discount"
-                                type="number"
-                              ></v-text-field>
-                            </v-flex>
-                            <v-flex xs12 sm12 md4>
-                              <v-autocomplete
-                                :items="rateTypeList"
-                                item-text="name"
-                                item-value="id"
-                                v-model="formData.discount_type"
-                                label="Type"
-                              ></v-autocomplete>
-                            </v-flex>
-                          </v-layout>
-                        </v-flex>
-                        <v-flex xs12 sm12 md12>
-                          <v-autocomplete
-                            :items="getProductBrandList"
-                            item-text="name"
-                            item-value="id"
-                            v-model="formData.product_brand_id"
-                            label="Brand"
-                            persistent-hint
-                            :rules="validateItem.productBrandRules"
-                            required
-                          ></v-autocomplete>
-                        </v-flex>
-                        <v-flex xs12 sm12 md12>
-                          <v-autocomplete
-                            :items="getProductCategoryList"
-                            item-text="name"
-                            item-value="id"
-                            v-model="formData.product_category_id"
-                            label="Category"
-                            persistent-hint
-                            :rules="validateItem.productCategoryRules"
-                            required
-                            v-on:change="setProductSubCategoryList()"
-                          ></v-autocomplete>
-                        </v-flex>
-                        <v-flex xs12 sm12 md12>
-                          <v-autocomplete
-                            :items="getProductSubCategoryList"
-                            item-text="name"
-                            item-value="id"
-                            v-model="formData.product_sub_category_id"
-                            label="Sub-Category"
-                            persistent-hint
-                            :rules="validateItem.productSubCategoryRules"
-                            required
-                            v-on:change="setProductSubSubCategoryList()"
-                          ></v-autocomplete>
-                        </v-flex>
-                        <v-flex xs12 sm12 md12>
-                          <v-autocomplete
-                            :items="getProductSubSubCategoryList"
-                            item-text="name"
-                            item-value="id"
-                            v-model="formData.product_sub_sub_category_id"
-                            label="Sub-Sub-Category"
-                          ></v-autocomplete>
-                        </v-flex>
-                      </v-flex>
-                    </v-layout>
-                  </v-container>
-                </v-tab-item>
-                <v-tab-item value="tab-description">
-                  <v-container grid-list-md>
-                    <v-layout wrap>
-                      <v-flex xs12 sm12 md12>
-                        <v-textarea
-                          v-model="formData.description"
-                          auto-grow
-                          label="Description"
-                          rows="10"
-                        ></v-textarea>
-                      </v-flex>
-                    </v-layout>
-                  </v-container>
-                </v-tab-item>
-                <v-tab-item value="tab-options">
-                  <v-list-tile>
-                    <v-list-tile-title>
-                      <h3>Options:</h3>
-                    </v-list-tile-title>
-                  </v-list-tile>
-                </v-tab-item>
-                <v-tab-item value="tab-images">
-                  <v-list-tile>
-                    <v-list-tile-title>
-                      <h3>Images:</h3>
-                    </v-list-tile-title>
-                  </v-list-tile>
-                </v-tab-item>
-              </v-tabs-items>
-            </v-tabs>
-          </v-card-text>
-
-          <v-divider></v-divider>
-
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn color="blue darken-1" flat to="/products">Cancel</v-btn>
-            <v-btn color="blue darken-1" type="submit" flat :disabled="!valid"
-              >Save</v-btn
+    <v-flex xs12 sm12 md12 lg12>
+      <v-form ref="form" @submit.prevent="save" v-model="valid" lazy-validation>
+        <v-card-text>
+          <v-tabs fixed-tabs show-arrows>
+            <v-tabs-slider color="yellow"></v-tabs-slider>
+            <v-tab
+              v-for="(header, i) in tabHeaders"
+              :key="i"
+              :href="'#tab-' + header.key"
+              >{{ header.title }}</v-tab
             >
-          </v-card-actions>
-        </v-form>
-      </v-flex>
-    </v-container>
+            <v-tabs-items>
+              <v-tab-item value="tab-details">
+                <v-flex xs12 sm12 md12>
+                  <v-container grid-list-md>
+                    <v-layout wrap row>
+                      <v-flex xs12 sm12 md6>
+                        <v-text-field
+                          v-model="formData.name"
+                          :rules="validateItem.nameRules"
+                          label="Name"
+                          required
+                        ></v-text-field>
+                      </v-flex>
+                      <v-flex xs12 sm12 md3>
+                        <v-text-field
+                          v-model="formData.unit"
+                          :rules="validateItem.unitRules"
+                          label="Unit"
+                          required
+                        ></v-text-field>
+                      </v-flex>
+                      <v-flex xs12 sm12 md3 v-if="this.formType === 'new'">
+                        <v-text-field
+                          v-model="formData.stock"
+                          :rules="validateItem.stockRules"
+                          label="Stock"
+                          type="number"
+                          required
+                        ></v-text-field>
+                      </v-flex>
+                      <v-flex xs12 sm12 md4>
+                        <v-text-field
+                          v-model="formData.price_amount"
+                          :rules="validateItem.priceAmountRules"
+                          label="Price Amount"
+                          type="number"
+                          required
+                        ></v-text-field>
+                      </v-flex>
+                      <v-flex xs12 sm12 md4>
+                        <v-layout wrap row>
+                          <v-flex xs12 sm12 md8>
+                            <v-text-field
+                              v-model="formData.vat_value"
+                              label="VAT"
+                              type="number"
+                            ></v-text-field>
+                          </v-flex>
+                          <v-flex xs12 sm12 md4>
+                            <v-autocomplete
+                              :items="rateTypeList"
+                              item-text="name"
+                              item-value="id"
+                              v-model="formData.vat_type"
+                              label="Type"
+                            ></v-autocomplete>
+                          </v-flex>
+                        </v-layout>
+                      </v-flex>
+                      <v-flex xs12 sm12 md4>
+                        <v-layout wrap row>
+                          <v-flex xs12 sm12 md8>
+                            <v-text-field
+                              v-model="formData.discount_value"
+                              label="Discount"
+                              type="number"
+                            ></v-text-field>
+                          </v-flex>
+                          <v-flex xs12 sm12 md4>
+                            <v-autocomplete
+                              :items="rateTypeList"
+                              item-text="name"
+                              item-value="id"
+                              v-model="formData.discount_type"
+                              label="Type"
+                            ></v-autocomplete>
+                          </v-flex>
+                        </v-layout>
+                      </v-flex>
+                      <v-flex xs12 sm12 md6>
+                        <v-autocomplete
+                          :items="getProductBrandList"
+                          item-text="name"
+                          item-value="id"
+                          v-model="formData.product_brand_id"
+                          label="Brand"
+                          persistent-hint
+                          :rules="validateItem.productBrandRules"
+                          required
+                        ></v-autocomplete>
+                      </v-flex>
+                      <v-flex xs12 sm12 md6>
+                        <v-autocomplete
+                          :items="getProductCategoryList"
+                          item-text="name"
+                          item-value="id"
+                          v-model="formData.product_category_id"
+                          label="Category"
+                          persistent-hint
+                          :rules="validateItem.productCategoryRules"
+                          required
+                          v-on:change="setProductSubCategoryList()"
+                        ></v-autocomplete>
+                      </v-flex>
+                      <v-flex xs12 sm12 md6>
+                        <v-autocomplete
+                          :items="getProductSubCategoryList"
+                          item-text="name"
+                          item-value="id"
+                          v-model="formData.product_sub_category_id"
+                          label="Sub-Category"
+                          persistent-hint
+                          :rules="validateItem.productSubCategoryRules"
+                          required
+                          v-on:change="setProductSubSubCategoryList()"
+                        ></v-autocomplete>
+                      </v-flex>
+                      <v-flex xs12 sm12 md6>
+                        <v-autocomplete
+                          :items="getProductSubSubCategoryList"
+                          item-text="name"
+                          item-value="id"
+                          v-model="formData.product_sub_sub_category_id"
+                          label="Sub-Sub-Category"
+                        ></v-autocomplete>
+                      </v-flex>
+                      <v-flex xs12 sm12 md6>
+                        <v-combobox
+                          multiple
+                          v-model="formData.tags"
+                          label="Tags"
+                          append-icon
+                          chips
+                          deletable-chips
+                          class="tag-input"
+                          :search-input.sync="tagSearchInput"
+                          @keyup.tab="updateTags"
+                          @paste="updateTags"
+                        >
+                        </v-combobox>
+                      </v-flex>
+                    </v-layout>
+                  </v-container>
+                </v-flex>
+              </v-tab-item>
+              <v-tab-item value="tab-description">
+                <v-container grid-list-md>
+                  <v-layout wrap>
+                    <v-flex xs12 sm12 md12>
+                      <v-textarea
+                        v-model="formData.description"
+                        auto-grow
+                        label="Description"
+                        rows="10"
+                      ></v-textarea>
+                    </v-flex>
+                  </v-layout>
+                </v-container>
+              </v-tab-item>
+              <v-tab-item value="tab-options">
+                <v-list-tile>
+                  <v-list-tile-title>
+                    <h3>Options:</h3>
+                  </v-list-tile-title>
+                </v-list-tile>
+              </v-tab-item>
+              <v-tab-item value="tab-images">
+                <v-list-tile>
+                  <v-list-tile-title>
+                    <h3>Images:</h3>
+                  </v-list-tile-title>
+                </v-list-tile>
+              </v-tab-item>
+            </v-tabs-items>
+          </v-tabs>
+        </v-card-text>
+
+        <v-divider></v-divider>
+
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="blue darken-1" flat to="/products">Cancel</v-btn>
+          <v-btn color="blue darken-1" type="submit" flat :disabled="!valid"
+            >Save</v-btn
+          >
+        </v-card-actions>
+      </v-form>
+    </v-flex>
   </v-card>
 </template>
 
@@ -344,7 +337,9 @@ export default {
           this.formData.product_sub_sub_category_id = this.defaultFormData.product_sub_sub_category_id;
         }
         this.getProductSubCategoriesDataByProductCategoryId(obj.categoryId);
-        this.getProductSubCategoriesDataByProductCategoryIdAndProductSubCategoryId(obj);
+        this.getProductSubCategoriesDataByProductCategoryIdAndProductSubCategoryId(
+          obj
+        );
       }
     },
 
@@ -355,8 +350,11 @@ export default {
       };
 
       if (obj.categoryId !== null && obj.subCategoryId !== null) {
-        if (this.formType === "new") this.formData.product_sub_sub_category_id = this.defaultFormData.product_sub_sub_category_id;
-        this.getProductSubCategoriesDataByProductCategoryIdAndProductSubCategoryId(obj);
+        if (this.formType === "new")
+          this.formData.product_sub_sub_category_id = this.defaultFormData.product_sub_sub_category_id;
+        this.getProductSubCategoriesDataByProductCategoryIdAndProductSubCategoryId(
+          obj
+        );
       }
     },
 
@@ -368,7 +366,7 @@ export default {
         this.formData.name = data.name;
         this.formData.description = data.description;
         this.formData.unit = data.unit;
-        this.formData.tags = data.tags.split(',');
+        this.formData.tags = data.tags.split(",");
         this.formData.stock = data.stock;
         this.formData.price_amount = data.price_amount;
         this.formData.vat_value = data.vat_value;
@@ -376,7 +374,8 @@ export default {
         this.formData.product_brand_id = data.product_brand_id;
         this.formData.product_category_id = data.product_category_id;
         this.formData.product_sub_category_id = data.product_sub_category_id;
-        this.formData.product_sub_sub_category_id = data.product_sub_sub_category_id;
+        this.formData.product_sub_sub_category_id =
+          data.product_sub_sub_category_id;
         this.formData.vat_type = data.vat_type;
         this.formData.discount_type = data.discount_type;
 
@@ -402,7 +401,7 @@ export default {
         }
       }
     },
-    
+
     callAlert(response, url) {
       let obj = {
         alert: true,

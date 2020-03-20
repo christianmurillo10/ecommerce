@@ -1,3 +1,5 @@
+import moment from "moment";
+
 export default {
   methods: {
     getYesNoStatus(value) {
@@ -43,6 +45,25 @@ export default {
       let lastname = lname ? `${lname.toUpperCase()},` : "";
 
       return `${lastname} ${firstname} ${middlename}`
+    },
+
+    setDateTime(dateTime) {
+      let newDateTime = new Date(dateTime);
+      return moment(newDateTime).format("YYYY-MM-DD HH:mm:ss");
+    },
+
+    camelCase(value) {
+      return value.replace(/[$&+,:;=?@#_|'<>.^*()%!-]/g, '').replace(/(?:^\w|[A-Z]|\b\w)/g, function (word, index) {
+        return index == 0 ? word.toLowerCase() : word.toUpperCase();
+      }).replace(/\s+/g, '');
+    },
+
+    truncateText(text, length) {
+      if (text.length > length) {
+        return text.substring(0, length) + "...";
+      } else {
+        return text;
+      }
     }
   }
 }
