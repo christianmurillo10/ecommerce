@@ -1,7 +1,8 @@
 import axios from "axios";
 
 const state = {
-  productList: []
+  productList: [],
+  productTotalCount: 0
 };
 
 const getters = {
@@ -19,6 +20,20 @@ const getters = {
 const actions = {
   getData({ dispatch, commit, state, rootState, getters, rootGetters }) {
     let url = `${process.env.VUE_APP_API_BACKEND}/products/`;
+    let header = { headers: { Token: localStorage.getItem("token") } };
+    return new Promise((resolve, reject) => {
+      try {
+        axios.get(url, header)
+          .then(response => {
+            commit("SET_DATA", response.data.result);
+          });
+      } catch (err) {
+        reject(err);
+      }
+    });
+  },
+  getDataWithLimitAndOffset({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
+    let url = `${process.env.VUE_APP_API_BACKEND}/products/findAllWithLimitAndOffset/${payload.limit}/${payload.offset}`;
     let header = { headers: { Token: localStorage.getItem("token") } };
     return new Promise((resolve, reject) => {
       try {
@@ -139,9 +154,11 @@ const actions = {
 const mutations = {
   SET_DATA(state, payload) {
     if (payload) {
-      state.productList = payload;
+      state.productList = payload.data;
+      state.productTotalCount = payload.count;
     } else {
       state.productList = [];
+      state.productTotalCount = 0;
     }
   },
   ADD_DATA(state, payload) {

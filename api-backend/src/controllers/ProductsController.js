@@ -297,6 +297,85 @@ module.exports = {
   },
 
   /**
+   * Find all with limit and offset
+   * @route GET /products/findAllWithLimitAndOffset/:limit/:offset
+   * @param req
+   * @param res
+   * @returns {never}
+   */
+  findAllWithLimitAndOffset: async (req, res) => {
+    let params = req.params;
+    let data, criteria, countCriteria;
+
+    try {
+      // Pre-setting variables
+      let limit = parseInt(params.limit);
+      let offset = parseInt(params.offset);
+      criteria = {
+        attributes: [
+          'id',
+          'name',
+          'description',
+          'unit',
+          'tags',
+          'price_amount',
+          'vat_value',
+          'discount_value',
+          'product_brand_id',
+          'product_category_id',
+          'product_sub_category_id',
+          'product_sub_sub_category_id',
+          'created_at',
+          'vat_type',
+          'discount_type',
+          'is_today_deal',
+          'is_featured',
+          'is_published'
+        ],
+        where: { is_deleted: 0 },
+        limit,
+        offset,
+        include: [
+          { model: Model.ProductBrands, as: "productBrands", attributes: ['name', 'description'] },
+          { model: Model.ProductCategories, as: "productCategories", attributes: ['name', 'description'] },
+          { model: Model.ProductSubCategories, as: "productSubCategories", attributes: ['name', 'description'] },
+          { model: Model.ProductSubSubCategories, as: "productSubSubCategories", attributes: ['name', 'description'] },
+          { model: Model.ProductImages, as: "productImages", attributes: ['file_name', 'order', 'product_id'], required: false }
+        ]
+      };
+      countCriteria = { where: { is_deleted: 0 } };
+
+      // Execute findAll query
+      data = await Model.Products.findAll(criteria);
+      if (!_.isEmpty(data[0])) {
+        count = await Model.Products.count(countCriteria);
+        let obj = {
+          data: data,
+          count: count
+        }
+
+        res.json({
+          status: 200,
+          message: "Successfully find all data.",
+          result: obj
+        });
+      } else {
+        res.json({
+          status: 200,
+          message: "No Data Found.",
+          result: false
+        });
+      }
+    } catch (err) {
+      res.json({
+        status: 401,
+        err: err,
+        message: "Failed to find all data."
+      });
+    }
+  },
+
+  /**
    * Find all
    * @route GET /products
    * @param req
