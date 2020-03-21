@@ -38,13 +38,11 @@
 
 <script>
 import Alerts from "../../components/utilities/Alerts";
-import ModalForm from "./ModalForm";
 import { mapState, mapActions } from "vuex";
 
 export default {
   components: {
-    Alerts,
-    ModalForm
+    Alerts
   },
 
   data: () => ({

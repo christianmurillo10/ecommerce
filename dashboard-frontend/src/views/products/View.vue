@@ -4,7 +4,7 @@
     <v-divider></v-divider>
     <v-toolbar color="#EEEEEE" dense>
       <v-toolbar-title>
-        <v-icon class="black--text">view_list</v-icon>Products - View
+        <v-icon class="black--text">pageview</v-icon>Products - View
       </v-toolbar-title>
       <v-spacer></v-spacer>
       <v-btn icon to="/products">
@@ -70,7 +70,7 @@
                     <v-list-tile-title class="font-weight-bold">VAT:&nbsp;</v-list-tile-title>
                   </v-list-tile-action>
                   <v-list-tile-content>
-                    <v-list-tile-title>{{ productDetails.vat_type === 1 ? `&#8369${productDetails.vat_value}` : `${productDetails.vat_value} %` }}</v-list-tile-title>
+                    <v-list-tile-title>{{ vat }}</v-list-tile-title>
                   </v-list-tile-content>
                 </v-list-tile>
                 <v-list-tile>
@@ -78,7 +78,7 @@
                     <v-list-tile-title class="font-weight-bold">Discount:&nbsp;</v-list-tile-title>
                   </v-list-tile-action>
                   <v-list-tile-content>
-                    <v-list-tile-title>{{ productDetails.discount_type === 1 ? `&#8369 ${productDetails.discount_value}` : `${productDetails.discount_value} %` }}</v-list-tile-title>
+                    <v-list-tile-title>{{ discount }}</v-list-tile-title>
                   </v-list-tile-content>
                 </v-list-tile>
               </v-flex>
@@ -88,7 +88,7 @@
                     <v-list-tile-title class="font-weight-bold">Brand:&nbsp;</v-list-tile-title>
                   </v-list-tile-action>
                   <v-list-tile-content>
-                    <v-list-tile-title>{{ productDetails.productBrands.name }}</v-list-tile-title>
+                    <v-list-tile-title>{{ productBrandDetails.name }}</v-list-tile-title>
                   </v-list-tile-content>
                 </v-list-tile>
                 <v-list-tile>
@@ -96,7 +96,7 @@
                     <v-list-tile-title class="font-weight-bold">Category:&nbsp;</v-list-tile-title>
                   </v-list-tile-action>
                   <v-list-tile-content>
-                    <v-list-tile-title>{{ productDetails.productCategories.name }}</v-list-tile-title>
+                    <v-list-tile-title>{{ productCategoryDetails.name }}</v-list-tile-title>
                   </v-list-tile-content>
                 </v-list-tile>
                 <v-list-tile>
@@ -104,7 +104,7 @@
                     <v-list-tile-title class="font-weight-bold">Sub-Category:&nbsp;</v-list-tile-title>
                   </v-list-tile-action>
                   <v-list-tile-content>
-                    <v-list-tile-title>{{ productDetails.productSubCategories.name }}</v-list-tile-title>
+                    <v-list-tile-title>{{ productSubCategoryDetails.name }}</v-list-tile-title>
                   </v-list-tile-content>
                 </v-list-tile>
                 <v-list-tile>
@@ -112,7 +112,7 @@
                     <v-list-tile-title class="font-weight-bold">Sub Sub-Category:&nbsp;</v-list-tile-title>
                   </v-list-tile-action>
                   <v-list-tile-content>
-                    <v-list-tile-title>{{ productDetails.productSubSubCategories.name }}</v-list-tile-title>
+                    <v-list-tile-title>{{ productSubSubCategoryDetails.name }}</v-list-tile-title>
                   </v-list-tile-content>
                 </v-list-tile>
                 <v-list-tile>
@@ -161,8 +161,19 @@
               >{{ header.title }}</v-tab
             >
             <v-tabs-items>
-              <v-tab-item value="tab-details"> </v-tab-item>
-              <v-tab-item value="tab-description"> </v-tab-item>
+              <v-tab-item value="tab-description">
+                <v-flex xs12 sm12 md12 lg12>
+                  <v-sheet
+                    class="d-flex"
+                    color="grey lighten-5"
+                  >
+                    <v-container>
+                      <p v-if="productDetails.description === ''" class="text-xs-center">There have been no description for this product yet.</p>
+                      <p v-else>{{ productDetails.description }}</p>
+                    </v-container>
+                  </v-sheet>
+                </v-flex>
+              </v-tab-item>
               <v-tab-item value="tab-options"> </v-tab-item>
               <v-tab-item value="tab-images"> </v-tab-item>
             </v-tabs-items>
@@ -187,10 +198,6 @@ export default {
   data: () => ({
     tabHeaders: [
       {
-        key: "details",
-        title: "Details"
-      },
-      {
         key: "description",
         title: "Description"
       },
@@ -204,12 +211,20 @@ export default {
       }
     ],
     productDetails: "",
+    productBrandDetails: "",
+    productCategoryDetails: "",
+    productSubCategoryDetails: "",
+    productSubSubCategoryDetails: "",
     inventoryDetails: ""
   }),
 
   mounted() {
     this.getProductDataById(this.$route.params.id).then(response => {
       this.productDetails = response.data.result;
+      this.productBrandDetails = response.data.result.productBrands;
+      this.productCategoryDetails = response.data.result.productCategories;
+      this.productSubCategoryDetails = response.data.result.productSubCategories;
+      this.productSubSubCategoryDetails = response.data.result.productSubSubCategories;
     });
     this.getInventoryAvailableStockDataByProductId(this.$route.params.id).then(
       response => {
@@ -218,7 +233,26 @@ export default {
     );
   },
 
-  computed: {},
+  computed: {
+    vat() {
+      let value = 0;
+      if (this.productDetails.vat_type === 1) {
+        value = `₱ ${this.productDetails.vat_value}`;
+      } else if (this.productDetails.vat_type === 2) {
+        value = `${this.productDetails.vat_value} %`;
+      }
+      return value;
+    },
+    discount() {
+      let value = 0;
+      if (this.productDetails.discount_type === 1) {
+        value = `₱ ${this.productDetails.discount_value}`;
+      } else if (this.productDetails.discount_type === 2) {
+        value = `${this.productDetails.discount_value} %`;
+      }
+      return value;
+    }
+  },
 
   methods: {
     ...mapActions("products", { getProductDataById: "getDataById" }),
