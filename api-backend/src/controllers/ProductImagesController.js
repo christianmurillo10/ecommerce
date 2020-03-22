@@ -286,6 +286,44 @@ module.exports = {
   },
 
   /**
+   * Find all by product id and type
+   * @route GET /productImage/findAllbyProductIdAndType/:productId/:type
+   * @param req
+   * @param res
+   * @returns {never}
+   */
+  findAllbyProductIdAndType: async (req, res) => {
+    const params = req.params;
+    let data, criteria;
+
+    try {
+      // Pre-setting variables
+      criteria = { where: { product_id: params.productId, type: params.type, is_deleted: 0 }, include: [{ model: Model.Products, as: 'products' }, { model: Model.Users, as: 'users' }] };
+      // Execute findAll query
+      data = await Model.ProductImages.findAll(criteria);
+      if (!_.isEmpty(data[0])) {
+        res.json({
+          status: 200,
+          message: "Successfully find all data.",
+          result: data
+        });
+      } else {
+        res.json({
+          status: 200,
+          message: "No Data Found.",
+          result: false
+        });
+      }
+    } catch (err) {
+      res.json({
+        status: 401,
+        err: err,
+        message: "Failed to find all data."
+      });
+    }
+  },
+
+  /**
    * Find by id
    * @route GET /productImage/:id
    * @param req

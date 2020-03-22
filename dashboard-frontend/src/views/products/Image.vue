@@ -3,8 +3,7 @@
     <Alerts />
     <v-card>
       <v-card-title>
-        <v-icon class="black--text">image</v-icon
-        ><span class="title">Product - Image</span>
+        <v-icon class="black--text">image</v-icon><span class="title">Product - Image</span>
         <v-spacer></v-spacer>
         <v-tooltip left>
           <template v-slot:activator="{ on }">
@@ -15,6 +14,148 @@
           <span>Back</span>
         </v-tooltip>
       </v-card-title>
+      <v-card-text>
+        <v-container fluid grid-list-md>
+          <v-layout wrap row>
+            <v-flex xs12 sm12 md6 lg6>
+              <v-flex xs12 sm12 md12 lg12>
+                <v-card>
+                  <v-card-title>
+                    <span class="body-2">Main</span>
+                  </v-card-title>
+                  <v-card-text>
+                    <v-data-table :headers="headers" :items="productImageMainList" hide-actions class="elevation-1">
+                      <template v-slot:items="props">
+                        <td class="text-xs-left pt-1"><img :src="props.item.file_path" height="80" width="120" /></td>
+                        <td class="text-xs-left">{{ props.item.name }}</td>
+                        <td class="text-xs-left">{{ props.item.description }}</td>
+                        <td class="text-xs-center">
+                          <v-tooltip left>
+                            <template v-slot:activator="{ on }">
+                              <v-icon small class="mr-2" @click="editItem(props.item.id)" v-on="on">edit</v-icon>
+                            </template>
+                            <span>Update</span>
+                          </v-tooltip>
+                          <v-tooltip left>
+                            <template v-slot:activator="{ on }">
+                              <v-icon small color="red" @click="deleteItem(props.item.id)" v-on="on">delete</v-icon>
+                            </template>
+                            <span>Delete</span>
+                          </v-tooltip>
+                        </td>
+                      </template>
+                      <template v-slot:no-data>
+                        <p class="justify-center layout px-0">No data found!</p>
+                      </template>
+                    </v-data-table>
+                  </v-card-text>
+                </v-card>
+              </v-flex>
+            </v-flex>
+            <v-flex xs12 sm12 md6 lg6>
+              <v-flex xs12 sm12 md12 lg12>
+                <v-card>
+                  <v-card-title>
+                    <span class="body-2">Thumbnail (290x300)</span>
+                  </v-card-title>
+                  <v-card-text>
+                    <v-data-table :headers="headers" :items="productImageThumbnailList" hide-actions class="elevation-1">
+                      <template v-slot:items="props">
+                        <td class="text-xs-left pt-1"><img :src="props.item.file_path" height="80" width="120" /></td>
+                        <td class="text-xs-left">{{ props.item.name }}</td>
+                        <td class="text-xs-left">{{ props.item.description }}</td>
+                        <td class="text-xs-center">
+                          <v-tooltip left>
+                            <template v-slot:activator="{ on }">
+                              <v-icon small class="mr-2" @click="editItem(props.item.id)" v-on="on">edit</v-icon>
+                            </template>
+                            <span>Update</span>
+                          </v-tooltip>
+                          <v-tooltip left>
+                            <template v-slot:activator="{ on }">
+                              <v-icon small color="red" @click="deleteItem(props.item.id)" v-on="on">delete</v-icon>
+                            </template>
+                            <span>Delete</span>
+                          </v-tooltip>
+                        </td>
+                      </template>
+                      <template v-slot:no-data>
+                        <p class="justify-center layout px-0">No data found!</p>
+                      </template>
+                    </v-data-table>
+                  </v-card-text>
+                </v-card>
+              </v-flex>
+              <v-flex xs12 sm12 md12 lg12>
+                <v-card>
+                  <v-card-title>
+                    <span class="body-2">Featured (290x300)</span>
+                  </v-card-title>
+                  <v-card-text>
+                    <v-data-table :headers="headers" :items="productImageFeaturedList" hide-actions class="elevation-1">
+                      <template v-slot:items="props">
+                        <td class="text-xs-left pt-1"><img :src="props.item.file_path" height="80" width="120" /></td>
+                        <td class="text-xs-left">{{ props.item.name }}</td>
+                        <td class="text-xs-left">{{ props.item.description }}</td>
+                        <td class="text-xs-center">
+                          <v-tooltip left>
+                            <template v-slot:activator="{ on }">
+                              <v-icon small class="mr-2" @click="editItem(props.item.id)" v-on="on">edit</v-icon>
+                            </template>
+                            <span>Update</span>
+                          </v-tooltip>
+                          <v-tooltip left>
+                            <template v-slot:activator="{ on }">
+                              <v-icon small color="red" @click="deleteItem(props.item.id)" v-on="on">delete</v-icon>
+                            </template>
+                            <span>Delete</span>
+                          </v-tooltip>
+                        </td>
+                      </template>
+                      <template v-slot:no-data>
+                        <p class="justify-center layout px-0">No data found!</p>
+                      </template>
+                    </v-data-table>
+                  </v-card-text>
+                </v-card>
+              </v-flex>
+              <v-flex xs12 sm12 md12 lg12>
+                <v-card>
+                  <v-card-title>
+                    <span class="body-2">Flash Deal (290x300)</span>
+                  </v-card-title>
+                  <v-card-text>
+                    <v-data-table :headers="headers" :items="productImageFlashDealList" hide-actions class="elevation-1">
+                      <template v-slot:items="props">
+                        <td class="text-xs-left pt-1"><img :src="props.item.file_path" height="80" width="120" /></td>
+                        <td class="text-xs-left">{{ props.item.name }}</td>
+                        <td class="text-xs-left">{{ props.item.description }}</td>
+                        <td class="text-xs-center">
+                          <v-tooltip left>
+                            <template v-slot:activator="{ on }">
+                              <v-icon small class="mr-2" @click="editItem(props.item.id)" v-on="on">edit</v-icon>
+                            </template>
+                            <span>Update</span>
+                          </v-tooltip>
+                          <v-tooltip left>
+                            <template v-slot:activator="{ on }">
+                              <v-icon small color="red" @click="deleteItem(props.item.id)" v-on="on">delete</v-icon>
+                            </template>
+                            <span>Delete</span>
+                          </v-tooltip>
+                        </td>
+                      </template>
+                      <template v-slot:no-data>
+                        <p class="justify-center layout px-0">No data found!</p>
+                      </template>
+                    </v-data-table>
+                  </v-card-text>
+                </v-card>
+              </v-flex>
+            </v-flex>
+          </v-layout>
+        </v-container>
+      </v-card-text>
     </v-card>
   </v-container>
 </template>
@@ -28,12 +169,53 @@ export default {
     Alerts
   },
 
-  data: () => ({}),
+  data: () => ({
+    mainImage: 1,
+    thumbnailImage: 2,
+    featuredImage: 3,
+    flasDealImage: 4,
+    headers: [
+      { text: "Image", value: "file_name" },
+      { text: "Order", value: "order" },
+      { text: "Actions", align: "center", value: "id", sortable: false }
+    ],
+    defaultFormData: {
+      file: null,
+      file_path: require("../../assets/images/no-image.png"),
+      file_name: null,
+      order: null,
+      type: null,
+    },
+    formType: "new",
+    formData: {
+      file: null,
+      file_path: require("../../assets/images/no-image.png"),
+      file_name: null,
+      order: null,
+      type: null,
+    },
+  }),
 
-  mounted() {},
+  mounted() {
+    this.getProductImageDataByProductIdAndType({ productId: this.$route.params.id, type: mainImage });
+    this.getProductImageDataByProductIdAndType({ productId: this.$route.params.id, type: thumbnailImage });
+    this.getProductImageDataByProductIdAndType({ productId: this.$route.params.id, type: featuredImage });
+    this.getProductImageDataByProductIdAndType({ productId: this.$route.params.id, type: flasDealImage });
+  },
 
-  computed: {},
+  computed: {
+    ...mapState("productImages", [
+      "productImageMainList", 
+      "productImageThumbnailList", 
+      "productImageFeaturedList", 
+      "productImageFlashDealList"
+    ])
+  },
 
-  methods: {}
+  methods: {
+    ...mapActions("productImages", {
+      getProductImageDataByProductIdAndType: "getDataByProductIdAndType"
+    }),
+  }
 };
 </script>
