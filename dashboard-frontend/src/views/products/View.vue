@@ -1,20 +1,23 @@
 <template>
   <v-container fluid>
     <Alerts />
-    <v-divider></v-divider>
-    <v-toolbar color="#EEEEEE" dense>
-      <v-toolbar-title>
-        <v-icon class="black--text">pageview</v-icon>Products - View
-      </v-toolbar-title>
-      <v-spacer></v-spacer>
-      <v-btn icon to="/products">
-        <v-icon>arrow_back</v-icon>
-      </v-btn>
-    </v-toolbar>
-    <v-card class="mx-auto my-12" :elevation="3" max-width="auto">
-      <v-flex xs12 sm12 md12 lg12>
-        <v-list dense>
-          <v-container>
+    <v-card>
+      <v-card-title>
+        <v-icon class="black--text">pageview</v-icon
+        ><span class="title">Products - View</span>
+        <v-spacer></v-spacer>
+        <v-tooltip left>
+          <template v-slot:activator="{ on }">
+            <v-btn icon to="/products" v-on="on">
+              <v-icon>arrow_back</v-icon>
+            </v-btn>
+          </template>
+          <span>Back</span>
+        </v-tooltip>
+      </v-card-title>
+      <v-card-text>
+        <v-flex xs12 sm12 md12 lg12>
+          <v-list dense>
             <v-layout wrap row>
               <v-flex xs12 sm12 md6 lg6>
                 <v-list-tile>
@@ -149,9 +152,7 @@
                 </v-list-tile>
               </v-flex>
             </v-layout>
-          </v-container>
-        </v-list>
-        <v-card-text>
+          </v-list>
           <v-tabs fixed-tabs show-arrows>
             <v-tabs-slider color="yellow"></v-tabs-slider>
             <v-tab
@@ -178,8 +179,8 @@
               <v-tab-item value="tab-images"> </v-tab-item>
             </v-tabs-items>
           </v-tabs>
-        </v-card-text>
-      </v-flex>
+        </v-flex>
+      </v-card-text>
     </v-card>
   </v-container>
 </template>

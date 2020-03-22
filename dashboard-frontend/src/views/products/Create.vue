@@ -1,17 +1,22 @@
 <template>
   <v-container fluid>
     <Alerts />
-    <v-divider></v-divider>
-    <v-toolbar color="#EEEEEE" dense>
-      <v-toolbar-title>
-        <v-icon class="black--text">add_box</v-icon>Products - Create
-      </v-toolbar-title>
-      <v-spacer></v-spacer>
-      <v-btn icon to="/products">
-        <v-icon>arrow_back</v-icon>
-      </v-btn>
-    </v-toolbar>
-    <Form ref="form" form-type="new" />
+    <v-card>
+      <v-card-title>
+        <v-icon class="black--text">add_box</v-icon
+        ><span class="title">Products - Create</span>
+        <v-spacer></v-spacer>
+        <v-tooltip left>
+          <template v-slot:activator="{ on }">
+            <v-btn icon to="/products" v-on="on">
+              <v-icon>arrow_back</v-icon>
+            </v-btn>
+          </template>
+          <span>Back</span>
+        </v-tooltip>
+      </v-card-title>
+      <Form ref="form" form-type="new" />
+    </v-card>
   </v-container>
 </template>
 

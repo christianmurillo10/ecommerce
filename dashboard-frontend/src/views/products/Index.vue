@@ -1,23 +1,18 @@
 <template>
   <v-container fluid>
     <Alerts />
-    <!-- <v-divider></v-divider>
-    <v-toolbar color="#EEEEEE" dense>
-      <v-toolbar-title>
-        <v-icon class="black--text">view_list</v-icon>Products
-      </v-toolbar-title>
-      <v-spacer></v-spacer>
-      <v-btn icon to="/products/create">
-        <v-icon>add_box</v-icon>
-      </v-btn>
-    </v-toolbar> -->
     <v-card>
       <v-card-title>
-        <v-icon class="black--text">view_list</v-icon>Products
+        <v-icon class="black--text">view_list</v-icon><span class="title">Products</span>
         <v-spacer></v-spacer>
-        <v-btn icon to="/products/create">
-          <v-icon>add_box</v-icon>
-        </v-btn>
+        <v-tooltip left>
+          <template v-slot:activator="{ on }">
+            <v-btn icon to="/products/create" v-on="on">
+              <v-icon>add_box</v-icon>
+            </v-btn>
+          </template>
+          <span>Create</span>
+        </v-tooltip>
       </v-card-title>
       <!-- <v-card-title>
         <v-spacer></v-spacer>
@@ -29,45 +24,62 @@
           hide-details
         ></v-text-field>
       </v-card-title> -->
-      <v-data-table
-        must-sort
-        :headers="headers"
-        :pagination.sync="pagination"
-        :rows-per-page-items="pagination.rowsPerPageItems"
-        :total-items="productTotalCount"
-        :loading="loading"
-        :items="productList"
-        class="elevation-1"
-      >
-        <!-- With Data -->
-        <template v-slot:items="props">
-          <td class="text-xs-left">
-            <router-link v-bind:to="'/products/view/' + props.item.id">{{
-              props.item.name
-            }}</router-link>
-          </td>
-          <td class="text-xs-left">{{ props.item.unit }}</td>
-          <td class="text-xs-left">{{ props.item.price_amount }}</td>
-          <td class="text-xs-left">{{ props.item.productBrands.name }}</td>
-          <td class="text-xs-left">{{ props.item.productCategories.name }}</td>
-          <td class="text-xs-left">{{ props.item.productSubCategories.name }}</td>
-          <td class="text-xs-left">{{ props.item.productSubSubCategories.name }}</td>
-          <td class="justify-center layout px-0">
-            <v-icon small class="mr-2" @click="editItem(props.item.id)">edit</v-icon>
-            <v-icon small @click="deleteItem(props.item.id)">delete</v-icon>
-          </td>
-        </template>
-        <!-- No Data -->
-        <template v-slot:no-data>
-          <p class="justify-center layout px-0">No data found!</p>
-        </template>
-        <!-- Search No Data -->
-        <!-- <template v-slot:no-results>
-          <v-alert :value="true" color="error" icon="warning">
-            Your search for "{{ search }}" found no results.
-          </v-alert>
-        </template> -->
-      </v-data-table>
+      <v-card-text>
+        <v-data-table
+          must-sort
+          :headers="headers"
+          :pagination.sync="pagination"
+          :rows-per-page-items="pagination.rowsPerPageItems"
+          :total-items="productTotalCount"
+          :loading="loading"
+          :items="productList"
+          class="elevation-1"
+        >
+          <!-- With Data -->
+          <template v-slot:items="props">
+            <td class="text-xs-left">
+              <router-link v-bind:to="'/products/view/' + props.item.id">
+                <v-tooltip left>
+                  <template v-slot:activator="{ on }">
+                    <span v-on="on">{{ props.item.name }}</span>
+                  </template>
+                  <span>View</span>
+                </v-tooltip>
+              </router-link>
+            </td>
+            <td class="text-xs-left">{{ props.item.unit }}</td>
+            <td class="text-xs-left">{{ props.item.price_amount }}</td>
+            <td class="text-xs-left">{{ props.item.productBrands.name }}</td>
+            <td class="text-xs-left">{{ props.item.productCategories.name }}</td>
+            <td class="text-xs-left">{{ props.item.productSubCategories.name }}</td>
+            <td class="text-xs-left">{{ props.item.productSubSubCategories.name }}</td>
+            <td class="justify-center layout px-0">
+              <v-tooltip left>
+                <template v-slot:activator="{ on }">
+                  <v-icon small class="mr-2" @click="editItem(props.item.id)" v-on="on">edit</v-icon>
+                </template>
+                <span>Update</span>
+              </v-tooltip>
+              <v-tooltip left>
+                <template v-slot:activator="{ on }">
+                  <v-icon small @click="deleteItem(props.item.id)" v-on="on">delete</v-icon>
+                </template>
+                <span>Delete</span>
+              </v-tooltip>
+            </td>
+          </template>
+          <!-- No Data -->
+          <template v-slot:no-data>
+            <p class="justify-center layout px-0">No data found!</p>
+          </template>
+          <!-- Search No Data -->
+          <!-- <template v-slot:no-results>
+            <v-alert :value="true" color="error" icon="warning">
+              Your search for "{{ search }}" found no results.
+            </v-alert>
+          </template> -->
+        </v-data-table>
+      </v-card-text>
     </v-card>
   </v-container>
 </template>
@@ -85,22 +97,22 @@ export default {
     loading: true,
     // search: '',
     headers: [
-      { text: "Name", value: "name" },
-      { text: "Unit", value: "unit" },
-      { text: "Price", value: "price_amount" },
-      { text: "Brand", value: "product_brand_id" },
-      { text: "Category", value: "product_category_id" },
-      { text: "Sub Category", value: "product_sub_category_id" },
-      { text: "Sub-Sub Category", value: "product_sub_Sub_category_id" },
+      { text: "Name", value: "name", sortable: false },
+      { text: "Unit", value: "unit", sortable: false },
+      { text: "Price", value: "price_amount", sortable: false },
+      { text: "Brand", value: "product_brand_id", sortable: false },
+      { text: "Category", value: "product_category_id", sortable: false },
+      { text: "Sub Category", value: "product_sub_category_id", sortable: false },
+      { text: "Sub-Sub Category", value: "product_sub_Sub_category_id", sortable: false },
       { text: "Actions", align: "center", value: "name", sortable: false }
     ],
-      pagination: {
-        descending: true,
-        page: 1,
-        rowsPerPage: 5,
-        sortBy: 'name',
-        rowsPerPageItems: [5, 10, 25, 50, 100]
-      },
+    pagination: {
+      descending: true,
+      page: 1,
+      rowsPerPage: 5,
+      sortBy: 'name',
+      rowsPerPageItems: [5, 10, 25, 50, 100]
+    },
   }),
 
   watch: {
