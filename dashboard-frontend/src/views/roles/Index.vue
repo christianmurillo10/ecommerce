@@ -11,7 +11,7 @@
             <v-tooltip left>
               <template v-slot:activator="{ on }">
                 <v-btn icon v-on:click="click" v-on="on">
-                  <v-icon>add_box</v-icon>
+                  <v-icon color="green">add_box</v-icon>
                 </v-btn>
               </template>
               <span>Create</span>
@@ -43,7 +43,7 @@
               </v-tooltip>
               <v-tooltip left>
                 <template v-slot:activator="{ on }">
-                  <v-icon small @click="deleteItem(props.item.id)" v-on="on">delete</v-icon>
+                  <v-icon small color="red" @click="deleteItem(props.item.id)" v-on="on">delete</v-icon>
                 </template>
                 <span>Delete</span>
               </v-tooltip>

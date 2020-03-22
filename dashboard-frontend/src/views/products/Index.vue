@@ -8,7 +8,7 @@
         <v-tooltip left>
           <template v-slot:activator="{ on }">
             <v-btn icon to="/products/create" v-on="on">
-              <v-icon>add_box</v-icon>
+              <v-icon color="green">add_box</v-icon>
             </v-btn>
           </template>
           <span>Create</span>
@@ -56,13 +56,25 @@
             <td class="justify-center layout px-0">
               <v-tooltip left>
                 <template v-slot:activator="{ on }">
+                  <v-icon small class="mr-2" color="purple darken-2" @click="editOption(props.item.id)" v-on="on">list_alt</v-icon>
+                </template>
+                <span>Options</span>
+              </v-tooltip>
+              <v-tooltip left>
+                <template v-slot:activator="{ on }">
+                  <v-icon small class="mr-2" color="blue-grey darken-2" @click="editImage(props.item.id)" v-on="on">image</v-icon>
+                </template>
+                <span>Image</span>
+              </v-tooltip>
+              <v-tooltip left>
+                <template v-slot:activator="{ on }">
                   <v-icon small class="mr-2" @click="editItem(props.item.id)" v-on="on">edit</v-icon>
                 </template>
                 <span>Update</span>
               </v-tooltip>
               <v-tooltip left>
                 <template v-slot:activator="{ on }">
-                  <v-icon small @click="deleteItem(props.item.id)" v-on="on">delete</v-icon>
+                  <v-icon small color="red" @click="deleteItem(props.item.id)" v-on="on">delete</v-icon>
                 </template>
                 <span>Delete</span>
               </v-tooltip>
@@ -145,6 +157,14 @@ export default {
 
     editItem(id) {
       this.$router.push(`/products/update/${id}`);
+    },
+
+    editImage(id) {
+      this.$router.push(`/products/image/${id}`);
+    },
+
+    editOption(id) {
+      this.$router.push(`/products/option/${id}`);
     },
 
     deleteItem(id) {
