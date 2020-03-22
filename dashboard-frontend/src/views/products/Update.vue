@@ -4,7 +4,7 @@
     <v-card>
       <v-card-title>
         <v-icon class="black--text">edit</v-icon
-        ><span class="title">Products - Update</span>
+        ><span class="title">Product - Update</span>
         <v-spacer></v-spacer>
         <v-tooltip left>
           <template v-slot:activator="{ on }">

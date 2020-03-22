@@ -4,7 +4,7 @@
     <v-card>
       <v-card-title>
         <v-icon class="black--text">add_box</v-icon
-        ><span class="title">Products - Create</span>
+        ><span class="title">Product - Create</span>
         <v-spacer></v-spacer>
         <v-tooltip left>
           <template v-slot:activator="{ on }">
