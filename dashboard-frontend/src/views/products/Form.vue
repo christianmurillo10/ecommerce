@@ -333,9 +333,7 @@ export default {
           this.formData.product_sub_sub_category_id = this.defaultFormData.product_sub_sub_category_id;
         }
         this.getProductSubCategoriesDataByProductCategoryId(obj.categoryId);
-        this.getProductSubCategoriesDataByProductCategoryIdAndProductSubCategoryId(
-          obj
-        );
+        this.getProductSubCategoriesDataByProductCategoryIdAndProductSubCategoryId(obj);
       }
     },
 
@@ -346,11 +344,8 @@ export default {
       };
 
       if (obj.categoryId !== null && obj.subCategoryId !== null) {
-        if (this.formType === "new")
-          this.formData.product_sub_sub_category_id = this.defaultFormData.product_sub_sub_category_id;
-        this.getProductSubCategoriesDataByProductCategoryIdAndProductSubCategoryId(
-          obj
-        );
+        if (this.formType === "new") this.formData.product_sub_sub_category_id = this.defaultFormData.product_sub_sub_category_id;
+        this.getProductSubCategoriesDataByProductCategoryIdAndProductSubCategoryId(obj);
       }
     },
 
@@ -370,8 +365,7 @@ export default {
         this.formData.product_brand_id = data.product_brand_id;
         this.formData.product_category_id = data.product_category_id;
         this.formData.product_sub_category_id = data.product_sub_category_id;
-        this.formData.product_sub_sub_category_id =
-          data.product_sub_sub_category_id;
+        this.formData.product_sub_sub_category_id = data.product_sub_sub_category_id;
         this.formData.vat_type = data.vat_type;
         this.formData.discount_type = data.discount_type;
 

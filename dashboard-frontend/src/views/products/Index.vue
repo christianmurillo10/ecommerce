@@ -100,10 +100,10 @@ export default {
       { text: "Name", value: "name", sortable: false },
       { text: "Unit", value: "unit", sortable: false },
       { text: "Price", value: "price_amount", sortable: false },
-      { text: "Brand", value: "product_brand_id", sortable: false },
-      { text: "Category", value: "product_category_id", sortable: false },
-      { text: "Sub Category", value: "product_sub_category_id", sortable: false },
-      { text: "Sub-Sub Category", value: "product_sub_Sub_category_id", sortable: false },
+      { text: "Brand", value: "productBrands.name", sortable: false },
+      { text: "Category", value: "productCategories.name", sortable: false },
+      { text: "Sub Category", value: "productSubCategories.name", sortable: false },
+      { text: "Sub-Sub Category", value: "productSubSubCategories.name", sortable: false },
       { text: "Actions", align: "center", value: "name", sortable: false }
     ],
     pagination: {

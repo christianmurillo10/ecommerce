@@ -1,12 +1,8 @@
 <template>
   <v-card>
-    <v-card-title class="headline grey darken-3 white--text">
-      <span>
-        <v-icon class="white--text">{{ formIcon }}</v-icon>
-        {{ formTitle }}
-      </span>
+    <v-card-title>
+      <v-icon class="black--text">{{ formIcon }}</v-icon><span class="title">{{ formTitle }}</span>
     </v-card-title>
-
     <v-form ref="form" @submit.prevent="save" v-model="valid" lazy-validation>
       <v-card-text>
         <v-container grid-list-md>
@@ -111,9 +107,7 @@ export default {
     ...mapGetters("productCategories", ["getProductCategoryList"]),
     ...mapGetters("productSubCategories", ["getProductSubCategoryList"]),
     formTitle() {
-      return this.formType === "new"
-        ? "New Product Sub-Sub-Category"
-        : "Edit Product Sub-Sub-Category";
+      return this.formType === "new" ? "Product Sub Sub-Category - Create" : "Product Sub Sub-Category - Update";
     },
     formIcon() {
       return this.formType === "new" ? "add_box" : "edit";
@@ -141,7 +135,7 @@ export default {
       let categoryId = this.formData.product_category_id;
 
       if (categoryId) {
-        this.formData.product_sub_category_id = this.defaultFormData.product_sub_category_id;
+        if (this.formType === "new") this.formData.product_sub_category_id = this.defaultFormData.product_sub_category_id;
         this.getProductSubCategoriesDataByProductCategoryId(categoryId);
       }
     },

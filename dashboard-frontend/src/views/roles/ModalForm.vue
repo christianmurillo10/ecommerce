@@ -1,12 +1,8 @@
 <template>
   <v-card>
-    <v-card-title class="headline grey darken-3 white--text">
-      <span>
-        <v-icon class="white--text">{{ formIcon }}</v-icon>
-        {{ formTitle }}
-      </span>
+    <v-card-title>
+      <v-icon class="black--text">{{ formIcon }}</v-icon><span class="title">{{ formTitle }}</span>
     </v-card-title>
-
     <v-form ref="form" @submit.prevent="save" v-model="valid" lazy-validation>
       <v-card-text>
         <v-container grid-list-md>
@@ -75,7 +71,7 @@ export default {
   computed: {
     ...mapGetters("roles", ["getRoleById"]),
     formTitle() {
-      return this.formType === "new" ? "New Role" : "Edit Role";
+      return this.formType === "new" ? "Role - Create" : "Role - Update";
     },
     formIcon() {
       return this.formType === "new" ? "add_box" : "edit";

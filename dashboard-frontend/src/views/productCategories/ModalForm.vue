@@ -1,16 +1,27 @@
 <template>
   <v-card>
-    <v-card-title class="headline grey darken-3 white--text">
-      <span>
-        <v-icon class="white--text">{{ formIcon }}</v-icon>
-        {{ formTitle }}
-      </span>
+    <v-card-title>
+      <v-icon class="black--text">{{ formIcon }}</v-icon><span class="title">{{ formTitle }}</span>
     </v-card-title>
-
     <v-form ref="form" @submit.prevent="save" v-model="valid" lazy-validation>
       <v-card-text>
         <v-container grid-list-md>
           <v-layout wrap>
+            <v-flex xs12 sm12 md12>
+              <v-text-field
+                v-model="formData.name"
+                :rules="validateItem.nameRules"
+                label="Name"
+                required
+              ></v-text-field>
+            </v-flex>
+            <v-flex xs12 sm12 md12>
+              <v-textarea
+                v-model="formData.description"
+                :rules="validateItem.descriptionRules"
+                label="Description"
+              ></v-textarea>
+            </v-flex>
             <v-flex xs12 sm12 md12>
               <v-layout wrap justify-center>
                 <img :src="formData.icon_file_path" height="32" width="32" />
@@ -18,7 +29,7 @@
             </v-flex>
             <v-flex xs12 sm12 md12>
               <v-layout wrap justify-center>
-                <v-btn small @click="pickFileIcon">Upload Icon Image</v-btn>
+                <v-btn small outline @click="pickFileIcon">Upload Icon Image</v-btn>
                 <input
                   type="file"
                   style="display: none"
@@ -35,7 +46,7 @@
             </v-flex>
             <v-flex xs12 sm12 md12>
               <v-layout wrap justify-center>
-                <v-btn small @click="pickFileBanner">Upload Banner Image</v-btn>
+                <v-btn small outline @click="pickFileBanner">Upload Banner Image</v-btn>
                 <input
                   type="file"
                   style="display: none"
@@ -44,21 +55,6 @@
                   @change="onFilePickedBanner"
                 />
               </v-layout>
-            </v-flex>
-            <v-flex xs12 sm12 md12>
-              <v-text-field
-                v-model="formData.name"
-                :rules="validateItem.nameRules"
-                label="Name"
-                required
-              ></v-text-field>
-            </v-flex>
-            <v-flex xs12 sm12 md12>
-              <v-textarea
-                v-model="formData.description"
-                :rules="validateItem.descriptionRules"
-                label="Description"
-              ></v-textarea>
             </v-flex>
           </v-layout>
         </v-container>
@@ -121,7 +117,7 @@ export default {
   computed: {
     ...mapGetters("productCategories", ["getProductCategoryById"]),
     formTitle() {
-      return this.formType === "new" ? "New Product Category" : "Edit Product Category";
+      return this.formType === "new" ? "Product Category - Create" : "Product Category - Update";
     },
     formIcon() {
       return this.formType === "new" ? "add_box" : "edit";

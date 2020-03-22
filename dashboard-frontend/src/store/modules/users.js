@@ -18,6 +18,7 @@ const actions = {
       try {
         axios.get(url, header)
           .then(response => {
+            console.log(response.data.result)
             commit("SET_DATA", response.data.result);
           });
       } catch (err) {

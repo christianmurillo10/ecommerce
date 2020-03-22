@@ -1,12 +1,8 @@
 <template>
   <v-card>
-    <v-card-title class="headline grey darken-3 white--text">
-      <span>
-        <v-icon class="white--text">{{ formIcon }}</v-icon>
-        {{ formTitle }}
-      </span>
+    <v-card-title>
+      <v-icon class="black--text">{{ formIcon }}</v-icon><span class="title">{{ formTitle }}</span>
     </v-card-title>
-
     <v-form ref="form" @submit.prevent="save" v-model="valid" lazy-validation>
       <v-card-text>
         <v-container grid-list-md>
@@ -92,7 +88,7 @@ export default {
     ...mapGetters("productSubCategories", ["getProductSubCategoryById"]),
     ...mapGetters("productCategories", ["getProductCategoryList"]),
     formTitle() {
-      return this.formType === "new" ? "New Product Sub-Category" : "Edit Product Sub-Category";
+      return this.formType === "new" ? "Product Sub-Category - Create" : "Product Sub-Category - Update";
     },
     formIcon() {
       return this.formType === "new" ? "add_box" : "edit";
