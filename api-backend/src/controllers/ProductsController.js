@@ -22,6 +22,7 @@ module.exports = {
     // Override variables
     params.created_at = moment().utc(8).format("YYYY-MM-DD HH:mm:ss");
     params.tags = params.tags.length === 0 ? null : params.tags.toString();
+    params.stock = params.stock === null ? 0 : params.stock.toLocaleString();
     params.price_amount = params.price_amount.toLocaleString();
     params.vat_value = params.vat_value === null ? null : params.vat_value.toLocaleString();
     params.discount_value = params.discount_value === null ? null : params.discount_value.toLocaleString();
@@ -37,6 +38,7 @@ module.exports = {
       // Validators
       if (_.isEmpty(params.name)) return res.json({ status: 200, message: "Name is required.", result: false });
       if (_.isEmpty(params.unit)) return res.json({ status: 200, message: "Unit is required.", result: false });
+      if (_.isEmpty(params.stock)) return res.json({ status: 200, message: "Stock is required.", result: false });
       if (_.isEmpty(params.price_amount)) return res.json({ status: 200, message: "Price Amount is required.", result: false });
       if (_.isEmpty(params.product_brand_id)) return res.json({ status: 200, message: "Product Brand is required.", result: false });
       if (_.isEmpty(params.product_category_id)) return res.json({ status: 200, message: "Product Category is required.", result: false });
@@ -58,6 +60,7 @@ module.exports = {
         "name",
         "description",
         "unit",
+        "stock",
         "tags",
         "price_amount",
         "vat_value",
