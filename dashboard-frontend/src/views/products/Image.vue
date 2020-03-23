@@ -30,6 +30,9 @@
       <v-card-text>
         <v-container fluid grid-list-md>
           <v-layout wrap row>
+            <v-flex xs12 sm12 md12 lg12>
+              <span class="title font-weight-bold">Name: </span><span class="title">{{ productDetails.name }}</span>
+            </v-flex>
             <v-flex xs12 sm12 md6 lg6>
               <v-flex xs12 sm12 md12 lg12>
                 <v-card>
@@ -206,9 +209,11 @@ export default {
       order: null,
       type: null,
     },
+    productDetails: "",
   }),
 
   mounted() {
+    this.getProductDataById(this.$route.params.id).then(response => { this.productDetails = response.data.result; });
     this.getProductImageDataByProductIdAndType({ productId: this.$route.params.id, type: this.mainImage });
     this.getProductImageDataByProductIdAndType({ productId: this.$route.params.id, type: this.thumbnailImage });
     this.getProductImageDataByProductIdAndType({ productId: this.$route.params.id, type: this.featuredImage });
@@ -225,6 +230,7 @@ export default {
   },
 
   methods: {
+    ...mapActions("products", { getProductDataById: "getDataById" }),
     ...mapActions("productImages", {
       getProductImageDataByProductIdAndType: "getDataByProductIdAndType"
     }),

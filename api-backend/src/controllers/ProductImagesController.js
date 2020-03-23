@@ -1,4 +1,5 @@
 const Model = require('../models');
+const ProductsController = require("./ProductsController");
 const fs = require('fs');
 const path = require('path');
 
@@ -34,7 +35,8 @@ module.exports = {
 
     let date = moment(params.created_at).format('YYYY-MM-DD');
     let extension = path.extname(params.file_name);
-    let fileName = `${params.product_id}-${params.type}-${params.order}-${date}${extension}`;
+    let productName = await ProductsController.getNameById(params.product_id);
+    let fileName = `${productName}-${params.type}-${params.order}-${date}${extension}`;
     params.file_name = fileName;
 
     try {
@@ -99,7 +101,8 @@ module.exports = {
       if (!_.isUndefined(req.file)) {
         let date = moment(params.created_at).format('YYYY-MM-DD');
         let extension = path.extname(params.file_name);
-        let fileName = `${params.product_id}-${params.color}-${params.order}-${date}${extension}`;
+        let productName = await ProductsController.getNameById(params.product_id);
+        let fileName = `${productName}-${params.type}-${params.order}-${date}${extension}`;
         params.file_name = fileName;
       } else {
         params.file_name = data.file_name;

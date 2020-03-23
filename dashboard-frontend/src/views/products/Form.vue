@@ -169,20 +169,6 @@
                 </v-layout>
               </v-container>
             </v-tab-item>
-            <!-- <v-tab-item value="tab-options">
-              <v-list-tile>
-                <v-list-tile-title>
-                  <h3>Options:</h3>
-                </v-list-tile-title>
-              </v-list-tile>
-            </v-tab-item> -->
-            <!-- <v-tab-item value="tab-images">
-              <v-list-tile>
-                <v-list-tile-title>
-                  <h3>Images:</h3>
-                </v-list-tile-title>
-              </v-list-tile>
-            </v-tab-item> -->
           </v-tabs-items>
         </v-tabs>
       </v-flex>
@@ -222,15 +208,7 @@ export default {
       {
         key: "description",
         title: "Description"
-      },
-      // {
-      //   key: "options",
-      //   title: "Options"
-      // },
-      // {
-      //   key: "images",
-      //   title: "Images"
-      // }
+      }
     ],
     defaultFormData: {
       name: null,

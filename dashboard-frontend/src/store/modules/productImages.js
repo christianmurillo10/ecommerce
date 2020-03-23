@@ -2,10 +2,10 @@ import axios from "axios";
 import FormData from 'form-data';
 
 const imageType = {
-  mainImage: 1,
-  thumbnailImage: 2,
-  featuredImage: 3,
-  flasDealImage: 4,
+  main: 1,
+  thumbnail: 2,
+  featured: 3,
+  flasDeal: 4,
 }
 
 const state = {
@@ -19,13 +19,13 @@ const state = {
 const getters = {
   getProductImageByIdAndType: (state) => (id, type) => {
     switch(parseInt(type)) {
-      case imageType.mainImage:
+      case imageType.main:
         return state.productImageMainList.find(productImage => productImage.id === id);
-      case imageType.thumbnailImage:
+      case imageType.thumbnail:
         return state.productImageThumbnailList.find(productImage => productImage.id === id);
-      case imageType.featuredImage:
+      case imageType.featured:
         return state.productImageFeaturedList.find(productImage => productImage.id === id);
-      case imageType.flasDealImage:
+      case imageType.flasDeal:
         return state.productImageFlashDealList.find(productImage => productImage.id === id);
     }
   },
@@ -185,35 +185,33 @@ const actions = {
 
 const mutations = {
   SET_DATA(state, payload) {
-    console.log("OBJ", imageType.mainImage)
-    console.log("TYPE", payload)
     if (payload.data) {
       switch(parseInt(payload.type)) {
-        case imageType.mainImage:
+        case imageType.main:
           state.productImageMainList = payload.data;
           break;
-        case imageType.thumbnailImage:
+        case imageType.thumbnail:
           state.productImageThumbnailList = payload.data;
           break;
-        case imageType.featuredImage:
+        case imageType.featured:
           state.productImageFeaturedList = payload.data;
           break;
-        case imageType.flasDealImage:
+        case imageType.flasDeal:
           state.productImageFlashDealList = payload.data;
           break;
       }
     } else {
       switch(parseInt(payload.type)) {
-        case imageType.mainImage:
+        case imageType.main:
           state.productImageMainList = [];
           break;
-        case imageType.thumbnailImage:
+        case imageType.thumbnail:
           state.productImageThumbnailList = [];
           break;
-        case imageType.featuredImage:
+        case imageType.featured:
           state.productImageFeaturedList = [];
           break;
-        case imageType.flasDealImage:
+        case imageType.flasDeal:
           state.productImageFlashDealList = [];
           break;
       }
@@ -224,16 +222,16 @@ const mutations = {
     obj.file_path = `${process.env.VUE_APP_API_BACKEND}/productImage/viewImage/${payload.file_name}/${payload.type}`;
 
     switch(parseInt(payload.type)) {
-      case imageType.mainImage:
+      case imageType.main:
         state.productImageMainList.push(obj);
         break;
-      case imageType.thumbnailImage:
+      case imageType.thumbnail:
         state.productImageThumbnailList.push(obj);
         break;
-      case imageType.featuredImage:
+      case imageType.featured:
         state.productImageFeaturedList.push(obj);
         break;
-      case imageType.flasDealImage:
+      case imageType.flasDeal:
         state.productImageFlashDealList.push(obj);
         break;
     }
@@ -249,19 +247,19 @@ const mutations = {
     }
     
     switch(parseInt(payload.type)) {
-      case imageType.mainImage:
+      case imageType.main:
         index = state.productImageMainList.map(productImage => productImage.id).indexOf(payload.id);
         Object.assign(state.productImageMainList[index], obj);
         break;
-      case imageType.thumbnailImage:
+      case imageType.thumbnail:
         index = state.productImageThumbnailList.map(productImage => productImage.id).indexOf(payload.id);
         Object.assign(state.productImageThumbnailList[index], obj);
         break;
-      case imageType.featuredImage:
+      case imageType.featured:
         index = state.productImageFeaturedList.map(productImage => productImage.id).indexOf(payload.id);
         Object.assign(state.productImageFeaturedList[index], obj);
         break;
-      case imageType.flasDealImage:
+      case imageType.flasDeal:
         index = state.productImageFlashDealList.map(productImage => productImage.id).indexOf(payload.id);
         Object.assign(state.productImageFlashDealList[index], obj);
         break;
@@ -270,19 +268,19 @@ const mutations = {
   DELETE_DATA(state, payload) {
     let index = null;
     switch(parseInt(payload.type)) {
-      case imageType.mainImage:
+      case imageType.main:
         index = state.productImageMainList.map(productImage => productImage.id).indexOf(payload.id);
         state.productImageMainList.splice(index, 1);
         break;
-      case imageType.thumbnailImage:
+      case imageType.thumbnail:
         index = state.productImageThumbnailList.map(productImage => productImage.id).indexOf(payload.id);
         state.productImageThumbnailList.splice(index, 1);
         break;
-      case imageType.featuredImage:
+      case imageType.featured:
         index = state.productImageFeaturedList.map(productImage => productImage.id).indexOf(payload.id);
         state.productImageFeaturedList.splice(index, 1);
         break;
-      case imageType.flasDealImage:
+      case imageType.flasDeal:
         index = state.productImageFlashDealList.map(productImage => productImage.id).indexOf(payload.id);
         state.productImageFlashDealList.splice(index, 1);
         break;

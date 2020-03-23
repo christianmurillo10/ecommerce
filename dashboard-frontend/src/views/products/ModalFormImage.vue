@@ -32,13 +32,15 @@
                 required
               ></v-text-field>
             </v-flex>
-            <v-flex xs12 sm12 md12>
-              <v-text-field
+            <v-flex xs12 sm12 md12 v-if="this.formType === 'new'">
+              <v-autocomplete
                 v-model="formData.type"
+                :items="imageTypeList"
+                item-text="name"
+                item-value="id"
                 :rules="validateItem.typeRules"
                 label="Type"
-                required
-              ></v-text-field>
+              ></v-autocomplete>
             </v-flex>
           </v-layout>
         </v-container>
@@ -67,6 +69,12 @@ export default {
   },
 
   data: () => ({
+    imageTypeList: [
+      { id: 1, name: "Main" },
+      { id: 2, name: "Thumbnail" },
+      { id: 3, name: "Featured" },
+      { id: 4, name: "Flash Deal" }
+    ],
     defaultFormData: {
       file: null,
       file_path: require("../../assets/images/no-image.png"),

@@ -720,4 +720,32 @@ module.exports = {
       });
     }
   },
+
+  /**
+   * Public Functions
+   */
+
+  /**
+   * getNameById
+   */
+  getNameById: async (id) => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        // Pre-setting variables
+        criteria = {
+          attributes: ['name'],
+          where: { is_deleted: 0 }
+        };
+        // Execute findAll query
+        data = await Model.Products.findByPk(id, criteria);
+        resolve(data.name);
+      } catch (err) {
+        resolve({
+          status: 401,
+          err: err,
+          message: "Failed adding stock."
+        });
+      }
+    });
+  },
 };
