@@ -50,10 +50,11 @@
                     >
                       <template v-slot:items="props">
                         <td class="text-xs-left pt-1">
-                          <v-img
+                          <img
                             :src="props.item.file_path"
                             height="80"
                             width="120"
+                            class="product-image"
                             @click="viewImage({ filePath: props.item.file_path, heigth: '300', width: '290' })"
                           />
                         </td>
@@ -112,10 +113,11 @@
                     >
                       <template v-slot:items="props">
                         <td class="text-xs-left pt-1">
-                          <v-img
+                          <img
                             :src="props.item.file_path"
                             height="80"
                             width="120"
+                            class="product-image"
                             @click="viewImage({ filePath: props.item.file_path, heigth: '300', width: '290' })"
                           />
                         </td>
@@ -172,10 +174,11 @@
                     >
                       <template v-slot:items="props">
                         <td class="text-xs-left pt-1">
-                          <v-img
+                          <img
                             :src="props.item.file_path"
                             height="80"
                             width="120"
+                            class="product-image"
                             @click="viewImage({ filePath: props.item.file_path, heigth: '300', width: '290' })"
                           />
                         </td>
@@ -232,10 +235,11 @@
                     >
                       <template v-slot:items="props">
                         <td class="text-xs-left pt-1">
-                          <v-img
+                          <img
                             :src="props.item.file_path"
                             height="80"
                             width="120"
+                            class="product-image"
                             @click="viewImage({ filePath: props.item.file_path, heigth: '300', width: '290' })"
                           />
                         </td>
@@ -280,11 +284,12 @@
               </v-flex>
             </v-flex>
             <v-dialog v-model="modalImage.dialog" :max-height="modalImage.height" :max-width="modalImage.width">
-              <v-img
+              <img
                 :src="modalImage.filePath"
                 :height="modalImage.height"
                 :width="modalImage.width"
                 contain
+                class="product-modal-image"
               />
             </v-dialog>
           </v-layout>
@@ -405,7 +410,11 @@ export default {
 };
 </script>
 <style>
-.v-image {
-  cursor: pointer !important
+.product-image {
+  cursor: pointer !important;
+}
+
+.product-modal-image {
+  margin-bottom: -5px !important;
 }
 </style>
