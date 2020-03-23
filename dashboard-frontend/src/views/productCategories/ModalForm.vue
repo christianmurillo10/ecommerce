@@ -24,7 +24,7 @@
             </v-flex>
             <v-flex xs12 sm12 md12>
               <v-layout wrap justify-center>
-                <img :src="formData.icon_file_path" height="32" width="32" />
+                <v-img :src="formData.icon_file_path" height="32" width="32" />
               </v-layout>
             </v-flex>
             <v-flex xs12 sm12 md12>
@@ -41,7 +41,7 @@
             </v-flex>
             <v-flex xs12 sm12 md12>
               <v-layout wrap justify-center>
-                <img :src="formData.banner_file_path" height="230" width="968" />
+                <v-img :src="formData.banner_file_path" height="230" width="968" />
               </v-layout>
             </v-flex>
             <v-flex xs12 sm12 md12>
