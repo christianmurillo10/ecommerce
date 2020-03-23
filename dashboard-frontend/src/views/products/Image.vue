@@ -27,8 +27,7 @@
                     <v-data-table :headers="headers" :items="productImageMainList" hide-actions class="elevation-1">
                       <template v-slot:items="props">
                         <td class="text-xs-left pt-1"><img :src="props.item.file_path" height="80" width="120" /></td>
-                        <td class="text-xs-left">{{ props.item.name }}</td>
-                        <td class="text-xs-left">{{ props.item.description }}</td>
+                        <td class="text-xs-left">{{ props.item.order }}</td>
                         <td class="text-xs-center">
                           <v-tooltip left>
                             <template v-slot:activator="{ on }">
@@ -62,8 +61,7 @@
                     <v-data-table :headers="headers" :items="productImageThumbnailList" hide-actions class="elevation-1">
                       <template v-slot:items="props">
                         <td class="text-xs-left pt-1"><img :src="props.item.file_path" height="80" width="120" /></td>
-                        <td class="text-xs-left">{{ props.item.name }}</td>
-                        <td class="text-xs-left">{{ props.item.description }}</td>
+                        <td class="text-xs-left">{{ props.item.order }}</td>
                         <td class="text-xs-center">
                           <v-tooltip left>
                             <template v-slot:activator="{ on }">
@@ -95,8 +93,7 @@
                     <v-data-table :headers="headers" :items="productImageFeaturedList" hide-actions class="elevation-1">
                       <template v-slot:items="props">
                         <td class="text-xs-left pt-1"><img :src="props.item.file_path" height="80" width="120" /></td>
-                        <td class="text-xs-left">{{ props.item.name }}</td>
-                        <td class="text-xs-left">{{ props.item.description }}</td>
+                        <td class="text-xs-left">{{ props.item.order }}</td>
                         <td class="text-xs-center">
                           <v-tooltip left>
                             <template v-slot:activator="{ on }">
@@ -128,8 +125,7 @@
                     <v-data-table :headers="headers" :items="productImageFlashDealList" hide-actions class="elevation-1">
                       <template v-slot:items="props">
                         <td class="text-xs-left pt-1"><img :src="props.item.file_path" height="80" width="120" /></td>
-                        <td class="text-xs-left">{{ props.item.name }}</td>
-                        <td class="text-xs-left">{{ props.item.description }}</td>
+                        <td class="text-xs-left">{{ props.item.order }}</td>
                         <td class="text-xs-center">
                           <v-tooltip left>
                             <template v-slot:activator="{ on }">
@@ -197,10 +193,10 @@ export default {
   }),
 
   mounted() {
-    this.getProductImageDataByProductIdAndType({ productId: this.$route.params.id, type: mainImage });
-    this.getProductImageDataByProductIdAndType({ productId: this.$route.params.id, type: thumbnailImage });
-    this.getProductImageDataByProductIdAndType({ productId: this.$route.params.id, type: featuredImage });
-    this.getProductImageDataByProductIdAndType({ productId: this.$route.params.id, type: flasDealImage });
+    this.getProductImageDataByProductIdAndType({ productId: this.$route.params.id, type: this.mainImage });
+    this.getProductImageDataByProductIdAndType({ productId: this.$route.params.id, type: this.thumbnailImage });
+    this.getProductImageDataByProductIdAndType({ productId: this.$route.params.id, type: this.featuredImage });
+    this.getProductImageDataByProductIdAndType({ productId: this.$route.params.id, type: this.flasDealImage });
   },
 
   computed: {

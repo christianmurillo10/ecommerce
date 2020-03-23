@@ -2,6 +2,11 @@ const Model = require('../models');
 const fs = require('fs');
 const path = require('path');
 
+const MAIN_IMAGE = 1;
+const THUMBNAIL_IMAGE = 2;
+const FEATURED_IMAGE = 3;
+const FLASH_DEAL_IMAGE = 4;
+
 module.exports = {
   /**
    * Create
@@ -359,14 +364,29 @@ module.exports = {
   },
 
   /**
-   * Find by file_name
-   * @route GET /productImage/viewImage/:fileName
+   * Find by file_name and type
+   * @route GET /productImage/viewImage/:fileName/:type
    * @param req
    * @param res
    * @returns {never}
    */
   viewImage: (req, res) => {
-    res.sendFile(path.join(__dirname, "../../images/products/" + req.params.fileName));
+    let filePath;
+    switch(parseInt(req.params.type)) {
+      case MAIN_IMAGE:
+        filePath = "../../images/products/main/";
+        break;
+      case THUMBNAIL_IMAGE:
+        filePath = "../../images/products/thumbnail/";
+        break;
+      case FEATURED_IMAGE:
+        filePath = "../../images/products/featured/";
+        break;
+      case FLASH_DEAL_IMAGE:
+        filePath = "../../images/products/flashDeal/";
+        break;
+    }
+    res.sendFile(path.join(__dirname, filePath + req.params.fileName));
   },
 };
 

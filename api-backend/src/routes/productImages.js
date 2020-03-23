@@ -7,7 +7,7 @@ const authController = require('../controllers').auth;
 const productImagesController = require('../controllers').productImages;
 
 // Without Authentication
-router.route('/viewImage/:fileName').get(productImagesController.viewImage);
+router.route('/viewImage/:fileName/:type').get(productImagesController.viewImage);
 router.route('/:id').get(productImagesController.findById);
 router.route('/findAllbyProductId/:productId').get(productImagesController.findAllbyProductId);
 router.route('/findAllbyProductIdAndType/:productId/:type').get(productImagesController.findAllbyProductIdAndType);

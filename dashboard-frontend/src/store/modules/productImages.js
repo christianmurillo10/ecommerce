@@ -87,7 +87,7 @@ const actions = {
 
             if (obj) {
               obj.forEach(element => {
-                element.file_path = `${process.env.VUE_APP_API_BACKEND}/productImage/viewImage/${element.file_name}`;
+                element.file_path = `${process.env.VUE_APP_API_BACKEND}/productImage/viewImage/${element.file_name}/${element.type}`;
               });
             }
 
