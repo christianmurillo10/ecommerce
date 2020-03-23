@@ -30,29 +30,30 @@ module.exports = {
     params.order = params.order.toLocaleString();
     params.user_id = req.user.id.toLocaleString();
     params.product_id = params.product_id.toLocaleString();
+    params.type = params.type.toLocaleString();
 
     let date = moment(params.created_at).format('YYYY-MM-DD');
     let extension = path.extname(params.file_name);
-    let fileName = `${params.product_id}-${params.color}-${params.order}-${date}${extension}`;
+    let fileName = `${params.product_id}-${params.type}-${params.order}-${date}${extension}`;
     params.file_name = fileName;
 
     try {
       // Validators
       if (_.isEmpty(params.file_name)) return res.json({ status: 200, message: "File Name is required.", result: false });
-      if (_.isEmpty(params.color)) return res.json({ status: 200, message: "Color required.", result: false });
       if (_.isEmpty(params.order)) return res.json({ status: 200, message: "Order required.", result: false });
       if (_.isEmpty(params.product_id)) return res.json({ status: 200, message: "Product is required.", result: false });
+      if (_.isEmpty(params.type)) return res.json({ status: 200, message: "Type required.", result: false });
 
       // Pre-setting variables
       criteria = { where: { file_name: params.file_name } };
-      initialValues = _.pick(params, ['file_name', 'color', 'order', 'product_id', 'user_id', 'created_at']);
+      initialValues = _.pick(params, ['file_name', 'order', 'product_id', 'user_id', 'type', 'created_at']);
       // Execute findAll query
       data = await Model.ProductImages.findAll(criteria);
       if (_.isEmpty(data[0])) {
         let finalData = await Model.ProductImages.create(initialValues);
         // For Upload Images
         if (!_.isUndefined(req.file)) {
-          let fileUpload = await uploadImage(params.file_name, req.file);
+          let fileUpload = await uploadImage(params.file_name, params.type, req.file);
         }
         res.json({
           status: 200,
@@ -104,13 +105,13 @@ module.exports = {
         params.file_name = data.file_name;
       }
       // Pre-setting variables
-      initialValues = _.pick(params, ['file_name', 'color', 'order', 'product_id']);
+      initialValues = _.pick(params, ['file_name', 'order', 'type', 'product_id']);
 
       if (!_.isEmpty(data)) {
         let finalData = await data.update(initialValues);
         // For Upload Images
         if (!_.isUndefined(req.file)) {
-          let fileUpload = await uploadImage(params.file_name, req.file);
+          let fileUpload = await uploadImage(params.file_name, params.type, req.file);
         }
         res.json({
           status: 200,
@@ -187,7 +188,7 @@ module.exports = {
 
     try {
       // Pre-setting variables
-      query = `SELECT id, file_name, color, order, created_at, updated_at FROM product_images WHERE CONCAT(file_name) LIKE ? AND is_deleted = 0;`;
+      query = `SELECT id, file_name, order, type, created_at, updated_at FROM product_images WHERE CONCAT(file_name) LIKE ? AND is_deleted = 0;`;
       // Execute native query
       data = await Model.sequelize.query(query, {
         replacements: [`%${params.value}%`],
@@ -227,7 +228,13 @@ module.exports = {
 
     try {
       // Pre-setting variables
-      criteria = { where: { is_deleted: 0 }, include: [{ model: Model.Products, as: 'products' }, { model: Model.Users, as: 'users' }] };
+      criteria = { 
+        where: { is_deleted: 0 }, 
+        include: [
+          { model: Model.Products, as: "products", attributes: ['name', 'description'] },
+          { model: Model.Users, as: "users", attributes: ['email', 'username'] }
+        ]
+      };
       // Execute findAll query
       data = await Model.ProductImages.findAll(criteria);
       if (!_.isEmpty(data[0])) {
@@ -265,7 +272,13 @@ module.exports = {
 
     try {
       // Pre-setting variables
-      criteria = { where: { product_id: params.productId, is_deleted: 0 }, include: [{ model: Model.Products, as: 'products' }, { model: Model.Users, as: 'users' }] };
+      criteria = { 
+        where: { product_id: params.productId, is_deleted: 0 }, 
+        include: [
+          { model: Model.Products, as: "products", attributes: ['name', 'description'] },
+          { model: Model.Users, as: "users", attributes: ['email', 'username'] }
+        ]
+      };
       // Execute findAll query
       data = await Model.ProductImages.findAll(criteria);
       if (!_.isEmpty(data[0])) {
@@ -303,7 +316,13 @@ module.exports = {
 
     try {
       // Pre-setting variables
-      criteria = { where: { product_id: params.productId, type: params.type, is_deleted: 0 }, include: [{ model: Model.Products, as: 'products' }, { model: Model.Users, as: 'users' }] };
+      criteria = { 
+        where: { product_id: params.productId, type: params.type, is_deleted: 0 }, 
+        include: [
+          { model: Model.Products, as: "products", attributes: ['name', 'description'] },
+          { model: Model.Users, as: "users", attributes: ['email', 'username'] }
+        ]
+      };
       // Execute findAll query
       data = await Model.ProductImages.findAll(criteria);
       if (!_.isEmpty(data[0])) {
@@ -393,9 +412,24 @@ module.exports = {
 /**
  * Other Functions
  */
-const uploadImage = (name, file) => {
+const uploadImage = (name, type, file) => {
   try {
-    fs.writeFile('images/products/' + name, file.buffer, function (err) {
+    let filePath;
+    switch(parseInt(type)) {
+      case MAIN_IMAGE:
+        filePath = "images/products/main/";
+        break;
+      case THUMBNAIL_IMAGE:
+        filePath = "images/products/thumbnail/";
+        break;
+      case FEATURED_IMAGE:
+        filePath = "images/products/featured/";
+        break;
+      case FLASH_DEAL_IMAGE:
+        filePath = "images/products/flashDeal/";
+        break;
+    }
+    fs.writeFile(filePath + name, file.buffer, function (err) {
       if (err) throw err;
     })
 

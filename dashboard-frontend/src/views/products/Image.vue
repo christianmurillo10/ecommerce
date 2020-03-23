@@ -5,6 +5,19 @@
       <v-card-title>
         <v-icon class="black--text">image</v-icon><span class="title">Product - Image</span>
         <v-spacer></v-spacer>
+        <v-dialog v-model="dialog" max-width="500px">
+          <template v-slot:activator="{ on: { click } }">
+            <v-tooltip left>
+              <template v-slot:activator="{ on }">
+                <v-btn icon v-on:click="click" v-on="on">
+                  <v-icon color="green">add_box</v-icon>
+                </v-btn>
+              </template>
+              <span>Create</span>
+            </v-tooltip>
+          </template>
+          <ModalFormImage ref="modalFormImage" @setDialog="setDialog" />
+        </v-dialog>
         <v-tooltip left>
           <template v-slot:activator="{ on }">
             <v-btn icon to="/products" v-on="on">
@@ -31,13 +44,13 @@
                         <td class="text-xs-center">
                           <v-tooltip left>
                             <template v-slot:activator="{ on }">
-                              <v-icon small class="mr-2" @click="editItem(props.item.id)" v-on="on">edit</v-icon>
+                              <v-icon small class="mr-2" @click="editItem(props.item.id, props.item.type)" v-on="on">edit</v-icon>
                             </template>
                             <span>Update</span>
                           </v-tooltip>
                           <v-tooltip left>
                             <template v-slot:activator="{ on }">
-                              <v-icon small color="red" @click="deleteItem(props.item.id)" v-on="on">delete</v-icon>
+                              <v-icon small color="red" @click="deleteItem(props.item.id, props.item.type)" v-on="on">delete</v-icon>
                             </template>
                             <span>Delete</span>
                           </v-tooltip>
@@ -65,13 +78,13 @@
                         <td class="text-xs-center">
                           <v-tooltip left>
                             <template v-slot:activator="{ on }">
-                              <v-icon small class="mr-2" @click="editItem(props.item.id)" v-on="on">edit</v-icon>
+                              <v-icon small class="mr-2" @click="editItem(props.item.id, props.item.type)" v-on="on">edit</v-icon>
                             </template>
                             <span>Update</span>
                           </v-tooltip>
                           <v-tooltip left>
                             <template v-slot:activator="{ on }">
-                              <v-icon small color="red" @click="deleteItem(props.item.id)" v-on="on">delete</v-icon>
+                              <v-icon small color="red" @click="deleteItem(props.item.id, props.item.type)" v-on="on">delete</v-icon>
                             </template>
                             <span>Delete</span>
                           </v-tooltip>
@@ -97,13 +110,13 @@
                         <td class="text-xs-center">
                           <v-tooltip left>
                             <template v-slot:activator="{ on }">
-                              <v-icon small class="mr-2" @click="editItem(props.item.id)" v-on="on">edit</v-icon>
+                              <v-icon small class="mr-2" @click="editItem(props.item.id, props.item.type)" v-on="on">edit</v-icon>
                             </template>
                             <span>Update</span>
                           </v-tooltip>
                           <v-tooltip left>
                             <template v-slot:activator="{ on }">
-                              <v-icon small color="red" @click="deleteItem(props.item.id)" v-on="on">delete</v-icon>
+                              <v-icon small color="red" @click="deleteItem(props.item.id, props.item.type)" v-on="on">delete</v-icon>
                             </template>
                             <span>Delete</span>
                           </v-tooltip>
@@ -129,13 +142,13 @@
                         <td class="text-xs-center">
                           <v-tooltip left>
                             <template v-slot:activator="{ on }">
-                              <v-icon small class="mr-2" @click="editItem(props.item.id)" v-on="on">edit</v-icon>
+                              <v-icon small class="mr-2" @click="editItem(props.item.id, props.item.type)" v-on="on">edit</v-icon>
                             </template>
                             <span>Update</span>
                           </v-tooltip>
                           <v-tooltip left>
                             <template v-slot:activator="{ on }">
-                              <v-icon small color="red" @click="deleteItem(props.item.id)" v-on="on">delete</v-icon>
+                              <v-icon small color="red" @click="deleteItem(props.item.id, props.item.type)" v-on="on">delete</v-icon>
                             </template>
                             <span>Delete</span>
                           </v-tooltip>
@@ -158,14 +171,17 @@
 
 <script>
 import Alerts from "@/components/utilities/Alerts";
+import ModalFormImage from "./ModalFormImage";
 import { mapState, mapActions } from "vuex";
 
 export default {
   components: {
-    Alerts
+    Alerts,
+    ModalFormImage
   },
 
   data: () => ({
+    dialog: false,
     mainImage: 1,
     thumbnailImage: 2,
     featuredImage: 3,
@@ -212,6 +228,24 @@ export default {
     ...mapActions("productImages", {
       getProductImageDataByProductIdAndType: "getDataByProductIdAndType"
     }),
+
+    editItem(id, type) {
+      this.setDialog(true);
+      this.$refs.modalFormImage.editItem(id, type);
+    },
+
+    deleteItem(id, type) {
+      this.$refs.modalFormImage.deleteItem(id, type);
+    },
+
+    close() {
+      this.setDialog(false);
+      this.$refs.modalFormImage.close();
+    },
+
+    setDialog(value) {
+      this.dialog = value;
+    }
   }
 };
 </script>
