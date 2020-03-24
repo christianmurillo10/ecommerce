@@ -179,7 +179,7 @@
                 <ViewOptions ref="viewOptions" :option-details="productOptionDetails" />
               </v-tab-item>
               <v-tab-item value="tab-images">
-                <ViewImages ref="viewImages" />
+                <ViewImages ref="viewImages" :image-details="productImageDetails" />
               </v-tab-item>
             </v-tabs-items>
           </v-tabs>

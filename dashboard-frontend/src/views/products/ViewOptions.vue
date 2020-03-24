@@ -7,7 +7,7 @@
       content-class="layout row wrap"
     >
       <template v-slot:item="props">
-        <v-flex xs6 sm6 md3 lg3>
+        <v-flex xs12 sm12 md3 lg3>
           <v-card>
             <v-card-title><h4>{{ props.item.title }}</h4></v-card-title>
             <v-divider></v-divider>
@@ -26,7 +26,6 @@
 
 <script>
 import Alerts from "@/components/utilities/Alerts";
-import { mapState, mapActions } from "vuex";
 
 export default {
   components: {

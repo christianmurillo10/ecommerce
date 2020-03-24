@@ -54,7 +54,14 @@ const actions = {
         axios
           .get(url, header)
           .then(response => {
-            resolve(response);
+            let obj = response;
+
+            if (obj.data.result.productImages.length !== 0) {
+              obj.data.result.productImages.forEach(element => {
+                element.file_path = `${process.env.VUE_APP_API_BACKEND}/productImage/viewImage/${element.file_name}/${element.type}`;
+              });
+            }
+            resolve(obj);
           });
       } catch (err) {
         reject(err);
