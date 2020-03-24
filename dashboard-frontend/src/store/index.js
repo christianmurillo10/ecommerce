@@ -13,6 +13,7 @@ import productCategories from './modules/productCategories'
 import productSubCategories from './modules/productSubCategories'
 import productSubSubCategories from './modules/productSubSubCategories'
 import productImages from './modules/productImages'
+import productOptions from './modules/productOptions'
 import productBannerImages from './modules/productBannerImages'
 import products from './modules/products'
 import inventories from './modules/inventories'
@@ -36,6 +37,7 @@ export default new Vuex.Store({
     productSubCategories,
     productSubSubCategories,
     productImages,
+    productOptions,
     productBannerImages,
     products,
     inventories

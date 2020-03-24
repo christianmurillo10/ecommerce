@@ -20,7 +20,8 @@ module.exports = {
 
     // Override variables
     params.created_at = moment().utc(8).format('YYYY-MM-DD HH:mm:ss');
-    params.product_id = params.product_category_id.toLocaleString();
+    params.values = params.values.toString();
+    params.product_id = params.product_id.toLocaleString();
     params.user_id = req.user.id.toLocaleString();
 
     try {
@@ -34,6 +35,7 @@ module.exports = {
       initialValues = _.pick(params, [
         'title',
         'values',
+        'user_id',
         'product_id',
         'created_at'
       ]);
@@ -80,6 +82,9 @@ module.exports = {
       return res.badRequest({ err: "Invalid Parameter: [params]" });
     if (_.isEmpty(params))
       return res.badRequest({ err: "Empty Parameter: [params]" });
+
+    // Override variables
+    params.values = params.values.toString();
 
     try {
       // Pre-setting variables
