@@ -175,8 +175,12 @@
                   </v-sheet>
                 </v-flex>
               </v-tab-item>
-              <v-tab-item value="tab-options"> </v-tab-item>
-              <v-tab-item value="tab-images"> </v-tab-item>
+              <v-tab-item value="tab-options">
+                <ViewOptions ref="viewOptions" :option-details="productOptionDetails" />
+              </v-tab-item>
+              <v-tab-item value="tab-images">
+                <ViewImages ref="viewImages" />
+              </v-tab-item>
             </v-tabs-items>
           </v-tabs>
         </v-flex>
@@ -188,12 +192,16 @@
 <script>
 import Alerts from "@/components/utilities/Alerts";
 import Mixins from "@/helpers/Mixins.js";
+import ViewOptions from "./ViewOptions";
+import ViewImages from "./ViewImages";
 import { mapState, mapActions } from "vuex";
 
 export default {
   mixins: [Mixins],
   components: {
-    Alerts
+    Alerts,
+    ViewOptions,
+    ViewImages
   },
 
   data: () => ({
@@ -216,22 +224,22 @@ export default {
     productCategoryDetails: "",
     productSubCategoryDetails: "",
     productSubSubCategoryDetails: "",
+    productImageDetails: [],
+    productOptionDetails: [],
     inventoryDetails: ""
   }),
 
   mounted() {
     this.getProductDataById(this.$route.params.id).then(response => {
       this.productDetails = response.data.result;
-      this.productBrandDetails = response.data.result.productBrands;
-      this.productCategoryDetails = response.data.result.productCategories;
-      this.productSubCategoryDetails = response.data.result.productSubCategories;
-      this.productSubSubCategoryDetails = response.data.result.productSubSubCategories;
+      this.productBrandDetails = response.data.result.productBrands === null ? "" : response.data.result.productBrands;
+      this.productCategoryDetails = response.data.result.productCategories === null ? "" : response.data.result.productCategories;
+      this.productSubCategoryDetails = response.data.result.productSubCategories === null ? "" : response.data.result.productSubCategories;
+      this.productSubSubCategoryDetails = response.data.result.productSubSubCategories === null ? "" : response.data.result.productSubSubCategories;
+      this.productImageDetails = response.data.result.productImages === null ? [] : response.data.result.productImages;
+      this.productOptionDetails = response.data.result.productOptions === null ? [] : response.data.result.productOptions;
+      this.inventoryDetails = response.data.result.inventories === null ? "" : response.data.result.inventories;
     });
-    this.getInventoryAvailableStockDataByProductId(this.$route.params.id).then(
-      response => {
-        this.inventoryDetails = response.data.result;
-      }
-    );
   },
 
   computed: {
@@ -256,11 +264,7 @@ export default {
   },
 
   methods: {
-    ...mapActions("products", { getProductDataById: "getDataById" }),
-    ...mapActions("inventories", {
-      getInventoryAvailableStockDataByProductId:
-        "getAvailableStockDataByProductId"
-    })
+    ...mapActions("products", { getProductDataById: "getDataById" })
   }
 };
 </script>
