@@ -37,6 +37,13 @@
         >
           <!-- With Data -->
           <template v-slot:items="props">
+            <td class="text-xs-left pt-1">
+              <img
+                :src="props.item.productImages[0].file_path"
+                height="80"
+                width="120"
+              />
+            </td>
             <td class="text-xs-left">
               <router-link v-bind:to="'/products/view/' + props.item.id">
                 <v-tooltip left>
@@ -48,12 +55,12 @@
               </router-link>
             </td>
             <td class="text-xs-left">{{ props.item.unit }}</td>
+            <td class="text-xs-left">{{ props.item.inventories === null ? 0 : props.item.inventories.stock_available }}</td>
             <td class="text-xs-left">{{ props.item.price_amount }}</td>
-            <td class="text-xs-left">{{ props.item.productBrands.name }}</td>
-            <td class="text-xs-left">{{ props.item.productCategories.name }}</td>
-            <td class="text-xs-left">{{ props.item.productSubCategories.name }}</td>
-            <td class="text-xs-left">{{ props.item.productSubSubCategories.name }}</td>
-            <td class="justify-center layout px-0">
+            <td class="text-xs-left">{{ props.item.is_today_deal }}</td>
+            <td class="text-xs-left">{{ props.item.is_published }}</td>
+            <td class="text-xs-left">{{ props.item.is_featured }}</td>
+            <td class="justify-center">
               <v-tooltip left>
                 <template v-slot:activator="{ on }">
                   <v-icon small class="mr-2" color="purple darken-2" @click="editOption(props.item.id)" v-on="on">list_alt</v-icon>
@@ -109,13 +116,14 @@ export default {
     loading: true,
     // search: '',
     headers: [
+      { text: "Image", value: "name", sortable: false },
       { text: "Name", value: "name", sortable: false },
-      { text: "Unit", value: "unit", sortable: false },
-      { text: "Price", value: "price_amount", sortable: false },
-      { text: "Brand", value: "productBrands.name", sortable: false },
-      { text: "Category", value: "productCategories.name", sortable: false },
-      { text: "Sub Category", value: "productSubCategories.name", sortable: false },
-      { text: "Sub-Sub Category", value: "productSubSubCategories.name", sortable: false },
+      { text: "Unit", value: "name", sortable: false },
+      { text: "Stock", value: "name", sortable: false },
+      { text: "Price", value: "name", sortable: false },
+      { text: "Todays Deal", value: "name", sortable: false },
+      { text: "Published", value: "name", sortable: false },
+      { text: "Featured", value: "name", sortable: false },
       { text: "Actions", align: "center", value: "name", sortable: false }
     ],
     pagination: {

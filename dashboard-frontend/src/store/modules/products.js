@@ -39,7 +39,18 @@ const actions = {
       try {
         axios.get(url, header)
           .then(response => {
-            commit("SET_DATA", response.data.result);
+            let obj = response.data.result;
+
+            obj.data.forEach(element => {
+              if (element.productImages.length > 0) {
+                element.productImages.forEach(elementImage => {
+                  elementImage.file_path = `${process.env.VUE_APP_API_BACKEND}/productImage/viewImage/${elementImage.file_name}/${elementImage.type}`;
+                });
+              } else {
+                element.productImages.push({ file_path: require("../../assets/images/no-image.png") });
+              }
+            });
+            commit("SET_DATA", obj);
           });
       } catch (err) {
         reject(err);
