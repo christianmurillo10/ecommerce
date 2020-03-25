@@ -180,6 +180,54 @@ module.exports = {
   },
 
   /**
+   * Update status
+   * @route PUT /products/updateStatus/:id
+   * @param req
+   * @param res
+   * @returns {never}
+   */
+  updateStatus: async (req, res) => {
+    const params = req.body;
+    let initialValues, data;
+
+    if (_.isUndefined(params))
+      return res.badRequest({ err: "Invalid Parameter: [params]" });
+    if (_.isEmpty(params))
+      return res.badRequest({ err: "Empty Parameter: [params]" });
+
+    try {
+      // Pre-setting variables
+      initialValues = _.pick(params, [
+        "is_today_deal",
+        "is_featured",
+        "is_published"
+      ]);
+      // Execute findByPk query
+      data = await Model.Products.findByPk(req.params.id);
+      if (!_.isEmpty(data)) {
+        let finalData = await data.update(initialValues);
+        res.json({
+          status: 200,
+          message: "Successfully updated data.",
+          result: finalData
+        });
+      } else {
+        res.json({
+          status: 200,
+          message: "Data doesn't exist.",
+          result: false
+        });
+      }
+    } catch (err) {
+      res.json({
+        status: 401,
+        err: err,
+        message: "Failed updating data."
+      });
+    }
+  },
+
+  /**
    * Delete
    * @route PUT /products/delete/:id
    * @param req
@@ -336,6 +384,9 @@ module.exports = {
           'is_published'
         ],
         where: { is_deleted: 0 },
+        order: [
+          ['id', 'ASC'],
+        ],
         limit,
         offset,
         include: [

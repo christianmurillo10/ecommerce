@@ -42,6 +42,7 @@ const actions = {
             let obj = response.data.result;
 
             obj.data.forEach(element => {
+              obj.data.is_published === 1 ? true : false;
               if (element.productImages.length > 0) {
                 element.productImages.forEach(elementImage => {
                   elementImage.file_path = `${process.env.VUE_APP_API_BACKEND}/productImage/viewImage/${elementImage.file_name}/${elementImage.type}`;
@@ -139,6 +140,27 @@ const actions = {
           is_today_deal: payload.is_today_deal,
           is_featured: payload.is_featured,
           is_published: payload.is_published
+        };
+
+        axios
+          .put(url, obj, header)
+          .then(response => {
+            commit("UPDATE_DATA", response.data.result);
+            resolve(response);
+          });
+      } catch (err) {
+        reject(err);
+      }
+    });
+  },
+  updateStatusData({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
+    let url = `${process.env.VUE_APP_API_BACKEND}/products/updateStatus/${payload.id}`;
+    let header = { headers: { Token: localStorage.getItem("token") } };
+    return new Promise((resolve, reject) => {
+      try {
+        let fieldName = payload.fieldName;
+        let obj = {
+          [fieldName]: payload.value,
         };
 
         axios

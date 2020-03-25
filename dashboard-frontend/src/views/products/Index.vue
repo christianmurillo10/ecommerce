@@ -57,9 +57,30 @@
             <td class="text-xs-left">{{ props.item.unit }}</td>
             <td class="text-xs-left">{{ props.item.inventories === null ? 0 : props.item.inventories.stock_available }}</td>
             <td class="text-xs-left">{{ props.item.price_amount }}</td>
-            <td class="text-xs-left">{{ props.item.is_today_deal }}</td>
-            <td class="text-xs-left">{{ props.item.is_published }}</td>
-            <td class="text-xs-left">{{ props.item.is_featured }}</td>
+            <td class="text-xs-left">
+              <v-switch
+                v-model="props.item.is_today_deal"
+                color="success"
+                @change="updateStatus({ id: props.item.id, fieldName: 'is_today_deal', value: $event })"
+                hide-details
+              ></v-switch>
+            </td>
+            <td class="text-xs-left">
+              <v-switch
+                v-model="props.item.is_published"
+                color="success"
+                @change="updateStatus({ id: props.item.id, fieldName: 'is_published', value: $event })"
+                hide-details
+              ></v-switch>
+            </td>
+            <td class="text-xs-left">
+              <v-switch
+                v-model="props.item.is_featured"
+                color="success"
+                @change="updateStatus({ id: props.item.id, fieldName: 'is_featured', value: $event })"
+                hide-details
+              ></v-switch>
+            </td>
             <td class="justify-center">
               <v-tooltip left>
                 <template v-slot:activator="{ on }">
@@ -113,6 +134,7 @@ export default {
   },
 
   data: () => ({
+    switch1: true,
     loading: true,
     // search: '',
     headers: [
@@ -121,7 +143,7 @@ export default {
       { text: "Unit", value: "name", sortable: false },
       { text: "Stock", value: "name", sortable: false },
       { text: "Price", value: "name", sortable: false },
-      { text: "Todays Deal", value: "name", sortable: false },
+      { text: "Today's Deal", value: "name", sortable: false },
       { text: "Published", value: "name", sortable: false },
       { text: "Featured", value: "name", sortable: false },
       { text: "Actions", align: "center", value: "name", sortable: false }
@@ -152,6 +174,7 @@ export default {
     ...mapActions("alerts", ["setAlert"]),
     ...mapActions("products", {
       getProductDataWithLimitAndOffset: "getDataWithLimitAndOffset",
+      updateStatusProductData: "updateStatusData",
       deleteProductData: "deleteData"
     }),
 
@@ -161,6 +184,21 @@ export default {
       let offset = page === 1 ? 0 : (page - 1) * rowsPerPage;
       this.getProductDataWithLimitAndOffset({limit, offset});
       this.loading = false;
+    },
+
+    updateStatus(obj) {
+      this.updateStatusProductData(obj)
+        .then(response => {
+          let obj = {
+            alert: true,
+            type: "success",
+            message: response.data.message
+          };
+
+          if (!response.data.result) obj.type = "error";
+          this.setAlert(obj);
+        })
+        .catch(err => console.log(err));
     },
 
     editItem(id) {
