@@ -104,8 +104,7 @@ export default {
     ...mapActions("productCategories", { getProductCategoriesData: "getData" }),
     ...mapActions("productSubCategories", {
       saveProductSubCategoryData: "saveData",
-      updateProductSubCategoryData: "updateData",
-      deleteProductSubCategoryData: "deleteData"
+      updateProductSubCategoryData: "updateData"
     }),
 
     editItem(id) {
@@ -115,21 +114,6 @@ export default {
       this.formData.description = data.description;
       this.formData.product_category_id = data.product_category_id;
       this.formType = "update";
-    },
-
-    deleteItem(id) {
-      this.deleteProductSubCategoryData(id)
-        .then(response => {
-          let obj = {
-            alert: true,
-            type: "success",
-            message: response.data.message
-          };
-          
-          if (!response.data.result) obj.type = "error"
-          this.setAlert(obj);
-        })
-        .catch(err => console.log(err));
     },
 
     close() {

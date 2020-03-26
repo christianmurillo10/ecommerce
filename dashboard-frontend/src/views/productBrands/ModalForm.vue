@@ -107,8 +107,7 @@ export default {
     ...mapActions("alerts", ["setAlert"]),
     ...mapActions("productBrands", {
       saveProductBrandData: "saveData",
-      updateProductBrandData: "updateData",
-      deleteProductBrandData: "deleteData"
+      updateProductBrandData: "updateData"
     }),
 
     pickFile() {
@@ -142,21 +141,6 @@ export default {
       this.formData.description = data.description;
       this.formData.file_path = `${process.env.VUE_APP_API_BACKEND}/productBrands/viewImage/${data.file_name}`;
       this.formType = "update";
-    },
-
-    deleteItem(id) {
-      this.deleteProductBrandData(id)
-        .then(response => {
-          let obj = {
-            alert: true,
-            type: "success",
-            message: response.data.message
-          };
-
-          if (!response.data.result) obj.type = "error";
-          this.setAlert(obj);
-        })
-        .catch(err => console.log(err));
     },
 
     close() {

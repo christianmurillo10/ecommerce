@@ -43,7 +43,7 @@
               </v-tooltip>
               <v-tooltip left>
                 <template v-slot:activator="{ on }">
-                  <v-icon small color="red" @click="deleteItem(props.item.id)" v-on="on">delete</v-icon>
+                  <v-icon small color="red" class="mr-2" @click="deleteModal(props.item.id)" v-on="on">delete</v-icon>
                 </template>
                 <span>Delete</span>
               </v-tooltip>
@@ -58,6 +58,17 @@
         </v-data-table>
       </v-card-text>
     </v-card>
+    <v-dialog v-model="modalDelete.dialog" persistent max-width="300">
+      <v-card>
+        <v-card-title class="title">Confirmation</v-card-title>
+        <v-card-text>Are you sure you want to delete this item?</v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn small outline color="error" @click="modalDelete.dialog = false">Cancel</v-btn>
+          <v-btn small outline color="success" @click="deleteItem()">Confirm</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
 
@@ -74,6 +85,10 @@ export default {
 
   data: () => ({
     dialog: false,
+    modalDelete: {
+      dialog: false,
+      id: null
+    },
     search: '',
     headers: [
       { text: "Name", value: "name" },
@@ -81,6 +96,10 @@ export default {
       { text: "Actions", align: "center", value: "name", sortable: false }
     ]
   }),
+
+  mounted() {
+    this.getRoleData();
+  },
 
   computed: {
     ...mapState("roles", ["roleList"])
@@ -93,13 +112,37 @@ export default {
   },
 
   methods: {
+    ...mapActions("alerts", ["setAlert"]),
+    ...mapActions("roles", {
+      getRoleData: "getData",
+      deleteRoleData: "deleteData"
+    }),
+
     editItem(id) {
       this.setDialog(true);
       this.$refs.modalForm.editItem(id);
     },
 
-    deleteItem(id) {
-      this.$refs.modalForm.deleteItem(id);
+    deleteModal(id) {
+      this.modalDelete.id = id;
+      this.modalDelete.dialog = true;
+    },
+
+    deleteItem() {
+      this.deleteRoleData(this.modalDelete.id)
+        .then(response => {
+          let obj = {
+            alert: true,
+            type: "success",
+            message: response.data.message
+          };
+
+          if (!response.data.result) obj.type = "error";
+          this.setAlert(obj);
+          this.modalDelete.id = null;
+          this.modalDelete.dialog = false;
+        })
+        .catch(err => console.log(err));
     },
 
     close() {

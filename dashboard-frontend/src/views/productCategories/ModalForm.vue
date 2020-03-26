@@ -128,8 +128,7 @@ export default {
     ...mapActions("alerts", ["setAlert"]),
     ...mapActions("productCategories", {
       saveProductCategoryData: "saveData",
-      updateProductCategoryData: "updateData",
-      deleteProductCategoryData: "deleteData"
+      updateProductCategoryData: "updateData"
     }),
 
     pickFileIcon() {
@@ -188,21 +187,6 @@ export default {
       this.formData.icon_file_path = `${process.env.VUE_APP_API_BACKEND}/productCategories/viewImage/${data.icon_file_name}`;
       this.formData.banner_file_path = `${process.env.VUE_APP_API_BACKEND}/productCategories/viewImage/${data.banner_file_name}`;
       this.formType = "update";
-    },
-
-    deleteItem(id) {
-      this.deleteProductCategoryData(id)
-        .then(response => {
-          let obj = {
-            alert: true,
-            type: "success",
-            message: response.data.message
-          };
-          
-          if (!response.data.result) obj.type = "error"
-          this.setAlert(obj);
-        })
-        .catch(err => console.log(err));
     },
 
     close() {

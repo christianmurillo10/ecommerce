@@ -122,8 +122,7 @@ export default {
     ...mapActions("roles", {getRoleData: "getData"}),
     ...mapActions("users", {
       saveUserData: "saveData",
-      updateUserData: "updateData",
-      deleteUserData: "deleteData"
+      updateUserData: "updateData"
     }),
 
     editItem(id) {
@@ -133,21 +132,6 @@ export default {
       this.formData.email = data.email;
       this.formData.role_id = data.role_id;
       this.formType = "update";
-    },
-
-    deleteItem(id) {
-      this.deleteUserData(id)
-        .then(response => {
-          let obj = {
-            alert: true,
-            type: "success",
-            message: response.data.message
-          };
-          
-          if (!response.data.result) obj.type = "error"
-          this.setAlert(obj);
-        })
-        .catch(err => console.log(err));
     },
 
     close() {

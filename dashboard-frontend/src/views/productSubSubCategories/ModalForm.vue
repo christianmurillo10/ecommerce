@@ -127,8 +127,7 @@ export default {
     }),
     ...mapActions("productSubSubCategories", {
       saveProductSubSubCategoryData: "saveData",
-      updateProductSubSubCategoryData: "updateData",
-      deleteProductSubSubCategoryData: "deleteData"
+      updateProductSubSubCategoryData: "updateData"
     }),
 
     setProductSubCategoryList() {
@@ -149,21 +148,6 @@ export default {
       this.formData.product_sub_category_id = data.product_sub_category_id;
       this.formType = "update";
       this.setProductSubCategoryList();
-    },
-
-    deleteItem(id) {
-      this.deleteProductSubSubCategoryData(id)
-        .then(response => {
-          let obj = {
-            alert: true,
-            type: "success",
-            message: response.data.message
-          };
-
-          if (!response.data.result) obj.type = "error";
-          this.setAlert(obj);
-        })
-        .catch(err => console.log(err));
     },
 
     close() {

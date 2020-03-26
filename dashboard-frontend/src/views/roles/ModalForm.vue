@@ -78,17 +78,11 @@ export default {
     }
   },
 
-  mounted() {
-    this.getRoleData();
-  },
-
   methods: {
     ...mapActions("alerts", ["setAlert"]),
     ...mapActions("roles", {
-      getRoleData: "getData",
       saveRoleData: "saveData",
-      updateRoleData: "updateData",
-      deleteRoleData: "deleteData"
+      updateRoleData: "updateData"
     }),
 
     editItem(id) {
@@ -97,21 +91,6 @@ export default {
       this.formData.name = data.name;
       this.formData.description = data.description;
       this.formType = "update";
-    },
-
-    deleteItem(id) {
-      this.deleteRoleData(id)
-        .then(response => {
-          let obj = {
-            alert: true,
-            type: "success",
-            message: response.data.message
-          };
-          
-          if (!response.data.result) obj.type = "error"
-          this.setAlert(obj);
-        })
-        .catch(err => console.log(err));
     },
 
     close() {
