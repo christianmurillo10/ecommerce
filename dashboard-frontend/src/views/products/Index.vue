@@ -102,7 +102,7 @@
               </v-tooltip>
               <v-tooltip left>
                 <template v-slot:activator="{ on }">
-                  <v-icon small color="red" @click="deleteItem(props.item.id)" v-on="on">delete</v-icon>
+                  <v-icon small color="red" class="mr-2" @click="deleteModal(props.item.id)" v-on="on">delete</v-icon>
                 </template>
                 <span>Delete</span>
               </v-tooltip>
@@ -121,6 +121,17 @@
         </v-data-table>
       </v-card-text>
     </v-card>
+    <v-dialog v-model="modalDelete.dialog" persistent max-width="300">
+      <v-card>
+        <v-card-title class="title">Confirmation</v-card-title>
+        <v-card-text>Are you sure you want to delete this item?</v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn small outline color="error" @click="modalDelete.dialog = false">Cancel</v-btn>
+          <v-btn small outline color="success" @click="deleteItem()">Confirm</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
 
@@ -134,7 +145,10 @@ export default {
   },
 
   data: () => ({
-    switch1: true,
+    modalDelete: {
+      dialog: false,
+      id: null
+    },
     loading: true,
     // search: '',
     headers: [
@@ -213,8 +227,13 @@ export default {
       this.$router.push(`/products/option/${id}`);
     },
 
-    deleteItem(id) {
-      this.deleteProductData(id)
+    deleteModal(id) {
+      this.modalDelete.id = id;
+      this.modalDelete.dialog = true;
+    },
+
+    deleteItem() {
+      this.deleteProductData(this.modalDelete.id)
         .then(response => {
           let obj = {
             alert: true,
@@ -224,6 +243,8 @@ export default {
 
           if (!response.data.result) obj.type = "error";
           this.setAlert(obj);
+          this.modalDelete.id = null;
+          this.modalDelete.dialog = false;
         })
         .catch(err => console.log(err));
     },
