@@ -32,6 +32,11 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       defaultValue: '0'
     },
+    'unit': {
+      type: DataTypes.STRING(100),
+      comment: 'ex: kg, pc, etc.',
+      allowNull: false
+    },
     'user_id': {
       type: DataTypes.INTEGER(11),
       references: {
