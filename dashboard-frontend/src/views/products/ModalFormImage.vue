@@ -117,8 +117,7 @@ export default {
     ...mapActions("alerts", ["setAlert"]),
     ...mapActions("productImages", {
       saveProductImageData: "saveData",
-      updateProductImageData: "updateData",
-      deleteProductImageData: "deleteData"
+      updateProductImageData: "updateData"
     }),
 
     pickFile() {
@@ -153,22 +152,6 @@ export default {
       this.formData.product_id = data.product_id;
       this.formData.file_path = `${process.env.VUE_APP_API_BACKEND}/productImage/viewImage/${data.file_name}/${data.type}`;
       this.formType = "update";
-    },
-
-    deleteItem(id, type) {
-      let obj = { id: id, type: type };
-      this.deleteProductImageData(obj)
-        .then(response => {
-          let obj = {
-            alert: true,
-            type: "success",
-            message: response.data.message
-          };
-
-          if (!response.data.result) obj.type = "error";
-          this.setAlert(obj);
-        })
-        .catch(err => console.log(err));
     },
 
     close() {

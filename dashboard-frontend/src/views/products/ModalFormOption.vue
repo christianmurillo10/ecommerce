@@ -94,8 +94,7 @@ export default {
     ...mapActions("alerts", ["setAlert"]),
     ...mapActions("productOptions", {
       saveProductOptionData: "saveData",
-      updateProductOptionData: "updateData",
-      deleteProductOptionData: "deleteData"
+      updateProductOptionData: "updateData"
     }),
 
     updateTags() {
@@ -114,21 +113,6 @@ export default {
       this.formData.values = data.values.split(',');
       this.formData.product_id = data.product_id;
       this.formType = "update";
-    },
-
-    deleteItem(id) {
-      this.deleteProductOptionData(id)
-        .then(response => {
-          let obj = {
-            alert: true,
-            type: "success",
-            message: response.data.message
-          };
-          
-          if (!response.data.result) obj.type = "error"
-          this.setAlert(obj);
-        })
-        .catch(err => console.log(err));
     },
 
     close() {

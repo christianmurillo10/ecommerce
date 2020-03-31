@@ -7,6 +7,10 @@ module.exports = (sequelize, DataTypes) => {
       primaryKey: true,
       autoIncrement: true
     },
+    'name': {
+      type: DataTypes.STRING(100),
+      allowNull: false
+    },
     'stock_in': {
       type: DataTypes.INTEGER(12),
       allowNull: false,
@@ -36,6 +40,11 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING(100),
       comment: 'ex: kg, pc, etc.',
       allowNull: false
+    },
+    'price_amount': {
+      type: DataTypes.DECIMAL(12, 2),
+      allowNull: false,
+      defaultValue: '0.00'
     },
     'user_id': {
       type: DataTypes.INTEGER(11),

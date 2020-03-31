@@ -92,7 +92,7 @@
                 <template v-slot:activator="{ on }">
                   <v-icon small class="mr-2" color="blue-grey darken-2" @click="editImage(props.item.id)" v-on="on">image</v-icon>
                 </template>
-                <span>Image</span>
+                <span>Images</span>
               </v-tooltip>
               <v-tooltip left>
                 <template v-slot:activator="{ on }">
