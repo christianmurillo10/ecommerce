@@ -6,7 +6,7 @@ module.exports = {
    * @param req
    * @param res
    * @returns {Promise<void>}
-   * @routes POST /role/create
+   * @routes POST /roles/create
    */
   create: async (req, res) => {
     const params = req.body;
@@ -55,7 +55,7 @@ module.exports = {
 
   /**
    * Update
-   * @route PUT /role/update/:id
+   * @route PUT /roles/update/:id
    * @param req
    * @param res
    * @returns {never}
@@ -99,7 +99,7 @@ module.exports = {
 
   /**
    * Delete
-   * @route PUT /role/delete/:id
+   * @route PUT /roles/delete/:id
    * @param req
    * @param res
    * @returns {never}
@@ -135,7 +135,7 @@ module.exports = {
 
   /**
    * Search
-   * @route POST /role/search/:value
+   * @route POST /roles/search/:value
    * @param req
    * @param res
    * @returns {never}
@@ -181,7 +181,7 @@ module.exports = {
 
   /**
    * Find all
-   * @route GET /role
+   * @route GET /roles
    * @param req
    * @param res
    * @returns {never}
@@ -218,7 +218,7 @@ module.exports = {
 
   /**
    * Find by id
-   * @route GET /role/:id
+   * @route GET /roles/:id
    * @param req
    * @param res
    * @returns {never}

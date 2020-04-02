@@ -14,7 +14,7 @@ module.exports = {
    * @param req
    * @param res
    * @returns {Promise<void>}
-   * @routes POST /productImage/create
+   * @routes POST /productImages/create
    */
   create: async (req, res) => {
     const params = req.body;
@@ -80,7 +80,7 @@ module.exports = {
 
   /**
    * Update
-   * @route PUT /productImage/update/:id
+   * @route PUT /productImages/update/:id
    * @param req
    * @param res
    * @returns {never}
@@ -139,7 +139,7 @@ module.exports = {
 
   /**
    * Delete
-   * @route PUT /productImage/delete/:id
+   * @route PUT /productImages/delete/:id
    * @param req
    * @param res
    * @returns {never}
@@ -175,7 +175,7 @@ module.exports = {
 
   /**
    * Search
-   * @route POST /productImage/search/:value
+   * @route POST /productImages/search/:value
    * @param req
    * @param res
    * @returns {never}
@@ -221,7 +221,7 @@ module.exports = {
 
   /**
    * Find all
-   * @route GET /productImage
+   * @route GET /productImages
    * @param req
    * @param res
    * @returns {never}
@@ -264,7 +264,7 @@ module.exports = {
 
   /**
    * Find all by product id
-   * @route GET /productImage/findAllbyProductId/:productId
+   * @route GET /productImages/findAllbyProductId/:productId
    * @param req
    * @param res
    * @returns {never}
@@ -308,7 +308,7 @@ module.exports = {
 
   /**
    * Find all by product id and type
-   * @route GET /productImage/findAllbyProductIdAndType/:productId/:type
+   * @route GET /productImages/findAllbyProductIdAndType/:productId/:type
    * @param req
    * @param res
    * @returns {never}
@@ -352,7 +352,7 @@ module.exports = {
 
   /**
    * Find by id
-   * @route GET /productImage/:id
+   * @route GET /productImages/:id
    * @param req
    * @param res
    * @returns {never}
@@ -387,7 +387,7 @@ module.exports = {
 
   /**
    * Find by file_name and type
-   * @route GET /productImage/viewImage/:fileName/:type
+   * @route GET /productImages/viewImage/:fileName/:type
    * @param req
    * @param res
    * @returns {never}

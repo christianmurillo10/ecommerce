@@ -45,7 +45,7 @@ const actions = {
               obj.data.is_published === 1 ? true : false;
               if (element.productImages.length > 0) {
                 element.productImages.forEach(elementImage => {
-                  elementImage.file_path = `${process.env.VUE_APP_API_BACKEND}/productImage/viewImage/${elementImage.file_name}/${elementImage.type}`;
+                  elementImage.file_path = `${process.env.VUE_APP_API_BACKEND}/productImages/viewImage/${elementImage.file_name}/${elementImage.type}`;
                 });
               } else {
                 element.productImages.push({ file_path: require("../../assets/images/no-image.png") });
@@ -70,7 +70,7 @@ const actions = {
 
             if (obj.data.result.productImages.length !== 0) {
               obj.data.result.productImages.forEach(element => {
-                element.file_path = `${process.env.VUE_APP_API_BACKEND}/productImage/viewImage/${element.file_name}/${element.type}`;
+                element.file_path = `${process.env.VUE_APP_API_BACKEND}/productImages/viewImage/${element.file_name}/${element.type}`;
               });
             }
             resolve(obj);

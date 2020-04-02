@@ -6,7 +6,7 @@ module.exports = {
    * @param req
    * @param res
    * @returns {Promise<void>}
-   * @routes POST /productOption/create
+   * @routes POST /productOptions/create
    */
   create: async (req, res) => {
     const params = req.body;
@@ -69,7 +69,7 @@ module.exports = {
 
   /**
    * Update
-   * @route PUT /productOption/update/:id
+   * @route PUT /productOptions/update/:id
    * @param req
    * @param res
    * @returns {never}
@@ -124,7 +124,7 @@ module.exports = {
 
   /**
    * Delete
-   * @route PUT /productOption/delete/:id
+   * @route PUT /productOptions/delete/:id
    * @param req
    * @param res
    * @returns {never}
@@ -160,7 +160,7 @@ module.exports = {
 
   /**
    * Search
-   * @route POST /productOption/search/:value
+   * @route POST /productOptions/search/:value
    * @param req
    * @param res
    * @returns {never}
@@ -214,7 +214,7 @@ module.exports = {
 
   /**
    * Find all
-   * @route GET /productOption
+   * @route GET /productOptions
    * @param req
    * @param res
    * @returns {never}
@@ -251,7 +251,7 @@ module.exports = {
 
   /**
    * Find all by product id
-   * @route GET /productOption/findAllbyProductId/:productId
+   * @route GET /productOptions/findAllbyProductId/:productId
    * @param req
    * @param res
    * @returns {never}
@@ -289,7 +289,7 @@ module.exports = {
 
   /**
    * Find by id
-   * @route GET /productOption/:id
+   * @route GET /productOptions/:id
    * @param req
    * @param res
    * @returns {never}

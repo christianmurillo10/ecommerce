@@ -15,7 +15,7 @@ const getters = {
 
 const actions = {
   getData({ dispatch, commit, state, rootState, getters, rootGetters }) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/productOption/`;
+    let url = `${process.env.VUE_APP_API_BACKEND}/productOptions/`;
     let header = { headers: { Token: localStorage.getItem("token") } };
     return new Promise((resolve, reject) => {
       try {
@@ -29,7 +29,7 @@ const actions = {
     });
   },
   getDataByProductId({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/productOption/findAllbyProductId/${payload}`;
+    let url = `${process.env.VUE_APP_API_BACKEND}/productOptions/findAllbyProductId/${payload}`;
     let header = { headers: { Token: localStorage.getItem("token") } };
     return new Promise((resolve, reject) => {
       try {
@@ -45,7 +45,7 @@ const actions = {
     });
   },
   getDataById({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/productOption/${payload}`;
+    let url = `${process.env.VUE_APP_API_BACKEND}/productOptions/${payload}`;
     let header = { headers: { Token: localStorage.getItem("token") } };
     return new Promise((resolve, reject) => {
       try {
@@ -60,7 +60,7 @@ const actions = {
     });
   },
   saveData({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/productOption/create`;
+    let url = `${process.env.VUE_APP_API_BACKEND}/productOptions/create`;
     let header = { headers: { Token: localStorage.getItem("token") } };
     return new Promise((resolve, reject) => {
       try {
@@ -84,7 +84,7 @@ const actions = {
     });
   },
   updateData({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/productOption/update/${payload.id}`;
+    let url = `${process.env.VUE_APP_API_BACKEND}/productOptions/update/${payload.id}`;
     let header = { headers: { Token: localStorage.getItem("token") } };
     return new Promise((resolve, reject) => {
       try {
@@ -106,7 +106,7 @@ const actions = {
     });
   },
   deleteData({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/productOption/delete/${payload}`;
+    let url = `${process.env.VUE_APP_API_BACKEND}/productOptions/delete/${payload}`;
     let header = { headers: { Token: localStorage.getItem("token") } };
     return new Promise((resolve, reject) => {
       try {

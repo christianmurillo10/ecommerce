@@ -6,7 +6,7 @@ module.exports = {
    * @param req
    * @param res
    * @returns {Promise<void>}
-   * @routes POST /user/create
+   * @routes POST /users/create
    */
   create: async (req, res) => {
     const params = req.body;
@@ -64,7 +64,7 @@ module.exports = {
 
   /**
    * Update user
-   * @route PUT /user/update/:id
+   * @route PUT /users/update/:id
    * @param req
    * @param res
    * @returns {never}
@@ -108,7 +108,7 @@ module.exports = {
 
   /**
    * Delete user
-   * @route PUT /user/delete/:id
+   * @route PUT /users/delete/:id
    * @param req
    * @param res
    * @returns {never}
@@ -144,7 +144,7 @@ module.exports = {
 
   /**
    * Search users
-   * @route POST /user/search/:value
+   * @route POST /users/search/:value
    * @param req
    * @param res
    * @returns {never}
@@ -190,7 +190,7 @@ module.exports = {
 
   /**
    * Find all users
-   * @route GET /user
+   * @route GET /users
    * @param req
    * @param res
    * @returns {never}
@@ -227,7 +227,7 @@ module.exports = {
 
   /**
    * Find user by id
-   * @route GET /user/:id
+   * @route GET /users/:id
    * @param req
    * @param res
    * @returns {never}

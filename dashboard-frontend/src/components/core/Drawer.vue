@@ -12,7 +12,7 @@
     app
     dark
     mobile-break-point="991"
-    width="300"
+    width="270"
   >
     <v-list>
       <v-toolbar flat class="transparent">

@@ -3,7 +3,7 @@ const Model = require('../models');
 module.exports = {
   /**
    * Delete
-   * @route PUT /inventoryHistory/delete/:id
+   * @route PUT /inventoryHistories/delete/:id
    * @param req
    * @param res
    * @returns {never}
@@ -39,7 +39,7 @@ module.exports = {
 
   /**
    * Search
-   * @route POST /inventoryHistory/search/:value
+   * @route POST /inventoryHistories/search/:value
    * @param req
    * @param res
    * @returns {never}
@@ -92,7 +92,7 @@ module.exports = {
 
   /**
    * Find all
-   * @route GET /inventoryHistory
+   * @route GET /inventoryHistories
    * @param req
    * @param res
    * @returns {never}
@@ -129,7 +129,7 @@ module.exports = {
 
   /**
    * Find all by inventory id
-   * @route GET /inventoryHistory/findAllbyInventoryId/:inventoryId
+   * @route GET /inventoryHistories/findAllbyInventoryId/:inventoryId
    * @param req
    * @param res
    * @returns {never}
@@ -167,7 +167,7 @@ module.exports = {
 
   /**
    * Find by id
-   * @route GET /inventoryHistory/:id
+   * @route GET /inventoryHistories/:id
    * @param req
    * @param res
    * @returns {never}

@@ -16,7 +16,7 @@ const actions = {
     { dispatch, commit, state, rootState, getters, rootGetters },
     payload
   ) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/user/login`;
+    let url = `${process.env.VUE_APP_API_BACKEND}/users/login`;
     let data = payload;
     let config = {
       "Content-Type": "application/json"
@@ -49,7 +49,7 @@ const actions = {
       });
   },
   setLogout({ dispatch, commit, state, rootState, getters, rootGetters }) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/user/logout`;
+    let url = `${process.env.VUE_APP_API_BACKEND}/users/logout`;
     let data = {
       username: state.userInfo.username,
       token: localStorage.getItem("token")
@@ -74,7 +74,7 @@ const actions = {
       });
   },
   validateToken({ dispatch, commit, state, rootState, getters, rootGetters }) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/user/validateToken`;
+    let url = `${process.env.VUE_APP_API_BACKEND}/users/validateToken`;
     let data = {
       username: state.userInfo.username,
       token: localStorage.getItem("token")

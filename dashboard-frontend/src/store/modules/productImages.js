@@ -39,7 +39,7 @@ const getters = {
 
 const actions = {
   // getData({ dispatch, commit, state, rootState, getters, rootGetters }) {
-  //   let url = `${process.env.VUE_APP_API_BACKEND}/productImage/`;
+  //   let url = `${process.env.VUE_APP_API_BACKEND}/productImages/`;
   //   let header = { headers: { Token: localStorage.getItem("token") } };
   //   return new Promise((resolve, reject) => {
   //     try {
@@ -53,7 +53,7 @@ const actions = {
   //   });
   // },
   getDataById({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/productImage/${payload}`;
+    let url = `${process.env.VUE_APP_API_BACKEND}/productImages/${payload}`;
     let header = { headers: { Token: localStorage.getItem("token") } };
     return new Promise((resolve, reject) => {
       try {
@@ -68,7 +68,7 @@ const actions = {
     });
   },
   // getDataByProductId({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
-  //   let url = `${process.env.VUE_APP_API_BACKEND}/productImage/findAllbyProductId/${payload}`;
+  //   let url = `${process.env.VUE_APP_API_BACKEND}/productImages/findAllbyProductId/${payload}`;
   //   let header = { headers: { Token: localStorage.getItem("token") } };
   //   return new Promise((resolve, reject) => {
   //     try {
@@ -79,7 +79,7 @@ const actions = {
 
   //           if (obj) {
   //             obj.forEach(element => {
-  //               element.file_path = `${process.env.VUE_APP_API_BACKEND}/productImage/viewImage/${element.file_name}/${element.type}`;
+  //               element.file_path = `${process.env.VUE_APP_API_BACKEND}/productImages/viewImage/${element.file_name}/${element.type}`;
   //             });
   //           }
 
@@ -92,7 +92,7 @@ const actions = {
   //   });
   // },
   getDataByProductIdAndType({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/productImage/findAllbyProductIdAndType/${payload.productId}/${payload.type}`;
+    let url = `${process.env.VUE_APP_API_BACKEND}/productImages/findAllbyProductIdAndType/${payload.productId}/${payload.type}`;
     let header = { headers: { Token: localStorage.getItem("token") } };
     return new Promise((resolve, reject) => {
       try {
@@ -106,7 +106,7 @@ const actions = {
 
             if (obj.data) {
               obj.data.forEach(element => {
-                element.file_path = `${process.env.VUE_APP_API_BACKEND}/productImage/viewImage/${element.file_name}/${element.type}`;
+                element.file_path = `${process.env.VUE_APP_API_BACKEND}/productImages/viewImage/${element.file_name}/${element.type}`;
               });
             }
             commit("SET_DATA", obj);
@@ -118,7 +118,7 @@ const actions = {
     });
   },
   saveData({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/productImage/create`;
+    let url = `${process.env.VUE_APP_API_BACKEND}/productImages/create`;
     let header = { headers: { Token: localStorage.getItem("token") } };
     return new Promise((resolve, reject) => {
       try {
@@ -143,7 +143,7 @@ const actions = {
     });
   },
   updateData({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/productImage/update/${payload.id}`;
+    let url = `${process.env.VUE_APP_API_BACKEND}/productImages/update/${payload.id}`;
     let header = { headers: { Token: localStorage.getItem("token") } };
     return new Promise((resolve, reject) => {
       try {
@@ -166,7 +166,7 @@ const actions = {
     });
   },
   deleteData({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/productImage/delete/${payload.id}`;
+    let url = `${process.env.VUE_APP_API_BACKEND}/productImages/delete/${payload.id}`;
     let header = { headers: { Token: localStorage.getItem("token") } };
     return new Promise((resolve, reject) => {
       try {
@@ -219,7 +219,7 @@ const mutations = {
   },
   ADD_DATA(state, payload) {
     let obj = payload;
-    obj.file_path = `${process.env.VUE_APP_API_BACKEND}/productImage/viewImage/${payload.file_name}/${payload.type}`;
+    obj.file_path = `${process.env.VUE_APP_API_BACKEND}/productImages/viewImage/${payload.file_name}/${payload.type}`;
 
     switch(parseInt(payload.type)) {
       case imageType.main:
@@ -243,7 +243,7 @@ const mutations = {
       order: payload.order,
       product_id: payload.product_id,
       type: payload.type,
-      file_path: `${process.env.VUE_APP_API_BACKEND}/productImage/viewImage/${payload.file_name}/${payload.type}`
+      file_path: `${process.env.VUE_APP_API_BACKEND}/productImages/viewImage/${payload.file_name}/${payload.type}`
     }
     
     switch(parseInt(payload.type)) {

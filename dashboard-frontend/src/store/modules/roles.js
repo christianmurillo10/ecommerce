@@ -18,7 +18,7 @@ const getters = {
 
 const actions = {
   getData({ dispatch, commit, state, rootState, getters, rootGetters }) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/role/`;
+    let url = `${process.env.VUE_APP_API_BACKEND}/roles/`;
     let header = { headers: { Token: localStorage.getItem("token") } };
     return new Promise((resolve, reject) => {
       try {
@@ -32,7 +32,7 @@ const actions = {
     });
   },
   getDataById({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/role/${payload}`;
+    let url = `${process.env.VUE_APP_API_BACKEND}/roles/${payload}`;
     let header = { headers: { Token: localStorage.getItem("token") } };
     return new Promise((resolve, reject) => {
       try {
@@ -47,7 +47,7 @@ const actions = {
     });
   },
   saveData({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/role/create`;
+    let url = `${process.env.VUE_APP_API_BACKEND}/roles/create`;
     let header = { headers: { Token: localStorage.getItem("token") } };
     return new Promise((resolve, reject) => {
       try {
@@ -70,7 +70,7 @@ const actions = {
     });
   },
   updateData({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/role/update/${payload.id}`;
+    let url = `${process.env.VUE_APP_API_BACKEND}/roles/update/${payload.id}`;
     let header = { headers: { Token: localStorage.getItem("token") } };
     return new Promise((resolve, reject) => {
       try {
@@ -91,7 +91,7 @@ const actions = {
     });
   },
   deleteData({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/role/delete/${payload}`;
+    let url = `${process.env.VUE_APP_API_BACKEND}/roles/delete/${payload}`;
     let header = { headers: { Token: localStorage.getItem("token") } };
     return new Promise((resolve, reject) => {
       try {

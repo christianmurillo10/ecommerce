@@ -7,7 +7,7 @@ module.exports = {
    * Login Accounts
    * @param req
    * @param res
-   * @routes POST /user/login
+   * @routes POST /users/login
    * @returns {never}
    */
   login: async (req, res) => {
@@ -74,7 +74,7 @@ module.exports = {
    * @param req
    * @param res
    * @returns {Promise<void>}
-   * @routes POST /user/logout
+   * @routes POST /users/logout
    */
   logout: async (req, res) => {
     let ip = req.headers["x-forwarded-for"] || req.ip;
@@ -116,7 +116,7 @@ module.exports = {
    * @param req
    * @param res
    * @returns {Promise<void>}
-   * @routes POST /user/validateToken
+   * @routes POST /users/validateToken
    */
   validateToken: async (req, res) => {
     // let ip = req.headers["x-forwarded-for"] || req.ip;
