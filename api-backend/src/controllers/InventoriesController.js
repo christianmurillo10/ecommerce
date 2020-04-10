@@ -105,8 +105,7 @@ module.exports = {
       
       if (!_.isEmpty(dataOptions)) {
         // Setup bulk data by product option values
-        let longestLength = await findLongestLengthOfArray(dataOptions);
-        let bulkInitialValue = await setBulkInventoryData(params, dataOptions, dataProduct, longestLength);
+        let bulkInitialValue = await setBulkInventoryData(params, dataOptions, dataProduct);
 
         await Model.Inventories.update({ is_deleted : 1 },{ where : { product_id : params.product_id }});
         Model.Inventories.bulkCreate(bulkInitialValue)
@@ -331,7 +330,7 @@ module.exports = {
 
     try {
       // Pre-setting variables
-      criteria = { limit: 1, where: { product_id: params.productId, is_deleted: 0 }, order: [ [ 'created_at', 'DESC' ]], include: [{ model: Model.Products, as: 'products' }, { model: Model.Users, as: 'users' }] };
+      criteria = { where: { product_id: params.productId, is_deleted: 0 }, order: [ [ 'created_at', 'ASC' ]] };
       // Execute findAll query
       data = await Model.Inventories.findAll(criteria);
       if (!_.isEmpty(data[0])) {
@@ -458,32 +457,35 @@ module.exports = {
 /**
  * Other Functions
  */
-const findLongestLengthOfArray = (data) => {
-  let longestLength = 0;
+const setBulkInventoryData = (params, data, product) => {
+  let multiplyLength = 1, 
+    arrayValues = [],
+    bulkData = [""],
+    finalData = "",
+    sliceStart = 0,
+    sliceEnd = 0
+
+  // Set array values and multiply length
   for (let i = 0; i < data.length; i++) {
-    if (i !== 0) {
-      let oldArrayLength = data[i - 1].values.split(',').length;
-      let newArrayLength = data[i].values.split(',').length;
-      if (newArrayLength > oldArrayLength) longestLength = newArrayLength;
-      else longestLength = oldArrayLength;
-    }
+    let value = data[i].values.split(',');
+    multiplyLength = multiplyLength * value.length;
+    arrayValues.push(value);
   }
-  return longestLength;
-}
 
-const setBulkInventoryData = (params, data, product, longestLength) => {
-  let bulkData = [];
-  for (let i = 0; i < data.length; i++) {
-    let arrayValues = data[i].values.split(',');
-    for (let j = 0; j < longestLength; j++) {
-      let valueName = arrayValues[j] === undefined ? "" : ` ${arrayValues[j]}`;
-      let valueSku = arrayValues[j] === undefined ? "" : `-${arrayValues[j].toUpperCase()}`;
-
-      if (i === 0) {
-        let nameAcronym = product.name.match(/\b(\w)/g).join('').toUpperCase();
-        bulkData.push({
-          name: `${product.name}${valueName}`,
-          sku: `${nameAcronym}${valueSku}`,
+  // Set and filtering of Bulk Data
+  for (let a = 0; a < arrayValues.length; a++) {
+    let value = arrayValues[a];
+    let valueLength = value.length;
+    bulkData.map(response => {
+      let newValue = [];
+      responseName = response === '' ? product.name : response;
+      responseSku = response === '' ? product.name.match(/\b(\w)/g).join('').toUpperCase() : response;
+      for (let b = 0; b < valueLength; b++) {
+        let name = _.isObject(responseName) === true ? responseName.name : responseName;
+        let sku = _.isObject(responseSku) === true ? responseSku.sku.toUpperCase() : responseSku;
+        newValue[b] = {
+          name: `${name} ${value[b]}`,
+          sku: `${sku}-${value[b]}`,
           unit: product.unit,
           price_amount: product.price_amount,
           stock_in: 0,
@@ -491,21 +493,17 @@ const setBulkInventoryData = (params, data, product, longestLength) => {
           user_id: params.user_id,
           product_id: params.product_id,
           created_at: params.created_at,
-        }); 
-      } else {
-        bulkData[j].name = `${bulkData[j].name}${valueName}`;
-        bulkData[j].sku = `${bulkData[j].sku}${valueSku}`;
-        bulkData[j].unit = product.unit;
-        bulkData[j].price_amount = product.price_amount;
-        bulkData[j].stock_in = 0; 
-        bulkData[j].stock_available = 0; 
-        bulkData[j].user_id = params.user_id; 
-        bulkData[j].product_id = params.product_id; 
-        bulkData[j].created_at = params.created_at; 
+        };
+        bulkData.push(newValue[b]);
       }
-    }
+    })
   }
-  return bulkData;
+
+  // Remove unnecessary data and return
+  sliceStart = bulkData.length - multiplyLength;
+  sliceEnd = bulkData.length;
+  finalData = bulkData.slice(sliceStart, sliceEnd);
+  return finalData;
 }
 
 const addStock = async (obj) => {

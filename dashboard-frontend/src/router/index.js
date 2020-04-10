@@ -94,7 +94,7 @@ let router = new Router({
       component: ProductsImage
     },
     {
-      path: "/products/option/:id",
+      path: "/products/variant-option/:id",
       name: "productsOption",
       component: ProductsOption
     },

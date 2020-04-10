@@ -36,6 +36,9 @@ const actions = {
         axios
           .get(url, header)
           .then(response => {
+            if (response.data.result) {
+              commit("SET_DATA", response.data.result);
+            }
             resolve(response);
           });
       } catch (err) {
@@ -93,6 +96,25 @@ const actions = {
             if (response.data.result) {
               commit("ADD_DATA", response.data.result);
             }
+            resolve(response);
+          });
+      } catch (err) {
+        reject(err);
+      }
+    });
+  },
+  saveBulkDataWithProductOptionsByProductId({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
+    let url = `${process.env.VUE_APP_API_BACKEND}/inventories/createBulkWithProductOptionsByProductId`;
+    let header = { headers: { Token: localStorage.getItem("token") } };
+    return new Promise((resolve, reject) => {
+      try {
+        let obj = {
+          product_id: payload.product_id
+        };
+
+        axios
+          .post(url, obj, header)
+          .then(response => {
             resolve(response);
           });
       } catch (err) {

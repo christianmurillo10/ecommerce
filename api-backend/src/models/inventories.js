@@ -11,6 +11,10 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING(100),
       allowNull: false
     },
+    'sku': {
+      type: DataTypes.STRING(100),
+      allowNull: false
+    },
     'stock_in': {
       type: DataTypes.INTEGER(12),
       allowNull: false,

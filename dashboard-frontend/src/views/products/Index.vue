@@ -84,9 +84,9 @@
             <td class="justify-center">
               <v-tooltip left>
                 <template v-slot:activator="{ on }">
-                  <v-icon small class="mr-2" color="purple darken-2" @click="editOption(props.item.id)" v-on="on">list_alt</v-icon>
+                  <v-icon small class="mr-2" color="purple darken-2" @click="editVariantOption(props.item.id)" v-on="on">list_alt</v-icon>
                 </template>
-                <span>Options</span>
+                <span>Variant Options</span>
               </v-tooltip>
               <v-tooltip left>
                 <template v-slot:activator="{ on }">
@@ -223,8 +223,8 @@ export default {
       this.$router.push(`/products/image/${id}`);
     },
 
-    editOption(id) {
-      this.$router.push(`/products/option/${id}`);
+    editVariantOption(id) {
+      this.$router.push(`/products/variant-option/${id}`);
     },
 
     deleteModal(id) {

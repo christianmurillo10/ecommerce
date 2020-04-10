@@ -15,7 +15,7 @@
       </td>
     </template>
     <template v-slot:no-data>
-      <p class="justify-center layout px-0">No data found!</p>
+      <p class="justify-center layout px-0"><v-btn block round color="primary" @click="generateVariants()">Generate</v-btn></p>
     </template>
   </v-data-table>
 </template>
@@ -38,25 +38,16 @@ export default {
       { text: "SKU", value: "sku" },
       { text: "Stock", value: "stock_available" },
       { text: "Actions", align: "center", value: "name", sortable: false }
-    ],
-    inventoryList: [
-      {
-        id: 1,
-        name: "Product 1",
-        price_amount: 100,
-        sku: "SKU Prod 1",
-        stock_available: 0
-      }
     ]
   }),
 
-  // mounted() {
-  //   this.getProductSubCategoryData();
-  // },
+  mounted() {
+    // this.getInventoryDataByProductId();
+  },
 
-  // computed: {
-  //   ...mapState("productSubCategories", ["productSubCategoryList"])
-  // },
+  computed: {
+    ...mapState("inventories", ["inventoryList"])
+  },
 
   // watch: {
   //   dialog(val) {
@@ -64,48 +55,68 @@ export default {
   //   }
   // },
 
-  // methods: {
-  //   ...mapActions("alerts", ["setAlert"]),
-  //   ...mapActions("productSubCategories", {
-  //     getProductSubCategoryData: "getData",
-  //     deleteProductSubCategoryData: "deleteData"
-  //   }),
+  methods: {
+    ...mapActions("alerts", ["setAlert"]),
+    ...mapActions("inventories", {
+      saveBulkInventoryDataWithProductOptionsByProductId: "saveBulkDataWithProductOptionsByProductId",
+      getInventoryDataByProductId: "getDataByProductId",
+    }),
 
-  //   editItem(id) {
-  //     this.setDialog(true);
-  //     this.$refs.modalForm.editItem(id);
-  //   },
+    generateVariants() {
+      let productId = this.$route.params.id;
+      this.saveBulkInventoryDataWithProductOptionsByProductId({ product_id: productId })
+        .then(response => {
+          let obj = {
+            alert: true,
+            type: "success",
+            message: response.data.message
+          };
 
-  //   deleteModal(id) {
-  //     this.modalDelete.id = id;
-  //     this.modalDelete.dialog = true;
-  //   },
+          if (response.data.result) {
+            this.getInventoryDataByProductId(productId);
+          } else {
+            obj.type = "error";
+          }
+          this.setAlert(obj);
+        })
+        .catch(err => console.log(err));
+    },
 
-  //   deleteItem(id) {
-  //     this.deleteProductSubCategoryData(this.modalDelete.id)
-  //       .then(response => {
-  //         let obj = {
-  //           alert: true,
-  //           type: "success",
-  //           message: response.data.message
-  //         };
+    // editItem(id) {
+    //   this.setDialog(true);
+    //   this.$refs.modalForm.editItem(id);
+    // },
 
-  //         if (!response.data.result) obj.type = "error";
-  //         this.setAlert(obj);
-  //         this.modalDelete.id = null;
-  //         this.modalDelete.dialog = false;
-  //       })
-  //       .catch(err => console.log(err));
-  //   },
+    // deleteModal(id) {
+    //   this.modalDelete.id = id;
+    //   this.modalDelete.dialog = true;
+    // },
 
-  //   close() {
-  //     this.setDialog(false);
-  //     this.$refs.modalForm.close();
-  //   },
+    // deleteItem(id) {
+    //   this.deleteProductSubCategoryData(this.modalDelete.id)
+    //     .then(response => {
+    //       let obj = {
+    //         alert: true,
+    //         type: "success",
+    //         message: response.data.message
+    //       };
 
-  //   setDialog(value) {
-  //     this.dialog = value;
-  //   }
-  // }
+    //       if (!response.data.result) obj.type = "error";
+    //       this.setAlert(obj);
+    //       this.modalDelete.id = null;
+    //       this.modalDelete.dialog = false;
+    //     })
+    //     .catch(err => console.log(err));
+    // },
+
+    // close() {
+    //   this.setDialog(false);
+    //   this.$refs.modalForm.close();
+    // },
+
+    // setDialog(value) {
+    //   this.dialog = value;
+    // }
+  }
 };
 </script>
