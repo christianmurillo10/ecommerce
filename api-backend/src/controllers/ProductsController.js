@@ -1,5 +1,4 @@
 const Model = require("../models");
-const InventoriesController = require("./InventoriesController");
 
 module.exports = {
   /**
@@ -84,14 +83,6 @@ module.exports = {
           .then(() => Model.Products.findOrCreate(criteria))
           .then(async ([finalData, created]) => {
             let plainData = finalData.get({ plain: true });
-            // Adding data from inventories
-            let obj = {
-              stock_in: params.stock,
-              user_id: params.user_id,
-              product_id: plainData.id
-            };
-            let inventories = await InventoriesController.addStockByProductId(obj);
-
             res.json({
               status: 200,
               message: "Successfully created data.",

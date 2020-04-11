@@ -1,5 +1,4 @@
 const Model = require('../models');
-const InventoryHistoriesController = require('./InventoryHistoriesController');
 
 module.exports = {
   /**
@@ -109,12 +108,29 @@ module.exports = {
 
         await Model.Inventories.update({ is_deleted : 1 },{ where : { product_id : params.product_id }});
         Model.Inventories.bulkCreate(bulkInitialValue)
-          .then(response => {
-            res.json({
-              status: 200,
-              message: "Successfully created data.",
-              result: true
+          .then(async response => {
+            // Set and filtering Bulk Data of Inventory History
+            let inventoryHistoryBulkInitialValue = [];
+            response.forEach(element => {
+              let inventoryHistoryData = {
+                quantity: element.stock_in,
+                remarks: "IN",
+                user_id: params.user_id,
+                inventory_id: element.id,
+                created_at: params.created_at
+              }
+              inventoryHistoryBulkInitialValue.push(inventoryHistoryData);
             });
+            
+            // Saving Bulk Inventory History
+            Model.InventoryHistories.bulkCreate(inventoryHistoryBulkInitialValue)
+              .then(response => {
+                res.json({
+                  status: 200,
+                  message: "Successfully created data.",
+                  result: true
+                });
+              });
           })
       } else {
         res.json({
@@ -433,24 +449,6 @@ module.exports = {
   /**
    * Public Functions
    */
-
-  /**
-   * Add stock
-   */
-  addStockByProductId: async (data) => {
-    return new Promise(async (resolve, reject) => {
-      try {
-        let response = await addStock(data);
-        resolve(response);
-      } catch (err) {
-        resolve({
-          status: 401,
-          err: err,
-          message: "Failed adding stock."
-        });
-      }
-    });
-  },
 };
 
 
@@ -504,93 +502,4 @@ const setBulkInventoryData = (params, data, product) => {
   sliceEnd = bulkData.length;
   finalData = bulkData.slice(sliceStart, sliceEnd);
   return finalData;
-}
-
-const addStock = async (obj) => {
-  const params = obj;
-  let criteria, initialValues, data;
-
-  // Override variables
-  params.created_at = moment().utc(8).format('YYYY-MM-DD HH:mm:ss');
-  params.stock_in = params.stock_in.toLocaleString();
-  params.stock_available = params.stock_in;
-  params.product_id = params.product_id.toLocaleString();
-
-  return new Promise(async (resolve, reject) => {
-    try {
-      // Validators
-      if (_.isEmpty(params.stock_in)) return res.json({ status: 200, message: "Stock In is required.", result: false });
-      if (_.isEmpty(params.stock_available)) return res.json({ status: 200, message: "Stock Available is required.", result: false });
-      if (_.isEmpty(params.product_id)) return res.json({ status: 200, message: "Product is required.", result: false });
-
-      // Pre-setting variables
-      criteria = { where: { product_id: params.product_id, is_deleted: 0 }, include: [{ model: Model.Products, as: 'products' }, { model: Model.Users, as: 'users' }] };
-      // Execute findAll query
-      data = await Model.Inventories.findAll(criteria);
-      if (_.isEmpty(data[0])) {
-        initialValues = _.pick(params, [
-          'stock_in',
-          'stock_available',
-          'user_id',
-          'product_id',
-          'created_at'
-        ]);
-
-        await Model.Inventories.create(initialValues)
-          .then(() => Model.Inventories.findOrCreate(criteria))
-          .then(async ([finalData, created]) => {
-            let plainData = finalData.get({ plain: true });
-
-            // Saving Inventory History
-            let inventoryHistoryObj = {
-              quantity: params.stock_in,
-              remarks: "IN",
-              user_id: params.user_id,
-              inventory_id: plainData.id
-            };
-            let inventoryHistory = await InventoryHistoriesController.create(inventoryHistoryObj);
-
-            resolve({
-              status: 200,
-              message: "Successfully created data.",
-              result: _.omit(plainData, ['is_deleted'])
-            });
-          })
-      } else {
-        let plainData = data[0].get({ plain: true });
-
-        // Saving Inventory History
-        let inventoryHistoryObj = {
-          quantity: params.stock_in,
-          remarks: "IN",
-          user_id: params.user_id,
-          inventory_id: plainData.id
-        };
-        let inventoryHistory = await InventoryHistoriesController.create(inventoryHistoryObj);
-
-        // Override variables
-        params.updated_at = moment().utc(8).format('YYYY-MM-DD HH:mm:ss');
-        params.stock_in = parseInt(plainData.stock_in) + parseInt(params.stock_in);
-        params.stock_available = parseInt(plainData.stock_in) + parseInt(params.stock_available);
-        initialValues = _.pick(params, [
-          'stock_in',
-          'stock_available',
-          'updated_at'
-        ]);
-
-        let finalData = await data[0].update(initialValues);
-        resolve({
-          status: 200,
-          message: "Successfully updated data.",
-          result: finalData
-        });
-      }
-    } catch (err) {
-      resolve({
-        status: 401,
-        err: err,
-        message: "Failed creating data."
-      });
-    }
-  });
 }
