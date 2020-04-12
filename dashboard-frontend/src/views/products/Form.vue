@@ -145,9 +145,6 @@
                         chips
                         deletable-chips
                         class="tag-input"
-                        :search-input.sync="tagSearchInput"
-                        @keyup.tab="updateTags"
-                        @paste="updateTags"
                       >
                       </v-combobox>
                     </v-flex>
@@ -195,7 +192,6 @@ export default {
   },
 
   data: () => ({
-    tagSearchInput: "",
     rateTypeList: [
       { id: 1, name: "Amount" },
       { id: 2, name: "Percentage" }
@@ -291,15 +287,6 @@ export default {
       saveProductData: "saveData",
       updateProductData: "updateData"
     }),
-
-    updateTags() {
-      this.$nextTick(() => {
-        this.select.push(this.tagSearchInput.split(","));
-        this.$nextTick(() => {
-          this.tagSearchInput = "";
-        });
-      });
-    },
 
     setProductSubCategoryList() {
       let obj = {

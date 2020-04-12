@@ -25,9 +25,6 @@
                 chips
                 deletable-chips
                 class="tag-input"
-                :search-input.sync="tagSearchInput"
-                @keyup.tab="updateTags"
-                @paste="updateTags"
               >
               </v-combobox>
             </v-flex>
@@ -70,7 +67,6 @@ export default {
 
   data: () => ({
     dialogConfirmation: false,
-    tagSearchInput: "",
     defaultFormData: {
       title: null,
       values: "",
@@ -115,15 +111,6 @@ export default {
       saveProductOptionData: "saveData",
       updateProductOptionData: "updateData"
     }),
-
-    updateTags() {
-      this.$nextTick(() => {
-        this.select.push(this.tagSearchInput.split(","));
-        this.$nextTick(() => {
-          this.tagSearchInput = "";
-        });
-      });
-    },
 
     editItem(id) {
       let data = this.getProductOptionById(id);
