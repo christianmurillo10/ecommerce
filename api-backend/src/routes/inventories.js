@@ -11,6 +11,7 @@ router.route('/create').post(authController.authorization, inventoriesController
 router.route('/createBulkWithProductOptionsByProductId').post(authController.authorization, inventoriesController.createBulkWithProductOptionsByProductId);
 router.route('/update/:id').put(authController.authorization, inventoriesController.update);
 router.route('/delete/:id').put(authController.authorization, inventoriesController.delete);
+router.route('/deleteAllByProductId/:productId').put(authController.authorization, inventoriesController.deleteAllByProductId);
 router.route('/search/:value').get(authController.authorization, inventoriesController.search);
 
 module.exports = router;

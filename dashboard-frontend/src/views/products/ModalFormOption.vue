@@ -3,7 +3,7 @@
     <v-card-title>
       <v-icon class="black--text">{{ formIcon }}</v-icon><span class="title">{{ formTitle }}</span>
     </v-card-title>
-    <v-form ref="form" @submit.prevent="save" v-model="valid" lazy-validation>
+    <v-form ref="form" @submit.prevent="displayModalConfirmation" v-model="valid" lazy-validation>
       <v-card-text>
         <v-container grid-list-md>
           <v-layout wrap>
@@ -34,21 +34,34 @@
           </v-layout>
         </v-container>
       </v-card-text>
-
       <v-divider></v-divider>
-
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn color="blue darken-1" flat @click="close">Cancel</v-btn>
         <v-btn color="blue darken-1" type="submit" flat :disabled="!valid">Save</v-btn>
       </v-card-actions>
     </v-form>
+    <v-dialog v-model="dialogConfirmation" persistent max-width="350">
+      <v-card>
+        <v-card-title class="title">Confirmation</v-card-title>
+        <v-card-text>
+          <span>Are you sure you want to save?</span>
+          <br/><br/>
+          <span class="red--text font-weight-light font-italic">NOTE: Once you save, your variant list will be reset.</span>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn small outline color="error" @click="dialogConfirmation = false">Cancel</v-btn>
+          <v-btn small outline color="success" @click="save()">Confirm</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-card>
 </template>
 
 <script>
 import Index from "./Index";
-import { mapGetters, mapActions } from "vuex";
+import { mapState, mapGetters, mapActions } from "vuex";
 
 export default {
   components: {
@@ -56,6 +69,7 @@ export default {
   },
 
   data: () => ({
+    dialogConfirmation: false,
     tagSearchInput: "",
     defaultFormData: {
       title: null,
@@ -87,11 +101,16 @@ export default {
     },
     formIcon() {
       return this.formType === "new" ? "add_box" : "edit";
-    }
+    },
+    ...mapState("inventories", ["inventoryList"])
   },
 
   methods: {
     ...mapActions("alerts", ["setAlert"]),
+    ...mapActions("inventories", { 
+      getInventoryDataByProductId: "getDataByProductId",
+      deleteAllInventoryDataByProducyId: "deleteAllDataByProducyId"
+    }),
     ...mapActions("productOptions", {
       saveProductOptionData: "saveData",
       updateProductOptionData: "updateData"
@@ -123,38 +142,50 @@ export default {
       }, 300);
     },
 
-    save() {
+    displayModalConfirmation() {
       if (this.$refs.form.validate()) {
-        if (this.formType === "new") {
-          this.formData.product_id = this.$route.params.id;
-          this.saveProductOptionData(this.formData)
-            .then(response => {
-              let obj = {
-                alert: true,
-                type: "success",
-                message: response.data.message
-              };
-              
-              if (!response.data.result) obj.type = "error"
-              this.setAlert(obj);
-            })
-            .catch(err => console.log(err));
-        } else if (this.formType === "update") {
-          this.updateProductOptionData(this.formData)
-            .then(response => {
-              let obj = {
-                alert: true,
-                type: "success",
-                message: response.data.message
-              };
-              
-              if (!response.data.result) obj.type = "error"
-              this.setAlert(obj);
-            })
-            .catch(err => console.log(err));
-        }
-        this.close();
+        if (this.inventoryList.length === 0) this.save();
+        else this.dialogConfirmation = true;
       }
+    },
+
+    async save() {
+      let productId = this.$route.params.id;
+      // bulk delete of variants
+      if (this.inventoryList.length > 0) {
+        let deleteResponse = await this.deleteAllInventoryDataByProducyId(productId);
+        if (deleteResponse.data.result) this.getInventoryDataByProductId(productId);
+      }
+      // save options
+      if (this.formType === "new") {
+        this.formData.product_id = productId;
+        this.saveProductOptionData(this.formData)
+          .then(response => {
+            let obj = {
+              alert: true,
+              type: "success",
+              message: response.data.message
+            };
+            
+            if (!response.data.result) obj.type = "error"
+            this.setAlert(obj);
+          })
+          .catch(err => console.log(err));
+      } else if (this.formType === "update") {
+        this.updateProductOptionData(this.formData)
+          .then(response => {
+            let obj = {
+              alert: true,
+              type: "success",
+              message: response.data.message
+            };
+            
+            if (!response.data.result) obj.type = "error"
+            this.setAlert(obj);
+          })
+          .catch(err => console.log(err));
+      }
+      this.close();
     }
   }
 };

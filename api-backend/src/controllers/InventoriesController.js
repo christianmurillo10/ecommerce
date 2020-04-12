@@ -77,7 +77,7 @@ module.exports = {
    */
   createBulkWithProductOptionsByProductId: async (req, res) => {
     const params = req.body;
-    let criteriaProduct, criteriaOptions, initialValues, dataProduct, dataOptions;
+    let criteriaProduct, criteriaOptions, dataProduct, dataOptions;
 
     // Validators
     if (_.isUndefined(params))
@@ -166,13 +166,17 @@ module.exports = {
 
     try {
       // Pre-setting variables
-      criteria = { where: { is_deleted: 0 }, include: [{ model: Model.Products, as: 'products' }, { model: Model.Users, as: 'users' }] };
+      criteria = { where: { is_deleted: 0 } };
       initialValues = _.pick(params, [
+        'name',
+        'sku',
         'stock_in',
         'stock_out',
         'stock_reserved',
         'stock_returned',
         'stock_available',
+        'unit',
+        'price_amount',
         'product_id'
       ]);
       // Execute findByPk query
@@ -230,6 +234,32 @@ module.exports = {
           result: false
         });
       }
+    } catch (err) {
+      res.json({
+        status: 401,
+        err: err,
+        message: "Failed deleting data."
+      });
+    }
+  },
+
+  /**
+   * Delete all by product id
+   * @route PUT /inventories/deleteAllByProductId/:productId
+   * @param req
+   * @param res
+   * @returns {never}
+   */
+  deleteAllByProductId: async (req, res) => {
+    try {
+      Model.Inventories.update({ is_deleted : 1 },{ where : { product_id : req.params.productId }})
+      .then(response => {
+        res.json({
+          status: 200,
+          message: "Successfully deleted data.",
+          result: true
+        });
+      })
     } catch (err) {
       res.json({
         status: 401,
@@ -480,10 +510,10 @@ const setBulkInventoryData = (params, data, product) => {
       responseSku = response === '' ? product.name.match(/\b(\w)/g).join('').toUpperCase() : response;
       for (let b = 0; b < valueLength; b++) {
         let name = _.isObject(responseName) === true ? responseName.name : responseName;
-        let sku = _.isObject(responseSku) === true ? responseSku.sku.toUpperCase() : responseSku;
+        let sku = _.isObject(responseSku) === true ? responseSku.sku : responseSku;
         newValue[b] = {
           name: `${name} ${value[b]}`,
-          sku: `${sku}-${value[b]}`,
+          sku: `${sku}-${value[b].toUpperCase()}`,
           unit: product.unit,
           price_amount: product.price_amount,
           stock_in: 0,
