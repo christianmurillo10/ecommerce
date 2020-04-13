@@ -741,9 +741,9 @@ module.exports = {
           { model: Model.ProductCategories, as: "productCategories", attributes: ['name', 'description'] },
           { model: Model.ProductSubCategories, as: "productSubCategories", attributes: ['name', 'description'] },
           { model: Model.ProductSubSubCategories, as: "productSubSubCategories", attributes: ['name', 'description'] },
-          { model: Model.ProductImages, as: "productImages", attributes: ['id', 'file_name', 'order', 'type', 'product_id'], required: false },
-          { model: Model.ProductOptions, as: "productOptions", attributes: ['id', 'title', 'values', 'product_id'], required: false },
-          { model: Model.Inventories, as: "inventories", attributes: ['stock_available', 'product_id'], required: false },
+          { model: Model.ProductImages, as: "productImages", attributes: ['id', 'file_name', 'order', 'type', 'product_id'], where: { is_deleted: 0 }, required: false },
+          { model: Model.ProductOptions, as: "productOptions", attributes: ['id', 'title', 'values', 'product_id'], where: { is_deleted: 0 }, required: false },
+          { model: Model.Inventories, as: "inventories", attributes: ['name', 'sku', 'stock_available', 'stock_available', 'price_amount', 'product_id'], where: { is_deleted: 0 }, required: false },
           { model: Model.Users, as: "users", attributes: ['email', 'username'] }
         ]
       };

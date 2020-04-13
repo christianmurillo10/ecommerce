@@ -41,13 +41,7 @@
 </template>
 
 <script>
-import Alerts from "@/components/utilities/Alerts";
-
 export default {
-  components: {
-    Alerts
-  },
-
   props: {
     imageDetails: Array
   },

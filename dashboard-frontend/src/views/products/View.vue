@@ -57,7 +57,8 @@
                     <v-list-tile-title class="font-weight-bold">Stock:&nbsp;</v-list-tile-title>
                   </v-list-tile-action>
                   <v-list-tile-content>
-                    <v-list-tile-title>{{ inventoryDetails.stock_available }}</v-list-tile-title>
+                    <!-- <v-list-tile-title>{{ inventoryDetails.stock_available }}</v-list-tile-title> -->
+                    <v-list-tile-title>0</v-list-tile-title>
                   </v-list-tile-content>
                 </v-list-tile>
                 <v-list-tile>
@@ -181,6 +182,9 @@
               <v-tab-item value="tab-images">
                 <ViewImages ref="viewImages" :image-details="productImageDetails" />
               </v-tab-item>
+              <v-tab-item value="tab-variants">
+                <ViewVariants ref="viewVariants" :variant-details="productVariantDetails" />
+              </v-tab-item>
             </v-tabs-items>
           </v-tabs>
         </v-flex>
@@ -194,6 +198,7 @@ import Alerts from "@/components/utilities/Alerts";
 import Mixins from "@/helpers/Mixins.js";
 import ViewOptions from "./ViewOptions";
 import ViewImages from "./ViewImages";
+import ViewVariants from "./ViewVariants";
 import { mapState, mapActions } from "vuex";
 
 export default {
@@ -201,7 +206,8 @@ export default {
   components: {
     Alerts,
     ViewOptions,
-    ViewImages
+    ViewImages,
+    ViewVariants
   },
 
   data: () => ({
@@ -217,6 +223,10 @@ export default {
       {
         key: "images",
         title: "Images"
+      },
+      {
+        key: "variants",
+        title: "Variants"
       }
     ],
     productDetails: "",
@@ -226,7 +236,7 @@ export default {
     productSubSubCategoryDetails: "",
     productImageDetails: [],
     productOptionDetails: [],
-    inventoryDetails: ""
+    productVariantDetails: ""
   }),
 
   mounted() {
@@ -238,7 +248,7 @@ export default {
       this.productSubSubCategoryDetails = response.data.result.productSubSubCategories === null ? "" : response.data.result.productSubSubCategories;
       this.productImageDetails = response.data.result.productImages === null ? [] : response.data.result.productImages;
       this.productOptionDetails = response.data.result.productOptions === null ? [] : response.data.result.productOptions;
-      this.inventoryDetails = response.data.result.inventories === null ? "" : response.data.result.inventories;
+      this.productVariantDetails = response.data.result.inventories === null ? "" : response.data.result.inventories;
     });
   },
 
