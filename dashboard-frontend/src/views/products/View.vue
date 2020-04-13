@@ -176,11 +176,11 @@
                   </v-sheet>
                 </v-flex>
               </v-tab-item>
-              <v-tab-item value="tab-options">
-                <ViewOptions ref="viewOptions" :option-details="productOptionDetails" />
-              </v-tab-item>
               <v-tab-item value="tab-images">
                 <ViewImages ref="viewImages" :image-details="productImageDetails" />
+              </v-tab-item>
+              <v-tab-item value="tab-options">
+                <ViewOptions ref="viewOptions" :option-details="productOptionDetails" />
               </v-tab-item>
               <v-tab-item value="tab-variants">
                 <ViewVariants ref="viewVariants" :variant-details="productVariantDetails" />
@@ -217,12 +217,12 @@ export default {
         title: "Description"
       },
       {
-        key: "options",
-        title: "Options"
-      },
-      {
         key: "images",
         title: "Images"
+      },
+      {
+        key: "options",
+        title: "Options"
       },
       {
         key: "variants",
@@ -236,7 +236,7 @@ export default {
     productSubSubCategoryDetails: "",
     productImageDetails: [],
     productOptionDetails: [],
-    productVariantDetails: ""
+    productVariantDetails: []
   }),
 
   mounted() {
@@ -248,7 +248,7 @@ export default {
       this.productSubSubCategoryDetails = response.data.result.productSubSubCategories === null ? "" : response.data.result.productSubSubCategories;
       this.productImageDetails = response.data.result.productImages === null ? [] : response.data.result.productImages;
       this.productOptionDetails = response.data.result.productOptions === null ? [] : response.data.result.productOptions;
-      this.productVariantDetails = response.data.result.inventories === null ? "" : response.data.result.inventories;
+      this.productVariantDetails = response.data.result.inventories === null ? [] : response.data.result.inventories;
     });
   },
 
