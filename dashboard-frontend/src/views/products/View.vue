@@ -169,8 +169,8 @@
                     color="grey lighten-5"
                   >
                     <v-container>
-                      <p v-if="productDetails.description === ''" class="text-xs-center">There have been no description for this product yet.</p>
-                      <p v-else>{{ productDetails.description }}</p>
+                      <div v-if="productDetails.description === ''" class="text-xs-center">There have been no description for this product yet.</div>
+                      <div v-else v-html="productDetails.description" style="white-space: pre-wrap;"></div>
                     </v-container>
                   </v-sheet>
                 </v-flex>

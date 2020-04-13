@@ -156,12 +156,13 @@
               <v-container grid-list-md>
                 <v-layout wrap>
                   <v-flex xs12 sm12 md12>
-                    <v-textarea
+                    <!-- <v-textarea
                       v-model="formData.description"
                       auto-grow
                       label="Description"
                       rows="10"
-                    ></v-textarea>
+                    ></v-textarea> -->
+                    <vue-editor v-model="formData.description" :editorToolbar="customToolbar"></vue-editor>
                   </v-flex>
                 </v-layout>
               </v-container>
@@ -185,13 +186,27 @@
 
 <script>
 import { mapState, mapGetters, mapActions } from "vuex";
+import { VueEditor } from "vue2-editor";
 
 export default {
   props: {
     formType: String
   },
 
+  components: {
+    VueEditor
+  },
+
   data: () => ({
+    customToolbar: [
+      [{ 'header': [false, 1, 2, 3, 4, 5, 6, ] }],
+      ['bold', 'italic', 'underline', 'strike'],
+      // [{'align': ''}, {'align': 'center'}, {'align': 'right'}, {'align': 'justify'}],
+      [{ 'header': 1 }, { 'header': 2 }],
+      [{ 'list': 'ordered'}, { 'list': 'bullet' }, { 'list': 'check' }],
+      [{ 'color': [] }, { 'background': [] }],
+      ['clean'],
+    ],
     rateTypeList: [
       { id: 1, name: "Amount" },
       { id: 2, name: "Percentage" }
