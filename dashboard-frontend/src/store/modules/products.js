@@ -2,6 +2,7 @@ import axios from "axios";
 
 const state = {
   productList: [],
+  productIsFeaturedList: [],
   productTotalCount: 0
 };
 
@@ -26,6 +27,31 @@ const actions = {
         axios.get(url, header)
           .then(response => {
             commit("SET_DATA", response.data.result);
+          });
+      } catch (err) {
+        reject(err);
+      }
+    });
+  },
+  getDataByIsFeatured({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
+    let url = `${process.env.VUE_APP_API_BACKEND}/products/featured/${payload}`;
+    let header = { headers: { Token: localStorage.getItem("token") } };
+    return new Promise((resolve, reject) => {
+      try {
+        axios.get(url, header)
+          .then(response => {
+            let obj = response.data.result;
+
+            obj.forEach(element => {
+              if (element.productImages.length > 0) {
+                element.productImages.forEach(elementImage => {
+                  elementImage.file_path = `${process.env.VUE_APP_API_BACKEND}/productImages/viewImage/${elementImage.file_name}/${elementImage.type}`;
+                });
+              } else {
+                element.productImages.push({ file_path: require("../../assets/images/no-image.png") });
+              }
+            });
+            commit("SET_DATA_BY_IS_FEATURED", obj);
           });
       } catch (err) {
         reject(err);
@@ -215,6 +241,13 @@ const mutations = {
     } else {
       state.productList = [];
       state.productTotalCount = 0;
+    }
+  },
+  SET_DATA_BY_IS_FEATURED(state, payload) {
+    if (payload) {
+      state.productIsFeaturedList = payload;
+    } else {
+      state.productIsFeaturedList = [];
     }
   },
   SET_TOTAL_COUNT(state, payload) {

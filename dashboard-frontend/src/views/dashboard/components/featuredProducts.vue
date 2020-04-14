@@ -9,13 +9,13 @@
           <v-card-text>
             <v-data-table
               :headers="headers"
-              :items="feauredProductList"
+              :items="productIsFeaturedList"
               class="elevation-1"
             >
               <template v-slot:items="props">
                 <td class="text-xs-left pt-1">
                   <img
-                    :src="props.item.image"
+                    :src="props.item.productImages[0].file_path"
                     height="80"
                     width="120"
                   />
@@ -32,42 +32,29 @@
 </template>
 
 <script>
+import { mapState, mapActions } from "vuex";
+
 export default {
   data() {
     return {
       headers: [
-      { text: "Image", value: "", sortable: false },
+        { text: "Image", value: "", sortable: false },
         { text: "Name", value: "name" },
         { text: "Price Amount", value: "price_amount" },
       ],
-      feauredProductList: [
-        {
-          image: require("../../../assets/images/no-image.png"),
-          name: "Product 1",
-          price_amount: "100.00"
-        },
-        {
-          image: require("../../../assets/images/no-image.png"),
-          name: "Product 2",
-          price_amount: "100.00"
-        },
-        {
-          image: require("../../../assets/images/no-image.png"),
-          name: "Product 3",
-          price_amount: "100.00"
-        },
-        {
-          image: require("../../../assets/images/no-image.png"),
-          name: "Product 4",
-          price_amount: "100.00"
-        },
-        {
-          image: require("../../../assets/images/no-image.png"),
-          name: "Product 5",
-          price_amount: "100.00"
-        }
-      ]
     };
+  },
+
+  mounted() {
+    this.getProductDataByIsFeatured(1);
+  },
+
+  computed: {
+    ...mapState("products", ["productIsFeaturedList"])
+  },
+
+  methods: {
+    ...mapActions("products", { getProductDataByIsFeatured: "getDataByIsFeatured" })
   }
 };
 </script>

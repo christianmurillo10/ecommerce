@@ -516,6 +516,9 @@ module.exports = {
           'is_published'
         ],
         where: { is_deleted: 0, is_featured: req.params.value, is_published: 1 },
+        order: [
+          ['id', 'ASC'],
+        ],
         include: [
           { 
             model: Model.ProductImages, as: "productImages", 
