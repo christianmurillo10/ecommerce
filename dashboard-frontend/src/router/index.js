@@ -2,7 +2,7 @@ import Vue from "vue";
 import Router from "vue-router";
 import ErrorPage from '../views/Error'
 import Login from "../views/Login";
-import Dashboard from "../views/Dashboard";
+import Dashboard from "../views/dashboard/Index";
 import Users from "../views/users/Index";
 import Roles from "../views/roles/Index";
 import ProductBrands from "../views/productBrands/Index";
