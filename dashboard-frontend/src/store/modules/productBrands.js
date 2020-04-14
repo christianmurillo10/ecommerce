@@ -2,7 +2,8 @@ import axios from "axios";
 import FormData from 'form-data';
 
 const state = {
-  productBrandList: []
+  productBrandList: [],
+  productBrandTotalCount: 0
 };
 
 const getters = {
@@ -49,6 +50,21 @@ const actions = {
         axios
           .get(url, header)
           .then(response => {
+            resolve(response);
+          });
+      } catch (err) {
+        reject(err);
+      }
+    });
+  },
+  getTotalCount({ dispatch, commit, state, rootState, getters, rootGetters }) {
+    let url = `${process.env.VUE_APP_API_BACKEND}/productBrands/count/all`;
+    let header = { headers: { Token: localStorage.getItem("token") } };
+    return new Promise((resolve, reject) => {
+      try {
+        axios.get(url, header)
+          .then(response => {
+            commit("SET_TOTAL_COUNT", response.data.result);
             resolve(response);
           });
       } catch (err) {
@@ -126,6 +142,13 @@ const mutations = {
       state.productBrandList = payload;
     } else {
       state.productBrandList = [];
+    }
+  },
+  SET_TOTAL_COUNT(state, payload) {
+    if (payload) {
+      state.productBrandTotalCount = payload;
+    } else {
+      state.productBrandTotalCount = 0;
     }
   },
   ADD_DATA(state, payload) {

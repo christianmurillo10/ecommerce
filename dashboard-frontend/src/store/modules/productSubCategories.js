@@ -1,7 +1,8 @@
 import axios from "axios";
 
 const state = {
-  productSubCategoryList: []
+  productSubCategoryList: [],
+  productSubCategoryTotalCount: 0
 };
 
 const getters = {
@@ -52,6 +53,21 @@ const actions = {
         axios
           .get(url, header)
           .then(response => {
+            resolve(response);
+          });
+      } catch (err) {
+        reject(err);
+      }
+    });
+  },
+  getTotalCount({ dispatch, commit, state, rootState, getters, rootGetters }) {
+    let url = `${process.env.VUE_APP_API_BACKEND}/productSubCategories/count/all`;
+    let header = { headers: { Token: localStorage.getItem("token") } };
+    return new Promise((resolve, reject) => {
+      try {
+        axios.get(url, header)
+          .then(response => {
+            commit("SET_TOTAL_COUNT", response.data.result);
             resolve(response);
           });
       } catch (err) {
@@ -129,6 +145,13 @@ const mutations = {
       state.productSubCategoryList = payload;
     } else {
       state.productSubCategoryList = [];
+    }
+  },
+  SET_TOTAL_COUNT(state, payload) {
+    if (payload) {
+      state.productSubCategoryTotalCount = payload;
+    } else {
+      state.productSubCategoryTotalCount = 0;
     }
   },
   ADD_DATA(state, payload) {
