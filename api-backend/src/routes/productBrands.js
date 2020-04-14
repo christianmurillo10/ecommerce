@@ -12,6 +12,7 @@ router.route('/:id').get(productBrandsController.findById);
 
 // With Authentication
 router.route('/').get(authController.authorization, productBrandsController.findAll);
+router.route('/count/all').get(authController.authorization, productBrandsController.countAll);
 router.route('/create').post(authController.authorization, upload.single('image'), productBrandsController.create);
 router.route('/update/:id').put(authController.authorization, upload.single('image'), productBrandsController.update);
 router.route('/delete/:id').put(authController.authorization, productBrandsController.delete);

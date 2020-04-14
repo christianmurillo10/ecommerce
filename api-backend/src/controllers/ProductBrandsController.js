@@ -278,6 +278,35 @@ module.exports = {
   },
 
   /**
+   * Count all
+   * @route GET /productBrands/count/all
+   * @param req
+   * @param res
+   * @returns {never}
+   */
+  countAll: async (req, res) => {
+    let count, criteria;
+
+    try {
+      // Pre-setting variables
+      criteria = { where: { is_deleted: 0 } };
+      // Execute findAll query
+      count = await Model.ProductBrands.count(criteria);
+      res.json({
+        status: 200,
+        message: "Successfully count all data.",
+        result: count
+      });
+    } catch (err) {
+      res.json({
+        status: 401,
+        err: err,
+        message: "Failed to find all data."
+      });
+    }
+  },
+
+  /**
    * Find by file_name
    * @route GET /productBrands/viewImage/:fileName
    * @param req

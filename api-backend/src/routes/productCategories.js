@@ -13,6 +13,7 @@ router.route('/').get(productCategoriesController.findAll);
 router.route('/:id').get(productCategoriesController.findById);
 
 // With Authentication
+router.route('/count/all').get(authController.authorization, productCategoriesController.countAll);
 router.route('/create').post(authController.authorization, upload.fields([{ name: 'icon-image', maxCount: 1 }, { name: 'banner-image', maxCount: 1 }]), productCategoriesController.create);
 router.route('/update/:id').put(authController.authorization, upload.fields([{ name: 'icon-image', maxCount: 1 }, { name: 'banner-image', maxCount: 1 }]), productCategoriesController.update);
 router.route('/delete/:id').put(authController.authorization, productCategoriesController.delete);

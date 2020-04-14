@@ -317,4 +317,33 @@ module.exports = {
       });
     }
   },
+
+  /**
+   * Count all
+   * @route GET /productSubCategories/count/all
+   * @param req
+   * @param res
+   * @returns {never}
+   */
+  countAll: async (req, res) => {
+    let count, criteria;
+
+    try {
+      // Pre-setting variables
+      criteria = { where: { is_deleted: 0 } };
+      // Execute findAll query
+      count = await Model.ProductSubCategories.count(criteria);
+      res.json({
+        status: 200,
+        message: "Successfully count all data.",
+        result: count
+      });
+    } catch (err) {
+      res.json({
+        status: 401,
+        err: err,
+        message: "Failed to find all data."
+      });
+    }
+  },
 };
