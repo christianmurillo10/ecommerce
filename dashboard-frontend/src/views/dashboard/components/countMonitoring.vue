@@ -10,7 +10,7 @@
             <div>
               <div class="text-xs-center"><v-icon large class="text-xs-center green--text text--accent-3">shopping_basket</v-icon></div>
               <h4 class="body-2 text-xs-center">Total Products</h4>
-              <p class="headline font-weight-bold text-xs-center">0</p>
+              <p class="headline font-weight-bold text-xs-center">{{ productTotalCount }}</p>
             </div>
           </v-card-title>
         </v-card>
@@ -50,3 +50,23 @@
     </v-flex>
   </v-layout>
 </template>
+
+<script>
+import { mapState, mapActions } from "vuex";
+
+export default {
+  data: () => ({}),
+
+  mounted() {
+    this.getProductTotalCount();
+  },
+
+  computed: {
+    ...mapState("products", ["productTotalCount"])
+  },
+
+  methods: {
+    ...mapActions("products", { getProductTotalCount: "getTotalCount" })
+  }
+}
+</script>

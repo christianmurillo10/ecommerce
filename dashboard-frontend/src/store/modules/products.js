@@ -80,6 +80,21 @@ const actions = {
       }
     });
   },
+  getTotalCount({ dispatch, commit, state, rootState, getters, rootGetters }) {
+    let url = `${process.env.VUE_APP_API_BACKEND}/products/count/all`;
+    let header = { headers: { Token: localStorage.getItem("token") } };
+    return new Promise((resolve, reject) => {
+      try {
+        axios.get(url, header)
+          .then(response => {
+            commit("SET_TOTAL_COUNT", response.data.result);
+            resolve(response);
+          });
+      } catch (err) {
+        reject(err);
+      }
+    });
+  },
   saveData({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
     let url = `${process.env.VUE_APP_API_BACKEND}/products/create`;
     let header = { headers: { Token: localStorage.getItem("token") } };
@@ -199,6 +214,13 @@ const mutations = {
       state.productTotalCount = payload.count;
     } else {
       state.productList = [];
+      state.productTotalCount = 0;
+    }
+  },
+  SET_TOTAL_COUNT(state, payload) {
+    if (payload) {
+      state.productTotalCount = payload;
+    } else {
       state.productTotalCount = 0;
     }
   },
