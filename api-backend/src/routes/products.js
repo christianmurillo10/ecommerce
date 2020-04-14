@@ -6,12 +6,13 @@ const productsController = require('../controllers').products;
 
 // Without Authentication
 router.route('/findAllWithLimitAndOffset/:limit/:offset').get(productsController.findAllWithLimitAndOffset);
-router.route('/findAllWithLimitOffsetAndFileName/:limit/:offset').get(productsController.findAllWithLimitOffsetAndFileName);
-router.route('/findAllByProductCategoryIdWithLimitOffsetAndFileName/:productCategoryId/:limit/:offset').get(productsController.findAllByProductCategoryIdWithLimitOffsetAndFileName);
-router.route('/findAllByProductSubCategoryIdWithLimitOffsetAndFileName/:productSubCategoryId/:limit/:offset').get(productsController.findAllbyProductSubCategoryIdWithLimitOffsetAndFileName);
+// router.route('/findAllWithLimitOffsetAndFileName/:limit/:offset').get(productsController.findAllWithLimitOffsetAndFileName);
+// router.route('/findAllByProductCategoryIdWithLimitOffsetAndFileName/:productCategoryId/:limit/:offset').get(productsController.findAllByProductCategoryIdWithLimitOffsetAndFileName);
+// router.route('/findAllByProductSubCategoryIdWithLimitOffsetAndFileName/:productSubCategoryId/:limit/:offset').get(productsController.findAllbyProductSubCategoryIdWithLimitOffsetAndFileName);
 router.route('/search/:keyword/:limit/:offset').get(productsController.search);
 router.route('/:id').get(productsController.findById);
 router.route('/').get(productsController.findAll);
+router.route('/featured/:value').get(productsController.findAllByIsFeatured);
 
 // With Authentication
 router.route('/count/all').get(authController.authorization, productsController.countAll);
