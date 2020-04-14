@@ -11,9 +11,10 @@ router.route('/findAllByProductCategoryIdWithLimitOffsetAndFileName/:productCate
 router.route('/findAllByProductSubCategoryIdWithLimitOffsetAndFileName/:productSubCategoryId/:limit/:offset').get(productsController.findAllbyProductSubCategoryIdWithLimitOffsetAndFileName);
 router.route('/search/:keyword/:limit/:offset').get(productsController.search);
 router.route('/:id').get(productsController.findById);
+router.route('/').get(productsController.findAll);
 
 // With Authentication
-router.route('/').get(productsController.findAll);
+router.route('/count/all').get(authController.authorization, productsController.countAll);
 router.route('/create').post(authController.authorization, productsController.create);
 router.route('/update/:id').put(authController.authorization, productsController.update);
 router.route('/updateStatus/:id').put(authController.authorization, productsController.updateStatus);
