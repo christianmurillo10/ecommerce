@@ -15,6 +15,7 @@ import ProductsUpdate from "../views/products/Update";
 import ProductsView from "../views/products/View";
 import ProductsImage from "../views/products/Image";
 import ProductsOption from "../views/products/Option";
+import ProductFlashDealHeaders from "../views/productFlashDealHeaders/Index";
 import ProductBannerImages from "../views/productBannerImages/Index";
 
 Vue.use(Router);
@@ -97,6 +98,11 @@ let router = new Router({
       path: "/products/variant-option/:id",
       name: "productsOption",
       component: ProductsOption
+    },
+    {
+      path: "/productFlashDealHeaders",
+      name: "productFlashDealHeaders",
+      component: ProductFlashDealHeaders
     },
     {
       path: "/productBannerImages",

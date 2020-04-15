@@ -118,6 +118,10 @@ export default {
           {
             to: "/products",
             text: "Lists"
+          },
+          {
+            to: "/productFlashDealHeaders",
+            text: "Flash Deals"
           }
         ]
       },

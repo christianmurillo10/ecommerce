@@ -14,6 +14,8 @@ import productSubCategories from './modules/productSubCategories'
 import productSubSubCategories from './modules/productSubSubCategories'
 import productImages from './modules/productImages'
 import productOptions from './modules/productOptions'
+import productFlashDealHeaders from './modules/productFlashDealHeaders'
+import productFlashDealDetails from './modules/productFlashDealDetails'
 import productBannerImages from './modules/productBannerImages'
 import products from './modules/products'
 import inventories from './modules/inventories'
@@ -38,6 +40,8 @@ export default new Vuex.Store({
     productSubSubCategories,
     productImages,
     productOptions,
+    productFlashDealHeaders,
+    productFlashDealDetails,
     productBannerImages,
     products,
     inventories
