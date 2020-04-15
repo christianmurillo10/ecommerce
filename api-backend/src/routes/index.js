@@ -12,6 +12,9 @@ router.use('/productSubSubCategories', require('./productSubSubCategories'));
 router.use('/products', require('./products'));
 router.use('/productImages', require('./productImages'));
 router.use('/productOptions', require('./productOptions'));
+router.use('/productFlashDealHeaders', require('./productFlashDealHeaders'));
+router.use('/productFlashDealDetails', require('./productFlashDealDetails'));
+
 router.use('/productBannerImage', require('./productBannerImages'));
 
 module.exports = router;

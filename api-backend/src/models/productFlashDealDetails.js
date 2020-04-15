@@ -7,12 +7,12 @@ module.exports = (sequelize, DataTypes) => {
       primaryKey: true,
       autoIncrement: true
     },
-    'base_price_amount': {
+    'discount_value': {
       type: DataTypes.DECIMAL(12, 2),
-      allowNull: false,
+      allowNull: true,
       defaultValue: '0.00'
     },
-    'discount_value': {
+    'base_price_amount': {
       type: DataTypes.DECIMAL(12, 2),
       allowNull: false,
       defaultValue: '0.00'
@@ -58,6 +58,12 @@ module.exports = (sequelize, DataTypes) => {
       type: 'TIMESTAMP',
       allowNull: true,
       defaultValue: sequelize.literal('CURRENT_TIMESTAMP')
+    },
+    'discount_type': {
+      type: DataTypes.SMALLINT(1),
+      comment: '1=Amount 2=Percentage',
+      allowNull: true,
+      defaultValue: '1'
     },
     'is_deleted': {
       type: DataTypes.SMALLINT(1),

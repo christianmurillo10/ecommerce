@@ -40,6 +40,11 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: true,
       defaultValue: sequelize.literal('CURRENT_TIMESTAMP')
     },
+    'is_active': {
+      type: DataTypes.SMALLINT(1),
+      allowNull: false,
+      defaultValue: '1'
+    },
     'is_deleted': {
       type: DataTypes.SMALLINT(1),
       allowNull: false,
