@@ -16,22 +16,11 @@
               ></v-text-field>
             </v-flex>
             <v-flex xs12 sm12 md12>
-              <v-textarea
+              <v-text-field
                 v-model="formData.description"
                 :rules="validateItem.descriptionRules"
                 label="Description"
-              ></v-textarea>
-            </v-flex>
-            <v-flex xs12 sm12 md12>
-              <v-autocomplete
-                :items="getProductCategoryList"
-                item-text="name"
-                item-value="id"
-                v-model="formData.product_category_id"
-                label="Product Category"
-                :rules="validateItem.productCategoryRules"
-                required
-              ></v-autocomplete>
+              ></v-text-field>
             </v-flex>
           </v-layout>
         </v-container>
@@ -49,7 +38,7 @@
 </template>
 
 <script>
-import Index from "./Index";
+import Index from "../Index";
 import { mapGetters, mapActions } from "vuex";
 
 export default {
@@ -60,14 +49,12 @@ export default {
   data: () => ({
     defaultFormData: {
       name: null,
-      description: "",
-      product_category_id: null
+      description: ""
     },
     formType: "new",
     formData: {
       name: null,
-      description: "",
-      product_category_id: null
+      description: ""
     },
     valid: true,
     validateItem: {
@@ -77,42 +64,32 @@ export default {
       ],
       descriptionRules: [
         v => (v && v.length <= 500) || "Description must be less than 500 characters"
-      ],
-      productCategoryRules: [
-        v => !!v || "Product Category is required"
-      ],
+      ]
     }
   }),
 
   computed: {
-    ...mapGetters("productSubCategories", ["getProductSubCategoryById"]),
-    ...mapGetters("productCategories", ["getProductCategoryList"]),
+    ...mapGetters("roles", ["getRoleById"]),
     formTitle() {
-      return this.formType === "new" ? "Product Sub-Category - Create" : "Product Sub-Category - Update";
+      return this.formType === "new" ? "Role - Create" : "Role - Update";
     },
     formIcon() {
       return this.formType === "new" ? "add_box" : "edit";
     }
   },
 
-  created() {
-    this.getProductCategoriesData();
-  },
-
   methods: {
     ...mapActions("alerts", ["setAlert"]),
-    ...mapActions("productCategories", { getProductCategoriesData: "getData" }),
-    ...mapActions("productSubCategories", {
-      saveProductSubCategoryData: "saveData",
-      updateProductSubCategoryData: "updateData"
+    ...mapActions("roles", {
+      saveRoleData: "saveData",
+      updateRoleData: "updateData"
     }),
 
     editItem(id) {
-      let data = this.getProductSubCategoryById(id);
+      let data = this.getRoleById(id);
       this.formData.id = data.id;
       this.formData.name = data.name;
       this.formData.description = data.description;
-      this.formData.product_category_id = data.product_category_id;
       this.formType = "update";
     },
 
@@ -127,7 +104,7 @@ export default {
     save() {
       if (this.$refs.form.validate()) {
         if (this.formType === "new") {
-          this.saveProductSubCategoryData(this.formData)
+          this.saveRoleData(this.formData)
             .then(response => {
               let obj = {
                 alert: true,
@@ -140,7 +117,7 @@ export default {
             })
             .catch(err => console.log(err));
         } else if (this.formType === "update") {
-          this.updateProductSubCategoryData(this.formData)
+          this.updateRoleData(this.formData)
             .then(response => {
               let obj = {
                 alert: true,

@@ -42,27 +42,27 @@ export default {
       ],
       feauredProductList: [
         {
-          image: require("../../../assets/images/no-image.png"),
+          image: require("@/assets/images/no-image.png"),
           name: "Product 1",
           price_amount: "100.00"
         },
         {
-          image: require("../../../assets/images/no-image.png"),
+          image: require("@/assets/images/no-image.png"),
           name: "Product 2",
           price_amount: "100.00"
         },
         {
-          image: require("../../../assets/images/no-image.png"),
+          image: require("@/assets/images/no-image.png"),
           name: "Product 3",
           price_amount: "100.00"
         },
         {
-          image: require("../../../assets/images/no-image.png"),
+          image: require("@/assets/images/no-image.png"),
           name: "Product 4",
           price_amount: "100.00"
         },
         {
-          image: require("../../../assets/images/no-image.png"),
+          image: require("@/assets/images/no-image.png"),
           name: "Product 5",
           price_amount: "100.00"
         }

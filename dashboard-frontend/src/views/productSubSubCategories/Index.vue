@@ -74,8 +74,8 @@
 </template>
 
 <script>
-import Alerts from "../../components/utilities/Alerts";
-import ModalForm from "./ModalForm";
+import Alerts from "@/components/utilities/Alerts";
+import ModalForm from "./components/ModalForm";
 import { mapState, mapActions } from "vuex";
 
 export default {

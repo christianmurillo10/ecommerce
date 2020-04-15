@@ -8,23 +8,6 @@
         <v-container grid-list-md>
           <v-layout wrap>
             <v-flex xs12 sm12 md12>
-              <v-layout wrap justify-center>
-                <img :src="formData.file_path" height="80" width="120" />
-              </v-layout>
-            </v-flex>
-            <v-flex xs12 sm12 md12>
-              <v-layout wrap justify-center>
-                <v-btn small outline @click="pickFile">Upload Image</v-btn>
-                <input
-                  type="file"
-                  style="display: none"
-                  ref="image"
-                  accept="image/*"
-                  @change="onFilePicked"
-                />
-              </v-layout>
-            </v-flex>
-            <v-flex xs12 sm12 md12>
               <v-text-field
                 v-model="formData.name"
                 :rules="validateItem.nameRules"
@@ -38,6 +21,30 @@
                 :rules="validateItem.descriptionRules"
                 label="Description"
               ></v-textarea>
+            </v-flex>
+            <v-flex xs12 sm12 md12>
+              <v-autocomplete
+                :items="getProductCategoryList"
+                item-text="name"
+                item-value="id"
+                v-model="formData.product_category_id"
+                label="Category"
+                persistent-hint
+                :rules="validateItem.productCategoryRules"
+                required
+                v-on:change="setProductSubCategoryList()"
+              ></v-autocomplete>
+            </v-flex>
+            <v-flex xs12 sm12 md12>
+              <v-autocomplete
+                :items="getProductSubCategoryList"
+                item-text="name"
+                item-value="id"
+                v-model="formData.product_sub_category_id"
+                label="Sub Category"
+                :rules="validateItem.productSubCategoryRules"
+                required
+              ></v-autocomplete>
             </v-flex>
           </v-layout>
         </v-container>
@@ -57,7 +64,7 @@
 </template>
 
 <script>
-import Index from "./Index";
+import Index from "../Index";
 import { mapGetters, mapActions } from "vuex";
 
 export default {
@@ -69,17 +76,15 @@ export default {
     defaultFormData: {
       name: null,
       description: "",
-      file: null,
-      file_path: require("../../assets/images/no-image.png"),
-      file_name: null
+      product_category_id: null,
+      product_sub_category_id: null
     },
     formType: "new",
     formData: {
       name: null,
       description: "",
-      file: null,
-      file_path: require("../../assets/images/no-image.png"),
-      file_name: null
+      product_category_id: null,
+      product_sub_category_id: null
     },
     valid: true,
     validateItem: {
@@ -88,59 +93,61 @@ export default {
         v => (v && v.length <= 50) || "Name must be less than 50 characters"
       ],
       descriptionRules: [
-        v => (v && v.length <= 500) || "Description must be less than 500 characters"
-      ]
+        v =>
+          (v && v.length <= 500) ||
+          "Description must be less than 500 characters"
+      ],
+      productCategoryRules: [v => !!v || "Product Category is required"],
+      productSubCategoryRules: [v => !!v || "Product Sub Category is required"]
     }
   }),
 
   computed: {
-    ...mapGetters("productBrands", ["getProductBrandById"]),
+    ...mapGetters("productSubSubCategories", ["getProductSubSubCategoryById"]),
+    ...mapGetters("productCategories", ["getProductCategoryList"]),
+    ...mapGetters("productSubCategories", ["getProductSubCategoryList"]),
     formTitle() {
-      return this.formType === "new" ? "Product Brand - Create" : "Product Brand - Update";
+      return this.formType === "new" ? "Product Sub Sub-Category - Create" : "Product Sub Sub-Category - Update";
     },
     formIcon() {
       return this.formType === "new" ? "add_box" : "edit";
     }
   },
 
+  created() {
+    this.getProductCategoriesData();
+  },
+
   methods: {
     ...mapActions("alerts", ["setAlert"]),
-    ...mapActions("productBrands", {
-      saveProductBrandData: "saveData",
-      updateProductBrandData: "updateData"
+    ...mapActions("productCategories", { getProductCategoriesData: "getData" }),
+    ...mapActions("productSubCategories", {
+      getProductSubCategoriesDataByProductCategoryId:
+        "getDataByProductCategoryId"
+    }),
+    ...mapActions("productSubSubCategories", {
+      saveProductSubSubCategoryData: "saveData",
+      updateProductSubSubCategoryData: "updateData"
     }),
 
-    pickFile() {
-      this.$refs.image.click();
-    },
+    setProductSubCategoryList() {
+      let categoryId = this.formData.product_category_id;
 
-    onFilePicked(e) {
-      const files = e.target.files;
-      if (files[0] !== undefined) {
-        this.formData.file_name = files[0].name;
-        if (this.formData.file_name.lastIndexOf(".") <= 0) {
-          return;
-        }
-        const fr = new FileReader();
-        fr.readAsDataURL(files[0]);
-        fr.addEventListener("load", () => {
-          this.formData.file_path = fr.result;
-          this.formData.file = files[0]; // this is an image file that can be sent to server...
-        });
-      } else {
-        this.formData.file = this.defaultFormData.file;
-        this.formData.file_path = this.defaultFormData.file_path;
-        this.formData.file_name = this.defaultFormData.file_name;
+      if (categoryId) {
+        if (this.formType === "new") this.formData.product_sub_category_id = this.defaultFormData.product_sub_category_id;
+        this.getProductSubCategoriesDataByProductCategoryId(categoryId);
       }
     },
 
     editItem(id) {
-      let data = this.getProductBrandById(id);
+      let data = this.getProductSubSubCategoryById(id);
       this.formData.id = data.id;
       this.formData.name = data.name;
       this.formData.description = data.description;
-      this.formData.file_path = `${process.env.VUE_APP_API_BACKEND}/productBrands/viewImage/${data.file_name}`;
+      this.formData.product_category_id = data.product_category_id;
+      this.formData.product_sub_category_id = data.product_sub_category_id;
       this.formType = "update";
+      this.setProductSubCategoryList();
     },
 
     close() {
@@ -154,8 +161,7 @@ export default {
     save() {
       if (this.$refs.form.validate()) {
         if (this.formType === "new") {
-          this.formData.product_id = this.$route.params.id;
-          this.saveProductBrandData(this.formData)
+          this.saveProductSubSubCategoryData(this.formData)
             .then(response => {
               let obj = {
                 alert: true,
@@ -168,7 +174,7 @@ export default {
             })
             .catch(err => console.log(err));
         } else if (this.formType === "update") {
-          this.updateProductBrandData(this.formData)
+          this.updateProductSubSubCategoryData(this.formData)
             .then(response => {
               let obj = {
                 alert: true,

@@ -50,7 +50,7 @@ export default {
     dialog: false,
     modalImage: {
       dialog: false,
-      filePath: require("../../assets/images/no-image.png"),
+      filePath: require("@/assets/images/no-image.png"),
       height: 300,
       width: 290
     },

@@ -102,8 +102,8 @@
 
 <script>
 import Alerts from "@/components/utilities/Alerts";
-import ModalFormOption from "./ModalFormOption";
-import OptionVariant from "./OptionVariant";
+import ModalFormOption from "./components/modal/ModalFormOption";
+import OptionVariant from "./components/option/OptionVariant";
 import { mapState, mapActions } from "vuex";
 
 export default {

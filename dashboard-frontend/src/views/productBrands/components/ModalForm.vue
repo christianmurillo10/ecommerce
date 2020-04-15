@@ -8,6 +8,23 @@
         <v-container grid-list-md>
           <v-layout wrap>
             <v-flex xs12 sm12 md12>
+              <v-layout wrap justify-center>
+                <img :src="formData.file_path" height="80" width="120" />
+              </v-layout>
+            </v-flex>
+            <v-flex xs12 sm12 md12>
+              <v-layout wrap justify-center>
+                <v-btn small outline @click="pickFile">Upload Image</v-btn>
+                <input
+                  type="file"
+                  style="display: none"
+                  ref="image"
+                  accept="image/*"
+                  @change="onFilePicked"
+                />
+              </v-layout>
+            </v-flex>
+            <v-flex xs12 sm12 md12>
               <v-text-field
                 v-model="formData.name"
                 :rules="validateItem.nameRules"
@@ -16,11 +33,11 @@
               ></v-text-field>
             </v-flex>
             <v-flex xs12 sm12 md12>
-              <v-text-field
+              <v-textarea
                 v-model="formData.description"
                 :rules="validateItem.descriptionRules"
                 label="Description"
-              ></v-text-field>
+              ></v-textarea>
             </v-flex>
           </v-layout>
         </v-container>
@@ -31,14 +48,16 @@
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn color="blue darken-1" flat @click="close">Cancel</v-btn>
-        <v-btn color="blue darken-1" type="submit" flat :disabled="!valid">Save</v-btn>
+        <v-btn color="blue darken-1" type="submit" flat :disabled="!valid"
+          >Save</v-btn
+        >
       </v-card-actions>
     </v-form>
   </v-card>
 </template>
 
 <script>
-import Index from "./Index";
+import Index from "../Index";
 import { mapGetters, mapActions } from "vuex";
 
 export default {
@@ -49,12 +68,18 @@ export default {
   data: () => ({
     defaultFormData: {
       name: null,
-      description: ""
+      description: "",
+      file: null,
+      file_path: require("@/assets/images/no-image.png"),
+      file_name: null
     },
     formType: "new",
     formData: {
       name: null,
-      description: ""
+      description: "",
+      file: null,
+      file_path: require("@/assets/images/no-image.png"),
+      file_name: null
     },
     valid: true,
     validateItem: {
@@ -69,9 +94,9 @@ export default {
   }),
 
   computed: {
-    ...mapGetters("roles", ["getRoleById"]),
+    ...mapGetters("productBrands", ["getProductBrandById"]),
     formTitle() {
-      return this.formType === "new" ? "Role - Create" : "Role - Update";
+      return this.formType === "new" ? "Product Brand - Create" : "Product Brand - Update";
     },
     formIcon() {
       return this.formType === "new" ? "add_box" : "edit";
@@ -80,16 +105,41 @@ export default {
 
   methods: {
     ...mapActions("alerts", ["setAlert"]),
-    ...mapActions("roles", {
-      saveRoleData: "saveData",
-      updateRoleData: "updateData"
+    ...mapActions("productBrands", {
+      saveProductBrandData: "saveData",
+      updateProductBrandData: "updateData"
     }),
 
+    pickFile() {
+      this.$refs.image.click();
+    },
+
+    onFilePicked(e) {
+      const files = e.target.files;
+      if (files[0] !== undefined) {
+        this.formData.file_name = files[0].name;
+        if (this.formData.file_name.lastIndexOf(".") <= 0) {
+          return;
+        }
+        const fr = new FileReader();
+        fr.readAsDataURL(files[0]);
+        fr.addEventListener("load", () => {
+          this.formData.file_path = fr.result;
+          this.formData.file = files[0]; // this is an image file that can be sent to server...
+        });
+      } else {
+        this.formData.file = this.defaultFormData.file;
+        this.formData.file_path = this.defaultFormData.file_path;
+        this.formData.file_name = this.defaultFormData.file_name;
+      }
+    },
+
     editItem(id) {
-      let data = this.getRoleById(id);
+      let data = this.getProductBrandById(id);
       this.formData.id = data.id;
       this.formData.name = data.name;
       this.formData.description = data.description;
+      this.formData.file_path = `${process.env.VUE_APP_API_BACKEND}/productBrands/viewImage/${data.file_name}`;
       this.formType = "update";
     },
 
@@ -104,28 +154,29 @@ export default {
     save() {
       if (this.$refs.form.validate()) {
         if (this.formType === "new") {
-          this.saveRoleData(this.formData)
+          this.formData.product_id = this.$route.params.id;
+          this.saveProductBrandData(this.formData)
             .then(response => {
               let obj = {
                 alert: true,
                 type: "success",
                 message: response.data.message
               };
-              
-              if (!response.data.result) obj.type = "error"
+
+              if (!response.data.result) obj.type = "error";
               this.setAlert(obj);
             })
             .catch(err => console.log(err));
         } else if (this.formType === "update") {
-          this.updateRoleData(this.formData)
+          this.updateProductBrandData(this.formData)
             .then(response => {
               let obj = {
                 alert: true,
                 type: "success",
                 message: response.data.message
               };
-              
-              if (!response.data.result) obj.type = "error"
+
+              if (!response.data.result) obj.type = "error";
               this.setAlert(obj);
             })
             .catch(err => console.log(err));

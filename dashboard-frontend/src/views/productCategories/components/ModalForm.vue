@@ -72,7 +72,7 @@
 </template>
 
 <script>
-import Index from "./Index";
+import Index from "../Index";
 import { mapGetters, mapActions } from "vuex";
 
 export default {
@@ -85,10 +85,10 @@ export default {
       name: null,
       description: "",
       icon_file: null,
-      icon_file_path: require("../../assets/images/no-image.png"),
+      icon_file_path: require("@/assets/images/no-image.png"),
       icon_file_name: null,
       banner_file: null,
-      banner_file_path: require("../../assets/images/no-image.png"),
+      banner_file_path: require("@/assets/images/no-image.png"),
       banner_file_name: null
     },
     formType: "new",
@@ -96,10 +96,10 @@ export default {
       name: null,
       description: "",
       icon_file: null,
-      icon_file_path: require("../../assets/images/no-image.png"),
+      icon_file_path: require("@/assets/images/no-image.png"),
       icon_file_name: null,
       banner_file: null,
-      banner_file_path: require("../../assets/images/no-image.png"),
+      banner_file_path: require("@/assets/images/no-image.png"),
       banner_file_name: null
     },
     valid: true,

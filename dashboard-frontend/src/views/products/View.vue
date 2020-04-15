@@ -196,9 +196,9 @@
 <script>
 import Alerts from "@/components/utilities/Alerts";
 import Mixins from "@/helpers/Mixins.js";
-import ViewOptions from "./ViewOptions";
-import ViewImages from "./ViewImages";
-import ViewVariants from "./ViewVariants";
+import ViewOptions from "./components/view/ViewOptions";
+import ViewImages from "./components/view/ViewImages";
+import ViewVariants from "./components/view/ViewVariants";
 import { mapState, mapActions } from "vuex";
 
 export default {

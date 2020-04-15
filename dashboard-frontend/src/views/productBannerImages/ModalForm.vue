@@ -64,7 +64,7 @@ export default {
   data: () => ({
     defaultFormData: {
       file: null,
-      file_path: require("../../assets/images/no-image.png"),
+      file_path: require("@/assets/images/no-image.png"),
       file_name: null,
       order: null,
       product_id: null
@@ -72,7 +72,7 @@ export default {
     formType: "new",
     formData: {
       file: null,
-      file_path: require("../../assets/images/no-image.png"),
+      file_path: require("@/assets/images/no-image.png"),
       file_name: null,
       order: null,
       product_id: null

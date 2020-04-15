@@ -248,7 +248,7 @@
 
 <script>
 import Alerts from "@/components/utilities/Alerts";
-import ModalFormImage from "./ModalFormImage";
+import ModalFormImage from "./components/modal/ModalFormImage";
 import { mapState, mapActions } from "vuex";
 
 export default {
@@ -266,7 +266,7 @@ export default {
     },
     modalImage: {
       dialog: false,
-      filePath: require("../../assets/images/no-image.png"),
+      filePath: require("@/assets/images/no-image.png"),
       height: 300,
       width: 290
     },
@@ -280,21 +280,21 @@ export default {
       { text: "Order", value: "order" },
       { text: "Actions", align: "center", value: "id", sortable: false }
     ],
-    defaultFormData: {
-      file: null,
-      file_path: require("../../assets/images/no-image.png"),
-      file_name: null,
-      order: null,
-      type: null
-    },
-    formType: "new",
-    formData: {
-      file: null,
-      file_path: require("../../assets/images/no-image.png"),
-      file_name: null,
-      order: null,
-      type: null
-    }
+    // defaultFormData: {
+    //   file: null,
+    //   file_path: require("@/assets/images/no-image.png"),
+    //   file_name: null,
+    //   order: null,
+    //   type: null
+    // },
+    // formType: "new",
+    // formData: {
+    //   file: null,
+    //   file_path: require("@/assets/images/no-image.png"),
+    //   file_name: null,
+    //   order: null,
+    //   type: null
+    // }
   }),
 
   mounted() {
@@ -326,6 +326,12 @@ export default {
       "productImageFeaturedList",
       "productImageFlashDealList"
     ])
+  },
+
+  watch: {
+    dialog(val) {
+      val || this.close();
+    }
   },
 
   methods: {

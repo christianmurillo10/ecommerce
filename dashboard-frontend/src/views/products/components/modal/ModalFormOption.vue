@@ -57,14 +57,9 @@
 </template>
 
 <script>
-import Index from "./Index";
 import { mapState, mapGetters, mapActions } from "vuex";
 
 export default {
-  components: {
-    Index
-  },
-
   data: () => ({
     dialogConfirmation: false,
     defaultFormData: {

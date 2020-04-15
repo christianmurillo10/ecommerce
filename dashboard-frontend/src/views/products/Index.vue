@@ -136,7 +136,7 @@
 </template>
 
 <script>
-import Alerts from "../../components/utilities/Alerts";
+import Alerts from "@/components/utilities/Alerts";
 import { mapState, mapActions } from "vuex";
 
 export default {

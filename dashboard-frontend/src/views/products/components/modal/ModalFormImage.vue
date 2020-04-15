@@ -60,13 +60,13 @@
 </template>
 
 <script>
-import Index from "./Index";
+// import Index from "./Index";
 import { mapGetters, mapActions } from "vuex";
 
 export default {
-  components: {
-    Index
-  },
+  // components: {
+  //   Index
+  // },
 
   data: () => ({
     imageTypeList: [
@@ -77,7 +77,7 @@ export default {
     ],
     defaultFormData: {
       file: null,
-      file_path: require("../../assets/images/no-image.png"),
+      file_path: require("@/assets/images/no-image.png"),
       file_name: null,
       order: null,
       type: null,
@@ -86,7 +86,7 @@ export default {
     formType: "new",
     formData: {
       file: null,
-      file_path: require("../../assets/images/no-image.png"),
+      file_path: require("@/assets/images/no-image.png"),
       file_name: null,
       order: null,
       type: null,
