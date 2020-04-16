@@ -30,7 +30,7 @@
         </v-flex>
       </v-card-title>
       <v-card-text>
-        <v-data-table :headers="headers" :items="productFlashDealList" :search="search" class="elevation-1">
+        <v-data-table :headers="headers" :items="productFlashDealHeaderList" :search="search" class="elevation-1">
           <template v-slot:items="props">
             <td class="text-xs-left">{{ props.item.title }}</td>
             <td class="text-xs-left">{{ props.item.date_from }}</td>
@@ -43,8 +43,13 @@
                 hide-details
               ></v-switch>
             </td>
-            <!-- <td class="text-xs-left">{{ props.item.is_active }}</td> -->
             <td class="justify-center layout px-0">
+              <v-tooltip left>
+                <template v-slot:activator="{ on }">
+                  <v-icon small class="mr-2" color="purple darken-2" @click="editDetails(props.item.id)" v-on="on">list_alt</v-icon>
+                </template>
+                <span>Details</span>
+              </v-tooltip>
               <v-tooltip left>
                 <template v-slot:activator="{ on }">
                   <v-icon small class="mr-2" @click="editItem(props.item.id)" v-on="on">edit</v-icon>
@@ -114,7 +119,7 @@ export default {
   },
 
   computed: {
-    ...mapState("productFlashDealHeaders", ["productFlashDealList"])
+    ...mapState("productFlashDealHeaders", ["productFlashDealHeaderList"])
   },
 
   watch: {
@@ -144,6 +149,10 @@ export default {
           this.setAlert(obj);
         })
         .catch(err => console.log(err));
+    },
+
+    editDetails(id) {
+      this.$router.push(`/productFlashDeals/details/${id}`);
     },
 
     editItem(id) {

@@ -185,6 +185,7 @@
 </template>
 
 <script>
+import Mixins from "@/helpers/Mixins.js";
 import { mapState, mapGetters, mapActions } from "vuex";
 import { VueEditor } from "vue2-editor";
 
@@ -193,6 +194,7 @@ export default {
     formType: String
   },
 
+  mixins: [Mixins],
   components: {
     VueEditor
   },
@@ -206,10 +208,6 @@ export default {
       [{ 'list': 'ordered'}, { 'list': 'bullet' }, { 'list': 'check' }],
       [{ 'color': [] }, { 'background': [] }],
       ['clean'],
-    ],
-    rateTypeList: [
-      { id: 1, name: "Amount" },
-      { id: 2, name: "Percentage" }
     ],
     tabHeaders: [
       {

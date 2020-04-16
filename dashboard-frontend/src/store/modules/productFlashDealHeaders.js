@@ -1,18 +1,19 @@
 import axios from "axios";
 
 const state = {
-  productFlashDealList: []
+  productFlashDealHeaderList: [],
+  productFlashDealHeaderDataById: ""
 };
 
 const getters = {
   getProductFlashDealHeaderById: (state) => (id) => {
-    return state.productFlashDealList.find(productFlashDeal => productFlashDeal.id === id);
+    return state.productFlashDealHeaderList.find(productFlashDealHeader => productFlashDealHeader.id === id);
   },
   getProductFlashDealHeaderTitleById: (state) => (id) => {
-    return state.productFlashDealList.find(productFlashDeal => productFlashDeal.id === id).title;
+    return state.productFlashDealHeaderList.find(productFlashDealHeader => productFlashDealHeader.id === id).title;
   },
   getProductFlashDealHeaderList: (state) => {
-    return state.productFlashDealList;
+    return state.productFlashDealHeaderList;
   }
 };
 
@@ -39,6 +40,7 @@ const actions = {
         axios
           .get(url, header)
           .then(response => {
+            commit("SET_DATA_BY_ID", response.data.result);
             resolve(response);
           });
       } catch (err) {
@@ -134,17 +136,24 @@ const actions = {
 const mutations = {
   SET_DATA(state, payload) {
     if (payload) {
-      state.productFlashDealList = payload;
+      state.productFlashDealHeaderList = payload;
     } else {
-      state.productFlashDealList = [];
+      state.productFlashDealHeaderList = [];
+    }
+  },
+  SET_DATA_BY_ID(state, payload) {
+    if (payload) {
+      state.productFlashDealHeaderDataById = payload;
+    } else {
+      state.productFlashDealHeaderDataById = "";
     }
   },
   ADD_DATA(state, payload) {
-    state.productFlashDealList.push(payload);
+    state.productFlashDealHeaderList.push(payload);
   },
   UPDATE_DATA(state, payload) {
-    let index = state.productFlashDealList.map(productFlashDeal => productFlashDeal.id).indexOf(payload.id);
-    Object.assign(state.productFlashDealList[index], {
+    let index = state.productFlashDealHeaderList.map(productFlashDealHeader => productFlashDealHeader.id).indexOf(payload.id);
+    Object.assign(state.productFlashDealHeaderList[index], {
       title: payload.title,
       date_from: payload.date_from,
       date_to: payload.date_to,
@@ -152,8 +161,8 @@ const mutations = {
     });
   },
   DELETE_DATA(state, payload) {
-    let index = state.productFlashDealList.map(productFlashDeal => productFlashDeal.id).indexOf(payload);
-    state.productFlashDealList.splice(index, 1);
+    let index = state.productFlashDealHeaderList.map(productFlashDealHeader => productFlashDealHeader.id).indexOf(payload);
+    state.productFlashDealHeaderList.splice(index, 1);
   }
 };
 

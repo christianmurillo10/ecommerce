@@ -1,6 +1,13 @@
 import moment from "moment";
 
 export default {
+  data: () => ({
+    rateTypeList: [
+      { id: 1, name: "Amount" },
+      { id: 2, name: "Percentage" }
+    ],
+  }),
+
   methods: {
     getYesNoStatus(value) {
       let response = null;
@@ -50,6 +57,13 @@ export default {
     setDateTime(dateTime) {
       let newDateTime = new Date(dateTime);
       return moment(newDateTime).format("YYYY-MM-DD HH:mm:ss");
+    },
+
+    setRateTypeValue(value, type) {
+      let response = "";
+      if (type === 1) response = `₱ ${value}`;
+      else if  (type === 2) response = `${value}%`;
+      return response;
     },
 
     camelCase(value) {

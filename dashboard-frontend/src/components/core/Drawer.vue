@@ -120,7 +120,7 @@ export default {
             text: "Lists"
           },
           {
-            to: "/productFlashDealHeaders",
+            to: "/productFlashDeals",
             text: "Flash Deals"
           }
         ]

@@ -28,6 +28,30 @@ const actions = {
       }
     });
   },
+  getDataByHeaderId({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
+    let url = `${process.env.VUE_APP_API_BACKEND}/productFlashDealDetails/findAllbyHeaderId/${payload}`;
+    let header = { headers: { Token: localStorage.getItem("token") } };
+    return new Promise((resolve, reject) => {
+      try {
+        axios.get(url, header)
+          .then(response => {
+            let obj = response.data.result;
+            obj.forEach(element => {
+              if (element.products.productImages.length > 0) {
+                element.products.productImages.forEach(elementImage => {
+                  elementImage.file_path = `${process.env.VUE_APP_API_BACKEND}/productImages/viewImage/${elementImage.file_name}/${elementImage.type}`;
+                });
+              } else {
+                element.products.productImages.push({ file_path: require("../../assets/images/no-image.png") });
+              }
+            });
+            commit("SET_DATA", obj);
+          });
+      } catch (err) {
+        reject(err);
+      }
+    });
+  },
   getDataById({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
     let url = `${process.env.VUE_APP_API_BACKEND}/productFlashDealDetails/${payload}`;
     let header = { headers: { Token: localStorage.getItem("token") } };
@@ -61,7 +85,15 @@ const actions = {
           .post(url, obj, header)
           .then(response => {
             if (response.data.result) {
-              commit("ADD_DATA", response.data.result);
+              let obj = response.data.result;
+              if (obj.products.productImages.length > 0) {
+                obj.products.productImages.forEach(elementImage => {
+                  elementImage.file_path = `${process.env.VUE_APP_API_BACKEND}/productImages/viewImage/${elementImage.file_name}/${elementImage.type}`;
+                });
+              } else {
+                obj.products.productImages.push({ file_path: require("../../assets/images/no-image.png") });
+              }
+              commit("ADD_DATA", obj);
             }
             resolve(response);
           });
@@ -87,7 +119,15 @@ const actions = {
         axios
           .put(url, obj, header)
           .then(response => {
-            commit("UPDATE_DATA", response.data.result);
+            let obj = response.data.result;
+            if (obj.products.productImages.length > 0) {
+              obj.products.productImages.forEach(elementImage => {
+                elementImage.file_path = `${process.env.VUE_APP_API_BACKEND}/productImages/viewImage/${elementImage.file_name}/${elementImage.type}`;
+              });
+            } else {
+              obj.products.productImages.push({ file_path: require("../../assets/images/no-image.png") });
+            }
+            commit("UPDATE_DATA", obj);
             resolve(response);
           });
       } catch (err) {

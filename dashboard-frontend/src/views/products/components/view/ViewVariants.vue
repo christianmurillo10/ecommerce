@@ -13,7 +13,7 @@
       <v-data-table :headers="headers" :items="variantDetails" :search="search" class="elevation-1">
         <template v-slot:items="props">
           <td class="text-xs-left">{{ props.item.name }}</td>
-          <td class="text-xs-left">{{ props.item.price_amount }}</td>
+          <td class="text-xs-left">&#8369; {{ props.item.price_amount }}</td>
           <td class="text-xs-left">{{ props.item.sku }}</td>
           <td class="text-xs-left">{{ props.item.stock_available }}</td>
         </template>

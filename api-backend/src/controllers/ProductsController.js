@@ -453,7 +453,7 @@ module.exports = {
           { 
             model: Model.ProductImages, as: "productImages", 
             attributes: ['file_name', 'order', 'type', 'product_id'],
-            where: { type: 2 },
+            where: { type: 2, is_deleted: 0 },
             required: false 
           },
           { model: Model.ProductOptions, as: "productOptions", attributes: ['id', 'title', 'values', 'product_id'], required: false },
@@ -523,7 +523,7 @@ module.exports = {
           { 
             model: Model.ProductImages, as: "productImages", 
             attributes: ['file_name', 'order', 'type', 'product_id'],
-            where: { type: 2 },
+            where: { type: 2, is_deleted: 0 },
             required: false 
           },
           { model: Model.Inventories, as: "inventories", attributes: ['stock_available', 'product_id'], required: false },

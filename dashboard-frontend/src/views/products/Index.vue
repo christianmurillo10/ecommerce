@@ -56,7 +56,7 @@
             </td>
             <td class="text-xs-left">{{ props.item.unit }}</td>
             <td class="text-xs-left">{{ props.item.inventories === null ? 0 : props.item.inventories.stock_available }}</td>
-            <td class="text-xs-left">{{ props.item.price_amount }}</td>
+            <td class="text-xs-left">&#8369; {{ props.item.price_amount }}</td>
             <td class="text-xs-left">
               <v-switch
                 v-model="props.item.is_today_deal"
@@ -224,7 +224,7 @@ export default {
     },
 
     editVariantOption(id) {
-      this.$router.push(`/products/variant-option/${id}`);
+      this.$router.push(`/products/variantOption/${id}`);
     },
 
     deleteModal(id) {

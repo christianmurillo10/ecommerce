@@ -10,7 +10,7 @@ module.exports = {
    */
   create: async (req, res) => {
     const params = req.body;
-    let initialValues, data;
+    let criteria, initialValues;
 
     // Validators
     if (_.isUndefined(params))
@@ -24,8 +24,8 @@ module.exports = {
     params.base_price_amount = params.base_price_amount.toLocaleString();
     params.current_price_amount = params.current_price_amount.toLocaleString();
     params.user_id = req.user.id.toLocaleString();
-    params.product_id = params.product_id.toLocaleString();
-    params.header_id = params.header_id.toLocaleString();
+    params.product_id = params.product_id === undefined ? null : params.product_id.toLocaleString();
+    params.header_id = params.header_id === undefined ? null : params.header_id.toLocaleString();
     params.discount_type = params.discount_type === null ? null : params.discount_type.toLocaleString();
 
     try {
@@ -36,17 +36,47 @@ module.exports = {
       if (_.isEmpty(params.header_id)) return res.json({ status: 200, message: "Product Flash Deal Header is required.", result: false });
 
       // Pre-setting variables
+      criteria = { 
+        where: { header_id: params.header_id, product_id: params.product_id, is_deleted: 0 }, 
+        include: [
+          { 
+            model: Model.Products, as: 'products', 
+            attributes: ['name', 'price_amount'], 
+            include: [
+              { 
+                model: Model.ProductImages, as: "productImages", 
+                attributes: ['file_name', 'order', 'type', 'product_id'],
+                where: { type: 2, is_deleted: 0 },
+                required: false 
+              },
+            ] 
+          }
+        ] 
+      };
       initialValues = _.pick(params, ['discount_value', 'base_price_amount', 'current_price_amount', 'user_id', 'product_id', 'header_id', 'created_at', 'discount_type']);
+      
       // Execute findAll query
-      Model.ProductFlashDealDetails.create(initialValues)
-        .then(response => {
-          res.json({
-            status: 200,
-            message: "Successfully created data.",
-            result: _.omit(response.get({ plain: true }), ['is_deleted'])
+      data = await Model.ProductFlashDealDetails.findAll(criteria);
+      if (_.isEmpty(data[0])) {
+        await Model.ProductFlashDealDetails.create(initialValues)
+          .then(() => Model.ProductFlashDealDetails.findOrCreate(criteria))
+          .then(async ([finalData, created]) => {
+            let plainData = finalData.get({ plain: true });
+            res.json({
+              status: 200,
+              message: "Successfully created data.",
+              result: _.omit(plainData, ["is_deleted"])
+            });
           });
-        })
+      } else {
+        res.json({
+          status: 200,
+          message: "Data already exist.",
+          result: false
+        });
+      }
     } catch (err) {
+      console.log("ERRRRR", err)
       res.json({
         status: 401,
         err: err,
@@ -73,9 +103,25 @@ module.exports = {
 
     try {
       // Pre-setting variables
+      criteria = { 
+        include: [
+          { 
+            model: Model.Products, as: 'products', 
+            attributes: ['name', 'price_amount'], 
+            include: [
+              { 
+                model: Model.ProductImages, as: "productImages", 
+                attributes: ['file_name', 'order', 'type', 'product_id'],
+                where: { type: 2, is_deleted: 0 },
+                required: false 
+              },
+            ] 
+          }
+        ] 
+      };
       initialValues = _.pick(params, ['discount_value', 'base_price_amount', 'current_price_amount', 'user_id', 'product_id', 'header_id', 'discount_type']);
       // Execute findByPk query
-      data = await Model.ProductFlashDealDetails.findByPk(req.params.id);
+      data = await Model.ProductFlashDealDetails.findByPk(req.params.id, criteria);
       if (!_.isEmpty(data)) {
         let finalData = await data.update(initialValues);
         res.json({
@@ -194,6 +240,60 @@ module.exports = {
     try {
       // Pre-setting variables
       criteria = { where: { is_deleted: 0 } };
+      // Execute findAll query
+      data = await Model.ProductFlashDealDetails.findAll(criteria);
+      if (!_.isEmpty(data[0])) {
+        res.json({
+          status: 200,
+          message: "Successfully find all data.",
+          result: data
+        });
+      } else {
+        res.json({
+          status: 200,
+          message: "No Data Found.",
+          result: false
+        });
+      }
+    } catch (err) {
+      res.json({
+        status: 401,
+        err: err,
+        message: "Failed to find all data."
+      });
+    }
+  },
+
+  /**
+   * Find all by header id
+   * @route GET /productFlashDealDetails/findAllbyHeaderId/:headerId
+   * @param req
+   * @param res
+   * @returns {never}
+   */
+  findAllbyHeaderId: async (req, res) => {
+    const params = req.params;
+    let data, criteria;
+
+    try {
+      // Pre-setting variables
+      criteria = { 
+        where: { header_id: params.headerId, is_deleted: 0 }, 
+        include: [
+          { 
+            model: Model.Products, as: 'products', 
+            attributes: ['name', 'price_amount'], 
+            include: [
+              { 
+                model: Model.ProductImages, as: "productImages", 
+                attributes: ['file_name', 'order', 'type', 'product_id'],
+                where: { type: 2, is_deleted: 0 },
+                required: false 
+              },
+            ] 
+          }
+        ] 
+      };
       // Execute findAll query
       data = await Model.ProductFlashDealDetails.findAll(criteria);
       if (!_.isEmpty(data[0])) {

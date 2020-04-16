@@ -84,6 +84,10 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: 'header_id',
       as: 'productFlashDealHeaders'
     });
+    ProductFlashDealDetails.belongsTo(models.Products, {
+      foreignKey: 'product_id',
+      as: 'products'
+    });
   };
 
   return ProductFlashDealDetails;

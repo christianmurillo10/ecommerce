@@ -77,7 +77,7 @@ const actions = {
                 element.productImages.push({ file_path: require("../../assets/images/no-image.png") });
               }
             });
-            commit("SET_DATA", obj);
+            commit("SET_DATA_WITH_COUNT", obj);
           });
       } catch (err) {
         reject(err);
@@ -235,6 +235,13 @@ const actions = {
 
 const mutations = {
   SET_DATA(state, payload) {
+    if (payload) {
+      state.productList = payload;
+    } else {
+      state.productList = [];
+    }
+  },
+  SET_DATA_WITH_COUNT(state, payload) {
     if (payload) {
       state.productList = payload.data;
       state.productTotalCount = payload.count;
