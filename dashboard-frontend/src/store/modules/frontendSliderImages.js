@@ -2,37 +2,35 @@ import axios from "axios";
 import FormData from 'form-data';
 
 const state = {
-  productBannerImageList: []
+  frontendSliderImageList: []
 };
 
 const getters = {
-  getProductBannerImageById: (state) => (id) => {
-    return state.productBannerImageList.find(productBannerImage => productBannerImage.id === id);
+  getFrontendSliderImageById: (state) => (id) => {
+    return state.frontendSliderImageList.find(frontendSliderImage => frontendSliderImage.id === id);
   },
-  getProductBannerImageFileNameById: (state) => (id) => {
-    return state.productBannerImageList.find(productBannerImage => productBannerImage.id === id).file_name;
+  getFrontendSliderImageFileNameById: (state) => (id) => {
+    return state.frontendSliderImageList.find(frontendSliderImage => frontendSliderImage.id === id).file_name;
   },
-  getProductBannerImageList: (state) => {
-    return state.productBannerImageList;
+  getFrontendSliderImageList: (state) => {
+    return state.frontendSliderImageList;
   }
 };
 
 const actions = {
   getData({ dispatch, commit, state, rootState, getters, rootGetters }) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/productBannerImage/`;
+    let url = `${process.env.VUE_APP_API_BACKEND}/frontendSliderImages/`;
     let header = { headers: { Token: localStorage.getItem("token") } };
     return new Promise((resolve, reject) => {
       try {
         axios.get(url, header)
           .then(response => {
             let obj = response.data.result;
-
             if (obj !== false) {
               obj.forEach(element => {
-                element.file_path = `${process.env.VUE_APP_API_BACKEND}/productBannerImage/viewImage/${element.file_name}`;
+                element.file_path = `${process.env.VUE_APP_API_BACKEND}/frontendSliderImages/viewImage/${element.file_name}`;
               });
             }
-
             commit("SET_DATA", obj);
             resolve(response);
           });
@@ -42,7 +40,7 @@ const actions = {
     });
   },
   getDataById({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/productBannerImage/${payload}`;
+    let url = `${process.env.VUE_APP_API_BACKEND}/frontendSliderImages/${payload}`;
     let header = { headers: { Token: localStorage.getItem("token") } };
     return new Promise((resolve, reject) => {
       try {
@@ -57,12 +55,13 @@ const actions = {
     });
   },
   saveData({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/productBannerImage/create`;
+    let url = `${process.env.VUE_APP_API_BACKEND}/frontendSliderImages/create`;
     let header = { headers: { Token: localStorage.getItem("token") } };
     return new Promise((resolve, reject) => {
       try {
         var data = new FormData();
         data.set('file_name', payload.file_name);
+        data.set('url', payload.url);
         data.set('order', payload.order);
         data.append('image', payload.file);
 
@@ -80,12 +79,13 @@ const actions = {
     });
   },
   updateData({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/productBannerImage/update/${payload.id}`;
+    let url = `${process.env.VUE_APP_API_BACKEND}/frontendSliderImages/update/${payload.id}`;
     let header = { headers: { Token: localStorage.getItem("token") } };
     return new Promise((resolve, reject) => {
       try {
         var data = new FormData();
         data.set('file_name', payload.file_name);
+        data.set('url', payload.url);
         data.set('order', payload.order);
         data.append('image', payload.file);
 
@@ -101,7 +101,7 @@ const actions = {
     });
   },
   deleteData({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/productBannerImage/delete/${payload}`;
+    let url = `${process.env.VUE_APP_API_BACKEND}/frontendSliderImages/delete/${payload}`;
     let header = { headers: { Token: localStorage.getItem("token") } };
     return new Promise((resolve, reject) => {
       try {
@@ -121,27 +121,28 @@ const actions = {
 const mutations = {
   SET_DATA(state, payload) {
     if (payload) {
-      state.productBannerImageList = payload;
+      state.frontendSliderImageList = payload;
     } else {
-      state.productBannerImageList = [];
+      state.frontendSliderImageList = [];
     }
   },
   ADD_DATA(state, payload) {
     let obj = payload;
-    obj.file_path = `${process.env.VUE_APP_API_BACKEND}/productBannerImage/viewImage/${payload.file_name}`;
-    state.productBannerImageList.push(obj);
+    obj.file_path = `${process.env.VUE_APP_API_BACKEND}/frontendSliderImages/viewImage/${payload.file_name}`;
+    state.frontendSliderImageList.push(obj);
   },
   UPDATE_DATA(state, payload) {
-    let index = state.productBannerImageList.map(productBannerImage => productBannerImage.id).indexOf(payload.id);
-    Object.assign(state.productBannerImageList[index], {
+    let index = state.frontendSliderImageList.map(frontendSliderImage => frontendSliderImage.id).indexOf(payload.id);
+    Object.assign(state.frontendSliderImageList[index], {
       file_name: payload.file_name,
+      url: payload.url,
       order: payload.order,
-      file_path: `${process.env.VUE_APP_API_BACKEND}/productBannerImage/viewImage/${payload.file_name}`
+      file_path: `${process.env.VUE_APP_API_BACKEND}/frontendSliderImages/viewImage/${payload.file_name}`
     });
   },
   DELETE_DATA(state, payload) {
-    let index = state.productBannerImageList.map(productBannerImage => productBannerImage.id).indexOf(payload);
-    state.productBannerImageList.splice(index, 1);
+    let index = state.frontendSliderImageList.map(frontendSliderImage => frontendSliderImage.id).indexOf(payload);
+    state.frontendSliderImageList.splice(index, 1);
   }
 };
 

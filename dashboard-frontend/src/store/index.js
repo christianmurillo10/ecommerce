@@ -8,6 +8,7 @@ import toolbar from './modules/toolbar'
 import userAuthentication from './modules/userAuthentication'
 import users from './modules/users'
 import roles from './modules/roles'
+import frontendSliderImages from './modules/frontendSliderImages'
 import productBrands from './modules/productBrands'
 import productCategories from './modules/productCategories'
 import productSubCategories from './modules/productSubCategories'
@@ -16,7 +17,6 @@ import productImages from './modules/productImages'
 import productOptions from './modules/productOptions'
 import productFlashDealHeaders from './modules/productFlashDealHeaders'
 import productFlashDealDetails from './modules/productFlashDealDetails'
-import productBannerImages from './modules/productBannerImages'
 import products from './modules/products'
 import inventories from './modules/inventories'
 
@@ -34,6 +34,7 @@ export default new Vuex.Store({
     userAuthentication,
     users,
     roles,
+    frontendSliderImages,
     productBrands,
     productCategories,
     productSubCategories,
@@ -42,7 +43,6 @@ export default new Vuex.Store({
     productOptions,
     productFlashDealHeaders,
     productFlashDealDetails,
-    productBannerImages,
     products,
     inventories
   }

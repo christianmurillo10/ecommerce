@@ -1,19 +1,15 @@
 <template>
   <v-card>
-    <v-card-title class="headline grey darken-3 white--text">
-      <span>
-        <v-icon class="white--text">{{ formIcon }}</v-icon>
-        {{ formTitle }}
-      </span>
+    <v-card-title>
+      <v-icon class="black--text">{{ formIcon }}</v-icon><span class="title">{{ formTitle }}</span>
     </v-card-title>
-
     <v-form ref="form" @submit.prevent="save" v-model="valid" lazy-validation>
       <v-card-text>
         <v-container grid-list-md>
           <v-layout wrap>
             <v-flex xs12 sm12 md12>
               <v-layout wrap justify-center>
-                <img :src="formData.file_path" height="200" />
+                <img :src="formData.file_path" height="315" width="850" />
               </v-layout>
             </v-flex>
             <v-flex xs12 sm12 md12>
@@ -28,13 +24,19 @@
                 />
               </v-layout>
             </v-flex>
-            <v-flex xs12 sm12 md12>
+            <v-flex xs12 sm12 md4>
               <v-text-field
                 v-model="formData.order"
                 :rules="validateItem.orderRules"
                 label="Order"
                 type="number"
                 required
+              ></v-text-field>
+            </v-flex>
+            <v-flex xs12 sm12 md8>
+              <v-text-field
+                v-model="formData.url"
+                label="Url"
               ></v-text-field>
             </v-flex>
           </v-layout>
@@ -53,7 +55,7 @@
 </template>
 
 <script>
-import Index from "./Index";
+import Index from "../Index";
 import { mapGetters, mapActions } from "vuex";
 
 export default {
@@ -66,7 +68,8 @@ export default {
       file: null,
       file_path: require("@/assets/images/no-image.png"),
       file_name: null,
-      order: null,
+      url: "",
+      order: "",
       product_id: null
     },
     formType: "new",
@@ -74,6 +77,7 @@ export default {
       file: null,
       file_path: require("@/assets/images/no-image.png"),
       file_name: null,
+      url: "",
       order: null,
       product_id: null
     },
@@ -86,9 +90,9 @@ export default {
   }),
 
   computed: {
-    ...mapGetters("productBannerImages", ["getProductBannerImageById"]),
+    ...mapGetters("frontendSliderImages", ["getFrontendSliderImageById"]),
     formTitle() {
-      return this.formType === "new" ? "New Product Banner Image" : "Edit Product Banner Image";
+      return this.formType === "new" ? "Frontend Slider Image - Create" : "Frontend Slider Image - Update";
     },
     formIcon() {
       return this.formType === "new" ? "add_box" : "edit";
@@ -97,10 +101,9 @@ export default {
 
   methods: {
     ...mapActions("alerts", ["setAlert"]),
-    ...mapActions("productBannerImages", {
-      saveProductBannerImageData: "saveData",
-      updateProductBannerImageData: "updateData",
-      deleteProductBannerImageData: "deleteData"
+    ...mapActions("frontendSliderImages", {
+      saveFrontendSliderImageData: "saveData",
+      updateFrontendSliderImageData: "updateData"
     }),
 
     pickFile() {
@@ -128,26 +131,12 @@ export default {
     },
 
     editItem(id) {
-      let data = this.getProductBannerImageById(id);
+      let data = this.getFrontendSliderImageById(id);
       this.formData.id = data.id;
+      this.formData.url = data.url;
       this.formData.order = data.order;
-      this.formData.file_path = process.env.VUE_APP_API_BACKEND+ '/productBannerImage/viewImage/' + data.file_name;
+      this.formData.file_path = process.env.VUE_APP_API_BACKEND+ '/frontendSliderImages/viewImage/' + data.file_name;
       this.formType = "update";
-    },
-
-    deleteItem(id) {
-      this.deleteProductBannerImageData(id)
-        .then(response => {
-          let obj = {
-            alert: true,
-            type: "success",
-            message: response.data.message
-          };
-          
-          if (!response.data.result) obj.type = "error"
-          this.setAlert(obj);
-        })
-        .catch(err => console.log(err));
     },
 
     close() {
@@ -162,7 +151,7 @@ export default {
       if (this.$refs.form.validate()) {
         if (this.formType === "new") {
           this.formData.product_id = this.$route.params.id;
-          this.saveProductBannerImageData(this.formData)
+          this.saveFrontendSliderImageData(this.formData)
             .then(response => {
               let obj = {
                 alert: true,
@@ -175,7 +164,7 @@ export default {
             })
             .catch(err => console.log(err));
         } else if (this.formType === "update") {
-          this.updateProductBannerImageData(this.formData)
+          this.updateFrontendSliderImageData(this.formData)
             .then(response => {
               let obj = {
                 alert: true,

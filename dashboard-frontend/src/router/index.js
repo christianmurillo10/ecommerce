@@ -5,6 +5,7 @@ import Login from "../views/Login";
 import Dashboard from "../views/dashboard/Index";
 import Users from "../views/users/Index";
 import Roles from "../views/roles/Index";
+import FrontendSliderImages from "../views/frontendSliderImages/Index";
 import ProductBrands from "../views/productBrands/Index";
 import ProductCategories from "../views/productCategories/Index";
 import ProductSubCategories from "../views/productSubCategories/Index";
@@ -17,7 +18,6 @@ import ProductsImage from "../views/products/Image";
 import ProductsOption from "../views/products/Option";
 import ProductFlashDealHeaders from "../views/productFlashDealHeaders/Index";
 import ProductFlashDealDetails from "../views/productFlashDealHeaders/Details";
-import ProductBannerImages from "../views/productBannerImages/Index";
 
 Vue.use(Router);
 
@@ -49,6 +49,11 @@ let router = new Router({
       path: "/roles",
       name: "roles",
       component: Roles
+    },
+    {
+      path: "/frontendSliderImages",
+      name: "frontendSliderImages",
+      component: FrontendSliderImages
     },
     {
       path: "/productBrands",
@@ -109,11 +114,6 @@ let router = new Router({
       path: "/productFlashDeals/details/:headerId",
       name: "productFlashDealDetails",
       component: ProductFlashDealDetails
-    },
-    {
-      path: "/productBannerImages",
-      name: "productBannerImages",
-      component: ProductBannerImages
     },
   ]
 })
