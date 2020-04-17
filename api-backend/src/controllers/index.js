@@ -1,6 +1,7 @@
 const auth = require('./AuthController');
 const roles = require('./RolesController');
 const users = require('./UsersController');
+const frontendSliderImages = require('./FrontendSliderImagesController');
 const inventories = require('./InventoriesController');
 const inventoryHistories = require('./InventoryHistoriesController');
 const productBrands = require('./ProductBrandsController');
@@ -10,7 +11,6 @@ const productSubSubCategories = require('./ProductSubSubCategoriesController');
 const productOptions = require('./ProductOptionsController');
 const products = require('./ProductsController');
 const productImages = require('./ProductImagesController');
-const productBannerImages = require('./ProductBannerImagesController');
 const productFlashDealHeaders = require('./ProductFlashDealHeadersController');
 const productFlashDealDetails = require('./ProductFlashDealDetailsController');
 
@@ -18,6 +18,7 @@ module.exports = {
   auth,
   roles,
   users,
+  frontendSliderImages,
   inventories,
   inventoryHistories,
   productBrands,

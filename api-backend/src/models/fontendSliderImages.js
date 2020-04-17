@@ -1,6 +1,6 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
-  const ProductBannerImages = sequelize.define('ProductBannerImages', {
+  const FontendSliderImages = sequelize.define('FontendSliderImages', {
     'id': {
       type: DataTypes.INTEGER(11),
       allowNull: false,
@@ -9,7 +9,12 @@ module.exports = (sequelize, DataTypes) => {
     },
     'file_name': {
       type: DataTypes.STRING(100),
-      allowNull: false
+      comment: '(850x315)',
+      allowNull: false,
+    },
+    'url': {
+      type: DataTypes.STRING(100),
+      allowNull: true
     },
     'order': {
       type: DataTypes.INTEGER(11),
@@ -34,22 +39,27 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: true,
       defaultValue: sequelize.literal('CURRENT_TIMESTAMP')
     },
+    'is_published': {
+      type: DataTypes.SMALLINT(1),
+      allowNull: false,
+      defaultValue: '1'
+    },
     'is_deleted': {
       type: DataTypes.SMALLINT(1),
       allowNull: false,
       defaultValue: '0'
     }
   }, {
-    tableName: "product_banner_images",
+    tableName: "frontend_slider_images",
     timestamps: false
   });
 
-  ProductBannerImages.associate = (models) => {
-    ProductBannerImages.belongsTo(models.Users, {
+  FontendSliderImages.associate = (models) => {
+    FontendSliderImages.belongsTo(models.Users, {
       foreignKey: 'user_id',
       as: 'users'
     });
   };
 
-  return ProductBannerImages;
+  return FontendSliderImages;
 };

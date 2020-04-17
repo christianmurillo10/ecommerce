@@ -8,7 +8,7 @@ module.exports = {
    * @param req
    * @param res
    * @returns {Promise<void>}
-   * @routes POST /productBannerImage/create
+   * @routes POST /frontendSliderImages/create
    */
   create: async (req, res) => {
     const params = req.body;
@@ -25,6 +25,10 @@ module.exports = {
     params.order = params.order.toLocaleString();
     params.user_id = req.user.id.toLocaleString();
 
+    let extension = path.extname(params.file_name);
+    let fileName = `Frontend-Slider-${params.order}${extension}`;
+    params.file_name = fileName;
+
     try {
       // Validators
       if (_.isEmpty(params.file_name)) return res.json({ status: 200, message: "File Name is required.", result: false });
@@ -32,11 +36,11 @@ module.exports = {
 
       // Pre-setting variables
       criteria = { where: { file_name: params.file_name } };
-      initialValues = _.pick(params, ['file_name', 'order', 'user_id', 'created_at']);
+      initialValues = _.pick(params, ['file_name', 'url', 'order', 'user_id', 'created_at']);
       // Execute findAll query
-      data = await Model.ProductBannerImages.findAll(criteria);
+      data = await Model.FontendSliderImages.findAll(criteria);
       if (_.isEmpty(data[0])) {
-        let finalData = await Model.ProductBannerImages.create(initialValues);
+        let finalData = await Model.FontendSliderImages.create(initialValues);
         // For Upload Images
         if (!_.isUndefined(req.file)) {
           let fileUpload = await uploadImage(params.file_name, req.file);
@@ -64,7 +68,7 @@ module.exports = {
 
   /**
    * Update
-   * @route PUT /productBannerImage/update/:id
+   * @route PUT /frontendSliderImages/update/:id
    * @param req
    * @param res
    * @returns {never}
@@ -80,9 +84,9 @@ module.exports = {
 
     try {
       // Pre-setting variables
-      initialValues = _.pick(params, ['file_name', 'order']);
+      initialValues = _.pick(params, ['url', 'order']);
       // Execute findByPk query
-      data = await Model.ProductBannerImages.findByPk(req.params.id);
+      data = await Model.FontendSliderImages.findByPk(req.params.id);
       if (!_.isEmpty(data)) {
         let finalData = await data.update(initialValues);
         // For Upload Images
@@ -112,7 +116,7 @@ module.exports = {
 
   /**
    * Delete
-   * @route PUT /productBannerImage/delete/:id
+   * @route PUT /frontendSliderImages/delete/:id
    * @param req
    * @param res
    * @returns {never}
@@ -122,7 +126,7 @@ module.exports = {
 
     try {
       // Execute findByPk query
-      data = await Model.ProductBannerImages.findByPk(req.params.id);
+      data = await Model.FontendSliderImages.findByPk(req.params.id);
       if (!_.isEmpty(data)) {
         let finalData = await data.update({ is_deleted: 1 });
         res.json({
@@ -148,7 +152,7 @@ module.exports = {
 
   /**
    * Search
-   * @route POST /productBannerImage/search/:value
+   * @route POST /frontendSliderImages/search/:value
    * @param req
    * @param res
    * @returns {never}
@@ -164,7 +168,7 @@ module.exports = {
 
     try {
       // Pre-setting variables
-      query = `SELECT id, file_name, order, created_at, updated_at FROM product_banner_images WHERE CONCAT(file_name) LIKE ? AND is_deleted = 0;`;
+      query = `SELECT id, file_name, url, order, created_at, updated_at FROM frontend_slider_images WHERE CONCAT(file_name) LIKE ? AND is_deleted = 0;`;
       // Execute native query
       data = await Model.sequelize.query(query, {
         replacements: [`%${params.value}%`],
@@ -194,7 +198,7 @@ module.exports = {
 
   /**
    * Find all
-   * @route GET /productBannerImage
+   * @route GET /frontendSliderImages
    * @param req
    * @param res
    * @returns {never}
@@ -206,7 +210,7 @@ module.exports = {
       // Pre-setting variables
       criteria = { where: { is_deleted: 0 }, include: [{ model: Model.Users, as: 'users' }] };
       // Execute findAll query
-      data = await Model.ProductBannerImages.findAll(criteria);
+      data = await Model.FontendSliderImages.findAll(criteria);
       if (!_.isEmpty(data[0])) {
         res.json({
           status: 200,
@@ -231,7 +235,7 @@ module.exports = {
 
   /**
    * Find by id
-   * @route GET /productBannerImage/:id
+   * @route GET /frontendSliderImages/:id
    * @param req
    * @param res
    * @returns {never}
@@ -241,7 +245,7 @@ module.exports = {
 
     try {
       // Execute findAll query
-      data = await Model.ProductBannerImages.findByPk(req.params.id);
+      data = await Model.FontendSliderImages.findByPk(req.params.id);
       if (!_.isEmpty(data)) {
         res.json({
           status: 200,
@@ -266,13 +270,13 @@ module.exports = {
 
   /**
    * Find by file_name
-   * @route GET /productBannerImage/viewImage/:fileName
+   * @route GET /frontendSliderImages/viewImage/:fileName
    * @param req
    * @param res
    * @returns {never}
    */
   viewImage: (req, res) => {
-    res.sendFile(path.join(__dirname, "../../images/productBanners/" + req.params.fileName));
+    res.sendFile(path.join(__dirname, "../../images/frontendSlider/" + req.params.fileName));
   },
 };
 
@@ -281,7 +285,7 @@ module.exports = {
  */
 const uploadImage = (name, file) => {
   try {
-    fs.writeFile('images/productBanners/' + name, file.buffer, function (err) {
+    fs.writeFile('images/frontendSlider/' + name, file.buffer, function (err) {
       if (err) throw err;
     })
 

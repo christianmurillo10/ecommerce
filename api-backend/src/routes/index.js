@@ -3,6 +3,7 @@ var router = express.Router();
 
 router.use('/roles', require('./roles'));
 router.use('/users', require('./users'));
+router.use('/frontendSliderImages', require('./frontendSliderImages'));
 router.use('/inventories', require('./inventories'));
 router.use('/inventoryHistories', require('./inventoryHistories'));
 router.use('/productBrands', require('./productBrands'));
@@ -14,7 +15,5 @@ router.use('/productImages', require('./productImages'));
 router.use('/productOptions', require('./productOptions'));
 router.use('/productFlashDealHeaders', require('./productFlashDealHeaders'));
 router.use('/productFlashDealDetails', require('./productFlashDealDetails'));
-
-router.use('/productBannerImage', require('./productBannerImages'));
 
 module.exports = router;
