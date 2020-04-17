@@ -14,7 +14,7 @@
     mobile-break-point="991"
     width="270"
   >
-    <v-list>
+    <v-list class="pt-0">
       <v-toolbar flat class="transparent">
         <v-list class="pa-0">
           <v-list-tile avatar>
@@ -111,48 +111,36 @@ export default {
         text: "Products",
         submenus: true,
         childs: [
+          // {
+          //   to: "/productBannerImages",
+          //   text: "Banners"
+          // },
           {
-            to: "/productBannerImages",
-            text: "Banners"
+            to: "/productBrands",
+            text: "Brands"
+          },
+          {
+            to: "/productCategories",
+            text: "Categories"
+          },
+          {
+            to: "/productSubCategories",
+            text: "Sub-Categories"
+          },
+          {
+            to: "/productSubSubCategories",
+            text: "Sub-Sub-Categories"
           },
           {
             to: "/products",
-            text: "Lists"
+            text: "Manage"
           },
-          {
-            to: "/productFlashDeals",
-            text: "Flash Deals"
-          }
         ]
       },
       {
-        icon: "settings_applications",
-        text: "Parameters",
-        submenus: true,
-        childs: [
-          {
-            text: "Products",
-            submenus: true,
-            subChilds: [
-              {
-                to: "/productBrands",
-                text: "Brands"
-              },
-              {
-                to: "/productCategories",
-                text: "Categories"
-              },
-              {
-                to: "/productSubCategories",
-                text: "Sub-Categories"
-              },
-              {
-                to: "/productSubSubCategories",
-                text: "Sub-Sub-Categories"
-              }
-            ]
-          }
-        ]
+        to: "/productFlashDeals",
+        icon: "local_offer",
+        text: "Flash Deals"
       },
       {
         icon: "build",

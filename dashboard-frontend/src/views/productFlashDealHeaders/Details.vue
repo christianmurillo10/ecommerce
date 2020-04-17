@@ -4,7 +4,7 @@
     <v-divider></v-divider>
     <v-card>
       <v-card-title>
-        <v-icon class="black--text">view_list</v-icon><span class="title">Product Flash Deal Details</span>
+        <v-icon class="black--text">view_list</v-icon><span class="title">Flash Deal Details</span>
         <v-spacer></v-spacer>
         <v-dialog v-model="dialog" max-width="500px">
           <template v-slot:activator="{ on: { click } }">

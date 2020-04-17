@@ -118,7 +118,7 @@ export default {
     ...mapGetters("products", ["getProductById", "getProductList"]),
     ...mapGetters("productFlashDealDetails", ["getProductFlashDealDetailById"]),
     formTitle() {
-      return this.formType === "new" ? "Product Flash Deal Details - Create" : "Product Flash Deal Details - Update";
+      return this.formType === "new" ? "Flash Deal Details - Create" : "Flash Deal Details - Update";
     },
     formIcon() {
       return this.formType === "new" ? "add_box" : "edit";

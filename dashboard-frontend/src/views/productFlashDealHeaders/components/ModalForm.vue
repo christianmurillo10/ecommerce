@@ -123,7 +123,7 @@ export default {
   computed: {
     ...mapGetters("productFlashDealHeaders", ["getProductFlashDealHeaderById"]),
     formTitle() {
-      return this.formType === "new" ? "Product Flash Deal - Create" : "Product Flash Deal - Update";
+      return this.formType === "new" ? "Flash Deal - Create" : "Flash Deal - Update";
     },
     formIcon() {
       return this.formType === "new" ? "add_box" : "edit";
