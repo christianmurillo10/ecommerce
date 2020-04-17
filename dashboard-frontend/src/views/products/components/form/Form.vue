@@ -156,12 +156,6 @@
               <v-container grid-list-md>
                 <v-layout wrap>
                   <v-flex xs12 sm12 md12>
-                    <!-- <v-textarea
-                      v-model="formData.description"
-                      auto-grow
-                      label="Description"
-                      rows="10"
-                    ></v-textarea> -->
                     <vue-editor v-model="formData.description" :editorToolbar="customToolbar"></vue-editor>
                   </v-flex>
                 </v-layout>

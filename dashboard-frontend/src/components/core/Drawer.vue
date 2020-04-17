@@ -183,23 +183,23 @@ export default {
             submenus: true,
             subChilds: [
               {
-                to: "/",
+                to: "/frontendPolicyPages/1",
                 text: "Terms & Conditions"
               },
               {
-                to: "/",
+                to: "/frontendPolicyPages/2",
                 text: "Privacy Policy"
               },
               {
-                to: "/",
+                to: "/frontendPolicyPages/3",
                 text: "Support Policy"
               },
               {
-                to: "/",
+                to: "/frontendPolicyPages/4",
                 text: "Return Policy"
               },
               {
-                to: "/",
+                to: "/frontendPolicyPages/5",
                 text: "Seller Policy"
               }
             ]

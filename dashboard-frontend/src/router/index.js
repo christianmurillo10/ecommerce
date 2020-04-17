@@ -5,6 +5,7 @@ import Login from "../views/Login";
 import Dashboard from "../views/dashboard/Index";
 import Users from "../views/users/Index";
 import Roles from "../views/roles/Index";
+import FrontendPolicyPages from "../views/frontendPolicyPages/Index";
 import FrontendSliderImages from "../views/frontendSliderImages/Index";
 import ProductBrands from "../views/productBrands/Index";
 import ProductCategories from "../views/productCategories/Index";
@@ -49,6 +50,11 @@ let router = new Router({
       path: "/roles",
       name: "roles",
       component: Roles
+    },
+    {
+      path: "/frontendPolicyPages/:type",
+      name: "frontendPolicyPages",
+      component: FrontendPolicyPages
     },
     {
       path: "/frontendSliderImages",
