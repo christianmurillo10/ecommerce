@@ -11,6 +11,7 @@
     overflow
     app
     dark
+    class="grey darken-4"
     mobile-break-point="991"
     width="270"
   >
@@ -143,7 +144,72 @@ export default {
         text: "Flash Deals"
       },
       {
-        icon: "build",
+        to: "/customers",
+        icon: "person",
+        text: "Customers"
+      },
+      {
+        icon: "description",
+        text: "Reports",
+        submenus: true,
+        childs: [
+          {
+            to: "/",
+            text: "Stock Report"
+          },
+          {
+            to: "/",
+            text: "Sold Items Report"
+          }
+        ]
+      },
+      {
+        icon: "desktop_mac",
+        text: "Frontend Settings",
+        submenus: true,
+        childs: [
+          {
+            to: "/",
+            text: "Home"
+          },
+          {
+            text: "Policy Pages",
+            submenus: true,
+            subChilds: [
+              {
+                to: "/",
+                text: "Terms & Conditions"
+              },
+              {
+                to: "/",
+                text: "Privacy Policy"
+              },
+              {
+                to: "/",
+                text: "Support Policy"
+              },
+              {
+                to: "/",
+                text: "Return Policy"
+              },
+              {
+                to: "/",
+                text: "Seller Policy"
+              }
+            ]
+          },
+          {
+            to: "/",
+            text: "Useful Links"
+          },
+          {
+            to: "/",
+            text: "General Settings"
+          }
+        ]
+      },
+      {
+        icon: "settings",
         text: "Settings",
         submenus: true,
         childs: [
