@@ -112,7 +112,7 @@ module.exports = {
         params.banner_file_name = data.banner_file_name;
       }
       // Pre-setting variables
-      initialValues = _.pick(params, ['name', 'description', 'icon_file_name', 'banner_file_name']);
+      initialValues = _.pick(params, ['name', 'description', 'icon_file_name', 'banner_file_name', 'is_featured']);
 
       if (!_.isEmpty(data)) {
         let finalData = await data.update(initialValues);
@@ -120,6 +120,51 @@ module.exports = {
         if (!_.isUndefined(req.files)) {
           let fileUpload = await uploadImage(params, req.files);
         }
+        res.json({
+          status: 200,
+          message: "Successfully updated data.",
+          result: finalData
+        });
+      } else {
+        res.json({
+          status: 200,
+          message: "Data doesn't exist.",
+          result: false
+        });
+      }
+    } catch (err) {
+      res.json({
+        status: 401,
+        err: err,
+        message: "Failed updating data."
+      });
+    }
+  },
+
+  /**
+   * Update is featured
+   * @route PUT /productCategories/update/featured/:id
+   * @param req
+   * @param res
+   * @returns {never}
+   */
+  updateIsFeatured: async (req, res) => {
+    const params = req.body;
+    let initialValues, data;
+
+    if (_.isUndefined(params))
+      return res.badRequest({ err: "Invalid Parameter: [params]" });
+    if (_.isEmpty(params))
+      return res.badRequest({ err: "Empty Parameter: [params]" });
+
+    try {
+      // Execute findByPk query
+      data = await Model.ProductCategories.findByPk(req.params.id);
+      // Pre-setting variables
+      initialValues = _.pick(params, ['is_featured']);
+
+      if (!_.isEmpty(data)) {
+        let finalData = await data.update(initialValues);
         res.json({
           status: 200,
           message: "Successfully updated data.",

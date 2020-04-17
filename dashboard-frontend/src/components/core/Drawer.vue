@@ -169,8 +169,14 @@ export default {
         submenus: true,
         childs: [
           {
-            to: "/",
-            text: "Home"
+            text: "Home",
+            submenus: true,
+            subChilds: [
+              {
+                to: "/frontendSliderImages",
+                text: "Slider Images"
+              }
+            ]
           },
           {
             text: "Policy Pages",

@@ -33,6 +33,14 @@
           <template v-slot:items="props">
             <td class="text-xs-left">{{ props.item.name }}</td>
             <td class="text-xs-left">{{ props.item.description }}</td>
+            <td class="text-xs-left">
+              <v-switch
+                v-model="props.item.is_featured"
+                color="success"
+                @change="updateStatus({ id: props.item.id, value: $event })"
+                hide-details
+              ></v-switch>
+            </td>
             <td class="justify-center layout px-0">
               <v-tooltip left>
                 <template v-slot:activator="{ on }">
@@ -92,7 +100,8 @@ export default {
     headers: [
       { text: "Name", value: "name" },
       { text: "Description", value: "description" },
-      { text: "Actions", align: "center", value: "name", sortable: false }
+      { text: "Featured", value: "" },
+      { text: "Actions", align: "center", value: "", sortable: false }
     ]
   }),
 
@@ -114,8 +123,24 @@ export default {
     ...mapActions("alerts", ["setAlert"]),
     ...mapActions("productCategories", {
       getProductCategoryData: "getData",
+      updateProductFlashDealHeaderFeaturedData: "updateFeaturedData",
       deleteProductCategoryData: "deleteData"
     }),
+
+    updateStatus(obj) {
+      this.updateProductFlashDealHeaderFeaturedData(obj)
+        .then(response => {
+          let obj = {
+            alert: true,
+            type: "success",
+            message: response.data.message
+          };
+
+          if (!response.data.result) obj.type = "error";
+          this.setAlert(obj);
+        })
+        .catch(err => console.log(err));
+    },
 
     editItem(id) {
       this.setDialog(true);

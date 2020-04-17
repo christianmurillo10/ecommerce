@@ -123,6 +123,26 @@ const actions = {
       }
     });
   },
+  updateFeaturedData({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
+    let url = `${process.env.VUE_APP_API_BACKEND}/productCategories/update/featured/${payload.id}`;
+    let header = { headers: { Token: localStorage.getItem("token") } };
+    return new Promise((resolve, reject) => {
+      try {
+        let obj = {
+          is_featured: payload.value
+        };
+
+        axios
+          .put(url, obj, header)
+          .then(response => {
+            commit("UPDATE_DATA", response.data.result);
+            resolve(response);
+          });
+      } catch (err) {
+        reject(err);
+      }
+    });
+  },
   deleteData({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
     let url = `${process.env.VUE_APP_API_BACKEND}/productCategories/delete/${payload}`;
     let header = { headers: { Token: localStorage.getItem("token") } };
