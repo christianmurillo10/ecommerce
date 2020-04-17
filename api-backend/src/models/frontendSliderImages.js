@@ -1,6 +1,6 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
-  const FontendSliderImages = sequelize.define('FontendSliderImages', {
+  const FrontendSliderImages = sequelize.define('FrontendSliderImages', {
     'id': {
       type: DataTypes.INTEGER(11),
       allowNull: false,
@@ -54,12 +54,12 @@ module.exports = (sequelize, DataTypes) => {
     timestamps: false
   });
 
-  FontendSliderImages.associate = (models) => {
-    FontendSliderImages.belongsTo(models.Users, {
+  FrontendSliderImages.associate = (models) => {
+    FrontendSliderImages.belongsTo(models.Users, {
       foreignKey: 'user_id',
       as: 'users'
     });
   };
 
-  return FontendSliderImages;
+  return FrontendSliderImages;
 };

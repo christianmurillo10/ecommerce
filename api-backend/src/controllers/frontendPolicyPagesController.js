@@ -1,6 +1,4 @@
 const Model = require('../models');
-const fs = require('fs');
-const path = require('path');
 
 module.exports = {
   /**
@@ -8,7 +6,7 @@ module.exports = {
    * @param req
    * @param res
    * @returns {Promise<void>}
-   * @routes POST /frontendSliderImages/create
+   * @routes POST /frontendPolicyPages/create
    */
   create: async (req, res) => {
     const params = req.body;
@@ -22,29 +20,20 @@ module.exports = {
 
     // Override variables
     params.created_at = moment().utc(8).format('YYYY-MM-DD HH:mm:ss');
-    params.order = params.order.toLocaleString();
-    params.user_id = req.user.id.toLocaleString();
-
-    let extension = path.extname(params.file_name);
-    let fileName = `Frontend-Slider-${params.order}${extension}`;
-    params.file_name = fileName;
+    params.type = params.type.toLocaleString();
 
     try {
       // Validators
-      if (_.isEmpty(params.file_name)) return res.json({ status: 200, message: "File Name is required.", result: false });
-      if (_.isEmpty(params.order)) return res.json({ status: 200, message: "Order required.", result: false });
+      if (_.isEmpty(params.name)) return res.json({ status: 200, message: "Name is required.", result: false });
+      if (_.isEmpty(params.type)) return res.json({ status: 200, message: "Type is required.", result: false });
 
       // Pre-setting variables
-      criteria = { where: { file_name: params.file_name } };
-      initialValues = _.pick(params, ['file_name', 'url', 'order', 'user_id', 'created_at']);
+      criteria = { where: { name: params.name } };
+      initialValues = _.pick(params, ['description', 'created_at', 'type']);
       // Execute findAll query
-      data = await Model.FrontendSliderImages.findAll(criteria);
+      data = await Model.FrontendPolicyPages.findAll(criteria);
       if (_.isEmpty(data[0])) {
-        let finalData = await Model.FrontendSliderImages.create(initialValues);
-        // For Upload Images
-        if (!_.isUndefined(req.file)) {
-          let fileUpload = await uploadImage(params.file_name, req.file);
-        }
+        let finalData = await Model.FrontendPolicyPages.create(initialValues);
         res.json({
           status: 200,
           message: "Successfully created data.",
@@ -68,7 +57,7 @@ module.exports = {
 
   /**
    * Update
-   * @route PUT /frontendSliderImages/update/:id
+   * @route PUT /frontendPolicyPages/update/:id
    * @param req
    * @param res
    * @returns {never}
@@ -84,15 +73,11 @@ module.exports = {
 
     try {
       // Pre-setting variables
-      initialValues = _.pick(params, ['url', 'order']);
+      initialValues = _.pick(params, ['description']);
       // Execute findByPk query
-      data = await Model.FrontendSliderImages.findByPk(req.params.id);
+      data = await Model.FrontendPolicyPages.findByPk(req.params.id);
       if (!_.isEmpty(data)) {
         let finalData = await data.update(initialValues);
-        // For Upload Images
-        if (!_.isUndefined(req.file)) {
-          let fileUpload = await uploadImage(params.file_name, req.file);
-        }
         res.json({
           status: 200,
           message: "Successfully updated data.",
@@ -116,7 +101,7 @@ module.exports = {
 
   /**
    * Delete
-   * @route PUT /frontendSliderImages/delete/:id
+   * @route PUT /frontendPolicyPages/delete/:id
    * @param req
    * @param res
    * @returns {never}
@@ -126,7 +111,7 @@ module.exports = {
 
     try {
       // Execute findByPk query
-      data = await Model.FrontendSliderImages.findByPk(req.params.id);
+      data = await Model.FrontendPolicyPages.findByPk(req.params.id);
       if (!_.isEmpty(data)) {
         let finalData = await data.update({ is_deleted: 1 });
         res.json({
@@ -152,7 +137,7 @@ module.exports = {
 
   /**
    * Search
-   * @route POST /frontendSliderImages/search/:value
+   * @route POST /frontendPolicyPages/search/:value
    * @param req
    * @param res
    * @returns {never}
@@ -168,7 +153,7 @@ module.exports = {
 
     try {
       // Pre-setting variables
-      query = `SELECT id, file_name, url, order, created_at, updated_at FROM frontend_slider_images WHERE CONCAT(file_name) LIKE ? AND is_deleted = 0;`;
+      query = `SELECT id, description, created_at, updated_at, type FROM frontend_policy_pages WHERE CONCAT(description) LIKE ? AND is_deleted = 0;`;
       // Execute native query
       data = await Model.sequelize.query(query, {
         replacements: [`%${params.value}%`],
@@ -198,7 +183,7 @@ module.exports = {
 
   /**
    * Find all
-   * @route GET /frontendSliderImages
+   * @route GET /frontendPolicyPages
    * @param req
    * @param res
    * @returns {never}
@@ -208,9 +193,9 @@ module.exports = {
 
     try {
       // Pre-setting variables
-      criteria = { where: { is_deleted: 0 }, include: [{ model: Model.Users, as: 'users' }] };
+      criteria = { where: { is_deleted: 0 } };
       // Execute findAll query
-      data = await Model.FrontendSliderImages.findAll(criteria);
+      data = await Model.FrontendPolicyPages.findAll(criteria);
       if (!_.isEmpty(data[0])) {
         res.json({
           status: 200,
@@ -235,7 +220,7 @@ module.exports = {
 
   /**
    * Find by id
-   * @route GET /frontendSliderImages/:id
+   * @route GET /frontendPolicyPages/:id
    * @param req
    * @param res
    * @returns {never}
@@ -245,7 +230,7 @@ module.exports = {
 
     try {
       // Execute findAll query
-      data = await Model.FrontendSliderImages.findByPk(req.params.id);
+      data = await Model.FrontendPolicyPages.findByPk(req.params.id);
       if (!_.isEmpty(data)) {
         res.json({
           status: 200,
@@ -267,31 +252,4 @@ module.exports = {
       });
     }
   },
-
-  /**
-   * Find by file_name
-   * @route GET /frontendSliderImages/viewImage/:fileName
-   * @param req
-   * @param res
-   * @returns {never}
-   */
-  viewImage: (req, res) => {
-    res.sendFile(path.join(__dirname, "../../images/frontendSlider/" + req.params.fileName));
-  },
 };
-
-/**
- * Other Functions
- */
-const uploadImage = (name, file) => {
-  try {
-    fs.writeFile('images/frontendSlider/' + name, file.buffer, function (err) {
-      if (err) throw err;
-    })
-
-    return true;
-  } catch (err) {
-    console.log(err);
-    return false;
-  }
-}
