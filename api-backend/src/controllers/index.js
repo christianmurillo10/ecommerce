@@ -28,7 +28,6 @@ module.exports = {
   productOptions,
   products,
   productImages,
-  productBannerImages,
   productFlashDealHeaders,
   productFlashDealDetails
 }
