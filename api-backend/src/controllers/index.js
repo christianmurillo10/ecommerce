@@ -3,6 +3,7 @@ const roles = require('./RolesController');
 const users = require('./UsersController');
 const frontendPolicyPages = require('./frontendPolicyPagesController');
 const frontendSliderImages = require('./FrontendSliderImagesController');
+const frontendUsefulLinks = require('./FrontendUsefulLinksController');
 const inventories = require('./InventoriesController');
 const inventoryHistories = require('./InventoryHistoriesController');
 const productBrands = require('./ProductBrandsController');
@@ -21,6 +22,7 @@ module.exports = {
   users,
   frontendPolicyPages,
   frontendSliderImages,
+  frontendUsefulLinks,
   inventories,
   inventoryHistories,
   productBrands,
