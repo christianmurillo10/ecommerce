@@ -9,9 +9,15 @@
       <v-form ref="form" @submit.prevent="save" v-model="valid" lazy-validation>
         <v-card-text>
           <v-flex xs12 sm12 md12>
-            <vue-editor v-model="description" :editorToolbar="customToolbar"></vue-editor>
+            <vue-editor v-model="formData.description" :editorToolbar="customToolbar"></vue-editor>
           </v-flex>
         </v-card-text>
+        <v-divider></v-divider>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="blue darken-1" flat @click="setFormType">Reset</v-btn>
+          <v-btn color="blue darken-1" type="submit" flat :disabled="!valid">Save</v-btn>
+        </v-card-actions>
       </v-form>
     </v-card>
   </v-container>
@@ -38,11 +44,18 @@ export default {
       [{ 'color': [] }, { 'background': [] }],
       ['clean'],
     ],
-    description: "",
+    formType: "new",
+    formData: {
+      id: null,
+      description: "",
+      type: null
+    },
     valid: true,
   }),
 
-  mounted() {},
+  mounted() {
+    this.setFormType();
+  },
 
   computed: {
     formTitle() {
@@ -70,6 +83,75 @@ export default {
     },
   },
 
-  methods: {},
+  watch: {
+    "$route.params.type": function() {
+      this.setFormType();
+    },
+  },
+
+  methods: {
+    ...mapActions("alerts", ["setAlert"]),
+    ...mapActions("frontendPolicyPages", {
+      getFrontendPolicyPageDataByType: "getDataByType",
+      saveFrontendPolicyPageData: "saveData",
+      updateFrontendPolicyPageData: "updateData"
+    }),
+
+    setFormType() {
+      let type = this.$route.params.type;
+      this.getFrontendPolicyPageDataByType(type)
+        .then(response => {
+          this.formData.type = type;
+          if (!_.isEmpty(response.data.result)) {
+            this.formType = "update";
+            this.formData.id = response.data.result.id;
+            this.formData.description = response.data.result.description;
+          } else {
+            this.formType = "new";
+            this.formData.id = null;
+            this.formData.description = "";
+          }
+        });
+    },
+
+    save() {
+      if (this.$refs.form.validate()) {
+        if (this.formData.description !== "") {
+          if (this.formType === "new") {
+            this.saveFrontendPolicyPageData(this.formData)
+              .then(response => {
+                let obj = {
+                  alert: true,
+                  type: "success",
+                  message: response.data.message
+                };
+                
+                if (!response.data.result) {
+                  obj.type = "error"
+                } else  {
+                  this.formType = "update";
+                  this.formData.id = response.data.result.id;
+                }
+                this.setAlert(obj);
+              })
+              .catch(err => console.log(err));
+          } else if (this.formType === "update") {
+            this.updateFrontendPolicyPageData(this.formData)
+              .then(response => {
+                let obj = {
+                  alert: true,
+                  type: "success",
+                  message: response.data.message
+                };
+                
+                if (!response.data.result) obj.type = "error"
+                this.setAlert(obj);
+              })
+              .catch(err => console.log(err));
+          }
+        }
+      }
+    },
+  },
 };
 </script>

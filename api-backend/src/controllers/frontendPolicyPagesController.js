@@ -24,11 +24,11 @@ module.exports = {
 
     try {
       // Validators
-      if (_.isEmpty(params.name)) return res.json({ status: 200, message: "Name is required.", result: false });
+      if (_.isEmpty(params.description)) return res.json({ status: 200, message: "Description is required.", result: false });
       if (_.isEmpty(params.type)) return res.json({ status: 200, message: "Type is required.", result: false });
 
       // Pre-setting variables
-      criteria = { where: { name: params.name } };
+      criteria = { where: { type: params.type } };
       initialValues = _.pick(params, ['description', 'created_at', 'type']);
       // Execute findAll query
       data = await Model.FrontendPolicyPages.findAll(criteria);
