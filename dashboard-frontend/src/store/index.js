@@ -10,6 +10,7 @@ import users from './modules/users'
 import roles from './modules/roles'
 import frontendPolicyPages from './modules/frontendPolicyPages'
 import frontendSliderImages from './modules/frontendSliderImages'
+import frontendUsefulLinks from './modules/frontendUsefulLinks'
 import productBrands from './modules/productBrands'
 import productCategories from './modules/productCategories'
 import productSubCategories from './modules/productSubCategories'
@@ -37,6 +38,7 @@ export default new Vuex.Store({
     roles,
     frontendPolicyPages,
     frontendSliderImages,
+    frontendUsefulLinks,
     productBrands,
     productCategories,
     productSubCategories,

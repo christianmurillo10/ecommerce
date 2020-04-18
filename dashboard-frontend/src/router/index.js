@@ -7,6 +7,7 @@ import Users from "../views/users/Index";
 import Roles from "../views/roles/Index";
 import FrontendPolicyPages from "../views/frontendPolicyPages/Index";
 import FrontendSliderImages from "../views/frontendSliderImages/Index";
+import FrontendUsefulLinks from "../views/frontendUsefulLinks/Index";
 import ProductBrands from "../views/productBrands/Index";
 import ProductCategories from "../views/productCategories/Index";
 import ProductSubCategories from "../views/productSubCategories/Index";
@@ -60,6 +61,11 @@ let router = new Router({
       path: "/frontendSliderImages",
       name: "frontendSliderImages",
       component: FrontendSliderImages
+    },
+    {
+      path: "/frontendUsefulLinks",
+      name: "frontendUsefulLinks",
+      component: FrontendUsefulLinks
     },
     {
       path: "/productBrands",

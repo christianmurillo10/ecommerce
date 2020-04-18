@@ -28,7 +28,7 @@ module.exports = {
 
       // Pre-setting variables
       criteria = { where: { name: params.name } };
-      initialValues = _.pick(params, ['name', 'Url', 'created_at']);
+      initialValues = _.pick(params, ['name', 'url', 'created_at']);
       // Execute findAll query
       data = await Model.FrontendUsefulLinks.findAll(criteria);
       if (_.isEmpty(data[0])) {

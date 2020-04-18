@@ -205,13 +205,13 @@ export default {
             ]
           },
           {
-            to: "/",
+            to: "/frontendUsefulLinks",
             text: "Useful Links"
           },
-          {
-            to: "/",
-            text: "General Settings"
-          }
+          // {
+          //   to: "/",
+          //   text: "General Settings"
+          // }
         ]
       },
       {
