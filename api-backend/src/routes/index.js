@@ -3,6 +3,7 @@ var router = express.Router();
 
 router.use('/roles', require('./roles'));
 router.use('/users', require('./users'));
+router.use('/customers', require('./customers'));
 router.use('/frontendPolicyPages', require('./frontendPolicyPages'));
 router.use('/frontendSliderImages', require('./frontendSliderImages'));
 router.use('/frontendUsefulLinks', require('./frontendUsefulLinks'));

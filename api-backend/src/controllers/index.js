@@ -1,6 +1,7 @@
 const auth = require('./AuthController');
 const roles = require('./RolesController');
 const users = require('./UsersController');
+const customers = require('./CustomersController');
 const frontendPolicyPages = require('./frontendPolicyPagesController');
 const frontendSliderImages = require('./FrontendSliderImagesController');
 const frontendUsefulLinks = require('./FrontendUsefulLinksController');
@@ -20,6 +21,7 @@ module.exports = {
   auth,
   roles,
   users,
+  customers,
   frontendPolicyPages,
   frontendSliderImages,
   frontendUsefulLinks,

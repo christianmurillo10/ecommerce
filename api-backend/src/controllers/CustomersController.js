@@ -8,7 +8,7 @@ module.exports = {
    * @param req
    * @param res
    * @returns {Promise<void>}
-   * @routes POST /frontendSliderImages/create
+   * @routes POST /customers/create
    */
   create: async (req, res) => {
     const params = req.body;
@@ -22,25 +22,47 @@ module.exports = {
 
     // Override variables
     params.created_at = moment().utc(8).format('YYYY-MM-DD HH:mm:ss');
-    params.order = params.order.toLocaleString();
-    params.user_id = req.user.id.toLocaleString();
+    params.gender_type = params.gender_type === null ? null : params.gender_type.toLocaleString();
+    params.status = params.status.toLocaleString();
 
-    let extension = path.extname(params.file_name);
-    let fileName = `Frontend-Slider-${params.order}${extension}`;
-    params.file_name = fileName;
+    if (!_.isUndefined(req.file)) {
+      let extension = path.extname(params.file_name);
+      let fileName = `${params.email}${extension}`;
+      params.file_name = fileName;
+    }
 
     try {
       // Validators
-      if (_.isEmpty(params.file_name)) return res.json({ status: 200, message: "File Name is required.", result: false });
-      if (_.isEmpty(params.order)) return res.json({ status: 200, message: "Order required.", result: false });
+      if (_.isEmpty(params.customer_no)) return res.json({ status: 200, message: "Customer No. is required.", result: false });
+      if (_.isEmpty(params.firstname)) return res.json({ status: 200, message: "Firstname required.", result: false });
+      if (_.isEmpty(params.lastname)) return res.json({ status: 200, message: "Lastname required.", result: false });
+      if (_.isEmpty(params.email)) return res.json({ status: 200, message: "Email required.", result: false });
+      if (_.isEmpty(params.password)) return res.json({ status: 200, message: "Password required.", result: false });
+      if (_.isEmpty(params.primary_address)) return res.json({ status: 200, message: "Primary Address required.", result: false });
+      if (_.isEmpty(params.contact_no)) return res.json({ status: 200, message: "Contact No. required.", result: false });
 
       // Pre-setting variables
-      criteria = { where: { file_name: params.file_name } };
-      initialValues = _.pick(params, ['file_name', 'url', 'order', 'user_id', 'created_at']);
+      criteria = { where: { email: params.email } };
+      initialValues = _.pick(params, [
+        'customer_no', 
+        'firstname', 
+        'middlename', 
+        'lastname', 
+        'email', 
+        'password', 
+        'primary_address', 
+        'secondary_address', 
+        'contact_no', 
+        'file_name', 
+        'date_approved', 
+        'gender_type', 
+        'status', 
+        'created_at'
+      ]);
       // Execute findAll query
-      data = await Model.FrontendSliderImages.findAll(criteria);
+      data = await Model.Customers.findAll(criteria);
       if (_.isEmpty(data[0])) {
-        let finalData = await Model.FrontendSliderImages.create(initialValues);
+        let finalData = await Model.Customers.create(initialValues);
         // For Upload Images
         if (!_.isUndefined(req.file)) {
           let fileUpload = await uploadImage(params.file_name, req.file);
@@ -68,7 +90,7 @@ module.exports = {
 
   /**
    * Update
-   * @route PUT /frontendSliderImages/update/:id
+   * @route PUT /customers/update/:id
    * @param req
    * @param res
    * @returns {never}
@@ -82,11 +104,32 @@ module.exports = {
     if (_.isEmpty(params))
       return res.badRequest({ err: "Empty Parameter: [params]" });
 
+    // Override variables
+    if (!_.isUndefined(req.file)) {
+      let extension = path.extname(params.file_name);
+      let fileName = `${params.email}${extension}`;
+      params.file_name = fileName;
+    }
+
     try {
       // Pre-setting variables
-      initialValues = _.pick(params, ['url', 'order']);
+      initialValues = _.pick(params, [
+        'customer_no', 
+        'firstname', 
+        'middlename', 
+        'lastname', 
+        'email', 
+        'password', 
+        'primary_address', 
+        'secondary_address', 
+        'contact_no', 
+        'file_name', 
+        'date_approved', 
+        'gender_type', 
+        'status'
+      ]);
       // Execute findByPk query
-      data = await Model.FrontendSliderImages.findByPk(req.params.id);
+      data = await Model.Customers.findByPk(req.params.id);
       if (!_.isEmpty(data)) {
         let finalData = await data.update(initialValues);
         // For Upload Images
@@ -116,7 +159,7 @@ module.exports = {
 
   /**
    * Delete
-   * @route PUT /frontendSliderImages/delete/:id
+   * @route PUT /customers/delete/:id
    * @param req
    * @param res
    * @returns {never}
@@ -126,7 +169,7 @@ module.exports = {
 
     try {
       // Execute findByPk query
-      data = await Model.FrontendSliderImages.findByPk(req.params.id);
+      data = await Model.Customers.findByPk(req.params.id);
       if (!_.isEmpty(data)) {
         let finalData = await data.update({ is_deleted: 1 });
         res.json({
@@ -152,7 +195,7 @@ module.exports = {
 
   /**
    * Search
-   * @route POST /frontendSliderImages/search/:value
+   * @route POST /customers/search/:value
    * @param req
    * @param res
    * @returns {never}
@@ -168,7 +211,7 @@ module.exports = {
 
     try {
       // Pre-setting variables
-      query = `SELECT id, file_name, url, order, created_at, updated_at FROM frontend_slider_images WHERE CONCAT(file_name) LIKE ? AND is_deleted = 0;`;
+      query = `SELECT * FROM customers WHERE CONCAT(customer_no) LIKE ? AND is_deleted = 0;`;
       // Execute native query
       data = await Model.sequelize.query(query, {
         replacements: [`%${params.value}%`],
@@ -198,7 +241,7 @@ module.exports = {
 
   /**
    * Find all
-   * @route GET /frontendSliderImages
+   * @route GET /customers
    * @param req
    * @param res
    * @returns {never}
@@ -208,9 +251,9 @@ module.exports = {
 
     try {
       // Pre-setting variables
-      criteria = { where: { is_deleted: 0 }, include: [{ model: Model.Users, as: 'users' }] };
+      criteria = { where: { is_deleted: 0 } };
       // Execute findAll query
-      data = await Model.FrontendSliderImages.findAll(criteria);
+      data = await Model.Customers.findAll(criteria);
       if (!_.isEmpty(data[0])) {
         res.json({
           status: 200,
@@ -235,7 +278,7 @@ module.exports = {
 
   /**
    * Find by id
-   * @route GET /frontendSliderImages/:id
+   * @route GET /customers/:id
    * @param req
    * @param res
    * @returns {never}
@@ -245,7 +288,7 @@ module.exports = {
 
     try {
       // Execute findAll query
-      data = await Model.FrontendSliderImages.findByPk(req.params.id);
+      data = await Model.Customers.findByPk(req.params.id);
       if (!_.isEmpty(data)) {
         res.json({
           status: 200,
@@ -270,13 +313,13 @@ module.exports = {
 
   /**
    * Find by file_name
-   * @route GET /frontendSliderImages/viewImage/:fileName
+   * @route GET /customers/viewImage/:fileName
    * @param req
    * @param res
    * @returns {never}
    */
   viewImage: (req, res) => {
-    res.sendFile(path.join(__dirname, "../../images/frontendSliders/" + req.params.fileName));
+    res.sendFile(path.join(__dirname, "../../images/frontendSlider/" + req.params.fileName));
   },
 };
 
@@ -285,7 +328,7 @@ module.exports = {
  */
 const uploadImage = (name, file) => {
   try {
-    fs.writeFile('images/frontendSliders/' + name, file.buffer, function (err) {
+    fs.writeFile('images/frontendSlider/' + name, file.buffer, function (err) {
       if (err) throw err;
     })
 
