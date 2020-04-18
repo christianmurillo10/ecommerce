@@ -4,7 +4,7 @@
     <v-card>
       <v-card-title>
         <v-icon class="black--text">list_alt</v-icon>
-        <span class="title">{{ formTitle }}</span>
+        <span class="title">{{ title }}</span>
       </v-card-title>
       <v-form ref="form" @submit.prevent="save" v-model="valid" lazy-validation>
         <v-card-text>
@@ -44,6 +44,7 @@ export default {
       [{ 'color': [] }, { 'background': [] }],
       ['clean'],
     ],
+    title: "",
     formType: "new",
     formData: {
       id: null,
@@ -54,37 +55,15 @@ export default {
   }),
 
   mounted() {
+    this.setTypeValue();
     this.setFormType();
   },
 
-  computed: {
-    formTitle() {
-      let title = "";
-      let type = this.$route.params.type;
-
-      switch(type) {
-        case "1":
-          title = "Terms and Conditions";
-          break;
-        case "2":
-          title = "Privacy Policy";
-          break;
-        case "3":
-          title = "Support Policy";
-          break;
-        case "4":
-          title = "Return Policy";
-          break;
-        case "5":
-          title = "Seller Policy";
-          break;
-      }
-      return title;
-    },
-  },
+  computed: { },
 
   watch: {
     "$route.params.type": function() {
+      this.setTypeValue();
       this.setFormType();
     },
   },
@@ -97,11 +76,36 @@ export default {
       updateFrontendPolicyPageData: "updateData"
     }),
 
-    setFormType() {
+    setTypeValue() {
       let type = this.$route.params.type;
-      this.getFrontendPolicyPageDataByType(type)
+
+      switch(type) {
+        case "terms":
+          this.formData.type = "1";
+          this.title = "Terms and Conditions";
+          break;
+        case "privacy":
+          this.formData.type = "2";
+          this.title = "Privacy Policy";
+          break;
+        case "support":
+          this.formData.type = "3";
+          this.title = "Support Policy";
+          break;
+        case "return":
+          this.formData.type = "4";
+          this.title = "Return Policy";
+          break;
+        case "seller":
+          this.formData.type = "5";
+          this.title = "Seller Policy";
+          break;
+      }
+    },
+
+    setFormType() {
+      this.getFrontendPolicyPageDataByType(this.formData.type)
         .then(response => {
-          this.formData.type = type;
           if (!_.isEmpty(response.data.result)) {
             this.formType = "update";
             this.formData.id = response.data.result.id;
