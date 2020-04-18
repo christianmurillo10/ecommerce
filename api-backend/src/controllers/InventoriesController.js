@@ -402,7 +402,7 @@ module.exports = {
   },
 
   /**
-   * Find all by product id
+   * Find available stock by product id
    * @route GET /inventories/findAvailableStockByProductId/:productId
    * @param req
    * @param res

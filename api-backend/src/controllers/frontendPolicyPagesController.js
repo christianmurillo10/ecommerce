@@ -219,6 +219,44 @@ module.exports = {
   },
 
   /**
+   * Find one by type
+   * @route GET /frontendPolicyPages/findOneByType/:type
+   * @param req
+   * @param res
+   * @returns {never}
+   */
+  findOneByType: async (req, res) => {
+    const params = req.params;
+    let data, criteria;
+
+    try {
+      // Pre-setting variables
+      criteria = { where: { type: params.type, is_deleted: 0 } };
+      // Execute findAll query
+      data = await Model.FrontendPolicyPages.findOne(criteria);
+      if (!_.isEmpty(data)) {
+        res.json({
+          status: 200,
+          message: "Successfully find all data.",
+          result: data.get({ plain: true })
+        });
+      } else {
+        res.json({
+          status: 200,
+          message: "No Data Found.",
+          result: false
+        });
+      }
+    } catch (err) {
+      res.json({
+        status: 401,
+        err: err,
+        message: "Failed to find all data."
+      });
+    }
+  },
+
+  /**
    * Find by id
    * @route GET /frontendPolicyPages/:id
    * @param req

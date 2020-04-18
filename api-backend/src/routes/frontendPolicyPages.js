@@ -4,6 +4,7 @@ const authController = require('../controllers').auth;
 const frontendPolicyPages = require('../controllers').frontendPolicyPages;
 
 router.route('/').get(authController.authorization, frontendPolicyPages.findAll);
+router.route('/findOneByType/:type').get(authController.authorization, frontendPolicyPages.findOneByType);
 router.route('/create').post(authController.authorization, frontendPolicyPages.create);
 router.route('/update/:id').put(authController.authorization, frontendPolicyPages.update);
 router.route('/delete/:id').put(authController.authorization, frontendPolicyPages.delete);
