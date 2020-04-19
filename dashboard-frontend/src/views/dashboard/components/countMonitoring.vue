@@ -26,7 +26,7 @@
             <div>
               <div class="text-xs-center"><v-icon large class="text-xs-center red--text text--accent-3">people</v-icon></div>
               <h4 class="body-2 text-xs-center">Total Customers</h4>
-              <p class="headline font-weight-bold text-xs-center">0</p>
+              <p class="headline font-weight-bold text-xs-center">{{ customerTotalCountByStatusAndIsActive }}</p>
             </div>
           </v-card-title>
         </v-card>
@@ -59,14 +59,20 @@ export default {
 
   mounted() {
     this.getProductTotalCount();
+    this.getCustomerTotalCountByStatusAndIsActive({
+      status: 1,
+      is_active: 1
+    });
   },
 
   computed: {
-    ...mapState("products", ["productTotalCount"])
+    ...mapState("products", ["productTotalCount"]),
+    ...mapState("customers", ["customerTotalCountByStatusAndIsActive"])
   },
 
   methods: {
-    ...mapActions("products", { getProductTotalCount: "getTotalCount" })
+    ...mapActions("products", { getProductTotalCount: "getTotalCount" }),
+    ...mapActions("customers", { getCustomerTotalCountByStatusAndIsActive: "getTotalCountByStatusAndIsActive" })
   }
 }
 </script>

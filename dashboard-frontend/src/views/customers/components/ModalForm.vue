@@ -63,7 +63,7 @@
                 required
               ></v-text-field>
             </v-flex>
-            <v-flex xs12 sm12 md12>
+            <v-flex xs12 sm12 md12 v-if="formType === 'new'">
               <v-text-field
                 v-model="formData.password"
                 :rules="[rules.required, rules.max50Chars]"

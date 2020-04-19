@@ -2,7 +2,8 @@ import axios from "axios";
 import FormData from 'form-data';
 
 const state = {
-  customerList: []
+  customerList: [],
+  customerTotalCountByStatusAndIsActive: 0
 };
 
 const getters = {
@@ -40,14 +41,14 @@ const actions = {
       }
     });
   },
-  getDataById({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/customers/${payload}`;
+  getTotalCountByStatusAndIsActive({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
+    let url = `${process.env.VUE_APP_API_BACKEND}/customers/countAllByStatusAndIsActive/${payload.status}/${payload.is_active}`;
     let header = { headers: { Token: localStorage.getItem("token") } };
     return new Promise((resolve, reject) => {
       try {
-        axios
-          .get(url, header)
+        axios.get(url, header)
           .then(response => {
+            commit("SET_TOTAL_COUNT_BY_STATUS_AND_IS_ACTIVE", response.data.result);
             resolve(response);
           });
       } catch (err) {
@@ -145,6 +146,13 @@ const mutations = {
       state.customerList = payload;
     } else {
       state.customerList = [];
+    }
+  },
+  SET_TOTAL_COUNT_BY_STATUS_AND_IS_ACTIVE(state, payload) {
+    if (payload) {
+      state.customerTotalCountByStatusAndIsActive = payload;
+    } else {
+      state.customerTotalCountByStatusAndIsActive = 0;
     }
   },
   ADD_DATA(state, payload) {
