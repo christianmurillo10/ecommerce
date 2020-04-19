@@ -14,7 +14,7 @@
                 item-value="id"
                 v-model="formData.product_id"
                 label="Product"
-                :rules="validateItem.productRules"
+                :rules="[rules.required]"
                 v-on:change="setPriceAmount()"
                 :readonly="formType === 'update' ? true : false"
                 required
@@ -23,7 +23,6 @@
             <v-flex xs12 sm12 md12>
               <v-text-field
                 v-model="formData.base_price_amount"
-                :rules="validateItem.basePriceAmountRules"
                 label="Base Price Amount"
                 readonly
                 required
@@ -34,7 +33,7 @@
                 v-model="formData.discount_value"
                 label="Discount Value"
                 type="number"
-                :disabled="formData.product_id === null ? true : false"
+                :disabled="formData.product_id === '' ? true : false"
                 v-on:input="computeCurrentPriceAmount()"
               ></v-text-field>
             </v-flex>
@@ -45,14 +44,13 @@
                 item-value="id"
                 v-model="formData.discount_type"
                 label="Type"
-                :disabled="formData.product_id === null ? true : false"
+                :disabled="formData.product_id === '' ? true : false"
                 v-on:change="computeCurrentPriceAmount()"
               ></v-autocomplete>
             </v-flex>
             <v-flex xs12 sm12 md12>
               <v-text-field
                 v-model="formData.current_price_amount"
-                :rules="validateItem.currentPriceAmountRules"
                 label="Current Price Amount"
                 readonly
                 required
@@ -86,32 +84,21 @@ export default {
 
   data: () => ({
     defaultFormData: {
-      discount_value: null,
+      discount_value: "",
       base_price_amount: "0.00",
       current_price_amount: "0.00",
-      product_id: null,
-      discount_type: null
+      product_id: "",
+      discount_type: ""
     },
     formType: "new",
     formData: {
-      discount_value: null,
+      discount_value: "",
       base_price_amount: "0.00",
       current_price_amount: "0.00",
-      product_id: null,
-      discount_type: null
+      product_id: "",
+      discount_type: ""
     },
-    valid: true,
-    validateItem: {
-      basePriceAmountRules: [
-        v => !!v || "Base Price is required",
-      ],
-      currentPriceAmountRules: [
-        v => !!v || "Current Price is required",
-      ],
-      productRules: [
-        v => !!v || "Product is required",
-      ]
-    }
+    valid: true
   }),
 
   computed: {

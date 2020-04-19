@@ -10,7 +10,7 @@
             <v-flex xs12 sm12 md12>
               <v-text-field
                 v-model="formData.name"
-                :rules="validateItem.nameRules"
+                :rules="[rules.required, rules.max50Chars]"
                 label="Name"
                 required
               ></v-text-field>
@@ -18,7 +18,7 @@
             <v-flex xs12 sm12 md12>
               <v-textarea
                 v-model="formData.description"
-                :rules="validateItem.descriptionRules"
+                :rules="[rules.max500Chars]"
                 label="Description"
               ></v-textarea>
             </v-flex>
@@ -73,16 +73,18 @@
 
 <script>
 import Index from "../Index";
+import Mixins from "@/helpers/Mixins.js";
 import { mapGetters, mapActions } from "vuex";
 
 export default {
+  mixins: [Mixins],
   components: {
     Index
   },
 
   data: () => ({
     defaultFormData: {
-      name: null,
+      name: "",
       description: "",
       icon_file: null,
       icon_file_path: require("@/assets/images/no-image.png"),
@@ -93,7 +95,7 @@ export default {
     },
     formType: "new",
     formData: {
-      name: null,
+      name: "",
       description: "",
       icon_file: null,
       icon_file_path: require("@/assets/images/no-image.png"),
@@ -102,16 +104,7 @@ export default {
       banner_file_path: require("@/assets/images/no-image.png"),
       banner_file_name: null
     },
-    valid: true,
-    validateItem: {
-      nameRules: [
-        v => !!v || "Name is required",
-        v => (v && v.length <= 50) || "Name must be less than 50 characters"
-      ],
-      descriptionRules: [
-        v => (v && v.length <= 500) || "Description must be less than 500 characters"
-      ]
-    }
+    valid: true
   }),
 
   computed: {

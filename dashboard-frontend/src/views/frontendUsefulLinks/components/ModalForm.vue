@@ -10,7 +10,7 @@
             <v-flex xs12 sm12 md12>
               <v-text-field
                 v-model="formData.name"
-                :rules="validateItem.nameRules"
+                :rules="[rules.required, rules.max50Chars]"
                 label="Name"
                 required
               ></v-text-field>
@@ -18,7 +18,7 @@
             <v-flex xs12 sm12 md12>
               <v-text-field
                 v-model="formData.url"
-                :rules="validateItem.urlRules"
+                :rules="[rules.required, rules.max255Chars]"
                 label="Url"
                 required
               ></v-text-field>
@@ -40,34 +40,26 @@
 
 <script>
 import Index from "../Index";
+import Mixins from "@/helpers/Mixins.js";
 import { mapGetters, mapActions } from "vuex";
 
 export default {
+  mixins: [Mixins],
   components: {
     Index
   },
 
   data: () => ({
     defaultFormData: {
-      name: null,
-      url: null
+      name: "",
+      url: ""
     },
     formType: "new",
     formData: {
-      name: null,
-      url: null
+      name: "",
+      url: ""
     },
-    valid: true,
-    validateItem: {
-      nameRules: [
-        v => !!v || "Name is required",
-        v => (v && v.length <= 50) || "Name must be less than 50 characters"
-      ],
-      descriptionRules: [
-        v => !!v || "Url is required",
-        v => (v && v.length <= 255) || "Url must be less than 255 characters"
-      ]
-    }
+    valid: true
   }),
 
   computed: {

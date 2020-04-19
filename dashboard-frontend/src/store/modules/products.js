@@ -131,7 +131,6 @@ const actions = {
           description: payload.description,
           unit: payload.unit,
           tags: payload.tags,
-          stock: payload.stock,
           price_amount: payload.price_amount,
           vat_value: payload.vat_value,
           discount_value: payload.discount_value,

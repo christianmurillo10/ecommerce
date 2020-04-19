@@ -10,7 +10,7 @@
             <v-flex xs12 sm12 md12>
               <v-text-field
                 v-model="formData.username"
-                :rules="validateItem.usernameRules"
+                :rules="[rules.required, rules.max50Chars]"
                 label="Username"
                 required
               ></v-text-field>
@@ -20,7 +20,7 @@
                 v-model="formData.password"
                 :append-icon="showPassword ? 'visibility' : 'visibility_off'"
                 :type="showPassword ? 'text' : 'password'"
-                :rules="validateItem.passwordRules"
+                :rules="[rules.required, rules.max50Chars]"
                 label="Password"
                 @click:append="showPassword = !showPassword"
                 required
@@ -29,7 +29,7 @@
             <v-flex xs12 sm12 md12>
               <v-text-field
                 v-model="formData.email"
-                :rules="validateItem.emailRules"
+                :rules="[rules.required, rules.email]"
                 label="Email"
                 required
               ></v-text-field>
@@ -40,7 +40,7 @@
                 item-text="name"
                 item-value="id"
                 v-model="formData.role_id"
-                :rules="validateItem.roleRules"
+                :rules="[rules.required]"
                 label="Role"
                 required
               ></v-select>
@@ -62,43 +62,30 @@
 
 <script>
 import Index from "../Index";
+import Mixins from "@/helpers/Mixins.js";
 import { mapState, mapGetters, mapActions } from "vuex";
 
 export default {
+  mixins: [Mixins],
   components: {
     Index
   },
 
   data: () => ({
     defaultFormData: {
-      username: null,
-      password: null,
-      email: null,
-      role_id: null
+      username: "",
+      password: "",
+      email: "",
+      role_id: ""
     },
     formType: "new",
     formData: {
-      username: null,
-      password: null,
-      email: null,
-      role_id: null
+      username: "",
+      password: "",
+      email: "",
+      role_id: ""
     },
     valid: true,
-    validateItem: {
-      usernameRules: [
-        v => !!v || "Username is required",
-        v => (v && v.length <= 50) || "Username must be less than 50 characters"
-      ],
-      passwordRules: [
-        v => !!v || "Password is required",
-        v => (v && v.length <= 50) || "Password must be less than 50 characters"
-      ],
-      emailRules: [
-        v => !!v || "Email is required",
-        v => /.+@.+/.test(v) || "Email must be valid"
-      ],
-      roleRules: [v => !!v || "Role is required"]
-    },
     showPassword: false
   }),
 

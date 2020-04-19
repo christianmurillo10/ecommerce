@@ -15,10 +15,10 @@
               <v-container grid-list-md>
                 <v-flex xs12 sm12 md12>
                   <v-layout wrap row>
-                    <v-flex xs12 sm12 md6>
+                    <v-flex xs12 sm12 md9>
                       <v-text-field
                         v-model="formData.name"
-                        :rules="validateItem.nameRules"
+                        :rules="[rules.required, rules.max50Chars]"
                         label="Name"
                         required
                       ></v-text-field>
@@ -26,24 +26,15 @@
                     <v-flex xs12 sm12 md3>
                       <v-text-field
                         v-model="formData.unit"
-                        :rules="validateItem.unitRules"
+                        :rules="[rules.required, rules.max50Chars]"
                         label="Unit"
-                        required
-                      ></v-text-field>
-                    </v-flex>
-                    <v-flex xs12 sm12 md3 v-if="this.formType === 'new'">
-                      <v-text-field
-                        v-model="formData.stock"
-                        :rules="validateItem.stockRules"
-                        label="Stock"
-                        type="number"
                         required
                       ></v-text-field>
                     </v-flex>
                     <v-flex xs12 sm12 md4>
                       <v-text-field
                         v-model="formData.price_amount"
-                        :rules="validateItem.priceAmountRules"
+                        :rules="[rules.required]"
                         label="Price Amount"
                         type="number"
                         required
@@ -97,7 +88,7 @@
                         v-model="formData.product_brand_id"
                         label="Brand"
                         persistent-hint
-                        :rules="validateItem.productBrandRules"
+                        :rules="[rules.required]"
                         required
                       ></v-autocomplete>
                     </v-flex>
@@ -109,7 +100,7 @@
                         v-model="formData.product_category_id"
                         label="Category"
                         persistent-hint
-                        :rules="validateItem.productCategoryRules"
+                        :rules="[rules.required]"
                         required
                         v-on:change="setProductSubCategoryList()"
                       ></v-autocomplete>
@@ -122,7 +113,7 @@
                         v-model="formData.product_sub_category_id"
                         label="Sub-Category"
                         persistent-hint
-                        :rules="validateItem.productSubCategoryRules"
+                        :rules="[rules.required]"
                         required
                         v-on:change="setProductSubSubCategoryList()"
                       ></v-autocomplete>
@@ -214,53 +205,36 @@ export default {
       }
     ],
     defaultFormData: {
-      name: null,
+      name: "",
       description: "",
-      unit: null,
+      unit: "",
       tags: [],
-      stock: null,
-      price_amount: null,
-      vat_value: null,
-      discount_value: null,
-      product_brand_id: null,
-      product_category_id: null,
-      product_sub_category_id: null,
-      product_sub_sub_category_id: null,
-      vat_type: null,
-      discount_type: null
+      price_amount: "",
+      vat_value: "",
+      discount_value: "",
+      product_brand_id: "",
+      product_category_id: "",
+      product_sub_category_id: "",
+      product_sub_sub_category_id: "",
+      vat_type: "",
+      discount_type: ""
     },
     formData: {
-      name: null,
+      name: "",
       description: "",
-      unit: null,
+      unit: "",
       tags: [],
-      stock: null,
-      price_amount: null,
-      vat_value: null,
-      discount_value: null,
-      product_brand_id: null,
-      product_category_id: null,
-      product_sub_category_id: null,
-      product_sub_sub_category_id: null,
-      vat_type: null,
-      discount_type: null
+      price_amount: "",
+      vat_value: "",
+      discount_value: "",
+      product_brand_id: "",
+      product_category_id: "",
+      product_sub_category_id: "",
+      product_sub_sub_category_id: "",
+      vat_type: "",
+      discount_type: ""
     },
-    valid: true,
-    validateItem: {
-      nameRules: [
-        v => !!v || "Name is required",
-        v => (v && v.length <= 50) || "Name must be less than 50 characters"
-      ],
-      unitRules: [
-        v => !!v || "Unit is required",
-        v => (v && v.length <= 50) || "Unit must be less than 50 characters"
-      ],
-      stockRules: [v => !!v || "Stock is required"],
-      priceAmountRules: [v => !!v || "Price Amount is required"],
-      productBrandRules: [v => !!v || "Product Brand is required"],
-      productCategoryRules: [v => !!v || "Product Category is required"],
-      productSubCategoryRules: [v => !!v || "Product Sub Category is required"]
-    }
+    valid: true
   }),
 
   computed: {
@@ -332,7 +306,6 @@ export default {
         this.formData.description = data.description;
         this.formData.unit = data.unit;
         this.formData.tags = data.tags.split(",");
-        this.formData.stock = data.stock;
         this.formData.price_amount = data.price_amount;
         this.formData.vat_value = data.vat_value;
         this.formData.discount_value = data.discount_value;

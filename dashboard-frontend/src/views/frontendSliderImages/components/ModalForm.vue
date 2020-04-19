@@ -27,7 +27,7 @@
             <v-flex xs12 sm12 md4>
               <v-text-field
                 v-model="formData.order"
-                :rules="validateItem.orderRules"
+                :rules="[rules.required]"
                 label="Order"
                 type="number"
                 required
@@ -56,9 +56,11 @@
 
 <script>
 import Index from "../Index";
+import Mixins from "@/helpers/Mixins.js";
 import { mapGetters, mapActions } from "vuex";
 
 export default {
+  mixins: [Mixins],
   components: {
     Index
   },
@@ -81,12 +83,7 @@ export default {
       order: null,
       product_id: null
     },
-    valid: true,
-    validateItem: {
-      orderRules: [
-        v => !!v || "Order is required",
-      ]
-    }
+    valid: true
   }),
 
   computed: {

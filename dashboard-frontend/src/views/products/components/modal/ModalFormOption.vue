@@ -10,7 +10,7 @@
             <v-flex xs12 sm12 md12>
               <v-text-field
                 v-model="formData.title"
-                :rules="validateItem.titleRules"
+                :rules="[rules.required, rules.max50Chars]"
                 label="Title"
                 required
               ></v-text-field>
@@ -19,7 +19,7 @@
               <v-combobox
                 multiple
                 v-model="formData.values"
-                :rules="validateItem.valuesRules"
+                :rules="[rules.required]"
                 label="Values"
                 append-icon
                 chips
@@ -57,32 +57,26 @@
 </template>
 
 <script>
+import Mixins from "@/helpers/Mixins.js";
 import { mapState, mapGetters, mapActions } from "vuex";
 
 export default {
+  mixins: [Mixins],
+
   data: () => ({
     dialogConfirmation: false,
     defaultFormData: {
-      title: null,
+      title: "",
       values: "",
-      product_id: null
+      product_id: ""
     },
     formType: "new",
     formData: {
-      title: null,
+      title: "",
       values: "",
-      product_id: null
+      product_id: ""
     },
-    valid: true,
-    validateItem: {
-      titleRules: [
-        v => !!v || "Title is required",
-        v => (v && v.length <= 50) || "Title must be less than 50 characters"
-      ],
-      valuesRules: [
-        v => (v && v.length <= 500) || "Values must be less than 500 characters"
-      ]
-    }
+    valid: true
   }),
 
   computed: {

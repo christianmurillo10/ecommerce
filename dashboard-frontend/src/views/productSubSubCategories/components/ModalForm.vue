@@ -10,7 +10,7 @@
             <v-flex xs12 sm12 md12>
               <v-text-field
                 v-model="formData.name"
-                :rules="validateItem.nameRules"
+                :rules="[rules.required, rules.max50Chars]"
                 label="Name"
                 required
               ></v-text-field>
@@ -18,7 +18,7 @@
             <v-flex xs12 sm12 md12>
               <v-textarea
                 v-model="formData.description"
-                :rules="validateItem.descriptionRules"
+                :rules="[rules.max500Chars]"
                 label="Description"
               ></v-textarea>
             </v-flex>
@@ -30,7 +30,7 @@
                 v-model="formData.product_category_id"
                 label="Category"
                 persistent-hint
-                :rules="validateItem.productCategoryRules"
+                :rules="[rules.required]"
                 required
                 v-on:change="setProductSubCategoryList()"
               ></v-autocomplete>
@@ -42,7 +42,7 @@
                 item-value="id"
                 v-model="formData.product_sub_category_id"
                 label="Sub Category"
-                :rules="validateItem.productSubCategoryRules"
+                :rules="[rules.required]"
                 required
               ></v-autocomplete>
             </v-flex>
@@ -65,41 +65,30 @@
 
 <script>
 import Index from "../Index";
+import Mixins from "@/helpers/Mixins.js";
 import { mapGetters, mapActions } from "vuex";
 
 export default {
+  mixins: [Mixins],
   components: {
     Index
   },
 
   data: () => ({
     defaultFormData: {
-      name: null,
+      name: "",
       description: "",
-      product_category_id: null,
-      product_sub_category_id: null
+      product_category_id: "",
+      product_sub_category_id: ""
     },
     formType: "new",
     formData: {
-      name: null,
+      name: "",
       description: "",
-      product_category_id: null,
-      product_sub_category_id: null
+      product_category_id: "",
+      product_sub_category_id: ""
     },
-    valid: true,
-    validateItem: {
-      nameRules: [
-        v => !!v || "Name is required",
-        v => (v && v.length <= 50) || "Name must be less than 50 characters"
-      ],
-      descriptionRules: [
-        v =>
-          (v && v.length <= 500) ||
-          "Description must be less than 500 characters"
-      ],
-      productCategoryRules: [v => !!v || "Product Category is required"],
-      productSubCategoryRules: [v => !!v || "Product Sub Category is required"]
-    }
+    valid: true
   }),
 
   computed: {

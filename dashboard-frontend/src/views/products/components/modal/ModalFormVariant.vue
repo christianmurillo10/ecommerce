@@ -10,7 +10,7 @@
             <v-flex xs12 sm12 md12>
               <v-text-field
                 v-model="formData.name"
-                :rules="validateItem.nameRules"
+                :rules="[rules.required, rules.max50Chars]"
                 label="Name"
                 required
               ></v-text-field>
@@ -18,7 +18,7 @@
             <v-flex xs12 sm12 md12>
               <v-text-field
                 v-model="formData.price_amount"
-                :rules="validateItem.priceAmountRules"
+                :rules="[rules.required]"
                 label="Price Amount"
                 required
               ></v-text-field>
@@ -26,7 +26,7 @@
             <v-flex xs12 sm12 md12>
               <v-text-field
                 v-model="formData.sku"
-                :rules="validateItem.skuRules"
+                :rules="[rules.required, rules.max50Chars]"
                 label="SKU"
                 required
               ></v-text-field>
@@ -45,9 +45,12 @@
 </template>
 
 <script>
+import Mixins from "@/helpers/Mixins.js";
 import { mapGetters, mapActions } from "vuex";
 
 export default {
+  mixins: [Mixins],
+
   data: () => ({
     defaultFormData: {
       name: null,
@@ -60,20 +63,7 @@ export default {
       price_amount: null,
       sku: null
     },
-    valid: true,
-    validateItem: {
-      nameRules: [
-        v => !!v || "Name is required",
-        v => (v && v.length <= 50) || "Name must be less than 50 characters"
-      ],
-      priceAmountRules: [
-        v => !!v || "Price Amount is required"
-      ],
-      skuRules: [
-        v => !!v || "SKU is required",
-        v => (v && v.length <= 50) || "SKU must be less than 50 characters"
-      ]
-    }
+    valid: true
   }),
 
   computed: {

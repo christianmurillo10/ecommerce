@@ -27,7 +27,7 @@
             <v-flex xs12 sm12 md12>
               <v-text-field
                 v-model="formData.order"
-                :rules="validateItem.orderRules"
+                :rules="[rules.required]"
                 label="Order"
                 required
               ></v-text-field>
@@ -38,7 +38,7 @@
                 :items="imageTypeList"
                 item-text="name"
                 item-value="id"
-                :rules="validateItem.typeRules"
+                :rules="[rules.required]"
                 label="Type"
               ></v-autocomplete>
             </v-flex>
@@ -60,13 +60,11 @@
 </template>
 
 <script>
-// import Index from "./Index";
+import Mixins from "@/helpers/Mixins.js";
 import { mapGetters, mapActions } from "vuex";
 
 export default {
-  // components: {
-  //   Index
-  // },
+  mixins: [Mixins],
 
   data: () => ({
     imageTypeList: [
@@ -79,28 +77,20 @@ export default {
       file: null,
       file_path: require("@/assets/images/no-image.png"),
       file_name: null,
-      order: null,
-      type: null,
-      product_id: null
+      order: "",
+      type: "",
+      product_id: ""
     },
     formType: "new",
     formData: {
       file: null,
       file_path: require("@/assets/images/no-image.png"),
       file_name: null,
-      order: null,
-      type: null,
-      product_id: null
+      order: "",
+      type: "",
+      product_id: ""
     },
-    valid: true,
-    validateItem: {
-      orderRules: [
-        v => !!v || "Order is required"
-      ],
-      typeRules: [
-        v => !!v || "Type is required"
-      ]
-    }
+    valid: true
   }),
 
   computed: {

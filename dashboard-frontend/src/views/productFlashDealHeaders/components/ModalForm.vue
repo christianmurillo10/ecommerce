@@ -10,7 +10,7 @@
             <v-flex xs12 sm12 md12>
               <v-text-field
                 v-model="formData.title"
-                :rules="validateItem.titleRules"
+                :rules="[rules.required, rules.max50Chars]"
                 label="Title"
                 required
               ></v-text-field>
@@ -90,9 +90,11 @@
 
 <script>
 import Index from "../Index";
+import Mixins from "@/helpers/Mixins.js";
 import { mapGetters, mapActions } from "vuex";
 
 export default {
+  mixins: [Mixins],
   components: {
     Index
   },
@@ -101,23 +103,17 @@ export default {
     date_from: false,
     date_to: false,
     defaultFormData: {
-      title: null,
+      title: "",
       date_from: new Date().toISOString().substr(0, 10),
       date_to: new Date().toISOString().substr(0, 10)
     },
     formType: "new",
     formData: {
-      title: null,
+      title: "",
       date_from: new Date().toISOString().substr(0, 10),
       date_to: new Date().toISOString().substr(0, 10)
     },
-    valid: true,
-    validateItem: {
-      titleRules: [
-        v => !!v || "Name is required",
-        v => (v && v.length <= 50) || "Name must be less than 50 characters"
-      ]
-    }
+    valid: true
   }),
 
   computed: {
