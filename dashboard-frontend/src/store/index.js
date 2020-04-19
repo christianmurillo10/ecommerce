@@ -8,6 +8,7 @@ import toolbar from './modules/toolbar'
 import userAuthentication from './modules/userAuthentication'
 import users from './modules/users'
 import roles from './modules/roles'
+import customers from './modules/customers'
 import frontendPolicyPages from './modules/frontendPolicyPages'
 import frontendSliderImages from './modules/frontendSliderImages'
 import frontendUsefulLinks from './modules/frontendUsefulLinks'
@@ -36,6 +37,7 @@ export default new Vuex.Store({
     userAuthentication,
     users,
     roles,
+    customers,
     frontendPolicyPages,
     frontendSliderImages,
     frontendUsefulLinks,

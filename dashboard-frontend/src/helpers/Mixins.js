@@ -2,48 +2,56 @@ import moment from "moment";
 
 export default {
   data: () => ({
+    yesOrNoList: [
+      { id: 0, name: "No" },
+      { id: 1, name: "Yes" }
+    ],
+    genderTypeList: [
+      { id: 1, name: "Male" },
+      { id: 2, name: "Female" },
+      { id: 3, name: "Other" }
+    ],
+    customerStatusList: [
+      { id: 1, name: "Approved" },
+      { id: 2, name: "Declined" },
+      { id: 3, name: "Pending" }
+    ],
     rateTypeList: [
       { id: 1, name: "Amount" },
       { id: 2, name: "Percentage" }
     ],
+    rules: {
+      required: value => !!value || 'Required.',
+      max50Chars: value => value.length <= 50 || 'Max 50 characters',
+      max100Chars: value => value.length <= 100 || 'Max 100 characters',
+      max255Chars: value => value.length <= 255 || 'Max 255 characters',
+      max500Chars: value => value.length <= 500 || 'Max 500 characters',
+      email: value => {
+        const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+        return pattern.test(value) || 'Invalid e-mail.'
+      }
+    }
   }),
 
   methods: {
     getYesNoStatus(value) {
-      let response = null;
-      if (value == 0) {
-        response = "NO";
-      } else if (value == 1) {
-        response = "YES";
-      }
-
-      return response;
+      if (value == 0) return "NO";
+      else if (value == 1) return "YES";
+      else return "";
     },
 
     getGenderTypes(value) {
-      let response = null;
-      if (value == 1) {
-        response = "Male";
-      } else if (value == 2) {
-        response = "Female";
-      }
-
-      return response;
+      if (value == 1) return "Male";
+      else if (value == 2) return "Female";
+      else if (value == 3) return "Other";
+      else return "";
     },
 
-    getStatus(value) {
-      let response = null;
-      if (value == 1) {
-        response = "Approved";
-      } else if (value == 2) {
-        response = "Denied";
-      } else if (value == 3) {
-        response = "Pending";
-      } else if (value == 4) {
-        response = "Processing";
-      }
-
-      return response;
+    getCustomerStatus(value) {
+      if (value == 1) return "Approved";
+      else if (value == 2) return "Declined";
+      else if (value == 3) return "Pending";
+      else return "";
     },
 
     setFullnameLastnameFirst(fname, mname, lname) {
@@ -60,10 +68,9 @@ export default {
     },
 
     setRateTypeValue(value, type) {
-      let response = "";
-      if (type === 1) response = `₱ ${value}`;
-      else if  (type === 2) response = `${value}%`;
-      return response;
+      if (type === 1) return `₱ ${value}`;
+      else if  (type === 2) return `${value}%`;
+      else return "";
     },
 
     camelCase(value) {
@@ -73,11 +80,8 @@ export default {
     },
 
     truncateText(text, length) {
-      if (text.length > length) {
-        return text.substring(0, length) + "...";
-      } else {
-        return text;
-      }
+      if (text.length > length) return text.substring(0, length) + "...";
+      else return text;
     }
   }
 }
