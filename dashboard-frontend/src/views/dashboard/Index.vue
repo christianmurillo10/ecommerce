@@ -11,7 +11,7 @@
         <FeaturedProducts />
       </v-flex>
       <v-flex xs12 sm12 md6 lg6>
-        <TopSellingProducts />
+        <TodayFlashDeals />
       </v-flex>
     </v-layout>
   </v-container>
@@ -22,7 +22,7 @@ import { mapState, mapActions } from "vuex";
 import ProductParameters from "./components/productParameters"
 import CountMonitoring from "./components/countMonitoring"
 import FeaturedProducts from "./components/featuredProducts"
-import TopSellingProducts from "./components/topSellingProducts"
+import TodayFlashDeals from "./components/todayFlashDeals"
 
 
 export default {
@@ -30,7 +30,7 @@ export default {
     ProductParameters,
     CountMonitoring,
     FeaturedProducts,
-    TopSellingProducts
+    TodayFlashDeals
   },
 
   data: () => ({}),

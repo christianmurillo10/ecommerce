@@ -10,7 +10,7 @@ module.exports = {
    */
   create: async (req, res) => {
     const params = req.body;
-    let criteria, initialValues, data;
+    let criteria, criteriaFindExistingDate, initialValues, data, dataFindExistingDate;
 
     // Validators
     if (_.isUndefined(params))
@@ -30,16 +30,34 @@ module.exports = {
 
       // Pre-setting variables
       criteria = { where: { title: params.title } };
+      criteriaFindExistingDate = { 
+        attributes: ['id', 'title', 'date_from', 'date_to'],
+        where: { 
+          date_from: { $lte: params.date_from },
+          date_to: { $gte: params.date_from },
+          is_deleted: 0
+        },
+      };
       initialValues = _.pick(params, ['title', 'date_from', 'date_to', 'user_id', 'created_at']);
+      // Pre-setting variables
       // Execute findAll query
       data = await Model.ProductFlashDealHeaders.findAll(criteria);
       if (_.isEmpty(data[0])) {
-        let finalData = await Model.ProductFlashDealHeaders.create(initialValues);
-        res.json({
-          status: 200,
-          message: "Successfully created data.",
-          result: _.omit(finalData.get({ plain: true }), ['is_deleted'])
-        });
+        dataFindExistingDate = await Model.ProductFlashDealHeaders.findOne(criteriaFindExistingDate);
+        if (_.isEmpty(dataFindExistingDate)) {
+          let finalData = await Model.ProductFlashDealHeaders.create(initialValues);
+          res.json({
+            status: 200,
+            message: "Successfully created data.",
+            result: _.omit(finalData.get({ plain: true }), ['is_deleted'])
+          });
+        } else {
+          res.json({
+            status: 200,
+            message: "Date already exist.",
+            result: false
+          });
+        }
       } else {
         res.json({
           status: 200,
@@ -65,7 +83,7 @@ module.exports = {
    */
   update: async (req, res) => {
     const params = req.body;
-    let initialValues, data;
+    let criteria, initialValues, data, dataFindExistingDate;
 
     if (_.isUndefined(params))
       return res.badRequest({ err: "Invalid Parameter: [params]" });
@@ -74,16 +92,34 @@ module.exports = {
 
     try {
       // Pre-setting variables
+      criteria = { 
+        attributes: ['id', 'title', 'date_from', 'date_to'],
+        where: { 
+          date_from: { $lte: params.date_from },
+          date_to: { $gte: params.date_from },
+          is_deleted: 0
+        },
+      };
       initialValues = _.pick(params, ['title', 'date_from', 'date_to', 'is_active']);
       // Execute findByPk query
       data = await Model.ProductFlashDealHeaders.findByPk(req.params.id);
       if (!_.isEmpty(data)) {
-        let finalData = await data.update(initialValues);
-        res.json({
-          status: 200,
-          message: "Successfully updated data.",
-          result: finalData
-        });
+        dataFindExistingDate = await Model.ProductFlashDealHeaders.findOne(criteria);
+        if (_.isEmpty(dataFindExistingDate)) {
+          let finalData = await data.update(initialValues);
+          res.json({
+            status: 200,
+            message: "Successfully updated data.",
+            result: finalData
+          });
+        } else {
+          console.log("QWEWQe", dataFindExistingDate)
+          res.json({
+            status: 200,
+            message: "Date already exist.",
+            result: false
+          });
+        }
       } else {
         res.json({
           status: 200,

@@ -4,24 +4,24 @@
       <v-hover>
         <v-card slot-scope="{ hover }" :class="`elevation-${hover ? 12 : 1}`">
           <v-card-title primary-title>
-            <h4 class="title">Top Selling Products</h4>
+            <h4 class="title">Today Flash Deals</h4>
           </v-card-title>
           <v-card-text>
             <v-data-table
               :headers="headers"
-              :items="feauredProductList"
+              :items="productFlashDealHeaderTodayFlashDeal.productFlashDealDetails"
               class="elevation-1"
             >
               <template v-slot:items="props">
                 <td class="text-xs-left pt-1">
                   <img
-                    :src="props.item.image"
+                    :src="props.item.products.productImages[0].file_path"
                     height="80"
                     width="120"
                   />
                 </td>
-                <td>{{ props.item.name }}</td>
-                <td>{{ props.item.price_amount }}</td>
+                <td>{{ props.item.products.name }}</td>
+                <td>{{ props.item.current_price_amount }}</td>
               </template>
             </v-data-table>
           </v-card-text>
@@ -32,6 +32,8 @@
 </template>
 
 <script>
+import { mapState, mapActions } from "vuex";
+
 export default {
   data() {
     return {
@@ -39,35 +41,20 @@ export default {
       { text: "Image", value: "", sortable: false },
         { text: "Name", value: "name" },
         { text: "Price Amount", value: "price_amount" },
-      ],
-      feauredProductList: [
-        {
-          image: require("@/assets/images/no-image.png"),
-          name: "Product 1",
-          price_amount: "100.00"
-        },
-        {
-          image: require("@/assets/images/no-image.png"),
-          name: "Product 2",
-          price_amount: "100.00"
-        },
-        {
-          image: require("@/assets/images/no-image.png"),
-          name: "Product 3",
-          price_amount: "100.00"
-        },
-        {
-          image: require("@/assets/images/no-image.png"),
-          name: "Product 4",
-          price_amount: "100.00"
-        },
-        {
-          image: require("@/assets/images/no-image.png"),
-          name: "Product 5",
-          price_amount: "100.00"
-        }
       ]
     };
+  },
+
+  mounted() {
+    this.getCustomerTotalCountByStatusAndIsActive();
+  },
+
+  computed: {
+    ...mapState("productFlashDealHeaders", ["productFlashDealHeaderTodayFlashDeal"])
+  },
+
+  methods: {
+    ...mapActions("productFlashDealHeaders", { getCustomerTotalCountByStatusAndIsActive: "getDataTodayFlashDeal" })
   }
 };
 </script>

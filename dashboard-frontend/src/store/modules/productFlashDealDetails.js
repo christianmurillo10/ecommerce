@@ -36,15 +36,17 @@ const actions = {
         axios.get(url, header)
           .then(response => {
             let obj = response.data.result;
-            obj.forEach(element => {
-              if (element.products.productImages.length > 0) {
-                element.products.productImages.forEach(elementImage => {
-                  elementImage.file_path = `${process.env.VUE_APP_API_BACKEND}/productImages/viewImage/${elementImage.file_name}/${elementImage.type}`;
-                });
-              } else {
-                element.products.productImages.push({ file_path: require("../../assets/images/no-image.png") });
-              }
-            });
+            if (obj) {
+              obj.forEach(element => {
+                if (element.products.productImages.length > 0) {
+                  element.products.productImages.forEach(elementImage => {
+                    elementImage.file_path = `${process.env.VUE_APP_API_BACKEND}/productImages/viewImage/${elementImage.file_name}/${elementImage.type}`;
+                  });
+                } else {
+                  element.products.productImages.push({ file_path: require("../../assets/images/no-image.png") });
+                }
+              });
+            }
             commit("SET_DATA", obj);
           });
       } catch (err) {
