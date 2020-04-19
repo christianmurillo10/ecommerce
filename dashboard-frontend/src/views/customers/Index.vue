@@ -40,10 +40,12 @@
               />
             </td>
             <td class="text-xs-left">{{ props.item.customer_no }}</td>
-            <td class="text-xs-left">{{ props.item.firstname }}</td>
+            <td class="text-xs-left">{{ setFullnameLastnameFirst(props.item.firstname, props.item.middlename, props.item.lastname) }}</td>
             <td class="text-xs-left">{{ props.item.email }}</td>
             <td class="text-xs-left">{{ props.item.contact_no }}</td>
-            <td class="text-xs-left">{{ props.item.status }}</td>
+            <td class="text-xs-left">
+              <v-chip :color='getCustomerStatusColor(props.item.status)' text-color='white' disabled>{{ getCustomerStatus(props.item.status) }}</v-chip>
+            </td>
             <td class="text-xs-center">
               <v-tooltip left>
                 <template v-slot:activator="{ on }">
@@ -85,9 +87,11 @@
 <script>
 import Alerts from "@/components/utilities/Alerts";
 import ModalForm from "./components/ModalForm";
+import Mixins from "@/helpers/Mixins.js";
 import { mapState, mapActions } from "vuex";
 
 export default {
+  mixins: [Mixins],
   components: {
     Alerts,
     ModalForm
@@ -105,7 +109,7 @@ export default {
       { text: "Customer No.", value: "customer_no" },
       { text: "Firstname", value: "firstname" },
       { text: "Email", value: "email" },
-      { text: "contact_no", value: "" },
+      { text: "Contact No.", value: "" },
       { text: "Status", value: "" },
       { text: "Actions", align: "center", value: "", sortable: false }
     ]

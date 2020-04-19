@@ -54,6 +54,13 @@ export default {
       else return "";
     },
 
+    getCustomerStatusColor(value) {
+      if (value == 1) return "green";
+      else if (value == 2) return "red";
+      else if (value == 3) return "primary";
+      else return "";
+    },
+
     setFullnameLastnameFirst(fname, mname, lname) {
       let firstname = fname ? fname.charAt(0).toUpperCase() + fname.slice(1) : "";
       let middlename = mname ? `${mname.charAt(0).toUpperCase()}.` : "";
