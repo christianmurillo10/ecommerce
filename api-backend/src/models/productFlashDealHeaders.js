@@ -62,7 +62,7 @@ module.exports = (sequelize, DataTypes) => {
     });
     ProductFlashDealHeaders.hasMany(models.ProductFlashDealDetails, {
       foreignKey: 'header_id',
-      as: 'productFlashDealHeaders'
+      as: 'productFlashDealDetails'
     });
   };
 

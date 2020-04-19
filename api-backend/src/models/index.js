@@ -21,6 +21,10 @@ config.operatorsAliases = {
   $notBetween: Op.notBetween,
   $and: Op.and,
   $or: Op.or,
+  $gt: Op.gt,
+  $gte: Op.gte,
+  $lt: Op.lt,
+  $lte: Op.lte
 };
 
 console.info('Connecting to Sequelize Database.');

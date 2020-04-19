@@ -220,6 +220,83 @@ module.exports = {
   },
 
   /**
+   * Find all
+   * @route GET /productFlashDealHeaders/findOne/todayFlashDeal
+   * @param req
+   * @param res
+   * @returns {never}
+   */
+  findTodayFlashDeal: async (req, res) => {
+    let data, criteria;
+
+    try {
+      let dateToday = moment().utc(8).format('YYYY-MM-DD');
+      // Pre-setting variables
+      criteria = { 
+        attributes: ['id', 'title', 'date_from', 'date_to'],
+        where: { 
+          date_from: { $lte: dateToday },
+          date_to: { $gte: dateToday },
+          is_active: 1, 
+          is_deleted: 0
+        },
+        order: [ ['id', 'DESC'] ],
+        include: [
+          { 
+            model: Model.ProductFlashDealDetails, 
+            as: "productFlashDealDetails", 
+            attributes: [ 'id', 'discount_value', 'base_price_amount', 'current_price_amount', 'product_id', 'discount_type'],
+            where: { is_deleted: 0 },
+            order: [ ['id', 'ASC'] ],
+            include: [
+              { 
+                model: Model.Products, 
+                as: "products", 
+                attributes: ['name', 'unit'],
+                where: { is_published: 1, is_deleted: 0 },
+                include: [
+                  { 
+                    model: Model.ProductImages, as: "productImages", 
+                    attributes: ['file_name', 'order', 'type'],
+                    where: { type: 4, is_deleted: 0 },
+                    order: [ ['id', 'ASC'] ],
+                    separate: true,
+                    required: false 
+                  },
+                ],
+                required: false 
+              },
+            ],
+            separate: true,
+            required: false 
+          },
+        ]
+      };
+      // Execute findAll query
+      data = await Model.ProductFlashDealHeaders.findOne(criteria);
+      if (!_.isEmpty(data)) {
+        res.json({
+          status: 200,
+          message: "Successfully find data.",
+          result: data
+        });
+      } else {
+        res.json({
+          status: 200,
+          message: "No Data Found.",
+          result: false
+        });
+      }
+    } catch (err) {
+      res.json({
+        status: 401,
+        err: err,
+        message: "Failed to find data."
+      });
+    }
+  },
+
+  /**
    * Find by id
    * @route GET /productFlashDealHeaders/:id
    * @param req

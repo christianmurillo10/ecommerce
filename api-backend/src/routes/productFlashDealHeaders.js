@@ -3,6 +3,8 @@ var router = express.Router();
 const authController = require('../controllers').auth;
 const productFlashDealHeadersController = require('../controllers').productFlashDealHeaders;
 
+router.route('/findOne/todayFlashDeal').get(productFlashDealHeadersController.findTodayFlashDeal);
+
 router.route('/').get(authController.authorization, productFlashDealHeadersController.findAll);
 router.route('/create').post(authController.authorization, productFlashDealHeadersController.create);
 router.route('/update/:id').put(authController.authorization, productFlashDealHeadersController.update);
