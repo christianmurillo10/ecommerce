@@ -312,6 +312,35 @@ module.exports = {
   },
 
   /**
+   * Count all by status and is active
+   * @route GET /products/countAllByStatusAndIsActive/:status/:isActive
+   * @param req
+   * @param res
+   * @returns {never}
+   */
+  countAllByStatusAndIsActive: async (req, res) => {
+    let count, criteria;
+
+    try {
+      // Pre-setting variables
+      criteria = { where: { status: req.params.status, is_active: req.params.isActive, is_deleted: 0 } };
+      // Execute findAll query
+      count = await Model.Customers.count(criteria);
+      res.json({
+        status: 200,
+        message: "Successfully count all data.",
+        result: count
+      });
+    } catch (err) {
+      res.json({
+        status: 401,
+        err: err,
+        message: "Failed to count all data."
+      });
+    }
+  },
+
+  /**
    * Find by file_name
    * @route GET /customers/viewImage/:fileName
    * @param req

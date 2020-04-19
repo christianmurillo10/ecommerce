@@ -853,7 +853,7 @@ module.exports = {
       res.json({
         status: 401,
         err: err,
-        message: "Failed to find all data."
+        message: "Failed to count all data."
       });
     }
   },
