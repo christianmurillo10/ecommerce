@@ -91,7 +91,7 @@ module.exports = {
         let finalData = await data.update(initialValues);
         // For Upload Images
         if (!_.isUndefined(req.file)) {
-          let fileUpload = await uploadImage(params.file_name, req.file);
+          let fileUpload = await uploadImage(data.file_name, req.file);
         }
         res.json({
           status: 200,
