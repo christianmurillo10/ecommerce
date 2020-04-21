@@ -1,6 +1,10 @@
 <template>
   <v-card>
-    <v-card-title>TODAY'S DEAL</v-card-title>
+    <v-card-title>
+      TODAY'S DEAL
+      <v-spacer></v-spacer>
+      <v-btn small outlined color="red white--text">Shop Now</v-btn>
+    </v-card-title>
     <v-card-text>
       <v-flex xs12 sm12 md12 lg12>
         <v-layout row wrap>

@@ -401,6 +401,67 @@ module.exports = {
   },
 
   /**
+   * Find all by is featured
+   * @route GET /products/featured/:value
+   * @param req
+   * @param res
+   * @returns {never}
+   */
+  findAllByIsFeatured: async (req, res) => {
+    let data, criteria;
+
+    try {
+      // Pre-setting variables
+      criteria = {
+        attributes: [
+          'id',
+          'name',
+          'unit',
+          'price_amount',
+          'created_at',
+          'is_today_deal',
+          'is_featured',
+          'is_published'
+        ],
+        where: { is_deleted: 0, is_featured: req.params.value, is_published: 1 },
+        order: [
+          ['id', 'ASC'],
+        ],
+        include: [
+          { 
+            model: Model.ProductImages, as: "productImages", 
+            attributes: ['file_name', 'order', 'type', 'product_id'],
+            where: { type: 3, is_deleted: 0 },
+            required: false 
+          },
+          { model: Model.Inventories, as: "inventories", attributes: ['stock_available', 'product_id'], required: false },
+        ]
+      };
+      // Execute findAll query
+      data = await Model.Products.findAll(criteria);
+      if (!_.isEmpty(data[0])) {
+        res.json({
+          status: 200,
+          message: "Successfully find all data.",
+          result: data
+        });
+      } else {
+        res.json({
+          status: 200,
+          message: "No Data Found.",
+          result: false
+        });
+      }
+    } catch (err) {
+      res.json({
+        status: 401,
+        err: err,
+        message: "Failed to find all data."
+      });
+    }
+  },
+
+  /**
    * Find all with limit and offset
    * @route GET /products/findAllWithLimitAndOffset/:limit/:offset
    * @param req
@@ -490,32 +551,46 @@ module.exports = {
   },
 
   /**
-   * Find all by is featured
-   * @route GET /products/featured/:value
+   * Find all by product category id with limit and offset
+   * @route GET /products/findAllByProductCategoryIdWithLimitAndOffset/:productCategoryId/:limit/:offset
    * @param req
    * @param res
    * @returns {never}
    */
-  findAllByIsFeatured: async (req, res) => {
-    let data, criteria;
+  findAllByProductCategoryIdWithLimitAndOffset: async (req, res) => {
+    let params = req.params;
+    let data, criteria, countCriteria;
 
     try {
       // Pre-setting variables
+      let limit = parseInt(params.limit);
+      let offset = parseInt(params.offset);
       criteria = {
         attributes: [
           'id',
           'name',
           'unit',
+          'tags',
           'price_amount',
+          'vat_value',
+          'discount_value',
+          'product_brand_id',
+          'product_category_id',
+          'product_sub_category_id',
+          'product_sub_sub_category_id',
           'created_at',
+          'vat_type',
+          'discount_type',
           'is_today_deal',
           'is_featured',
           'is_published'
         ],
-        where: { is_deleted: 0, is_featured: req.params.value, is_published: 1 },
+        where: { product_category_id: params.productCategoryId, is_deleted: 0 },
         order: [
           ['id', 'ASC'],
         ],
+        limit,
+        offset,
         include: [
           { 
             model: Model.ProductImages, as: "productImages", 
@@ -523,16 +598,24 @@ module.exports = {
             where: { type: 2, is_deleted: 0 },
             required: false 
           },
-          { model: Model.Inventories, as: "inventories", attributes: ['stock_available', 'product_id'], required: false },
+          { model: Model.Inventories, as: "inventories", attributes: ['stock_available', 'price_amount', 'product_id'], required: false },
         ]
       };
+      countCriteria = { where: { product_category_id: params.productCategoryId, is_deleted: 0 } };
+
       // Execute findAll query
       data = await Model.Products.findAll(criteria);
       if (!_.isEmpty(data[0])) {
+        count = await Model.Products.count(countCriteria);
+        let obj = {
+          data: data,
+          count: count
+        }
+
         res.json({
           status: 200,
           message: "Successfully find all data.",
-          result: data
+          result: obj
         });
       } else {
         res.json({
@@ -550,235 +633,171 @@ module.exports = {
     }
   },
 
-  // /**
-  //  * Find all with limit, offset and file name
-  //  * @route GET /products/findAllWithLimitOffsetAndFileName/:limit/:offset
-  //  * @param req
-  //  * @param res
-  //  * @returns {never}
-  //  */
-  // findAllWithLimitOffsetAndFileName: async (req, res) => {
-  //   let params = req.params;
-  //   let data, criteria;
+  /**
+   * Find all by product sub category id with limit and offset
+   * @route GET /products/findAllByProductSubCategoryIdWithLimitAndOffset/:productSubCategoryId/:limit/:offset
+   * @param req
+   * @param res
+   * @returns {never}
+   */
+  findAllByProductSubCategoryIdWithLimitAndOffset: async (req, res) => {
+    let params = req.params;
+    let data, criteria, countCriteria;
 
-  //   try {
-  //     // Pre-setting variables
-  //     let limit = parseInt(params.limit);
-  //     let offset = parseInt(params.offset);
-  //     criteria = {
-  //       attributes: [
-  //         'id',
-  //         'name',
-  //         'description',
-  //         'unit',
-  //         'tags',
-  //         'price_amount',
-  //         'vat_value',
-  //         'discount_value',
-  //         'product_brand_id',
-  //         'product_category_id',
-  //         'product_sub_category_id',
-  //         'product_sub_sub_category_id',
-  //         'created_at',
-  //         'vat_type',
-  //         'discount_type',
-  //         'is_today_deal',
-  //         'is_featured',
-  //         'is_published'
-  //       ],
-  //       where: { is_deleted: 0 },
-  //       limit,
-  //       offset,
-  //       include: [
-  //         { model: Model.ProductBrands, as: "productBrands", attributes: ['name', 'description'] },
-  //         { model: Model.ProductCategories, as: "productCategories", attributes: ['name', 'description'] },
-  //         { model: Model.ProductSubCategories, as: "productSubCategories", attributes: ['name', 'description'] },
-  //         { model: Model.ProductSubSubCategories, as: "productSubSubCategories", attributes: ['name', 'description'] },
-  //         { model: Model.ProductImages, as: "productImages", attributes: ['file_name', 'color', 'order', 'product_id'], required: false }
-  //       ]
-  //     };
+    try {
+      // Pre-setting variables
+      let limit = parseInt(params.limit);
+      let offset = parseInt(params.offset);
+      criteria = {
+        attributes: [
+          'id',
+          'name',
+          'unit',
+          'tags',
+          'price_amount',
+          'vat_value',
+          'discount_value',
+          'product_brand_id',
+          'product_category_id',
+          'product_sub_category_id',
+          'product_sub_sub_category_id',
+          'created_at',
+          'vat_type',
+          'discount_type',
+          'is_today_deal',
+          'is_featured',
+          'is_published'
+        ],
+        where: { product_sub_category_id: params.productSubCategoryId, is_deleted: 0 },
+        order: [
+          ['id', 'ASC'],
+        ],
+        limit,
+        offset,
+        include: [
+          { 
+            model: Model.ProductImages, as: "productImages", 
+            attributes: ['file_name', 'order', 'type', 'product_id'],
+            where: { type: 2, is_deleted: 0 },
+            required: false 
+          },
+          { model: Model.Inventories, as: "inventories", attributes: ['stock_available', 'price_amount', 'product_id'], required: false },
+        ]
+      };
+      countCriteria = { where: { product_sub_category_id: params.productSubCategoryId, is_deleted: 0 } };
 
-  //     // Execute findAll query
-  //     data = await Model.Products.findAll(criteria);
-  //     if (!_.isEmpty(data[0])) {
-  //       res.json({
-  //         status: 200,
-  //         message: "Successfully find all data.",
-  //         result: data
-  //       });
-  //     } else {
-  //       res.json({
-  //         status: 200,
-  //         message: "No Data Found.",
-  //         result: false
-  //       });
-  //     }
-  //   } catch (err) {
-  //     res.json({
-  //       status: 401,
-  //       err: err,
-  //       message: "Failed to find all data."
-  //     });
-  //   }
-  // },
+      // Execute findAll query
+      data = await Model.Products.findAll(criteria);
+      if (!_.isEmpty(data[0])) {
+        count = await Model.Products.count(countCriteria);
+        let obj = {
+          data: data,
+          count: count
+        }
 
-  // /**
-  //  * Find all by product category id with limit, offset and file name
-  //  * @route GET /products/findAllByProductCategoryIdWithLimitOffsetAndFileName/:productCategoryId/:limit/:offset
-  //  * @param req
-  //  * @param res
-  //  * @returns {never}
-  //  */
-  // findAllByProductCategoryIdWithLimitOffsetAndFileName: async (req, res) => {
-  //   let params = req.params;
-  //   let data, criteria, countCriteria;
+        res.json({
+          status: 200,
+          message: "Successfully find all data.",
+          result: obj
+        });
+      } else {
+        res.json({
+          status: 200,
+          message: "No Data Found.",
+          result: false
+        });
+      }
+    } catch (err) {
+      res.json({
+        status: 401,
+        err: err,
+        message: "Failed to find all data."
+      });
+    }
+  },
 
-  //   try {
-  //     // Pre-setting variables
-  //     let limit = parseInt(params.limit);
-  //     let offset = parseInt(params.offset);
-  //     criteria = {
-  //       attributes: [
-  //         'id',
-  //         'name',
-  //         'description',
-  //         'unit',
-  //         'tags',
-  //         'price_amount',
-  //         'vat_value',
-  //         'discount_value',
-  //         'product_brand_id',
-  //         'product_category_id',
-  //         'product_sub_category_id',
-  //         'product_sub_sub_category_id',
-  //         'created_at',
-  //         'vat_type',
-  //         'discount_type',
-  //         'is_today_deal',
-  //         'is_featured',
-  //         'is_published'
-  //       ],
-  //       where: { product_category_id: params.productCategoryId, is_deleted: 0 },
-  //       limit,
-  //       offset,
-  //       include: [
-  //         { model: Model.ProductBrands, as: "productBrands", attributes: ['name', 'description'] },
-  //         { model: Model.ProductCategories, as: "productCategories", attributes: ['name', 'description'] },
-  //         { model: Model.ProductSubCategories, as: "productSubCategories", attributes: ['name', 'description'] },
-  //         { model: Model.ProductSubSubCategories, as: "productSubSubCategories", attributes: ['name', 'description'] },
-  //         { model: Model.ProductImages, as: "productImages", attributes: ['file_name', 'color', 'order', 'product_id'], required: false }
-  //       ]
-  //     };
-  //     countCriteria = { where: { product_category_id: params.productCategoryId, is_deleted: 0 } };
+  /**
+   * Find all by product sub sub-category id with limit and offset
+   * @route GET /products/findAllByProductSubSubCategoryIdWithLimitAndOffset/:productSubSubCategoryId/:limit/:offset
+   * @param req
+   * @param res
+   * @returns {never}
+   */
+  findAllByProductSubSubCategoryIdWithLimitAndOffset: async (req, res) => {
+    let params = req.params;
+    let data, criteria, countCriteria;
 
-  //     // Execute findAll query
-  //     data = await Model.Products.findAll(criteria);
-  //     if (!_.isEmpty(data[0])) {
-  //       count = await Model.Products.count(countCriteria);
-  //       let obj = {
-  //         data: data,
-  //         count: count
-  //       }
+    try {
+      // Pre-setting variables
+      let limit = parseInt(params.limit);
+      let offset = parseInt(params.offset);
+      criteria = {
+        attributes: [
+          'id',
+          'name',
+          'unit',
+          'tags',
+          'price_amount',
+          'vat_value',
+          'discount_value',
+          'product_brand_id',
+          'product_category_id',
+          'product_sub_category_id',
+          'product_sub_sub_category_id',
+          'created_at',
+          'vat_type',
+          'discount_type',
+          'is_today_deal',
+          'is_featured',
+          'is_published'
+        ],
+        where: { product_sub_sub_category_id: params.productSubSubCategoryId, is_deleted: 0 },
+        order: [
+          ['id', 'ASC'],
+        ],
+        limit,
+        offset,
+        include: [
+          { 
+            model: Model.ProductImages, as: "productImages", 
+            attributes: ['file_name', 'order', 'type', 'product_id'],
+            where: { type: 2, is_deleted: 0 },
+            required: false 
+          },
+          { model: Model.Inventories, as: "inventories", attributes: ['stock_available', 'price_amount', 'product_id'], required: false },
+        ]
+      };
+      countCriteria = { where: { product_sub_sub_category_id: params.productSubSubCategoryId, is_deleted: 0 } };
 
-  //       res.json({
-  //         status: 200,
-  //         message: "Successfully find all data.",
-  //         result: obj
-  //       });
-  //     } else {
-  //       res.json({
-  //         status: 200,
-  //         message: "No Data Found.",
-  //         result: false
-  //       });
-  //     }
-  //   } catch (err) {
-  //     res.json({
-  //       status: 401,
-  //       err: err,
-  //       message: "Failed to find all data."
-  //     });
-  //   }
-  // },
+      // Execute findAll query
+      data = await Model.Products.findAll(criteria);
+      if (!_.isEmpty(data[0])) {
+        count = await Model.Products.count(countCriteria);
+        let obj = {
+          data: data,
+          count: count
+        }
 
-  // /**
-  //  * Find all by product sub category id with limit, offset and file name
-  //  * @route GET /products/findAllbyProductSubCategoryIdWithLimitOffsetAndFileName/:productSubCategoryId/:limit/:offset
-  //  * @param req
-  //  * @param res
-  //  * @returns {never}
-  //  */
-  // findAllbyProductSubCategoryIdWithLimitOffsetAndFileName: async (req, res) => {
-  //   let params = req.params;
-  //   let data, criteria, countCriteria;
-
-  //   try {
-  //     // Pre-setting variables
-  //     let limit = parseInt(params.limit);
-  //     let offset = parseInt(params.offset);
-  //     criteria = {
-  //       attributes: [
-  //         'id',
-  //         'name',
-  //         'description',
-  //         'unit',
-  //         'tags',
-  //         'price_amount',
-  //         'vat_value',
-  //         'discount_value',
-  //         'product_brand_id',
-  //         'product_category_id',
-  //         'product_sub_category_id',
-  //         'product_sub_sub_category_id',
-  //         'created_at',
-  //         'vat_type',
-  //         'discount_type',
-  //         'is_today_deal',
-  //         'is_featured',
-  //         'is_published'
-  //       ],
-  //       where: { product_sub_category_id: params.productSubCategoryId, is_deleted: 0 },
-  //       limit,
-  //       offset,
-  //       include: [
-  //         { model: Model.ProductBrands, as: "productBrands", attributes: ['name', 'description'] },
-  //         { model: Model.ProductCategories, as: "productCategories", attributes: ['name', 'description'] },
-  //         { model: Model.ProductSubCategories, as: "productSubCategories", attributes: ['name', 'description'] },
-  //         { model: Model.ProductSubSubCategories, as: "productSubSubCategories", attributes: ['name', 'description'] },
-  //         { model: Model.ProductImages, as: "productImages", attributes: ['file_name', 'color', 'order', 'product_id'], required: false }
-  //       ]
-  //     };
-  //     countCriteria = { where: { product_sub_category_id: params.productSubCategoryId, is_deleted: 0 } };
-
-  //     // Execute findAll query
-  //     data = await Model.Products.findAll(criteria);
-  //     if (!_.isEmpty(data[0])) {
-  //       count = await Model.Products.count(countCriteria);
-  //       let obj = {
-  //         data: data,
-  //         count: count
-  //       }
-
-  //       res.json({
-  //         status: 200,
-  //         message: "Successfully find all data.",
-  //         result: obj
-  //       });
-  //     } else {
-  //       res.json({
-  //         status: 200,
-  //         message: "No Data Found.",
-  //         result: false
-  //       });
-  //     }
-  //   } catch (err) {
-  //     res.json({
-  //       status: 401,
-  //       err: err,
-  //       message: "Failed to find all data."
-  //     });
-  //   }
-  // },
+        res.json({
+          status: 200,
+          message: "Successfully find all data.",
+          result: obj
+        });
+      } else {
+        res.json({
+          status: 200,
+          message: "No Data Found.",
+          result: false
+        });
+      }
+    } catch (err) {
+      res.json({
+        status: 401,
+        err: err,
+        message: "Failed to find all data."
+      });
+    }
+  },
 
   /**
    * Find by id

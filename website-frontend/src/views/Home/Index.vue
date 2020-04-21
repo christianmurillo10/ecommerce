@@ -29,13 +29,6 @@
         <v-container>
           <v-layout row wrap>
             <v-flex xs12 sm12 md12 lg12>
-              <FeaturedProducts />
-            </v-flex>
-          </v-layout>
-        </v-container>
-        <v-container>
-          <v-layout row wrap>
-            <v-flex xs12 sm12 md12 lg12>
               <v-card>
                 <v-card-title>(PROMO BANNERS HERE)</v-card-title>
                 <v-card-text>
@@ -44,6 +37,13 @@
                   </v-flex>
                 </v-card-text>
               </v-card>
+            </v-flex>
+          </v-layout>
+        </v-container>
+        <v-container>
+          <v-layout row wrap>
+            <v-flex xs12 sm12 md12 lg12>
+              <FeaturedProducts />
             </v-flex>
           </v-layout>
         </v-container>
