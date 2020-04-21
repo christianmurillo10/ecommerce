@@ -320,7 +320,16 @@ module.exports = {
       criteria = {
         attributes: ['id', 'name', 'description'],
         where: { is_deleted: 0 },
-        include: [{ model: Model.ProductSubCategories, as: "productSubCategories", attributes: ['id', 'name', 'description'] }]
+        include: [
+          { 
+            model: Model.ProductSubCategories, 
+            as: "productSubCategories", 
+            attributes: ['id', 'name', 'description'],
+            include: [
+              { model: Model.ProductSubSubCategories, as: "productSubSubCategories", attributes: ['id', 'name', 'description'] }
+            ]
+          },
+        ]
       };
       // Execute findAll query
       data = await Model.ProductCategories.findAll(criteria);

@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Home from '../views/Home.vue'
+import Home from '../views/Home/Index.vue'
 import Login from '../views/Login.vue'
 import CustomerCart from '../views/CustomerCarts/Index.vue'
 import ProductIndexByCategory from '../views/Products/IndexByCategory.vue'
@@ -42,7 +42,7 @@ const routes = [
     component: ProductIndexBySearch
   },
   {
-    path: '/product/:id',
+    path: '/products/:id',
     name: 'productById',
     component: ProductView
   }

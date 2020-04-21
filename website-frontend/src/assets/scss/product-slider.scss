@@ -1,0 +1,38 @@
+
+.swiper-container {
+  padding: 2px;
+  height: 305px;
+  width: 100%;
+}
+.swiper {
+  .swiper-slide {
+    height: 295px !important;
+    width: 201.5px !important;
+    background-color: #fafafa;
+    
+    .container  {
+      padding: 5px !important;
+
+      .swiper-image {
+        cursor: pointer;
+        height: 200px;
+        width: 192px;
+      }
+    }
+  }
+
+  .swiper-slide:hover {
+    background-color: #ffffff;
+    box-shadow: 0 0px 5px 0 rgba(0, 0, 0, 0.2), 0 0px 5px 0 rgba(0, 0, 0, 0.19);
+  }
+
+  .swiper-button-prev {
+    left: 0px !important;
+    cursor: pointer !important;
+  }
+
+  .swiper-button-next {
+    right: 0px !important;
+    cursor: pointer !important;
+  }
+}

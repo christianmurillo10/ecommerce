@@ -1,39 +1,26 @@
 import axios from "axios";
 
 const state = {
-  productCategoryList: [],
   productCategoryWithSubList: [],
-  productCategoryDataById: null
+  productCategoryList: [],
+  // productCategoryDataById: null
 };
 
 const getters = {
-  getProductCategoryById: (state) => (id) => {
-    return state.productCategoryList.find(productCategory => productCategory.id === id);
-  },
-  getProductCategoryNameById: (state) => (id) => {
-    return state.productCategoryList.find(productCategory => productCategory.id === id).name;
-  },
-  getProductCategoryList: (state) => {
-    return state.productCategoryList;
-  }
+  // getProductCategoryById: (state) => (id) => {
+  //   return state.productCategoryList.find(productCategory => productCategory.id === id);
+  // },
+  // getProductCategoryNameById: (state) => (id) => {
+  //   return state.productCategoryList.find(productCategory => productCategory.id === id).name;
+  // },
+  // getProductCategoryList: (state) => {
+  //   return state.productCategoryList;
+  // }
 };
 
 const actions = {
-  getData({ dispatch, commit, state, rootState, getters, rootGetters }) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/productCategory/`;
-    return new Promise((resolve, reject) => {
-      try {
-        axios.get(url)
-          .then(response => {
-            commit("SET_DATA", response.data.result);
-          });
-      } catch (err) {
-        reject(err);
-      }
-    });
-  },
   getDataWithSubCategories({ dispatch, commit, state, rootState, getters, rootGetters }) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/productCategory/findAllWithSubCategories`;
+    let url = `${process.env.VUE_APP_API_BACKEND}/productCategories/findAllWithSubCategories`;
     return new Promise((resolve, reject) => {
       try {
         axios.get(url)
@@ -45,31 +32,38 @@ const actions = {
       }
     });
   },
-  getDataById({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/productCategory/${payload}`;
-    let header = { headers: { Token: localStorage.getItem("token") } };
+
+  getData({ dispatch, commit, state, rootState, getters, rootGetters }) {
+    let url = `${process.env.VUE_APP_API_BACKEND}/productCategories/`;
     return new Promise((resolve, reject) => {
       try {
-        axios
-          .get(url, header)
+        axios.get(url)
           .then(response => {
-            commit("SET_DATA_BY_ID", response.data.result);
+            commit("SET_DATA", response.data.result);
           });
       } catch (err) {
         reject(err);
       }
     });
-  }
+  },
+  // getDataById({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
+  //   let url = `${process.env.VUE_APP_API_BACKEND}/productCategories/${payload}`;
+  //   let header = { headers: { Token: localStorage.getItem("token") } };
+  //   return new Promise((resolve, reject) => {
+  //     try {
+  //       axios
+  //         .get(url, header)
+  //         .then(response => {
+  //           commit("SET_DATA_BY_ID", response.data.result);
+  //         });
+  //     } catch (err) {
+  //       reject(err);
+  //     }
+  //   });
+  // }
 };
 
 const mutations = {
-  SET_DATA(state, payload) {
-    if (payload) {
-      state.productCategoryList = payload;
-    } else {
-      state.productCategoryList = [];
-    }
-  },
   SET_DATA_WITH_SUB_CATEGORIES(state, payload) {
     if (payload) {
       state.productCategoryWithSubList = payload;
@@ -77,13 +71,21 @@ const mutations = {
       state.productCategoryWithSubList = [];
     }
   },
-  SET_DATA_BY_ID(state, payload) {
+
+  SET_DATA(state, payload) {
     if (payload) {
-      state.productCategoryDataById = payload;
+      state.productCategoryList = payload;
     } else {
-      state.productCategoryDataById = null;
+      state.productCategoryList = [];
     }
-  }
+  },
+  // SET_DATA_BY_ID(state, payload) {
+  //   if (payload) {
+  //     state.productCategoryDataById = payload;
+  //   } else {
+  //     state.productCategoryDataById = null;
+  //   }
+  // }
 };
 
 export default {
