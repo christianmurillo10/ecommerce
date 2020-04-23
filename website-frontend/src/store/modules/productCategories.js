@@ -3,20 +3,10 @@ import axios from "axios";
 const state = {
   productCategoryWithSubList: [],
   productCategoryList: [],
-  // productCategoryDataById: null
+  productCategoryDataById: ""
 };
 
-const getters = {
-  // getProductCategoryById: (state) => (id) => {
-  //   return state.productCategoryList.find(productCategory => productCategory.id === id);
-  // },
-  // getProductCategoryNameById: (state) => (id) => {
-  //   return state.productCategoryList.find(productCategory => productCategory.id === id).name;
-  // },
-  // getProductCategoryList: (state) => {
-  //   return state.productCategoryList;
-  // }
-};
+const getters = { };
 
 const actions = {
   getDataWithSubCategories({ dispatch, commit, state, rootState, getters, rootGetters }) {
@@ -46,21 +36,21 @@ const actions = {
       }
     });
   },
-  // getDataById({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
-  //   let url = `${process.env.VUE_APP_API_BACKEND}/productCategories/${payload}`;
-  //   let header = { headers: { Token: localStorage.getItem("token") } };
-  //   return new Promise((resolve, reject) => {
-  //     try {
-  //       axios
-  //         .get(url, header)
-  //         .then(response => {
-  //           commit("SET_DATA_BY_ID", response.data.result);
-  //         });
-  //     } catch (err) {
-  //       reject(err);
-  //     }
-  //   });
-  // }
+  getDataById({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
+    let url = `${process.env.VUE_APP_API_BACKEND}/productCategories/${payload}`;
+    let header = { headers: { Token: localStorage.getItem("token") } };
+    return new Promise((resolve, reject) => {
+      try {
+        axios
+          .get(url, header)
+          .then(response => {
+            commit("SET_DATA_BY_ID", response.data.result);
+          });
+      } catch (err) {
+        reject(err);
+      }
+    });
+  }
 };
 
 const mutations = {
@@ -79,13 +69,13 @@ const mutations = {
       state.productCategoryList = [];
     }
   },
-  // SET_DATA_BY_ID(state, payload) {
-  //   if (payload) {
-  //     state.productCategoryDataById = payload;
-  //   } else {
-  //     state.productCategoryDataById = null;
-  //   }
-  // }
+  SET_DATA_BY_ID(state, payload) {
+    if (payload) {
+      state.productCategoryDataById = payload;
+    } else {
+      state.productCategoryDataById = "";
+    }
+  }
 };
 
 export default {

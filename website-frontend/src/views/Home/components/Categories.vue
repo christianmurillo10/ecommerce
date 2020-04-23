@@ -26,12 +26,12 @@
                     <v-flex xs12 sm12 md3 lg3 v-for="(productSubCategory, i) in productCategory.productSubCategories" :key="i">
                       <ul>
                         <li class="remove-bullet pb-1">
-                          <router-link class="text-decoration black--text" v-bind:to="`/category/${productCategory.id}/page/1`">
+                          <router-link class="text-decoration black--text" v-bind:to="`/sub-category/${productSubCategory.id}/page/1`">
                             <span class="subtitle-2 font-weight-bold">{{ productSubCategory.name }}</span>
                           </router-link>
                         </li>
                         <li class="remove-bullet" v-for="(productSubSubCategory, i) in productSubCategory.productSubSubCategories" :key="i">
-                          <router-link class="text-decoration black--text" v-bind:to="`/category/${productCategory.id}/page/1`">
+                          <router-link class="text-decoration black--text" v-bind:to="`/sub-sub-category/${productSubSubCategory.id}/page/1`">
                             <span class="caption">{{ productSubSubCategory.name }}</span>
                           </router-link>
                         </li>

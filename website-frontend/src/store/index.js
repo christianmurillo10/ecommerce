@@ -9,6 +9,7 @@ import frontendSliderImages from './modules/frontendSliderImages'
 import productImages from './modules/productImages'
 import productCategories from './modules/productCategories'
 import productSubCategories from './modules/productSubCategories'
+import productSubSubCategories from './modules/productSubSubCategories'
 import productFlashDealHeaders from './modules/productFlashDealHeaders'
 import products from './modules/products'
 
@@ -29,6 +30,7 @@ export default new Vuex.Store({
     productImages,
     productCategories,
     productSubCategories,
+    productSubSubCategories,
     productFlashDealHeaders,
     products
   }

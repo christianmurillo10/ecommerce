@@ -3,8 +3,9 @@ import VueRouter from 'vue-router'
 import Home from '../views/Home/Index.vue'
 import Login from '../views/Login.vue'
 import CustomerCart from '../views/CustomerCarts/Index.vue'
-import ProductIndexByCategory from '../views/Products/IndexByCategory.vue'
-import ProductIndexBySubCategory from '../views/Products/IndexBySubCategory.vue'
+import ProductCategories from '../views/Products/Categories.vue'
+import ProductSubCategories from '../views/Products/SubCategories.vue'
+import ProductSubSubCategories from '../views/Products/SubSubCategories.vue'
 import ProductIndexBySearch from '../views/Products/IndexBySearch.vue'
 import ProductView from '../views/Products/View.vue'
 
@@ -29,12 +30,17 @@ const routes = [
   {
     path: '/category/:id/page/:page',
     name: 'productCategoryById',
-    component: ProductIndexByCategory
+    component: ProductCategories
   },
   {
-    path: '/category/:categoryId/subCategory/:subCategoryId/page/:page',
-    name: 'productByCategoryIdAndSubCategoryId',
-    component: ProductIndexBySubCategory
+    path: '/sub-category/:id/page/:page',
+    name: 'productBySubCategoryId',
+    component: ProductSubCategories
+  },
+  {
+    path: '/sub-sub-category/:id/page/:page',
+    name: 'productBySubSubCategoryId',
+    component: ProductSubSubCategories
   },
   {
     path: '/search/:keyword/page/:page',

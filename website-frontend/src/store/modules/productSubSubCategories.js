@@ -1,15 +1,15 @@
 import axios from "axios";
 
 const state = {
-  productSubCategoryList: [],
-  productSubCategoryDataById: ""
+  productSubSubCategoryList: [],
+  productSubSubCategoryDataById: ""
 };
 
 const getters = { };
 
 const actions = {
   getDataByProductCategoryId({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/productSubCategories/findAllbyProductCategoryId/${payload}`;
+    let url = `${process.env.VUE_APP_API_BACKEND}/productSubSubCategories/findAllbyProductCategoryId/${payload}`;
     return new Promise((resolve, reject) => {
       try {
         axios
@@ -23,7 +23,7 @@ const actions = {
     });
   },
   getDataById({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/productSubCategories/${payload}`;
+    let url = `${process.env.VUE_APP_API_BACKEND}/productSubSubCategories/${payload}`;
     let header = { headers: { Token: localStorage.getItem("token") } };
     return new Promise((resolve, reject) => {
       try {
@@ -42,16 +42,16 @@ const actions = {
 const mutations = {
   SET_DATA(state, payload) {
     if (payload) {
-      state.productSubCategoryList = payload;
+      state.productSubSubCategoryList = payload;
     } else {
-      state.productSubCategoryList = [];
+      state.productSubSubCategoryList = [];
     }
   },
   SET_DATA_BY_ID(state, payload) {
     if (payload) {
-      state.productSubCategoryDataById = payload;
+      state.productSubSubCategoryDataById = payload;
     } else {
-      state.productSubCategoryDataById = "";
+      state.productSubSubCategoryDataById = "";
     }
   }
 };
