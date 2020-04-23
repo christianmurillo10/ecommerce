@@ -11,7 +11,7 @@
           <swiper class="swiper" :options="swiperOption">
             <swiper-slide v-for="(productFlashDealDetail, i) in productFlashDealHeaderTodayFlashDeal.productFlashDealDetails" :key="i">
               <v-container fluid>
-                <v-img class="swiper-image" :src="productFlashDealDetail.products.productImages[0].file_path" @click="viewProduct(productFlashDealDetail.product_id)" />
+                <v-img class="swiper-image" :src="productFlashDealDetail.products.productImages[0].file_path" lazy-src="@/assets/images/no-image.png" @click="viewProduct(productFlashDealDetail.product_id)" />
                 <v-container fluid>
                   <v-tooltip bottom>
                     <template v-slot:activator="{ on }">

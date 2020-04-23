@@ -11,7 +11,7 @@
           <swiper class="swiper" :options="swiperOption">
             <swiper-slide v-for="(productIsFeatured, i) in productIsFeaturedList" :key="i">
               <v-container fluid>
-                <v-img class="swiper-image" :src="productIsFeatured.productImages[0].file_path" @click="viewProduct(productIsFeatured.id)" />
+                <v-img class="swiper-image" :src="productIsFeatured.productImages[0].file_path" lazy-src="@/assets/images/no-image.png" @click="viewProduct(productIsFeatured.id)" />
                 <v-container fluid>
                   <v-tooltip bottom>
                     <template v-slot:activator="{ on }">

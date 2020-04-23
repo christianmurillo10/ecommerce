@@ -29,7 +29,7 @@
           <v-hover>
             <v-card tile class="product-card" slot-scope="{ hover }" :class="`elevation-${hover ? 5 : 1}`">
               <v-container fluid>
-                <v-img class="product-image" :src="item.productImages[0].file_path" @click="viewProduct(item.id)" />
+                <v-img class="product-image" :src="item.productImages[0].file_path" lazy-src="@/assets/images/no-image.png" @click="viewProduct(item.id)" />
                 <v-container fluid>
                   <v-tooltip bottom>
                     <template v-slot:activator="{ on }">
