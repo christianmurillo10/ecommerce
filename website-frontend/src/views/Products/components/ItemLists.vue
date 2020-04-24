@@ -82,7 +82,6 @@ export default {
     header: String,
     items: Array,
     itemCount: Number,
-    componentType: String
   },
   mixins: [Mixins],
 
@@ -115,12 +114,12 @@ export default {
       this.computePaginationLength();
     },
 
-    onPageChange() {
-      this.$router.push(`/${this.componentType}/${this.$route.params.id}/page/${this.pagination.page}`);
-    },
-
     computePaginationLength() {
       this.pagination.length =  Math.ceil(this.itemCount / this.pagination.limit);
+    },
+
+    onPageChange() {
+      this.$emit("onPageChange", this.pagination.page);
     }
   }
 }

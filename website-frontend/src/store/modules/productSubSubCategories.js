@@ -22,6 +22,20 @@ const actions = {
       }
     });
   },
+  getDataByProductSubCategoryId({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
+    let url = `${process.env.VUE_APP_API_BACKEND}/productSubSubCategories/findAllbyProductSubCategoryId/${payload}`;
+    return new Promise((resolve, reject) => {
+      try {
+        axios
+          .get(url)
+          .then(response => {
+            commit("SET_DATA", response.data.result);
+          });
+      } catch (err) {
+        reject(err);
+      }
+    });
+  },
   getDataById({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
     let url = `${process.env.VUE_APP_API_BACKEND}/productSubSubCategories/${payload}`;
     let header = { headers: { Token: localStorage.getItem("token") } };
