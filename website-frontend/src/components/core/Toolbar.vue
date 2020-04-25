@@ -40,7 +40,7 @@
               <v-form ref="form" @submit.prevent="search">
                 <v-layout row wrap>
                   <v-text-field
-                    v-model="keywords"
+                    v-model="keyword"
                     flat
                     outlined
                     hide-details
@@ -186,44 +186,57 @@ import { mapState, mapGetters, mapActions, mapMutations } from "vuex";
 
 export default {
   data: () => ({
-    keywords: "",
+    keyword: "",
     cart: false,
     fab: false
   }),
+  
+  mounted() {
+    this.initialLoad();
+  },
+
   computed: {
     ...mapState("appbar", ["primaryDrawer"]),
     ...mapState("customerCarts", ["customerCartList"]),
     ...mapGetters("customerCarts", ["getCustomerCartTotalPrice"]),
-    ...mapState("products", ["productSearchKeyword"]),
     avatar() {
       return "/img/logo.png";
     }
   },
+
+  watch: {
+    "$route.params.keyword": function (val) {
+      if (!_.isUndefined(val)) this.keyword = this.$route.params.keyword;
+      else this.keyword = "";
+    }
+  },
+
   methods: {
     ...mapActions("appbar", ["setPrimaryDrawerModel"]),
-    ...mapMutations("products", {
-      setProductSearchKeyword: "SET_DATA_SEARCH_KEYWORD"
-    }),
     ...mapMutations("customerCarts", {
       deleteCartData: "DELETE_DATA"
     }),
 
+    initialLoad() {
+      if (!_.isUndefined(this.$route.params.keyword)) this.keyword = this.$route.params.keyword;
+      else this.keyword = "";
+    },
+
     search() {
       if (this.$refs.form.validate()) {
-        if (
-          !_.isEmpty(this.keywords) &&
-          this.productSearchKeyword !== this.keywords
-        ) {
-          this.setProductSearchKeyword(this.keywords);
-          this.$router.push(`/search/${this.keywords}/page/1`);
+        if (!_.isEmpty(this.keyword) && this.$route.params.keyword !== this.keyword) {
+          if (this.$route.params.id === undefined) this.$router.push(`/search/${this.keyword}/page/1`);
+          else this.$router.push(`/sub-category/${this.$route.params.id}/search/${this.keyword}/page/1`);
         }
       }
     },
+
     onScroll(e) {
       if (typeof window === "undefined") return;
       const top = window.pageYOffset || e.target.scrollTop || 0;
       this.fab = top > 300;
     },
+
     toTop() {
       this.$vuetify.goTo(0);
     }

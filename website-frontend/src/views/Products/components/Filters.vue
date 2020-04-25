@@ -4,10 +4,11 @@
       <span class="title"><v-icon class="mb-1">mdi-view-list</v-icon>Related Categories</span>
       <v-flex xs12 sm12 md12 lg12>
         <v-list dense flat color="transparent">
-          <v-list-item-group :value="indexOfItemListByRouteId" mandatory color="primary">
+          <v-list-item-group :value="indexOfItemListByRouteId" color="primary">
             <v-list-item
               v-for="(item, i) in itemList"
               :key="i"
+              :disabled="i === indexOfItemListByRouteId ? true : false"
               @click="onRelatedCategoriesChange(item.id)"
             >
               <v-list-item-content>

@@ -1,5 +1,5 @@
 <template>
-  <v-card>
+  <v-card v-if="productFlashDealHeaderTodayFlashDeal.length !== 0">
     <v-card-title>
       TODAY'S DEAL
       <v-spacer></v-spacer>
@@ -48,6 +48,7 @@
       </v-flex>
     </v-card-text>
   </v-card>
+  <v-divider v-else></v-divider>
 </template>
 
 <script>

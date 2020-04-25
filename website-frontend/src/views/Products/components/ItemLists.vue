@@ -7,7 +7,7 @@
     <template v-slot:header>
       <div class="title">
         Results for
-        <b>{{ header }}</b>
+        <b>"{{ header }}"</b>
         ({{ itemCount }})
       </div>
       <v-row>
@@ -101,6 +101,9 @@ export default {
   watch: {
     "itemCount": function (val) {
       this.computePaginationLength();
+    },
+    "$route.params.page": function (val) {
+      this.setDefault();
     }
   },
 

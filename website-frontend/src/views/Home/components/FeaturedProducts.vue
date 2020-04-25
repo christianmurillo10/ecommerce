@@ -1,5 +1,5 @@
 <template>
-  <v-card>
+  <v-card v-if="productIsFeaturedList.length !== 0">
     <v-card-title>
       FEATURED PRODUCTS
       <v-spacer></v-spacer>
@@ -45,6 +45,7 @@
       </v-flex>
     </v-card-text>
   </v-card>
+  <v-divider v-else></v-divider>
 </template>
 
 <script>

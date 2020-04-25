@@ -6,7 +6,7 @@ import CustomerCart from '../views/CustomerCarts/Index.vue'
 import ProductCategories from '../views/Products/Categories.vue'
 import ProductSubCategories from '../views/Products/SubCategories.vue'
 import ProductSubSubCategories from '../views/Products/SubSubCategories.vue'
-import ProductIndexBySearch from '../views/Products/IndexBySearch.vue'
+import ProductSearch from '../views/Products/Search.vue'
 import ProductView from '../views/Products/View.vue'
 
 Vue.use(VueRouter)
@@ -29,7 +29,7 @@ const routes = [
   },
   {
     path: '/category/:id/page/:page',
-    name: 'productCategoryById',
+    name: 'productByCategoryId',
     component: ProductCategories
   },
   {
@@ -44,8 +44,13 @@ const routes = [
   },
   {
     path: '/search/:keyword/page/:page',
-    name: 'productBySearch',
-    component: ProductIndexBySearch
+    name: 'productSearch',
+    component: ProductSearch
+  },
+  {
+    path: '/sub-category/:id/search/:keyword/page/:page',
+    name: 'productSearchBySubCategory',
+    component: ProductSearch
   },
   {
     path: '/products/:id',
