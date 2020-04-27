@@ -48,7 +48,7 @@ const routes = [
     component: ProductSearch
   },
   {
-    path: '/sub-category/:id/search/:keyword/page/:page',
+    path: '/related/:relatedId/search/:keyword/page/:page',
     name: 'productSearchBySubCategory',
     component: ProductSearch
   },

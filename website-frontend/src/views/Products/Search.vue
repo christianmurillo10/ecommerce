@@ -29,11 +29,12 @@ export default {
   data: () => ({
     keyword: "",
     routeId: -1,
+    routePage: 0,
     limit: 60,
     offset: 0
   }),
 
-  mounted() {
+  created() {
     this.initialLoad();
   },
 
@@ -42,11 +43,14 @@ export default {
   },
 
   watch: {
-    "$route.params.id": function(val) {
+    "$route.params.relatedId": function(val) {
+      if (!_.isUndefined(val)) this.initialLoad();
+    },
+    "$route.params.keyword": function(val) {
       if (!_.isUndefined(val)) this.initialLoad();
     },
     "$route.params.page": function(val) {
-      if (!_.isUndefined(val)) this.initialLoad();
+      if (!_.isUndefined(val) && parseInt(val) !== this.routePage) this.initialLoad();
     }
   },
 
@@ -55,21 +59,22 @@ export default {
 
     initialLoad() {
       this.keyword = this.$route.params.keyword;
-      this.routeId = this.$route.params.id === undefined ? -1 : parseInt(this.$route.params.id);
-      this.offset = this.$route.params.page === 1 ? 0 : (this.$route.params.page - 1) * this.limit;
+      this.routeId = this.$route.params.relatedId === undefined ? -1 : parseInt(this.$route.params.relatedId);
+      this.routePage = parseInt(this.$route.params.page);
+      this.offset = this.routePage === 1 ? 0 : (this.routePage - 1) * this.limit;
       if (this.routeId === -1) this.getProductDataBySearchWithRelatedCategories({ keyword: this.keyword, limit: this.limit, offset: this.offset });
       else this.getProductDataBySearchBySubCategoryIdWithRelatedCategories({ sub_category_id: this.routeId, keyword: this.keyword, limit: this.limit, offset: this.offset })
     },
 
     onRelatedCategoriesChange(id) {
       if (parseInt(this.routeId) !== id) {
-        this.$router.push(`/sub-category/${id}/search/${this.keyword}/page/1`);
+        this.$router.push(`/related/${id}/search/${this.keyword}/page/1`);
       }
     },
 
     onPageChange(page) {
       if (this.routeId === -1) this.$router.push(`/search/${this.keyword}/page/${page}`);
-      else this.$router.push(`/sub-category/${this.routeId}/search/${this.keyword}/page/${page}`);
+      else this.$router.push(`/related/${this.routeId}/search/${this.keyword}/page/${page}`);
     }
   }
 }

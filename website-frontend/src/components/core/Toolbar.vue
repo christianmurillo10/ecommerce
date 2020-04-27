@@ -224,10 +224,7 @@ export default {
 
     search() {
       if (this.$refs.form.validate()) {
-        if (!_.isEmpty(this.keyword) && this.$route.params.keyword !== this.keyword) {
-          if (this.$route.params.id === undefined) this.$router.push(`/search/${this.keyword}/page/1`);
-          else this.$router.push(`/sub-category/${this.$route.params.id}/search/${this.keyword}/page/1`);
-        }
+        if (!_.isEmpty(this.keyword) && this.$route.params.keyword !== this.keyword) this.$router.push(`/search/${this.keyword}/page/1`);
       }
     },
 

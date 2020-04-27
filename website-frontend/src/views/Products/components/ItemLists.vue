@@ -15,6 +15,7 @@
         <div>
           <v-pagination
             v-model="pagination.page"
+            :key="`${pagination.length}${pagination.page}`"
             :length="pagination.length"
             :total-visible="pagination.visible"
             :disabled="pagination.length === 1 ? true : false"
@@ -60,6 +61,7 @@
         <div>
           <v-pagination
             v-model="pagination.page"
+            :key="`${pagination.length}${pagination.page}`"
             :length="pagination.length"
             :total-visible="pagination.visible"
             :disabled="pagination.length === 1 ? true : false"
@@ -100,10 +102,10 @@ export default {
 
   watch: {
     "itemCount": function (val) {
-      this.computePaginationLength();
+      if (!_.isUndefined(val)) this.setDefault();
     },
     "$route.params.page": function (val) {
-      this.setDefault();
+      if (!_.isUndefined(val) && parseInt(this.$route.params.page) !== 1) this.setDefault();
     }
   },
 

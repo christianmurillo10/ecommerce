@@ -28,6 +28,7 @@ export default {
 
   data: () => ({
     routeId: 0,
+    routePage: 0,
     limit: 60,
     offset: 0
   }),
@@ -42,11 +43,11 @@ export default {
   },
 
   watch: {
-    "$route.params.id": function() {
-      this.initialLoad();
+    "$route.params.id": function(val) {
+      if (!_.isUndefined(val)) this.initialLoad();
     },
-    "$route.params.page": function() {
-      this.initialLoad();
+    "$route.params.page": function(val) {
+      if (!_.isUndefined(val) && parseInt(val) !== this.routePage) this.initialLoad();
     }
   },
 
@@ -56,7 +57,8 @@ export default {
 
     initialLoad() {
       this.routeId = parseInt(this.$route.params.id);
-      this.offset = this.$route.params.page === 1 ? 0 : (this.$route.params.page - 1) * this.limit;
+      this.routePage = parseInt(this.$route.params.page);
+      this.offset = this.routePage === 1 ? 0 : (this.routePage - 1) * this.limit;
       this.getProductDataByProductSubSubCategoryIdWithLimitOffset({ sub_sub_category_id: this.$route.params.id, limit: this.limit, offset: this.offset });
       this.getProductSubSubCategoryDataById(this.$route.params.id);
       this.getProductSubSubCategoryDataByProductSubCategoryId(this.$route.params.subCategoryId);
