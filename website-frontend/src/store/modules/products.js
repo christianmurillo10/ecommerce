@@ -15,10 +15,14 @@ const state = {
   productBySubSubCategoryTotalCount: 0,
   productBySearchTotalCount: 0,
   productBySearchRelatedCategories: [],
-  // productDataById: {}
+  productDataById: {}
 };
 
-const getters = { };
+const getters = {
+  getProductAvailableStockBySku: (state) => (sku) => {
+    return state.productDataById.inventories.find(inventory => inventory.sku === sku).stock_available;
+  },
+};
 
 const actions = {
   getDataByIsFeatured({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
@@ -206,29 +210,29 @@ const actions = {
       }
     });
   },
-  // getDataById({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
-  //   let url = `${process.env.VUE_APP_API_BACKEND}/product/${payload}`;
-  //   let header = { headers: { Token: localStorage.getItem("token") } };
-  //   return new Promise((resolve, reject) => {
-  //     try {
-  //       axios
-  //         .get(url, header)
-  //         .then(response => {
-  //           let obj = response.data.result;
-  //           obj.productImages.forEach(element => {
-  //             if (!_.isEmpty(element)) {
-  //               element.file_path = `${process.env.VUE_APP_API_BACKEND}/productImage/viewImage/${element.file_name}`;
-  //             } else {
-  //               element.file_path = require("../../assets/images/no-image.png");
-  //             }
-  //           });
-  //           commit("SET_DATA_BY_ID", obj);
-  //         });
-  //     } catch (err) {
-  //       reject(err);
-  //     }
-  //   });
-  // }
+  getDataById({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
+    let url = `${process.env.VUE_APP_API_BACKEND}/products/${payload}`;
+    let header = { headers: { Token: localStorage.getItem("token") } };
+    return new Promise((resolve, reject) => {
+      try {
+        axios
+          .get(url, header)
+          .then(response => {
+            let obj = response.data.result;
+            obj.productImages.forEach(element => {
+              if (!_.isEmpty(element)) {
+                element.file_path = `${process.env.VUE_APP_API_BACKEND}/productImages/viewImage/${element.file_name}/${element.type}`;
+              } else {
+                element.file_path = require("../../assets/images/no-image.png");
+              }
+            });
+            commit("SET_DATA_BY_ID", obj);
+          });
+      } catch (err) {
+        reject(err);
+      }
+    });
+  }
 };
 
 const mutations = {
@@ -286,13 +290,13 @@ const mutations = {
       state.productBySearchRelatedCategories = [];
     }
   },
-  // SET_DATA_BY_ID(state, payload) {
-  //   if (payload) {
-  //     state.productDataById = payload;
-  //   } else {
-  //     state.productDataById = null;
-  //   }
-  // }
+  SET_DATA_BY_ID(state, payload) {
+    if (payload) {
+      state.productDataById = payload;
+    } else {
+      state.productDataById = {};
+    }
+  }
 };
 
 export default {

@@ -70,7 +70,7 @@ export default {
 
 <style scoped lang="scss">
 .v-menu__content {
-  top: 22% !important;
+  top: 20% !important;
   left: 28% !important;
   box-shadow: none;
 }

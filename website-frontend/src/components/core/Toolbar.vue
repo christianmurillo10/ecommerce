@@ -1,7 +1,7 @@
 <template>
-  <v-layout row wrap>
+  <v-layout wrap>
     <v-flex xs12 sm12 md12 lg12>
-      <v-toolbar flat dense class="hidden-sm-and-down">
+      <!-- <v-toolbar flat dense class="hidden-sm-and-down">
         <v-container class="col-lg-10 offset-lg-1">
           <v-layout row wrap>
             <v-flex xs12 sm12 md6 lg6>
@@ -24,9 +24,29 @@
             </v-flex>
           </v-layout>
         </v-container>
-      </v-toolbar>
-      <v-toolbar>
+      </v-toolbar> -->
+      <v-toolbar dense prominent elevation="1">
         <v-container class="col-lg-10 offset-lg-1">
+          <v-layout row wrap  class="hidden-sm-and-down">
+            <v-flex xs12 sm12 md6 lg6>
+              <v-layout>
+                <p class="font-weight-medium subtitle-2 my-1">Follow us on</p>
+                <v-btn icon small>
+                  <v-icon>mdi-facebook</v-icon>
+                </v-btn>
+                <v-btn icon small>
+                  <v-icon>mdi-instagram</v-icon>
+                </v-btn>
+              </v-layout>
+            </v-flex>
+            <v-flex xs12 sm12 md6 lg6>
+              <v-layout justify-end>
+                <v-btn text small>Track My Order</v-btn>
+                <v-btn text small>Login</v-btn>
+                <v-btn text small>Registration</v-btn>
+              </v-layout>
+            </v-flex>
+          </v-layout>
           <v-layout row wrap>
             <v-flex xs4 sm4 md4 lg4>
               <v-layout justify-start>
@@ -72,6 +92,7 @@
                   :close-on-content-click="false"
                   :nudge-width="200"
                   offset-y
+                  left
                   transition="slide-x-reverse-transition"
                 >
                   <template v-slot:activator="{ on: { click } }">
@@ -103,16 +124,16 @@
                           <tbody>
                             <tr v-for="item in customerCartList" :key="item.index">
                               <td>
-                                <router-link v-bind:to="`/product/${item.product_id}`">
+                                <router-link v-bind:to="`/products/${item.product_id}`">
                                   <v-img :src="item.file_path" max-height="60px" max-width="60px"></v-img>
                                 </router-link>
                               </td>
                               <td>
                                 <v-row class="font-weight-medium">{{ item.name }}</v-row>
-                                <v-row>{{ `x${item.quantity} &#8369${item.total_price}` }}</v-row>
+                                <v-row>{{ `x${item.quantity} &#8369 ${item.total_price}` }}</v-row>
                               </td>
                               <td class="justify-center">
-                                <v-icon small @click="deleteCartData(item.index)">mdi-delete</v-icon>
+                                <v-icon small color="error" @click="deleteCartData(item.index)">mdi-delete</v-icon>
                               </td>
                             </tr>
                           </tbody>
@@ -128,7 +149,7 @@
                           <p class="font-weight-medium">Subtotal</p>
                         </v-layout>
                         <v-layout justify-end>
-                          <p class="font-weight-medium">{{ `&#8369${getCustomerCartTotalPrice}` }}</p>
+                          <p class="font-weight-medium">{{ `&#8369 ${getCustomerCartTotalPrice}` }}</p>
                         </v-layout>
                       </v-layout>
                     </v-card-subtitle>

@@ -7,7 +7,7 @@ import ProductCategories from '../views/Products/Categories.vue'
 import ProductSubCategories from '../views/Products/SubCategories.vue'
 import ProductSubSubCategories from '../views/Products/SubSubCategories.vue'
 import ProductSearch from '../views/Products/Search.vue'
-import ProductView from '../views/Products/View.vue'
+import ProductDetails from '../views/Products/Details.vue'
 
 Vue.use(VueRouter)
 
@@ -55,7 +55,7 @@ const routes = [
   {
     path: '/products/:id',
     name: 'productById',
-    component: ProductView
+    component: ProductDetails
   }
 ]
 

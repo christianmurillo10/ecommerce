@@ -304,7 +304,12 @@ module.exports = {
             where: { type: 2, is_deleted: 0 },
             required: false 
           },
-          { model: Model.Inventories, as: "inventories", attributes: ['stock_available', 'price_amount', 'product_id'], required: false },
+          { 
+            model: Model.Inventories, as: "inventories", 
+            attributes: ['stock_available', 'price_amount', 'product_id'], 
+            where: { is_deleted: 0 },
+            required: false 
+          },
         ]
       };
       countCriteria = { where: { name: { $like: `%${params.keyword}%` }, is_deleted: 0 } };
@@ -392,7 +397,12 @@ module.exports = {
             where: { type: 2, is_deleted: 0 },
             required: false 
           },
-          { model: Model.Inventories, as: "inventories", attributes: ['stock_available', 'price_amount', 'product_id'], required: false },
+          { 
+            model: Model.Inventories, as: "inventories", 
+            attributes: ['stock_available', 'price_amount', 'product_id'], 
+            where: { is_deleted: 0 },
+            required: false 
+          },
         ]
       };
       countCriteria = { where: { name: { $like: `%${params.keyword}%` }, is_deleted: 0 } };
@@ -490,7 +500,12 @@ module.exports = {
             where: { type: 2, is_deleted: 0 },
             required: false 
           },
-          { model: Model.Inventories, as: "inventories", attributes: ['stock_available', 'price_amount', 'product_id'], required: false },
+          { 
+            model: Model.Inventories, as: "inventories", 
+            attributes: ['stock_available', 'price_amount', 'product_id'], 
+            where: { is_deleted: 0 },
+            required: false 
+          },
         ]
       };
       countCriteria = { where: { name: { $like: `%${params.keyword}%` }, product_sub_category_id: params.subCategoryId, is_deleted: 0 } };
@@ -634,7 +649,12 @@ module.exports = {
             where: { type: 3, is_deleted: 0 },
             required: false 
           },
-          { model: Model.Inventories, as: "inventories", attributes: ['stock_available', 'product_id'], required: false },
+          { 
+            model: Model.Inventories, as: "inventories", 
+            attributes: ['stock_available', 'product_id'], 
+            where: { is_deleted: 0 },
+            required: false 
+          },
         ]
       };
       // Execute findAll query
@@ -714,8 +734,18 @@ module.exports = {
             where: { type: 2, is_deleted: 0 },
             required: false 
           },
-          { model: Model.ProductOptions, as: "productOptions", attributes: ['id', 'title', 'values', 'product_id'], required: false },
-          { model: Model.Inventories, as: "inventories", attributes: ['stock_available', 'product_id'], required: false },
+          { 
+            model: Model.ProductOptions, as: "productOptions", 
+            attributes: ['id', 'title', 'values', 'product_id'], 
+            where: { is_deleted: 0 },
+            required: false 
+          },
+          { 
+            model: Model.Inventories, as: "inventories", 
+            attributes: ['stock_available', 'product_id'], 
+            where: { is_deleted: 0 },
+            required: false 
+          },
         ]
       };
       countCriteria = { where: { is_deleted: 0 } };
@@ -798,7 +828,12 @@ module.exports = {
             where: { type: 2, is_deleted: 0 },
             required: false 
           },
-          { model: Model.Inventories, as: "inventories", attributes: ['stock_available', 'price_amount', 'product_id'], required: false },
+          { 
+            model: Model.Inventories, as: "inventories", 
+            attributes: ['stock_available', 'price_amount', 'product_id'], 
+            where: { is_deleted: 0 },
+            required: false 
+          },
         ]
       };
       countCriteria = { where: { product_category_id: params.productCategoryId, is_deleted: 0 } };
@@ -881,7 +916,12 @@ module.exports = {
             where: { type: 2, is_deleted: 0 },
             required: false 
           },
-          { model: Model.Inventories, as: "inventories", attributes: ['stock_available', 'price_amount', 'product_id'], required: false },
+          { 
+            model: Model.Inventories, as: "inventories", 
+            attributes: ['stock_available', 'price_amount', 'product_id'], 
+            where: { is_deleted: 0 },
+            required: false 
+          },
         ]
       };
       countCriteria = { where: { product_sub_category_id: params.productSubCategoryId, is_deleted: 0 } };
@@ -964,7 +1004,12 @@ module.exports = {
             where: { type: 2, is_deleted: 0 },
             required: false 
           },
-          { model: Model.Inventories, as: "inventories", attributes: ['stock_available', 'price_amount', 'product_id'], required: false },
+          { 
+            model: Model.Inventories, as: "inventories", 
+            attributes: ['stock_available', 'price_amount', 'product_id'], 
+            where: { is_deleted: 0 },
+            required: false 
+          },
         ]
       };
       countCriteria = { where: { product_sub_sub_category_id: params.productSubSubCategoryId, is_deleted: 0 } };
@@ -1018,10 +1063,24 @@ module.exports = {
           { model: Model.ProductCategories, as: "productCategories", attributes: ['name', 'description'] },
           { model: Model.ProductSubCategories, as: "productSubCategories", attributes: ['name', 'description'] },
           { model: Model.ProductSubSubCategories, as: "productSubSubCategories", attributes: ['name', 'description'] },
-          { model: Model.ProductImages, as: "productImages", attributes: ['id', 'file_name', 'order', 'type', 'product_id'], where: { is_deleted: 0 }, required: false },
-          { model: Model.ProductOptions, as: "productOptions", attributes: ['id', 'title', 'values', 'product_id'], where: { is_deleted: 0 }, required: false },
-          { model: Model.Inventories, as: "inventories", attributes: ['name', 'sku', 'stock_available', 'stock_available', 'price_amount', 'product_id'], where: { is_deleted: 0 }, required: false },
-          { model: Model.Users, as: "users", attributes: ['email', 'username'] }
+          { 
+            model: Model.ProductImages, as: "productImages", 
+            attributes: ['file_name', 'order', 'type', 'product_id'],
+            where: { type: 1, is_deleted: 0 },
+            required: false 
+          },
+          { 
+            model: Model.ProductOptions, as: "productOptions", 
+            attributes: ['id', 'title', 'values', 'product_id'], 
+            where: { is_deleted: 0 },
+            required: false 
+          },
+          { 
+            model: Model.Inventories, as: "inventories", 
+            attributes: ['sku', 'stock_available', 'product_id'], 
+            where: { is_deleted: 0 },
+            required: false 
+          },
         ]
       };
       // Execute findAll query
