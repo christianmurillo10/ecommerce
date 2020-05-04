@@ -31,7 +31,7 @@
                       <template v-slot:default>
                         <tbody>
                           <tr v-for="(option, i) in productDetails.options" :key="i">
-                            <td>{{ option.title }}</td>
+                            <td>{{ option.title }} :</td>
                             <td>{{ option.value }}</td>
                           </tr>
                         </tbody>

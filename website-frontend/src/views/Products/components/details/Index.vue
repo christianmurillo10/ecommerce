@@ -50,7 +50,7 @@
           <v-flex xs12 sm12 md3 lg3>
             <span class="body-2 black--text">Quantity:</span>
           </v-flex>
-          <v-flex xs8 sm8 md3 lg3>
+          <v-flex xs7 sm7 md3 lg3>
             <v-text-field
               v-model="formData.quantity"
               placeholder
@@ -67,7 +67,7 @@
               required
             ></v-text-field>
           </v-flex>
-          <v-flex xs3 sm3 md5 lg5 offset-xs1 offset-sm1 offset-md1 offset-lg1>
+          <v-flex xs4 sm4 md5 lg5 offset-xs1 offset-sm1 offset-md1 offset-lg1>
             <span v-if="stockAvailable === 0" class="body-2 red--text">Out of stock</span>
             <span v-else class="body-2">{{ `${stockAvailable} ${details.unit} available` }}</span>
           </v-flex>
@@ -75,20 +75,24 @@
       </v-container>
     </v-flex>
     <v-flex xs12 sm12 md12 lg12>
-      <v-btn
-        color="blue-grey"
-        outlined
-        class="mx-2 white--text"
-        :disabled="!valid"
-      >BUY NOW</v-btn>
-      <v-btn
-        color="blue-grey"
-        class="mx-2 white--text"
-        type="submit"
-        :disabled="!valid"
-      >
-        <v-icon left dark>mdi-cart</v-icon>ADD TO CART
-      </v-btn>
+      <v-layout row wrap class="text-center">
+        <v-flex xs12 sm12 md12 lg12>
+          <v-btn
+            color="blue-grey"
+            outlined
+            class="ma-1 white--text"
+            :disabled="!valid"
+          >BUY NOW</v-btn>
+          <v-btn
+            color="blue-grey"
+            class="ma-1 white--text"
+            type="submit"
+            :disabled="!valid"
+          >
+            <v-icon left dark>mdi-cart</v-icon>ADD TO CART
+          </v-btn>
+        </v-flex>
+      </v-layout>
     </v-flex>
     <v-flex xs12 sm12 md12 lg12>
       <AddToCartModal ref="addToCartModal" />
