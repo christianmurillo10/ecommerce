@@ -1,31 +1,72 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+import Login from '../views/Pages/Login.vue'
+import Register from '../views/Pages/Registration/Register.vue'
+import RegisterComplete from '../views/Pages/Registration/Complete.vue'
 import Home from '../views/Home/Index.vue'
-import Login from '../views/Login.vue'
 import CustomerCart from '../views/CustomerCarts/Index.vue'
 import ProductCategories from '../views/Products/Categories.vue'
 import ProductSubCategories from '../views/Products/SubCategories.vue'
 import ProductSubSubCategories from '../views/Products/SubSubCategories.vue'
 import ProductSearch from '../views/Products/Search.vue'
 import ProductDetails from '../views/Products/Details.vue'
+import store from '../store'
 
 Vue.use(VueRouter)
 
 const routes = [
+  {
+    path: '/login',
+    name: 'login',
+    component: Login,
+    beforeEnter: (to, from, next) => {
+      if (store.state.customerAuthentication.token) {
+        next("/");
+      } else {
+        next();
+      }
+    }
+  },
+  {
+    path: '/register',
+    name: 'register',
+    component: Register,
+    beforeEnter: (to, from, next) => {
+      if (store.state.customerAuthentication.token) {
+        next("/");
+      } else {
+        next();
+      }
+    }
+  },
+  {
+    path: '/register/complete',
+    name: 'registerComplete',
+    component: RegisterComplete,
+    beforeEnter: (to, from, next) => {
+      if (store.state.customerAuthentication.token) {
+        next("/");
+      } else {
+        next();
+      }
+    }
+  },
   {
     path: '/',
     name: 'home',
     component: Home
   },
   {
-    path: '/login',
-    name: 'login',
-    component: Login
-  },
-  {
     path: '/cart',
     name: 'customerCart',
-    component: CustomerCart
+    component: CustomerCart,
+    beforeEnter: (to, from, next) => {
+      if (store.state.customerAuthentication.token) {
+        next();
+      } else {
+        next("/login");
+      }
+    }
   },
   {
     path: '/category/:id/page/:page',

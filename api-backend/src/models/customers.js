@@ -1,4 +1,6 @@
 'use strict';
+const bcrypt = require('../helpers/bcrypt-helper');
+
 module.exports = (sequelize, DataTypes) => {
   const Customers = sequelize.define('Customers', {
     'id': {
@@ -9,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     'customer_no': {
       type: DataTypes.STRING(100),
-      allowNull: false
+      allowNull: true
     },
     'firstname': {
       type: DataTypes.STRING(100),
@@ -95,5 +97,10 @@ module.exports = (sequelize, DataTypes) => {
     timestamps: false
   });
   Customers.associate = (models) => {};
+
+  Customers.beforeCreate(async (value, options) => {
+    value.password = await bcrypt.hashPassword(value.password);
+  });
+
   return Customers;
 };

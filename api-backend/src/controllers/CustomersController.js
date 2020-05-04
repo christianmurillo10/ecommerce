@@ -89,6 +89,78 @@ module.exports = {
   },
 
   /**
+   * Create Pending
+   * @param req
+   * @param res
+   * @returns {Promise<void>}
+   * @routes POST /customers/create/pending
+   */
+  createPending: async (req, res) => {
+    const params = req.body;
+    const emailChecker = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+    let criteria, initialValues, data;
+
+    // Validators
+    if (_.isUndefined(params))
+      return res.badRequest({ err: "Invalid Parameter: [params]" });
+    if (_.isEmpty(params))
+      return res.badRequest({ err: "Empty Parameter: [params]" });
+
+    // Override variables
+    params.created_at = moment().utc(8).format('YYYY-MM-DD HH:mm:ss');
+    params.gender_type = params.gender_type === null ? null : params.gender_type.toLocaleString();
+    params.status = 3;
+
+    try {
+      // Validators
+      if (_.isEmpty(params.firstname)) return res.json({ status: 200, message: "Firstname required.", result: false });
+      if (_.isEmpty(params.lastname)) return res.json({ status: 200, message: "Lastname required.", result: false });
+      if (_.isEmpty(params.email)) return res.json({ status: 200, message: "Email required.", result: false });
+      if (_.isEmpty(params.password)) return res.json({ status: 200, message: "Password required.", result: false });
+      if (_.isEmpty(params.primary_address)) return res.json({ status: 200, message: "Primary Address required.", result: false });
+      if (_.isEmpty(params.contact_no)) return res.json({ status: 200, message: "Contact No. required.", result: false });
+      if (!emailChecker.test(params.email)) return res.json({ status: 200, message: "Invalid email format.", result: false });
+
+      // Pre-setting variables
+      criteria = { where: { email: params.email } };
+      initialValues = _.pick(params, [
+        'firstname', 
+        'middlename', 
+        'lastname', 
+        'email', 
+        'password', 
+        'primary_address', 
+        'contact_no', 
+        'gender_type', 
+        'status', 
+        'created_at'
+      ]);
+      // Execute findAll query
+      data = await Model.Customers.findAll(criteria);
+      if (_.isEmpty(data[0])) {
+        let finalData = await Model.Customers.create(initialValues);
+        res.json({
+          status: 200,
+          message: "Successfully created data.",
+          result: _.omit(finalData.get({ plain: true }), ['is_deleted'])
+        });
+      } else {
+        res.json({
+          status: 200,
+          message: "Email already exist.",
+          result: false
+        });
+      }
+    } catch (err) {
+      res.json({
+        status: 401,
+        err: err,
+        message: "Failed creating data."
+      });
+    }
+  },
+
+  /**
    * Update
    * @route PUT /customers/update/:id
    * @param req

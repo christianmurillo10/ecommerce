@@ -4,7 +4,9 @@ import Vuex from 'vuex'
 // Modules
 import appbar from './modules/appbar'
 import snackbars from './modules/utilities/snackbars'
+import customerAuthentication from './modules/customerAuthentication'
 import customerCarts from './modules/customerCarts'
+import customers from './modules/customers'
 import frontendSliderImages from './modules/frontendSliderImages'
 import productImages from './modules/productImages'
 import productCategories from './modules/productCategories'
@@ -25,7 +27,9 @@ export default new Vuex.Store({
   modules: {
     appbar,
     snackbars,
+    customerAuthentication,
     customerCarts,
+    customers,
     frontendSliderImages,
     productImages,
     productCategories,

@@ -1,30 +1,6 @@
 <template>
   <v-layout wrap>
     <v-flex xs12 sm12 md12 lg12>
-      <!-- <v-toolbar flat dense class="hidden-sm-and-down">
-        <v-container class="col-lg-10 offset-lg-1">
-          <v-layout row wrap>
-            <v-flex xs12 sm12 md6 lg6>
-              <v-layout>
-                <p class="font-weight-medium subtitle-2 my-1">Follow us on</p>
-                <v-btn icon small>
-                  <v-icon>mdi-facebook</v-icon>
-                </v-btn>
-                <v-btn icon small>
-                  <v-icon>mdi-instagram</v-icon>
-                </v-btn>
-              </v-layout>
-            </v-flex>
-            <v-flex xs12 sm12 md6 lg6>
-              <v-layout justify-end>
-                <v-btn text small>Track My Order</v-btn>
-                <v-btn text small>Login</v-btn>
-                <v-btn text small>Registration</v-btn>
-              </v-layout>
-            </v-flex>
-          </v-layout>
-        </v-container>
-      </v-toolbar> -->
       <v-toolbar dense prominent elevation="1">
         <v-container class="col-lg-10 offset-lg-1">
           <v-layout row wrap  class="hidden-sm-and-down">
@@ -42,8 +18,14 @@
             <v-flex xs12 sm12 md6 lg6>
               <v-layout justify-end>
                 <v-btn text small>Track My Order</v-btn>
-                <v-btn text small>Login</v-btn>
-                <v-btn text small>Registration</v-btn>
+                <div v-if="isLoggedIn">
+                  <v-btn text small to="/profile">Profile</v-btn>
+                  <v-btn text small @click="logout">Logout</v-btn>
+                </div>
+                <div v-else>
+                  <v-btn text small to="/register">Register</v-btn>
+                  <v-btn text small to="/login">Login</v-btn>
+                </div>
               </v-layout>
             </v-flex>
           </v-layout>
@@ -173,6 +155,11 @@
                       </v-card-actions>
                     </v-layout>
                   </v-card>
+                  <v-card width="400" v-else-if="isLoggedIn === false">
+                    <v-layout row wrap justify-center>
+                      <v-card-title class="title"><span>You haven't login. please <router-link v-bind:to="'/login'">login</router-link>.</span></v-card-title>
+                    </v-layout>
+                  </v-card>
                   <v-card width="400" v-else>
                     <v-layout row wrap justify-center>
                       <v-card-title class="title">Your Cart is empty!</v-card-title>
@@ -216,10 +203,23 @@ export default {
     this.initialLoad();
   },
 
+  created() {
+    this.$http.interceptors.response.use(undefined, function(err) {
+      return new Promise(function(resolve, reject) {
+        if (err.status === 401 && err.config && !err.config.__isRetryRequest) {
+          this.$store.dispatch(logout);
+        }
+        throw err;
+      });
+    });
+  },
+
   computed: {
     ...mapState("appbar", ["primaryDrawer"]),
     ...mapState("customerCarts", ["customerCartList"]),
     ...mapGetters("customerCarts", ["getCustomerCartTotalPrice"]),
+    ...mapGetters("customerAuthentication", ["isLoggedIn"]),
+
     avatar() {
       return "/img/logo.png";
     }
@@ -234,9 +234,14 @@ export default {
 
   methods: {
     ...mapActions("appbar", ["setPrimaryDrawerModel"]),
-    ...mapMutations("customerCarts", {
-      deleteCartData: "DELETE_DATA"
-    }),
+    ...mapActions("customerAuthentication", ["setLogout"]),
+    ...mapMutations("customerCarts", { deleteCartData: "DELETE_DATA" }),
+
+    logout() {
+      this.setLogout().then(() => {
+        this.$router.push("/login");
+      });
+    },
 
     initialLoad() {
       if (!_.isUndefined(this.$route.params.keyword)) this.keyword = this.$route.params.keyword;

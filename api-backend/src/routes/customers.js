@@ -7,8 +7,11 @@ const authController = require('../controllers').auth;
 const customersController = require('../controllers').customers;
 
 // Without Authentication
+router.route('/login').post(authController.customerLogin);
+router.route('/logout').post(authController.customerlogout);
 router.route('/:id').get(customersController.findById);
 router.route('/viewImage/:fileName').get(customersController.viewImage);
+router.route('/create/pending').post(customersController.createPending);
 
 // With Authentication
 router.route('/countAllByStatusAndIsActive/:status/:isActive').get(authController.authorization, customersController.countAllByStatusAndIsActive);
