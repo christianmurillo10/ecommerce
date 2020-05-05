@@ -2,8 +2,8 @@ import axios from "axios";
 
 const state = {
   isLogin: false,
-  token: localStorage.getItem("customer-token") || "",
-  customerInfo: JSON.parse(localStorage.getItem("customer-details")) || null
+  token: localStorage.getItem("cToken") || "",
+  customerInfo: JSON.parse(localStorage.getItem("cDetails")) || null
 };
 
 const getters = {
@@ -34,8 +34,8 @@ const actions = {
             } else {
               let details = result.data;
               details.file_path = `${process.env.VUE_APP_API_BACKEND}/customers/viewImage/${details.file_name}`;
-              localStorage.setItem("customer-details", JSON.stringify(details));
-              localStorage.setItem("customer-token", token);
+              localStorage.setItem("cDetails", JSON.stringify(details));
+              localStorage.setItem("cToken", token);
               axios.defaults.headers.common["Authorization"] = token;
 
               commit("SET_LOGIN", result);
@@ -44,8 +44,8 @@ const actions = {
           })
           .catch(err => {
             console.log(err);
-            localStorage.removeItem("customer-details");
-            localStorage.removeItem("customer-token");
+            localStorage.removeItem("cDetails");
+            localStorage.removeItem("cToken");
           });
       } catch (err) {
         reject(err);
@@ -56,7 +56,7 @@ const actions = {
     let url = `${process.env.VUE_APP_API_BACKEND}/customers/logout`;
     let data = {
       email: state.customerInfo.email,
-      token: localStorage.getItem("customer-token")
+      token: localStorage.getItem("cToken")
     };
     let config = {
       "Content-Type": "application/json"
@@ -70,16 +70,16 @@ const actions = {
 
             if (status === 200) {
               commit("SET_LOGOUT");
-              localStorage.removeItem("customer-details");
-              localStorage.removeItem("customer-token");
+              localStorage.removeItem("cDetails");
+              localStorage.removeItem("cToken");
               delete axios.defaults.headers.common["Authorization"];
               resolve(response.data);
             }
           })
           .catch(err => {
             console.log(err);
-            localStorage.removeItem("customer-details");
-            localStorage.removeItem("customer-token");
+            localStorage.removeItem("cDetails");
+            localStorage.removeItem("cToken");
           });
       } catch (err) {
         reject(err);
