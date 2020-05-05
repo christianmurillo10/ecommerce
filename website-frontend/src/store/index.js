@@ -9,6 +9,7 @@ import customerCarts from './modules/customerCarts'
 import customers from './modules/customers'
 import frontendPolicyPages from './modules/frontendPolicyPages'
 import frontendSliderImages from './modules/frontendSliderImages'
+import frontendUsefulLinks from './modules/frontendUsefulLinks'
 import productImages from './modules/productImages'
 import productCategories from './modules/productCategories'
 import productSubCategories from './modules/productSubCategories'
@@ -33,6 +34,7 @@ export default new Vuex.Store({
     customers,
     frontendPolicyPages,
     frontendSliderImages,
+    frontendUsefulLinks,
     productImages,
     productCategories,
     productSubCategories,

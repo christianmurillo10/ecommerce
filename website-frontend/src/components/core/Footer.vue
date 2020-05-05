@@ -62,9 +62,9 @@
             <v-layout row wrap>
               <v-flex xs12 sm12 md12 lg12>
                 <v-container>
-                  <h4>QUICK LINKS</h4>
+                  <h4>USEFUL LINKS</h4>
                   <v-container>
-                    <v-row v-for="(link, i) in links" :key="i">
+                    <v-row v-for="(link, i) in frontendUsefulLinkList" :key="i">
                       <v-hover>
                         <router-link
                           slot-scope="{ hover }"
@@ -106,6 +106,8 @@
 </template>
 
 <script>
+import { mapState, mapActions } from "vuex";
+
 export default {
   data: () => ({
     companyDescription:
@@ -116,14 +118,6 @@ export default {
       phone: "09478850164 | 09451107821",
       email: "talktous.ecommerce@gmail.com"
     },
-    links: [
-      { name: "Home", url: "/" },
-      { name: "Categories", url: "/" },
-      { name: "Products", url: "/" },
-      { name: "Terms and Conditions", url: "/" },
-      { name: "About Us", url: "/" },
-      { name: "Contact Us", url: "/" }
-    ],
     socials: [
       { icon: "mdi-facebook", url: "/" },
       { icon: "mdi-twitter", url: "/" },
@@ -132,10 +126,22 @@ export default {
       { icon: "mdi-instagram", url: "/" }
     ]
   }),
+
+  created() {
+    this.getFrontendUsefulLinkData();
+  },
+
   computed: {
+    ...mapState("frontendUsefulLinks", ["frontendUsefulLinkList"]),
     avatar() {
       return "/img/logo.png";
     }
+  },
+
+  methods: {
+    ...mapActions("frontendUsefulLinks", {
+      getFrontendUsefulLinkData: "getData"
+    })
   }
 };
 </script>
