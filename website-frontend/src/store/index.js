@@ -7,6 +7,7 @@ import snackbars from './modules/utilities/snackbars'
 import customerAuthentication from './modules/customerAuthentication'
 import customerCarts from './modules/customerCarts'
 import customers from './modules/customers'
+import frontendPolicyPages from './modules/frontendPolicyPages'
 import frontendSliderImages from './modules/frontendSliderImages'
 import productImages from './modules/productImages'
 import productCategories from './modules/productCategories'
@@ -30,6 +31,7 @@ export default new Vuex.Store({
     customerAuthentication,
     customerCarts,
     customers,
+    frontendPolicyPages,
     frontendSliderImages,
     productImages,
     productCategories,

@@ -126,6 +126,7 @@ export default {
 
   computed: {
     ...mapGetters("products", ["getProductAvailableStockBySku"]),
+    ...mapGetters("customerAuthentication", ["isLoggedIn"]),
     totalPrice() {
       this.formData.total_price = this.details.price_amount * this.formData.quantity;
       return this.formData.total_price.toFixed(2);
@@ -193,18 +194,22 @@ export default {
     },
 
     submit() {
-      if (this.$refs.form.validate()) {
-        let obj = {
-          product_id: this.details.id,
-          file_path: this.details.productImages[0].file_path,
-          name: this.details.name,
-          options: this.formData.options,
-          quantity: this.formData.quantity,
-          price: this.details.price_amount,
-          total_price: this.totalPrice,
-        };
-        this.addCartData(obj);
-        this.$refs.addToCartModal.setDialog(true, obj);
+      if (this.isLoggedIn) {
+        if (this.$refs.form.validate()) {
+          let obj = {
+            product_id: this.details.id,
+            file_path: this.details.productImages[0].file_path,
+            name: this.details.name,
+            options: this.formData.options,
+            quantity: this.formData.quantity,
+            price: this.details.price_amount,
+            total_price: this.totalPrice,
+          };
+          this.addCartData(obj);
+          this.$refs.addToCartModal.setDialog(true, obj);
+        }
+      } else {
+        this.$router.push("/login");
       }
     }
   }

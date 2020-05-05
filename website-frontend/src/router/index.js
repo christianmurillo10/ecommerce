@@ -3,6 +3,11 @@ import VueRouter from 'vue-router'
 import Login from '../views/Pages/Login.vue'
 import Register from '../views/Pages/Registration/Register.vue'
 import RegisterComplete from '../views/Pages/Registration/Complete.vue'
+import PrivacyPolicy from '../views/Pages/Policies/Privacy.vue'
+import ReturnPolicy from '../views/Pages/Policies/Return.vue'
+import SellerPolicy from '../views/Pages/Policies/Seller.vue'
+import SupportPolicy from '../views/Pages/Policies/Support.vue'
+import TermsAndConditions from '../views/Pages/Policies/TermsAndConditions.vue'
 import Home from '../views/Home/Index.vue'
 import CustomerCart from '../views/CustomerCarts/Index.vue'
 import ProductCategories from '../views/Products/Categories.vue'
@@ -50,6 +55,31 @@ const routes = [
         next();
       }
     }
+  },
+  {
+    path: '/privacy-policy',
+    name: 'privacyPolicy',
+    component: PrivacyPolicy
+  },
+  {
+    path: '/return-policy',
+    name: 'returnPolicy',
+    component: ReturnPolicy
+  },
+  {
+    path: '/seller-policy',
+    name: 'sellerPolicy',
+    component: SellerPolicy
+  },
+  {
+    path: '/support-policy',
+    name: 'supportPolicy',
+    component: SupportPolicy
+  },
+  {
+    path: '/terms-and-conditions',
+    name: 'termsAndConditions',
+    component: TermsAndConditions
   },
   {
     path: '/',
