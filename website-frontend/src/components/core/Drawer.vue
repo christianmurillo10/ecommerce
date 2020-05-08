@@ -1,5 +1,4 @@
 <template>
-  <!-- <v-navigation-drawer v-model="primaryDrawer.model" :temporary="primaryDrawer.type" app color="orange darken-3" dark> -->
   <v-navigation-drawer
     v-model="primaryDrawer.model"
     :temporary="primaryDrawer.type"
@@ -8,7 +7,7 @@
     app
     dark
     mobile-break-point="991"
-    width="300"
+    width="270"
   >
     <v-list dense class="ml-n0">
       <v-list-item>
@@ -69,13 +68,6 @@ export default {
     items: [
       { icon: "mdi-home", text: "Home", to: "/" },
       {
-        icon: "mdi-chevron-up",
-        "icon-alt": "mdi-chevron-down",
-        text: "Categories",
-        model: false,
-        children: []
-      },
-      {
         icon: "mdi-file-document-box-outline",
         text: "Terms and Conditions",
         to: "/termsAndConditions"
@@ -85,27 +77,12 @@ export default {
     ]
   }),
 
-  mounted() {
-    this.getProductCategoryData();
-  },
+  mounted() { },
 
-  watch: {
-    productCategoryList(val) {
-      let obj = val;
-      if (obj) {
-        obj.forEach(element => {
-          this.items[1].children.push({
-            text: element.name,
-            to: `/category/${element.id}/page/1`
-          });
-        });
-      }
-    }
-  },
+  watch: { },
 
   computed: {
     ...mapState("appbar", ["primaryDrawer"]),
-    ...mapState("productCategories", ["productCategoryList"]),
     avatar() {
       return "/img/logo.png";
     },
@@ -114,11 +91,7 @@ export default {
     }
   },
 
-  methods: {
-    ...mapActions("productCategories", {
-      getProductCategoryData: "getData"
-    })
-  }
+  methods: { }
 };
 </script>
 
