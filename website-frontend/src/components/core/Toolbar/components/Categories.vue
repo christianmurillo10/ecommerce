@@ -6,10 +6,15 @@
     right
     transition="slide-x-reverse-transition"
   >
-    <template v-slot:activator="{ on }">
-      <v-btn icon v-on="on">
-        <v-icon>mdi-view-list</v-icon>
-      </v-btn>
+    <template v-slot:activator="{ on: { click } }">
+      <v-tooltip right>
+        <template v-slot:activator="{ on }">
+          <v-btn icon v-on:click="click" v-on="on" class="hidden-sm-and-down">
+            <v-icon>mdi-view-list</v-icon>
+          </v-btn>
+        </template>
+        <span>Categories</span>
+      </v-tooltip>
     </template>
 
     <v-list dense height="500" >

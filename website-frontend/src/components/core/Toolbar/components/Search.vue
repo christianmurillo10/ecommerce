@@ -1,5 +1,5 @@
 <template>
-  <v-form ref="form" @submit.prevent="search">
+  <v-form ref="form" @submit.prevent="search" class="hidden-sm-and-down">
     <v-layout row wrap>
       <v-text-field
         v-model="keyword"
@@ -9,7 +9,6 @@
         clearable
         dense
         placeholder="Search"
-        class="hidden-sm-and-down"
       />
       <v-btn outlined color="grey" height="40px" type="submit">
         <v-icon>mdi-magnify</v-icon>

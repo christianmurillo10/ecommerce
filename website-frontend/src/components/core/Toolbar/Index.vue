@@ -33,7 +33,7 @@
             <v-flex xs4 sm4 md4 lg4>
               <v-layout justify-start>
                 <Categories />
-                <!-- <v-app-bar-nav-icon @click.stop="setPrimaryDrawerModel(!primaryDrawer.model)" /> -->
+                <v-app-bar-nav-icon class="hidden-md-and-up" @click.stop="setPrimaryDrawerModel(!primaryDrawer.model)" />
                 <router-link to="/">
                   <v-img :src="avatar" max-height="50px" max-width="50px"></v-img>
                 </router-link>
