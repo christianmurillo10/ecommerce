@@ -33,7 +33,9 @@ const actions = {
               resolve(response.data);
             } else {
               let details = result.data;
-              details.file_path = `${process.env.VUE_APP_API_BACKEND}/customers/viewImage/${details.file_name}`;
+              if (details.file_name !== null && details.file_name !== undefined) details.file_path = `${process.env.VUE_APP_API_BACKEND}/customers/viewImage/${details.file_name}`;
+              else details.file_path = require("../../assets/images/no-image.png");
+              
               localStorage.setItem("cDetails", JSON.stringify(details));
               localStorage.setItem("cToken", token);
               axios.defaults.headers.common["Authorization"] = token;

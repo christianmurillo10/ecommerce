@@ -49,22 +49,12 @@
 </template>
 
 <script>
-import { mapState, mapActions } from "vuex";
+import { mapState } from "vuex";
 
 export default {
-  mounted() {
-    this.getProductCategoriesDataWithSubCategories();
-  },
-
   computed: {
     ...mapState("productCategories", ["productCategoryWithSubList"])
   },
-
-  methods: {
-    ...mapActions("productCategories", {
-      getProductCategoriesDataWithSubCategories: "getDataWithSubCategories"
-    })
-  }
 }
 </script>
 

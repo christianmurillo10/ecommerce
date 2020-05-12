@@ -60,6 +60,14 @@ export default {
       else return "";
     },
 
+    setFullname(fname, mname, lname) {
+      let firstname = fname ? fname.charAt(0).toUpperCase() + fname.slice(1) : "";
+      let middlename = mname ? `${mname.charAt(0).toUpperCase()}.` : "";
+      let lastname = lname ? lname.charAt(0).toUpperCase() + lname.slice(1) : "";
+
+      return `${firstname} ${middlename} ${lastname}`
+    },
+
     setFullnameLastnameFirst(fname, mname, lname) {
       let firstname = fname ? fname.charAt(0).toUpperCase() + fname.slice(1) : "";
       let middlename = mname ? `${mname.charAt(0).toUpperCase()}.` : "";

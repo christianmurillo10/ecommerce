@@ -1,6 +1,7 @@
 const Model = require('../models');
 const fs = require('fs');
 const path = require('path');
+const bcrypt = require('../helpers/bcrypt-helper');
 
 module.exports = {
   /**
@@ -70,7 +71,7 @@ module.exports = {
         res.json({
           status: 200,
           message: "Successfully created data.",
-          result: _.omit(finalData.get({ plain: true }), ['is_deleted'])
+          result: _.omit(finalData.get({ plain: true }), ['password', 'is_deleted'])
         });
       } else {
         res.json({
@@ -142,7 +143,7 @@ module.exports = {
         res.json({
           status: 200,
           message: "Successfully created data.",
-          result: _.omit(finalData.get({ plain: true }), ['is_deleted'])
+          result: _.omit(finalData.get({ plain: true }), ['password', 'is_deleted'])
         });
       } else {
         res.json({
@@ -211,7 +212,7 @@ module.exports = {
         res.json({
           status: 200,
           message: "Successfully updated data.",
-          result: finalData
+          result: _.omit(finalData.get({ plain: true }), ['password', 'is_deleted'])
         });
       } else {
         res.json({
@@ -261,6 +262,80 @@ module.exports = {
         status: 401,
         err: err,
         message: "Failed deleting data."
+      });
+    }
+  },
+
+  /**
+   * Change Password
+   * @route PUT /customers/changePassword/:id
+   * @param req
+   * @param res
+   * @returns {never}
+   */
+  changePassword: async (req, res) => {
+    const params = req.body;
+    let initialValues, data, compareOldPassword, compareNewPassword;
+
+    if (_.isUndefined(params))
+      return res.badRequest({ err: "Invalid Parameter: [params]" });
+    if (_.isEmpty(params))
+      return res.badRequest({ err: "Empty Parameter: [params]" });
+
+    try {
+      // Validators
+      if (_.isEmpty(params.old_password)) return res.json({ status: 200, message: "Old Password is required.", result: false });
+      if (_.isEmpty(params.new_password)) return res.json({ status: 200, message: "New Password is required.", result: false });
+
+      // Override variables
+      params.updated_at = moment().utc(8).format("YYYY-MM-DD HH:mm:ss");
+      params.password = params.new_password;
+
+      // Pre-setting variables
+      initialValues = _.pick(params, [
+        'password',
+        'updated_at'
+      ]);
+      // Execute findByPk query
+      data = await Model.Customers.findByPk(req.params.id);
+      if (!_.isEmpty(data)) {
+        compareOldPassword = await bcrypt.comparePassword(params.old_password, data.password);
+        if (compareOldPassword) {
+          compareNewPassword = await bcrypt.comparePassword(params.new_password, data.password);
+          if (!compareNewPassword) {
+            initialValues.password = await bcrypt.hashPassword(initialValues.password);
+            await data.update(initialValues);
+            res.json({
+              status: 200,
+              message: "Successfully changed password.",
+              result: true
+            });
+          } else {
+            res.json({
+              status: 200,
+              message: "New password cannot be the same as your old password.",
+              result: false
+            });
+          }
+        } else {
+          res.json({
+            status: 200,
+            message: "Old password is incorrect.",
+            result: false
+          });
+        }
+      } else {
+        res.json({
+          status: 200,
+          message: "Data doesn't exist.",
+          result: false
+        });
+      }
+    } catch (err) {
+      res.json({
+        status: 401,
+        err: err,
+        message: "Failed to change password."
       });
     }
   },

@@ -9,6 +9,7 @@ import SellerPolicy from '../views/Pages/Policies/Seller.vue'
 import SupportPolicy from '../views/Pages/Policies/Support.vue'
 import TermsAndConditions from '../views/Pages/Policies/TermsAndConditions.vue'
 import Home from '../views/Home/Index.vue'
+import Customers from '../views/Customers/Index.vue'
 import CustomerCart from '../views/CustomerCarts/Index.vue'
 import ProductCategories from '../views/Products/Categories.vue'
 import ProductSubCategories from '../views/Products/SubCategories.vue'
@@ -85,6 +86,18 @@ const routes = [
     path: '/',
     name: 'home',
     component: Home
+  },
+  {
+    path: '/profile',
+    name: 'customerProfile',
+    component: Customers,
+    beforeEnter: (to, from, next) => {
+      if (store.state.customerAuthentication.token) {
+        next();
+      } else {
+        next("/login");
+      }
+    }
   },
   {
     path: '/cart',

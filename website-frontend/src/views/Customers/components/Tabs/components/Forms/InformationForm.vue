@@ -1,0 +1,170 @@
+<template>
+  <v-form ref="form" @submit.prevent="update" v-model="valid" lazy-validation>
+    <v-card-text>
+      <v-flex xs12 sm12 md12>
+        <v-text-field
+          v-model="formData.firstname"
+          :rules="[rules.required, rules.max50Chars]"
+          label="Firstname"
+          required
+          dense
+        ></v-text-field>
+      </v-flex>
+      <v-flex xs12 sm12 md12>
+        <v-text-field
+          v-model="formData.middlename"
+          :rules="[rules.max50Chars]"
+          label="Middlename"
+          dense
+        ></v-text-field>
+      </v-flex>
+      <v-flex xs12 sm12 md12>
+        <v-text-field
+          v-model="formData.lastname"
+          :rules="[rules.required, rules.max50Chars]"
+          label="Lastname"
+          required
+          dense
+        ></v-text-field>
+      </v-flex>
+      <v-flex xs12 sm12 md12>
+        <v-text-field
+          v-model="formData.email"
+          :rules="[rules.required, rules.email]"
+          label="Email"
+          required
+          dense
+        ></v-text-field>
+      </v-flex>
+      <v-flex xs12 sm12 md12>
+        <v-text-field
+          v-model="formData.primary_address"
+          :rules="[rules.required, rules.max255Chars]"
+          label="Primary Address"
+          required
+          dense
+        ></v-text-field>
+      </v-flex>
+      <v-flex xs12 sm12 md12>
+        <v-text-field
+          v-model="formData.secondary_address"
+          :rules="[rules.max255Chars]"
+          label="Secondary Address"
+          required
+          dense
+        ></v-text-field>
+      </v-flex>
+      <v-flex xs12 sm12 md12>
+        <v-text-field
+          v-model="formData.contact_no"
+          :rules="[rules.max100Chars]"
+          label="Contact No."
+          dense
+        ></v-text-field>
+      </v-flex>
+      <v-flex xs12 sm12 md12>
+        <v-autocomplete
+          :items="genderTypeList"
+          item-text="name"
+          item-value="id"
+          v-model="formData.gender_type"
+          label="Gender"
+          dense
+        ></v-autocomplete>
+      </v-flex>
+    </v-card-text>
+    <v-divider></v-divider>
+    <v-card-actions>
+      <v-spacer></v-spacer>
+      <v-btn small text color="blue darken-1" @click="reset">Reset</v-btn>
+      <v-btn small text color="blue darken-1" type="submit" :disabled="!valid">Update</v-btn>
+    </v-card-actions>
+  </v-form>
+</template>
+
+<script>
+import Mixins from "@/helpers/Mixins.js";
+import { mapState, mapActions, mapMutations } from "vuex";
+
+export default {
+  mixins: [Mixins],
+
+  data: () => ({
+    valid: true,
+    defaultFormData: "",
+    formData: {
+      firstname: "",
+      middlename: "",
+      lastname: "",
+      email: "",
+      primary_address: "",
+      secondary_address: "",
+      contact_no: "",
+      gender_type: ""
+    },
+  }),
+
+  created() {
+    this.initialLoad();
+  },
+
+  computed: {
+    ...mapState("customerAuthentication", ["customerInfo"]),
+  },
+
+  methods: {
+    ...mapMutations("snackbars", { setSnackbar: "SET_SNACKBAR"}),
+    ...mapActions("customers", { getCustomerDataById: "getDataById", updateCustomerData: "updateData" }),
+
+    initialLoad() {
+      this.getCustomerDataById(this.customerInfo.id)
+      .then(response => {
+        let obj = response.data.result;
+        if (obj) {
+          this.defaultFormData = obj;
+          this.setFormData(obj);
+        }
+      })
+    },
+
+    setFormData(obj) {
+      this.formData.id = obj.id === null ? "" : obj.id;
+      this.formData.firstname = obj.firstname === null ? "" : obj.firstname;
+      this.formData.middlename = obj.middlename === null ? "" : obj.middlename;
+      this.formData.lastname = obj.lastname === null ? "" : obj.lastname;
+      this.formData.email = obj.email === null ? "" : obj.email;
+      this.formData.primary_address = obj.primary_address === null ? "" : obj.primary_address;
+      this.formData.secondary_address = obj.secondary_address === null ? "" : obj.secondary_address;
+      this.formData.contact_no = obj.contact_no === null ? "" : obj.contact_no;
+      this.formData.gender_type = obj.gender_type === null ? "" : obj.gender_type;
+    },
+
+    reset() {
+      this.setFormData(this.defaultFormData);
+    },
+
+    update() {
+      if (this.$refs.form.validate()) {
+        this.updateCustomerData(this.formData)
+          .then(response => {
+            let obj = {
+              color: "success",
+              snackbar: true,
+              text: response.data.message,
+              timeout: 3000
+            };
+            
+            if (response.data.result) {
+              this.setFormData(response.data.result);
+            } else {
+              obj.color = "error"
+            }
+            
+            this.setSnackbar(obj);
+          })
+          .catch(err => console.log(err));
+      }
+    }
+  }
+};
+</script>
