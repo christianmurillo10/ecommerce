@@ -2,6 +2,7 @@ const Model = require('../models');
 const fs = require('fs');
 const path = require('path');
 const bcrypt = require('../helpers/bcrypt-helper');
+const EmailerActions = require('../mailer/emailer-actions');
 
 module.exports = {
   /**
@@ -140,6 +141,8 @@ module.exports = {
       data = await Model.Customers.findAll(criteria);
       if (_.isEmpty(data[0])) {
         let finalData = await Model.Customers.create(initialValues);
+        await EmailerActions.sendEmailRegistrationConfirmation(finalData);
+
         res.json({
           status: 200,
           message: "Successfully created data.",

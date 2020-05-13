@@ -17,7 +17,8 @@
           "exclude": ["createdAt", "updatedAt"]
         }
       }
-    }
+    },
+    "websiteUrl": "http://localhost:4040"
   },
   "testing": {
     "username": "root",
@@ -37,7 +38,8 @@
           "exclude": ["createdAt", "updatedAt"]
         }
       }
-    }
+    },
+    "websiteUrl": "http://localhost:4040"
   },
   "production": {
     "username": "root",
@@ -58,5 +60,6 @@
         }
       }
     }
-  }
+  },
+  "websiteUrl": "http://localhost:4040"
 }
