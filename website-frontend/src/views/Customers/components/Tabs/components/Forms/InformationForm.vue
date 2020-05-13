@@ -114,6 +114,7 @@ export default {
 
   methods: {
     ...mapMutations("snackbars", { setSnackbar: "SET_SNACKBAR"}),
+    ...mapMutations("customerAuthentication", { setCustomerInfo: "SET_CUSTOMER_INFO"}),
     ...mapActions("customers", { getCustomerDataById: "getDataById", updateCustomerData: "updateData" }),
 
     initialLoad() {
@@ -136,7 +137,7 @@ export default {
       this.formData.primary_address = obj.primary_address === null ? "" : obj.primary_address;
       this.formData.secondary_address = obj.secondary_address === null ? "" : obj.secondary_address;
       this.formData.contact_no = obj.contact_no === null ? "" : obj.contact_no;
-      this.formData.gender_type = obj.gender_type === null ? "" : obj.gender_type;
+      this.formData.gender_type = obj.gender_type === null ? "" : parseInt(obj.gender_type);
     },
 
     reset() {
@@ -147,6 +148,7 @@ export default {
       if (this.$refs.form.validate()) {
         this.updateCustomerData(this.formData)
           .then(response => {
+            let result = response.data.result;
             let obj = {
               color: "success",
               snackbar: true,
@@ -154,8 +156,9 @@ export default {
               timeout: 3000
             };
             
-            if (response.data.result) {
-              this.setFormData(response.data.result);
+            if (result) {
+              this.setFormData(result);
+              this.setCustomerInfo(result);
             } else {
               obj.color = "error"
             }

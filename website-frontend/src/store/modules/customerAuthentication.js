@@ -3,7 +3,7 @@ import axios from "axios";
 const state = {
   isLogin: false,
   token: localStorage.getItem("cToken") || "",
-  customerInfo: JSON.parse(localStorage.getItem("cDetails")) || null
+  customerInfo: JSON.parse(localStorage.getItem("cDetails")) || ""
 };
 
 const getters = {
@@ -98,7 +98,11 @@ const mutations = {
   SET_LOGOUT(state, payload) {
     state.isLogin = false;
     state.token = "";
-    state.customerInfo = null;
+    state.customerInfo = "";
+  },
+  SET_CUSTOMER_INFO(state, payload) {
+    state.customerInfo = payload;
+    localStorage.setItem("cDetails", JSON.stringify(payload));
   }
 };
 
