@@ -14,7 +14,7 @@
             </v-flex>
             <v-flex xs12 sm12 md12>
               <v-layout wrap justify-center>
-                <v-btn small @click="pickFile">Upload Image</v-btn>
+                <v-btn small outline @click="pickFile">Upload Image</v-btn>
                 <input
                   type="file"
                   style="display: none"

@@ -1077,7 +1077,7 @@ module.exports = {
           },
           { 
             model: Model.Inventories, as: "inventories", 
-            attributes: ['sku', 'stock_available', 'product_id'], 
+            attributes: ['name', 'price_amount', 'sku', 'stock_available', 'product_id'], 
             where: { is_deleted: 0 },
             required: false 
           },

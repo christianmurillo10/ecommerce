@@ -14,7 +14,7 @@
             </v-flex>
             <v-flex xs12 sm12 md12>
               <v-layout wrap justify-center>
-                <v-btn small @click="pickFile">Upload Image</v-btn>
+                <v-btn small outline @click="pickFile">Upload Image</v-btn>
                 <input
                   type="file"
                   style="display: none"
@@ -231,7 +231,7 @@ export default {
       this.formData.file_name = data.file_name;
       this.formData.gender_type = data.gender_type;
       this.formData.status = data.status;
-      this.formData.file_path = process.env.VUE_APP_API_BACKEND+ '/frontendSliderImages/viewImage/' + data.file_name;
+      this.formData.file_path = process.env.VUE_APP_API_BACKEND+ '/customers/viewImage/' + data.file_name;
       this.formType = "update";
     },
 

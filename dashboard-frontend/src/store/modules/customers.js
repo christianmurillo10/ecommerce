@@ -29,7 +29,7 @@ const actions = {
             let obj = response.data.result
             if (obj) {
               obj.forEach(element => {
-                if (element.file_path === null) element.file_path = `${process.env.VUE_APP_API_BACKEND}/customers/viewImage/${element.file_name}`;
+                if (element.file_path !== null) element.file_path = `${process.env.VUE_APP_API_BACKEND}/customers/viewImage/${element.file_name}`;
                 else element.file_path = require("../../assets/images/no-image.png");
               });
             }
