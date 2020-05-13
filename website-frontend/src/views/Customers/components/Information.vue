@@ -5,13 +5,9 @@
         <v-flex xs12 sm12 md12 lg12 class="text-center">
           <v-avatar
             size="120"
-            tile
           >
             <v-img :src="customerInfo.file_path"></v-img>
           </v-avatar>
-        </v-flex>
-        <v-flex xs12 sm12 md12 lg12 class="text-center">
-          <v-btn x-small outlined>Upload Photo</v-btn>
         </v-flex>
         <v-flex xs12 sm12 md12 lg12>
           <v-divider></v-divider>

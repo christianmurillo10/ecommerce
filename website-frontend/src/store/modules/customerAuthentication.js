@@ -33,7 +33,7 @@ const actions = {
               resolve(response.data);
             } else {
               let details = result.data;
-              if (details.file_name !== null && details.file_name !== undefined) details.file_path = `${process.env.VUE_APP_API_BACKEND}/customers/viewImage/${details.file_name}`;
+              if (_.isEmpty(details.file_name) && details.file_name !== null && _.isUndefined(details.file_name)) details.file_path = `${process.env.VUE_APP_API_BACKEND}/customers/viewImage/${details.file_name}`;
               else details.file_path = require("../../assets/images/no-image.png");
               
               localStorage.setItem("cDetails", JSON.stringify(details));

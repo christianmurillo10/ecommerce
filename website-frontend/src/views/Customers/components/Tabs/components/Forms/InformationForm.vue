@@ -1,6 +1,21 @@
 <template>
   <v-form ref="form" @submit.prevent="update" v-model="valid" lazy-validation>
     <v-card-text>
+      <v-flex xs12 sm12 md12 class="text-center">
+        <v-avatar size="120">
+          <v-img :src="formData.file_path"></v-img>
+        </v-avatar>
+      </v-flex>
+      <v-flex xs12 sm12 md12 class="text-center">
+        <v-btn x-small outlined @click="pickFile">Upload Image</v-btn>
+        <input
+          type="file"
+          style="display: none"
+          ref="image"
+          accept="image/*"
+          @change="onFilePicked"
+        />
+      </v-flex>
       <v-flex xs12 sm12 md12>
         <v-text-field
           v-model="formData.firstname"
@@ -93,6 +108,9 @@ export default {
     valid: true,
     defaultFormData: "",
     formData: {
+      file: null,
+      file_path: require("@/assets/images/no-image.png"),
+      file_name: null,
       firstname: "",
       middlename: "",
       lastname: "",
@@ -128,6 +146,30 @@ export default {
       })
     },
 
+    pickFile() {
+      this.$refs.image.click();
+    },
+
+    onFilePicked(e) {
+      const files = e.target.files;
+      if (files[0] !== undefined) {
+        this.formData.file_name = files[0].name;
+        if (this.formData.file_name.lastIndexOf(".") <= 0) {
+          return;
+        }
+        const fr = new FileReader();
+        fr.readAsDataURL(files[0]);
+        fr.addEventListener("load", () => {
+          this.formData.file_path = fr.result;
+          this.formData.file = files[0]; // this is an image file that can be sent to server...
+        });
+      } else {
+        this.formData.file = this.defaultFormData.file;
+        this.formData.file_path = this.defaultFormData.file_path;
+        this.formData.file_name = this.defaultFormData.file_name;
+      }
+    },
+
     setFormData(obj) {
       this.formData.id = obj.id === null ? "" : obj.id;
       this.formData.firstname = obj.firstname === null ? "" : obj.firstname;
@@ -137,6 +179,8 @@ export default {
       this.formData.primary_address = obj.primary_address === null ? "" : obj.primary_address;
       this.formData.secondary_address = obj.secondary_address === null ? "" : obj.secondary_address;
       this.formData.contact_no = obj.contact_no === null ? "" : obj.contact_no;
+      this.formData.file_name = obj.contact_no === null ? "" : obj.file_name;
+      this.formData.file_path = obj.contact_no === null ? "" : obj.file_path;
       this.formData.gender_type = obj.gender_type === null ? "" : parseInt(obj.gender_type);
     },
 

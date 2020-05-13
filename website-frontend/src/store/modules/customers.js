@@ -14,6 +14,13 @@ const actions = {
         axios
           .get(url, header)
           .then(response => {
+            if (response.data.result) {
+              if (!_.isEmpty(response.data.result.file_name) && response.data.result.file_name !== null && !_.isUndefined(response.data.result.file_name)) 
+                response.data.result.file_path = `${process.env.VUE_APP_API_BACKEND}/customers/viewImage/${response.data.result.file_name}`;
+              else 
+                response.data.result.file_path = require("../../assets/images/no-image.png");
+            }
+
             resolve(response);
           });
       } catch (err) {
@@ -66,6 +73,13 @@ const actions = {
         axios
           .put(url, data, header)
           .then(response => {
+            if (response.data.result) {
+              if (!_.isEmpty(response.data.result.file_name) && response.data.result.file_name !== null && !_.isUndefined(response.data.result.file_name)) 
+                response.data.result.file_path = `${process.env.VUE_APP_API_BACKEND}/customers/viewImage/${response.data.result.file_name}`;
+              else 
+                response.data.result.file_path = require("../../assets/images/no-image.png");
+            }
+
             resolve(response);
           });
       } catch (err) {

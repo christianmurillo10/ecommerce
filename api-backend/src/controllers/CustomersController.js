@@ -495,7 +495,7 @@ module.exports = {
    * @returns {never}
    */
   viewImage: (req, res) => {
-    res.sendFile(path.join(__dirname, "../../images/frontendSlider/" + req.params.fileName));
+    res.sendFile(path.join(__dirname, "../../images/customers/" + req.params.fileName));
   },
 };
 
@@ -504,7 +504,7 @@ module.exports = {
  */
 const uploadImage = (name, file) => {
   try {
-    fs.writeFile('images/frontendSlider/' + name, file.buffer, function (err) {
+    fs.writeFile('images/customers/' + name, file.buffer, function (err) {
       if (err) throw err;
     })
 
