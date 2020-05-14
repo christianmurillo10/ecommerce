@@ -26,14 +26,6 @@
             </v-flex>
             <v-flex xs12 sm12 md12>
               <v-text-field
-                v-model="formData.customer_no"
-                :rules="[rules.required, rules.max100Chars]"
-                label="Customer No."
-                required
-              ></v-text-field>
-            </v-flex>
-            <v-flex xs12 sm12 md12>
-              <v-text-field
                 v-model="formData.firstname"
                 :rules="[rules.required, rules.max50Chars]"
                 label="Firstname"
@@ -141,10 +133,9 @@ export default {
 
   data: () => ({
     defaultFormData: {
-      file: null,
+      file: "",
       file_path: require("@/assets/images/no-image.png"),
-      file_name: null,
-      customer_no: "",
+      file_name: "",
       firstname: "",
       middlename: "",
       lastname: "",
@@ -158,10 +149,9 @@ export default {
     },
     formType: "new",
     formData: {
-      file: null,
+      file: "",
       file_path: require("@/assets/images/no-image.png"),
-      file_name: null,
-      customer_no: "",
+      file_name: "",
       firstname: "",
       middlename: "",
       lastname: "",
@@ -220,7 +210,6 @@ export default {
     editItem(id) {
       let data = this.getCustomerById(id);
       this.formData.id = data.id;
-      this.formData.customer_no = data.customer_no;
       this.formData.firstname = data.firstname;
       this.formData.middlename = data.middlename;
       this.formData.lastname = data.lastname;

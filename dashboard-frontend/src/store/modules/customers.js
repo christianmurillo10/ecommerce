@@ -29,7 +29,7 @@ const actions = {
             let obj = response.data.result
             if (obj) {
               obj.forEach(element => {
-                if (element.file_path !== null) element.file_path = `${process.env.VUE_APP_API_BACKEND}/customers/viewImage/${element.file_name}`;
+                if (!_.isEmpty(obj.file_name) && !_.isNull(obj.file_name)) element.file_path = `${process.env.VUE_APP_API_BACKEND}/customers/viewImage/${element.file_name}`;
                 else element.file_path = require("../../assets/images/no-image.png");
               });
             }
@@ -62,7 +62,6 @@ const actions = {
     return new Promise((resolve, reject) => {
       try {
         var data = new FormData();
-        data.set('customer_no', payload.customer_no);
         data.set('firstname', payload.firstname);
         data.set('middlename', payload.middlename);
         data.set('lastname', payload.lastname);
@@ -96,7 +95,6 @@ const actions = {
     return new Promise((resolve, reject) => {
       try {
         var data = new FormData();
-        data.set('customer_no', payload.customer_no);
         data.set('firstname', payload.firstname);
         data.set('middlename', payload.middlename);
         data.set('lastname', payload.lastname);
@@ -157,26 +155,31 @@ const mutations = {
   },
   ADD_DATA(state, payload) {
     let obj = payload;
-    obj.file_path = `${process.env.VUE_APP_API_BACKEND}/customers/viewImage/${payload.file_name}`;
+    if (!_.isEmpty(obj.file_name) && !_.isNull(obj.file_name)) obj.file_path = `${process.env.VUE_APP_API_BACKEND}/customers/viewImage/${obj.file_name}`;
+    else obj.file_path = require("../../assets/images/no-image.png");
     state.customerList.push(obj);
   },
   UPDATE_DATA(state, payload) {
-    let index = state.customerList.map(customer => customer.id).indexOf(payload.id);
+    let obj = payload;
+    let index = state.customerList.map(customer => customer.id).indexOf(obj.id);
+    if (!_.isEmpty(obj.file_name) && !_.isNull(obj.file_name)) obj.file_path = `${process.env.VUE_APP_API_BACKEND}/customers/viewImage/${obj.file_name}`;
+    else obj.file_path = require("../../assets/images/no-image.png");
+
     Object.assign(state.customerList[index], {
-      customer_no: payload.customer_no,
-      firstname: payload.firstname,
-      middlename: payload.middlename,
-      lastname: payload.lastname,
-      email: payload.email,
-      password: payload.password,
-      primary_address: payload.primary_address,
-      secondary_address: payload.secondary_address,
-      contact_no: payload.contact_no,
-      file_name: payload.file_name,
-      date_approved: payload.date_approved,
-      gender_type: payload.gender_type,
-      status: payload.status,
-      file_path: `${process.env.VUE_APP_API_BACKEND}/customers/viewImage/${payload.file_name}`
+      customer_no: obj.customer_no,
+      firstname: obj.firstname,
+      middlename: obj.middlename,
+      lastname: obj.lastname,
+      email: obj.email,
+      password: obj.password,
+      primary_address: obj.primary_address,
+      secondary_address: obj.secondary_address,
+      contact_no: obj.contact_no,
+      file_name: obj.file_name,
+      date_approved: obj.date_approved,
+      gender_type: obj.gender_type,
+      status: obj.status,
+      file_path: obj.file_path
     });
   },
   DELETE_DATA(state, payload) {

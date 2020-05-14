@@ -10,7 +10,7 @@ module.exports = {
         let message = `
               <h4>Thank you for joining E-Commerce.</h4>
               <h4>Note: <i>Please click the url below for verification of your account.</i></h4>
-              <p>Url: ${config.websiteUrl}/registration/confirmation</p>
+              <p>Url: <a href="${config.websiteUrl}/registration/confirmation">${config.websiteUrl}/registration/confirmation</a></p>
             `;
         let mailOptions = {
           from: "",

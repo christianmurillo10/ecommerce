@@ -13,6 +13,8 @@ let sequelize;
 
 // additional config
 config.operatorsAliases = {
+  $eq: Op.eq,
+  $ne: Op.ne,
   $in: Op.in,
   $notIn: Op.notIn,
   $like: Op.like,

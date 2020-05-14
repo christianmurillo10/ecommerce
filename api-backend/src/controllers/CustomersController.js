@@ -26,6 +26,7 @@ module.exports = {
     params.created_at = moment().utc(8).format('YYYY-MM-DD HH:mm:ss');
     params.gender_type = params.gender_type === null ? null : params.gender_type.toLocaleString();
     params.status = params.status.toLocaleString();
+    if (params.status === "1") params.customer_no = await generateCustomerNo();
 
     if (!_.isUndefined(req.file)) {
       let extension = path.extname(params.file_name);
@@ -35,7 +36,6 @@ module.exports = {
 
     try {
       // Validators
-      if (_.isEmpty(params.customer_no)) return res.json({ status: 200, message: "Customer No. is required.", result: false });
       if (_.isEmpty(params.firstname)) return res.json({ status: 200, message: "Firstname required.", result: false });
       if (_.isEmpty(params.lastname)) return res.json({ status: 200, message: "Lastname required.", result: false });
       if (_.isEmpty(params.email)) return res.json({ status: 200, message: "Email required.", result: false });
@@ -65,6 +65,9 @@ module.exports = {
       data = await Model.Customers.findAll(criteria);
       if (_.isEmpty(data[0])) {
         let finalData = await Model.Customers.create(initialValues);
+        finalData = finalData.get({ plain: true });
+        //Sending of email for verification if pending status
+        // if (finalData.status === "3") await EmailerActions.sendEmailRegistrationConfirmation(finalData);
         // For Upload Images
         if (!_.isUndefined(req.file)) {
           let fileUpload = await uploadImage(params.file_name, req.file);
@@ -72,7 +75,7 @@ module.exports = {
         res.json({
           status: 200,
           message: "Successfully created data.",
-          result: _.omit(finalData.get({ plain: true }), ['password', 'is_deleted'])
+          result: _.omit(finalData, ['password', 'is_deleted'])
         });
       } else {
         res.json({
@@ -141,8 +144,8 @@ module.exports = {
       data = await Model.Customers.findAll(criteria);
       if (_.isEmpty(data[0])) {
         let finalData = await Model.Customers.create(initialValues);
+        //Sending of email for verification
         await EmailerActions.sendEmailRegistrationConfirmation(finalData);
-
         res.json({
           status: 200,
           message: "Successfully created data.",
@@ -186,6 +189,7 @@ module.exports = {
       let fileName = `${params.email}${extension}`;
       params.file_name = fileName;
     }
+    if (params.status === "1") params.customer_no = await generateCustomerNo();
 
     try {
       // Pre-setting variables
@@ -516,4 +520,30 @@ const uploadImage = (name, file) => {
     console.log(err);
     return false;
   }
+}
+
+const generateCustomerNo = () => {
+  return new Promise(async (resolve, reject) => {
+    let data, criteria, value;
+
+    try {
+      // Pre-setting variables
+      criteria = { attributes: ['customer_no'], where: { customer_no: { $ne: null }, is_deleted: 0 }, order: [ [ 'id', 'DESC' ]] };
+      // Execute findOne query
+      data = await Model.Customers.findOne(criteria);
+      if (_.isEmpty(data)) {
+        value = 'C000001';
+      } else {
+        let numLength = 6;
+        let stringNumber = data.customer_no.substring(1);
+        let newNumber = (parseInt(stringNumber) + 1);
+        let leadingZero = Array(numLength - (newNumber.toString().length) + 1).join(0);
+        value = 'C' + leadingZero + newNumber;
+      }
+      resolve(value);
+    } catch (err) {
+      console.log(err);
+      reject(err);
+    }
+  });
 }
