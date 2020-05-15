@@ -145,7 +145,7 @@ module.exports = {
       if (_.isEmpty(data[0])) {
         let finalData = await Model.Customers.create(initialValues);
         //Sending of email for verification
-        await EmailerActions.sendEmailRegistrationConfirmation(finalData);
+        // await EmailerActions.sendEmailRegistrationConfirmation(finalData);
         res.json({
           status: 200,
           message: "Successfully created data.",

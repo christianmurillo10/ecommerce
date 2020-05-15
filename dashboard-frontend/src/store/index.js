@@ -3,6 +3,7 @@ import Vuex from "vuex";
 
 // Modules
 import alerts from './modules/utilities/alerts'
+import loading from './modules/utilities/loading'
 import snackbars from './modules/utilities/snackbars'
 import toolbar from './modules/toolbar'
 import userAuthentication from './modules/userAuthentication'
@@ -32,6 +33,7 @@ export default new Vuex.Store({
   actions: {},
   modules: {
     alerts,
+    loading,
     snackbars,
     toolbar,
     userAuthentication,

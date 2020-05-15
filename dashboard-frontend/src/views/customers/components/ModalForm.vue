@@ -123,7 +123,7 @@
 <script>
 import Index from "../Index";
 import Mixins from "@/helpers/Mixins.js";
-import { mapGetters, mapActions } from "vuex";
+import { mapGetters, mapActions, mapMutations } from "vuex";
 
 export default {
   mixins: [Mixins],
@@ -178,6 +178,7 @@ export default {
 
   methods: {
     ...mapActions("alerts", ["setAlert"]),
+    ...mapMutations("loading", { setLoading: "SET_LOADING" }),
     ...mapActions("customers", {
       saveCustomerData: "saveData",
       updateCustomerData: "updateData"
@@ -234,6 +235,8 @@ export default {
 
     save() {
       if (this.$refs.form.validate()) {
+        this.setLoading({ dialog: true, text: "Please wait" });
+        
         if (this.formType === "new") {
           this.formData.product_id = this.$route.params.id;
           this.saveCustomerData(this.formData)
@@ -246,6 +249,8 @@ export default {
               
               if (!response.data.result) obj.type = "error"
               this.setAlert(obj);
+              this.setLoading({ dialog: false, text: "" });
+              this.close();
             })
             .catch(err => console.log(err));
         } else if (this.formType === "update") {
@@ -259,10 +264,11 @@ export default {
               
               if (!response.data.result) obj.type = "error"
               this.setAlert(obj);
+              this.setLoading({ dialog: false, text: "" });
+              this.close();
             })
             .catch(err => console.log(err));
         }
-        this.close();
       }
     }
   }
