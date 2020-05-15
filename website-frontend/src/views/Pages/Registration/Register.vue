@@ -4,6 +4,7 @@
       <v-container>
         <v-layout row wrap>
           <Snackbars />
+          <Loading />
           <v-flex xs12 sm12 md8 lg8 offset-md2 offset-lg2>
             <v-card fluid>
               <v-card-title>
@@ -126,12 +127,14 @@
 <script>
 import Mixins from "@/helpers/Mixins.js";
 import Snackbars from "@/components/utilities/Snackbars";
+import Loading from "@/components/utilities/Loading";
 import { mapActions, mapMutations } from "vuex";
 
 export default {
   mixins: [Mixins],
   components: {
-    Snackbars
+    Snackbars,
+    Loading
   },
 
   data: () => ({
@@ -150,10 +153,12 @@ export default {
 
   methods: {
     ...mapMutations("snackbars", { setSnackbar: "SET_SNACKBAR"}),
+    ...mapMutations("loading", { setLoading: "SET_LOADING"}),
     ...mapActions("customers", { saveCustomerData: "saveData"}),
 
     register() {
       if (this.$refs.form.validate()) {
+        this.setLoading({ dialog: true, text: "Please wait" });
         this.saveCustomerData(this.formData)
           .then(response => {
             if (!response.data.result) {
@@ -164,7 +169,9 @@ export default {
                 timeout: 3000
               };
               this.setSnackbar(obj);
+              this.setLoading({ dialog: false, text: "" });
             } else {
+              this.setLoading({ dialog: false, text: "" });
               this.$router.push("/register/complete");
               this.formData = this.defaultFormData;
             }

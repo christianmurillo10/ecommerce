@@ -3,6 +3,7 @@ import Vuex from 'vuex'
 
 // Modules
 import appbar from './modules/appbar'
+import loading from './modules/utilities/loading'
 import snackbars from './modules/utilities/snackbars'
 import customerAuthentication from './modules/customerAuthentication'
 import customerCarts from './modules/customerCarts'
@@ -28,6 +29,7 @@ export default new Vuex.Store({
   },
   modules: {
     appbar,
+    loading,
     snackbars,
     customerAuthentication,
     customerCarts,
