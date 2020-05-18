@@ -22,6 +22,7 @@ import ProductsImage from "../views/products/Image";
 import ProductsOption from "../views/products/Option";
 import ProductFlashDealHeaders from "../views/productFlashDealHeaders/Index";
 import ProductFlashDealDetails from "../views/productFlashDealHeaders/Details";
+import ShippingMethods from "../views/shippingMethods/Index";
 
 Vue.use(Router);
 
@@ -138,6 +139,11 @@ let router = new Router({
       path: "/productFlashDeals/details/:headerId",
       name: "productFlashDealDetails",
       component: ProductFlashDealDetails
+    },
+    {
+      path: "/shippingMethods",
+      name: "shippingMethods",
+      component: ShippingMethods
     },
   ]
 })

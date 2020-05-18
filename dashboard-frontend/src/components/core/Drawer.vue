@@ -222,6 +222,10 @@ export default {
           {
             to: "/banks",
             text: "Banks"
+          },
+          {
+            to: "/shippingMethods",
+            text: "Shipping Methods"
           }
         ]
       },

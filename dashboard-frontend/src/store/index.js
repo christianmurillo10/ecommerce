@@ -24,6 +24,7 @@ import productFlashDealHeaders from './modules/productFlashDealHeaders'
 import productFlashDealDetails from './modules/productFlashDealDetails'
 import products from './modules/products'
 import inventories from './modules/inventories'
+import shippingMethods from './modules/shippingMethods'
 
 Vue.use(Vuex);
 
@@ -54,6 +55,7 @@ export default new Vuex.Store({
     productFlashDealHeaders,
     productFlashDealDetails,
     products,
-    inventories
+    inventories,
+    shippingMethods
   }
 });
