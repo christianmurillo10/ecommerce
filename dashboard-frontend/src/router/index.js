@@ -5,6 +5,7 @@ import Login from "../views/Login";
 import Dashboard from "../views/dashboard/Index";
 import Users from "../views/users/Index";
 import Roles from "../views/roles/Index";
+import Banks from "../views/banks/Index";
 import Customers from "../views/customers/Index";
 import FrontendPolicyPages from "../views/frontendPolicyPages/Index";
 import FrontendSliderImages from "../views/frontendSliderImages/Index";
@@ -52,6 +53,11 @@ let router = new Router({
       path: "/roles",
       name: "roles",
       component: Roles
+    },
+    {
+      path: "/banks",
+      name: "banks",
+      component: Banks
     },
     {
       path: "/customers",

@@ -215,6 +215,17 @@ export default {
         ]
       },
       {
+        icon: "build",
+        text: "Parameter Settings",
+        submenus: true,
+        childs: [
+          {
+            to: "/banks",
+            text: "Banks"
+          }
+        ]
+      },
+      {
         icon: "settings",
         text: "Settings",
         submenus: true,
@@ -224,9 +235,9 @@ export default {
             text: "Users"
           }
         ]
-      }
+      },
       // {
-      //   icon: "build",
+      //   icon: "account_tree",
       //   text: "Role Based Access",
       //   submenus: true,
       //   childs: [
