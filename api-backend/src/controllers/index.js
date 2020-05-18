@@ -17,6 +17,7 @@ const products = require('./ProductsController');
 const productImages = require('./ProductImagesController');
 const productFlashDealHeaders = require('./ProductFlashDealHeadersController');
 const productFlashDealDetails = require('./ProductFlashDealDetailsController');
+const shippingMethods = require('./ShippingMethodsController');
 
 module.exports = {
   auth,
@@ -37,5 +38,6 @@ module.exports = {
   products,
   productImages,
   productFlashDealHeaders,
-  productFlashDealDetails
+  productFlashDealDetails,
+  shippingMethods
 }
