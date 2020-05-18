@@ -18,6 +18,7 @@ const productImages = require('./ProductImagesController');
 const productFlashDealHeaders = require('./ProductFlashDealHeadersController');
 const productFlashDealDetails = require('./ProductFlashDealDetailsController');
 const shippingMethods = require('./ShippingMethodsController');
+const shippingMethodRates = require('./ShippingMethodRatesController');
 
 module.exports = {
   auth,
@@ -39,5 +40,6 @@ module.exports = {
   productImages,
   productFlashDealHeaders,
   productFlashDealDetails,
-  shippingMethods
+  shippingMethods,
+  shippingMethodRates
 }

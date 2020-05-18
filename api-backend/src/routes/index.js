@@ -20,5 +20,6 @@ router.use('/productOptions', require('./productOptions'));
 router.use('/productFlashDealHeaders', require('./productFlashDealHeaders'));
 router.use('/productFlashDealDetails', require('./productFlashDealDetails'));
 router.use('/shippingMethods', require('./shippingMethods'));
+router.use('/shippingMethodRates', require('./shippingMethodRates'));
 
 module.exports = router;
