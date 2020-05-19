@@ -104,7 +104,12 @@ const actions = {
         axios
           .put(url, obj, header)
           .then(response => {
-            commit("UPDATE_DATA", response.data.result);
+            let obj = response.data.result;
+            if (obj) {
+              obj.gender_type = parseInt(obj.gender_type);
+              obj.is_active = parseInt(obj.is_active);
+              commit("UPDATE_DATA", response.data.result);
+            }
             resolve(response);
           });
       } catch (err) {

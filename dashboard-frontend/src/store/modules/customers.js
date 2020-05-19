@@ -79,8 +79,11 @@ const actions = {
         axios
           .post(url, data, header)
           .then(response => {
-            if (response.data.result) {
-              commit("ADD_DATA", response.data.result);
+            let obj = response.data.result;
+            if (obj) {
+              obj.gender_type = parseInt(obj.gender_type);
+              obj.status = parseInt(obj.status);
+              commit("ADD_DATA", obj);
             }
             resolve(response);
           });
@@ -112,7 +115,12 @@ const actions = {
         axios
           .put(url, data, header)
           .then(response => {
-            commit("UPDATE_DATA", response.data.result);
+            let obj = response.data.result;
+            if (obj) {
+              obj.gender_type = parseInt(obj.gender_type);
+              obj.status = parseInt(obj.status);
+              commit("UPDATE_DATA", obj);
+            }
             resolve(response);
           });
       } catch (err) {
