@@ -1,25 +1,35 @@
 import axios from "axios";
 
 const state = {
-  shippingMethodList: [],
-  shippingMethodDataById: ""
+  shippingMethodRateList: []
 };
 
 const getters = {
-  getShippingMethodById: (state) => (id) => {
-    return state.shippingMethodList.find(shippingMethod => shippingMethod.id === id);
+  getShippingMethodRateById: (state) => (id) => {
+    return state.shippingMethodRateList.find(shippingMethodRate => shippingMethodRate.id === id);
   },
-  getShippingMethodNameById: (state) => (id) => {
-    return state.shippingMethodList.find(shippingMethod => shippingMethod.id === id).name;
-  },
-  getShippingMethodList: (state) => {
-    return state.shippingMethodList;
+  getShippingMethodRateList: (state) => {
+    return state.shippingMethodRateList;
   }
 };
 
 const actions = {
   getData({ dispatch, commit, state, rootState, getters, rootGetters }) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/shippingMethods/`;
+    let url = `${process.env.VUE_APP_API_BACKEND}/shippingMethodRates/`;
+    let header = { headers: { Token: localStorage.getItem("token") } };
+    return new Promise((resolve, reject) => {
+      try {
+        axios.get(url, header)
+          .then(response => {
+            commit("SET_DATA", response.data.result);
+          });
+      } catch (err) {
+        reject(err);
+      }
+    });
+  },
+  getDataByShippingMethodId({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
+    let url = `${process.env.VUE_APP_API_BACKEND}/shippingMethodRates/findAllbyShippingMethodId/${payload}`;
     let header = { headers: { Token: localStorage.getItem("token") } };
     return new Promise((resolve, reject) => {
       try {
@@ -33,14 +43,13 @@ const actions = {
     });
   },
   getDataById({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/shippingMethods/${payload}`;
+    let url = `${process.env.VUE_APP_API_BACKEND}/shippingMethodRates/${payload}`;
     let header = { headers: { Token: localStorage.getItem("token") } };
     return new Promise((resolve, reject) => {
       try {
         axios
           .get(url, header)
           .then(response => {
-            commit("SET_DATA_BY_ID", response.data.result);
             resolve(response);
           });
       } catch (err) {
@@ -49,13 +58,17 @@ const actions = {
     });
   },
   saveData({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/shippingMethods/create`;
+    let url = `${process.env.VUE_APP_API_BACKEND}/shippingMethodRates/create`;
     let header = { headers: { Token: localStorage.getItem("token") } };
     return new Promise((resolve, reject) => {
       try {
         let obj = {
-          name: payload.name,
-          description: payload.description
+          rate_amount: payload.rate_amount,
+          subtotal_amount_from: payload.subtotal_amount_from,
+          subtotal_amount_to: payload.subtotal_amount_to,
+          quantity_from: payload.quantity_from,
+          quantity_to: payload.quantity_to,
+          shipping_method_id: payload.shipping_method_id
         };
 
         axios
@@ -72,13 +85,17 @@ const actions = {
     });
   },
   updateData({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/shippingMethods/update/${payload.id}`;
+    let url = `${process.env.VUE_APP_API_BACKEND}/shippingMethodRates/update/${payload.id}`;
     let header = { headers: { Token: localStorage.getItem("token") } };
     return new Promise((resolve, reject) => {
       try {
         let obj = {
-          name: payload.name,
-          description: payload.description
+          rate_amount: payload.rate_amount,
+          subtotal_amount_from: payload.subtotal_amount_from,
+          subtotal_amount_to: payload.subtotal_amount_to,
+          quantity_from: payload.quantity_from,
+          quantity_to: payload.quantity_to,
+          shipping_method_id: payload.shipping_method_id
         };
 
         axios
@@ -93,7 +110,7 @@ const actions = {
     });
   },
   deleteData({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/shippingMethods/delete/${payload}`;
+    let url = `${process.env.VUE_APP_API_BACKEND}/shippingMethodRates/delete/${payload}`;
     let header = { headers: { Token: localStorage.getItem("token") } };
     return new Promise((resolve, reject) => {
       try {
@@ -113,31 +130,28 @@ const actions = {
 const mutations = {
   SET_DATA(state, payload) {
     if (payload) {
-      state.shippingMethodList = payload;
+      state.shippingMethodRateList = payload;
     } else {
-      state.shippingMethodList = [];
-    }
-  },
-  SET_DATA_BY_ID(state, payload) {
-    if (payload) {
-      state.shippingMethodDataById = payload;
-    } else {
-      state.shippingMethodDataById = "";
+      state.shippingMethodRateList = [];
     }
   },
   ADD_DATA(state, payload) {
-    state.shippingMethodList.push(payload);
+    state.shippingMethodRateList.push(payload);
   },
   UPDATE_DATA(state, payload) {
-    let index = state.shippingMethodList.map(shippingMethod => shippingMethod.id).indexOf(payload.id);
-    Object.assign(state.shippingMethodList[index], {
-      name: payload.name,
-      description: payload.description
+    let index = state.shippingMethodRateList.map(shippingMethodRate => shippingMethodRate.id).indexOf(payload.id);
+    Object.assign(state.shippingMethodRateList[index], {
+      rate_amount: payload.rate_amount,
+      subtotal_amount_from: payload.subtotal_amount_from,
+      subtotal_amount_to: payload.subtotal_amount_to,
+      quantity_from: payload.quantity_from,
+      quantity_to: payload.quantity_to,
+      shipping_method_id: payload.shipping_method_id
     });
   },
   DELETE_DATA(state, payload) {
-    let index = state.shippingMethodList.map(shippingMethod => shippingMethod.id).indexOf(payload);
-    state.shippingMethodList.splice(index, 1);
+    let index = state.shippingMethodRateList.map(shippingMethodRate => shippingMethodRate.id).indexOf(payload);
+    state.shippingMethodRateList.splice(index, 1);
   }
 };
 

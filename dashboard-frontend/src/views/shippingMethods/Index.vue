@@ -37,6 +37,12 @@
             <td class="justify-center layout px-0">
               <v-tooltip left>
                 <template v-slot:activator="{ on }">
+                  <v-icon small class="mr-2" color="purple darken-2" @click="editRates(props.item.id)" v-on="on">list_alt</v-icon>
+                </template>
+                <span>Rates</span>
+              </v-tooltip>
+              <v-tooltip left>
+                <template v-slot:activator="{ on }">
                   <v-icon small class="mr-2" @click="editItem(props.item.id)" v-on="on">edit</v-icon>
                 </template>
                 <span>Update</span>
@@ -117,6 +123,10 @@ export default {
       getShippingMethodData: "getData",
       deleteShippingMethodData: "deleteData"
     }),
+
+    editRates(id) {
+      this.$router.push(`/shippingMethods/rates/${id}`);
+    },
 
     editItem(id) {
       this.setDialog(true);

@@ -243,6 +243,44 @@ module.exports = {
   },
 
   /**
+   * Find all by shipping method id
+   * @route GET /shippingMethodRates/findAllbyShippingMethodId/:shippingMethodId
+   * @param req
+   * @param res
+   * @returns {never}
+   */
+  findAllbyShippingMethodId: async (req, res) => {
+    const params = req.params;
+    let data, criteria;
+
+    try {
+      // Pre-setting variables
+      criteria = { where: { shipping_method_id: params.shippingMethodId, is_deleted: 0 } };
+      // Execute findAll query
+      data = await Model.ShippingMethodRates.findAll(criteria);
+      if (!_.isEmpty(data[0])) {
+        res.json({
+          status: 200,
+          message: "Successfully find all data.",
+          result: data
+        });
+      } else {
+        res.json({
+          status: 200,
+          message: "No Data Found.",
+          result: false
+        });
+      }
+    } catch (err) {
+      res.json({
+        status: 401,
+        err: err,
+        message: "Failed to find all data."
+      });
+    }
+  },
+
+  /**
    * Find by id
    * @route GET /shippingMethodRates/:id
    * @param req

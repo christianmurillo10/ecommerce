@@ -23,6 +23,7 @@ import ProductsOption from "../views/products/Option";
 import ProductFlashDealHeaders from "../views/productFlashDealHeaders/Index";
 import ProductFlashDealDetails from "../views/productFlashDealHeaders/Details";
 import ShippingMethods from "../views/shippingMethods/Index";
+import ShippingMethodRates from "../views/shippingMethods/Rates";
 
 Vue.use(Router);
 
@@ -144,6 +145,11 @@ let router = new Router({
       path: "/shippingMethods",
       name: "shippingMethods",
       component: ShippingMethods
+    },
+    {
+      path: "/shippingMethods/rates/:shippingMethodId",
+      name: "shippingMethodRates",
+      component: ShippingMethodRates
     },
   ]
 })
