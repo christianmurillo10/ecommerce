@@ -31,6 +31,7 @@ module.exports = {
       if (_.isEmpty(params.email)) return res.json({ status: 200, message: "Email required.", result: false });
       if (_.isEmpty(params.primary_address)) return res.json({ status: 200, message: "Primary Address required.", result: false });
       if (_.isEmpty(params.contact_no)) return res.json({ status: 200, message: "Contact No. required.", result: false });
+      if (_.isEmpty(params.date_hired)) return res.json({ status: 200, message: "Date Hired required.", result: false });
 
       // Pre-setting variables
       criteria = { where: { email: params.email } };
