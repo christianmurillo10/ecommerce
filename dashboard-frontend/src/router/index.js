@@ -7,6 +7,7 @@ import Users from "../views/users/Index";
 import Roles from "../views/roles/Index";
 import Banks from "../views/banks/Index";
 import Customers from "../views/customers/Index";
+import Employees from "../views/employees/Index";
 import FrontendPolicyPages from "../views/frontendPolicyPages/Index";
 import FrontendSliderImages from "../views/frontendSliderImages/Index";
 import FrontendUsefulLinks from "../views/frontendUsefulLinks/Index";
@@ -65,6 +66,11 @@ let router = new Router({
       path: "/customers",
       name: "customers",
       component: Customers
+    },
+    {
+      path: "/employees",
+      name: "employees",
+      component: Employees
     },
     {
       path: "/frontendPolicyPages/:type",

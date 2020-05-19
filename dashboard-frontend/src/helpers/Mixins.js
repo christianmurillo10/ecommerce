@@ -40,6 +40,12 @@ export default {
       else return "";
     },
 
+    getYesNoStatusColor(value) {
+      if (value == 1) return "green";
+      else if (value == 0) return "red";
+      else return "";
+    },
+
     getGenderTypes(value) {
       if (value == 1) return "Male";
       else if (value == 2) return "Female";

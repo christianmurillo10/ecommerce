@@ -11,6 +11,7 @@ import users from './modules/users'
 import roles from './modules/roles'
 import banks from './modules/banks'
 import customers from './modules/customers'
+import employees from './modules/employees'
 import frontendPolicyPages from './modules/frontendPolicyPages'
 import frontendSliderImages from './modules/frontendSliderImages'
 import frontendUsefulLinks from './modules/frontendUsefulLinks'
@@ -44,6 +45,7 @@ export default new Vuex.Store({
     roles,
     banks,
     customers,
+    employees,
     frontendPolicyPages,
     frontendSliderImages,
     frontendUsefulLinks,

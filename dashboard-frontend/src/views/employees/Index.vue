@@ -1,11 +1,10 @@
 <template>
   <v-container fluid>
     <Alerts />
-    <Loading />
     <v-divider></v-divider>
     <v-card>
       <v-card-title>
-        <v-icon class="black--text">view_list</v-icon><span class="title">Customers</span>
+        <v-icon class="black--text">view_list</v-icon><span class="title">Employees</span>
         <v-spacer></v-spacer>
         <v-dialog v-model="dialog" max-width="850px">
           <template v-slot:activator="{ on: { click } }">
@@ -31,21 +30,14 @@
         </v-flex>
       </v-card-title>
       <v-card-text>
-        <v-data-table :headers="headers" :items="customerList" :search="search" class="elevation-1">
+        <v-data-table :headers="headers" :items="employeeList" :search="search" class="elevation-1">
           <template v-slot:items="props">
-            <td class="text-xs-left pt-1">
-              <img
-                :src="props.item.file_path"
-                height="90"
-                width="90"
-              />
-            </td>
-            <td class="text-xs-left">{{ props.item.customer_no }}</td>
+            <td class="text-xs-left">{{ props.item.employee_no }}</td>
             <td class="text-xs-left">{{ setFullnameLastnameFirst(props.item.firstname, props.item.middlename, props.item.lastname) }}</td>
             <td class="text-xs-left">{{ props.item.email }}</td>
             <td class="text-xs-left">{{ props.item.contact_no }}</td>
             <td class="text-xs-left">
-              <v-chip :color='getCustomerStatusColor(props.item.status)' text-color='white' disabled>{{ getCustomerStatus(props.item.status) }}</v-chip>
+              <v-chip :color='getYesNoStatusColor(props.item.is_active)' text-color='white' disabled>{{ getYesNoStatus(props.item.is_active) }}</v-chip>
             </td>
             <td class="text-xs-center">
               <v-tooltip left>
@@ -87,7 +79,6 @@
 
 <script>
 import Alerts from "@/components/utilities/Alerts";
-import Loading from "@/components/utilities/Loading";
 import ModalForm from "./components/ModalForm";
 import Mixins from "@/helpers/Mixins.js";
 import { mapState, mapActions } from "vuex";
@@ -96,7 +87,6 @@ export default {
   mixins: [Mixins],
   components: {
     Alerts,
-    Loading,
     ModalForm
   },
 
@@ -108,22 +98,21 @@ export default {
     },
     search: '',
     headers: [
-      { text: "Image", value: "" },
-      { text: "Customer No.", value: "customer_no" },
+      { text: "Employee No.", value: "employee_no" },
       { text: "Name", value: "lastname" },
       { text: "Email", value: "email" },
       { text: "Contact No.", value: "" },
-      { text: "Status", value: "" },
+      { text: "Active?", value: "" },
       { text: "Actions", align: "center", value: "", sortable: false }
     ]
   }),
 
   mounted() {
-    this.getCustomerData();
+    this.getEmployeeData();
   },
 
   computed: {
-    ...mapState("customers", ["customerList"])
+    ...mapState("employees", ["employeeList"])
   },
 
   watch: {
@@ -134,9 +123,9 @@ export default {
 
   methods: {
     ...mapActions("alerts", ["setAlert"]),
-    ...mapActions("customers", {
-      getCustomerData: "getData",
-      deleteCustomerData: "deleteData"
+    ...mapActions("employees", {
+      getEmployeeData: "getData",
+      deleteEmployeeData: "deleteData"
     }),
 
     editItem(id) {
@@ -150,7 +139,7 @@ export default {
     },
 
     deleteItem() {
-      this.deleteCustomerData(this.modalDelete.id)
+      this.deleteEmployeeData(this.modalDelete.id)
         .then(response => {
           let obj = {
             alert: true,

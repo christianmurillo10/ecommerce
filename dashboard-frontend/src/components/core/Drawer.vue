@@ -149,6 +149,11 @@ export default {
         text: "Customers"
       },
       {
+        to: "/employees",
+        icon: "people",
+        text: "Employees"
+      },
+      {
         icon: "description",
         text: "Reports",
         submenus: true,
