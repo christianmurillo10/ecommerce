@@ -467,7 +467,7 @@ module.exports = {
 
   /**
    * Count all by status and is active
-   * @route GET /products/countAllByStatusAndIsActive/:status/:isActive
+   * @route GET /customers/countAllByStatusAndIsActive/:status/:isActive
    * @param req
    * @param res
    * @returns {never}

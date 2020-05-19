@@ -5,6 +5,7 @@ router.use('/roles', require('./roles'));
 router.use('/users', require('./users'));
 router.use('/banks', require('./banks'));
 router.use('/customers', require('./customers'));
+router.use('/employees', require('./employees'));
 router.use('/frontendPolicyPages', require('./frontendPolicyPages'));
 router.use('/frontendSliderImages', require('./frontendSliderImages'));
 router.use('/frontendUsefulLinks', require('./frontendUsefulLinks'));
