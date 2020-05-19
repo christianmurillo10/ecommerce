@@ -6,7 +6,7 @@ module.exports = {
    * @param req
    * @param res
    * @returns {Promise<void>}
-   * @routes POST /shippingMethodRates/create
+   * @routes POST /customerCreditDebitCards/create
    */
   create: async (req, res) => {
     const params = req.body;
@@ -20,33 +20,38 @@ module.exports = {
 
     // Override variables
     params.created_at = moment().utc(8).format('YYYY-MM-DD HH:mm:ss');
-    params.rate_amount = params.rate_amount.toLocaleString();
-    params.subtotal_amount_from = params.subtotal_amount_from === null ? null : params.subtotal_amount_from.toLocaleString();
-    params.subtotal_amount_to = params.subtotal_amount_to === null ? null : params.subtotal_amount_to.toLocaleString();
-    params.quantity_from = params.quantity_from === null ? null : params.quantity_from.toLocaleString();
-    params.quantity_to = params.quantity_to === null ? null : params.quantity_to.toLocaleString();
-    params.shipping_method_id = params.shipping_method_id === undefined ? null : params.shipping_method_id.toLocaleString();
+    params.bank_id = params.bank_id === undefined ? null : params.bank_id.toLocaleString();
+    params.customer_id = params.customer_id === undefined ? null : params.customer_id.toLocaleString();
+    params.type = params.type === undefined ? null : params.type.toLocaleString();
 
     try {
       // Validators
-      if (_.isEmpty(params.rate_amount)) return res.json({ status: 200, message: "Rate Amount is required.", result: false });
-      if (_.isEmpty(params.shipping_method_id)) return res.json({ status: 200, message: "Shipping Method is required.", result: false });
+      if (_.isEmpty(params.card_no)) return res.json({ status: 200, message: "Card No. is required.", result: false });
+      if (_.isEmpty(params.security_code)) return res.json({ status: 200, message: "Security Code is required.", result: false });
+      if (_.isEmpty(params.firstname)) return res.json({ status: 200, message: "Firstname is required.", result: false });
+      if (_.isEmpty(params.lastname)) return res.json({ status: 200, message: "Lastname is required.", result: false });
+      if (_.isEmpty(params.bank_id)) return res.json({ status: 200, message: "Bank is required.", result: false });
+      if (_.isEmpty(params.customer_id)) return res.json({ status: 200, message: "Customer is required.", result: false });
+      if (_.isEmpty(params.date_expired)) return res.json({ status: 200, message: "Date Expired is required.", result: false });
+      if (_.isEmpty(params.type)) return res.json({ status: 200, message: "Type is required.", result: false });
 
       // Pre-setting variables
-      criteria = { where: { rate_amount: params.rate_amount, is_deleted: 0 } };
+      criteria = { where: { card_no: params.card_no, is_deleted: 0 } };
       initialValues = _.pick(params, [
-        'rate_amount', 
-        'subtotal_amount_from', 
-        'subtotal_amount_to', 
-        'quantity_from', 
-        'quantity_to', 
-        'shipping_method_id', 
-        'created_at'
+        'card_no', 
+        'security_code', 
+        'firstname', 
+        'lastname', 
+        'bank_id', 
+        'customer_id', 
+        'date_expired', 
+        'created_at',
+        'type'
       ]);
       // Execute findAll query
-      data = await Model.ShippingMethodRates.findAll(criteria);
+      data = await Model.CustomerCreditDebitCards.findAll(criteria);
       if (_.isEmpty(data[0])) {
-        let finalData = await Model.ShippingMethodRates.create(initialValues);
+        let finalData = await Model.CustomerCreditDebitCards.create(initialValues);
         res.json({
           status: 200,
           message: "Successfully created data.",
@@ -70,7 +75,7 @@ module.exports = {
 
   /**
    * Update
-   * @route PUT /shippingMethodRates/update/:id
+   * @route PUT /customerCreditDebitCards/update/:id
    * @param req
    * @param res
    * @returns {never}
@@ -90,16 +95,18 @@ module.exports = {
     try {
       // Pre-setting variables
       initialValues = _.pick(params, [
-        'rate_amount', 
-        'subtotal_amount_from', 
-        'subtotal_amount_to', 
-        'quantity_from', 
-        'quantity_to', 
-        'shipping_method_id', 
-        'updated_at'
+        'card_no', 
+        'security_code', 
+        'firstname', 
+        'lastname', 
+        'bank_id', 
+        'customer_id', 
+        'date_expired', 
+        'updated_at',
+        'type'
       ]);
       // Execute findByPk query
-      data = await Model.ShippingMethodRates.findByPk(req.params.id);
+      data = await Model.CustomerCreditDebitCards.findByPk(req.params.id);
       if (!_.isEmpty(data)) {
         let finalData = await data.update(initialValues);
         res.json({
@@ -125,7 +132,7 @@ module.exports = {
 
   /**
    * Delete
-   * @route PUT /shippingMethodRates/delete/:id
+   * @route PUT /customerCreditDebitCards/delete/:id
    * @param req
    * @param res
    * @returns {never}
@@ -135,7 +142,7 @@ module.exports = {
 
     try {
       // Execute findByPk query
-      data = await Model.ShippingMethodRates.findByPk(req.params.id);
+      data = await Model.CustomerCreditDebitCards.findByPk(req.params.id);
       if (!_.isEmpty(data)) {
         let finalData = await data.update({ is_deleted: 1 });
         res.json({
@@ -161,7 +168,7 @@ module.exports = {
 
   /**
    * Search
-   * @route POST /shippingMethodRates/search/:value
+   * @route POST /customerCreditDebitCards/search/:value
    * @param req
    * @param res
    * @returns {never}
@@ -177,7 +184,7 @@ module.exports = {
 
     try {
       // Pre-setting variables
-      query = `SELECT id, rate_amount, subtotal_amount_from, subtotal_amount_to, quantity_from, quantity_to, shipping_method_id, created_at, updated_at FROM shipping_method_rates WHERE CONCAT(rate_amount) LIKE ? AND is_deleted = 0;`;
+      query = `SELECT id, rate_amount, card_no, security_code, firstname, lastname, bank_id, customer_id, date_expired, created_at, updated_at, type FROM customer_credit_debit_cards WHERE CONCAT(card_no) LIKE ? AND is_deleted = 0;`;
       // Execute native query
       data = await Model.sequelize.query(query, {
         replacements: [`%${params.value}%`],
@@ -207,7 +214,7 @@ module.exports = {
 
   /**
    * Find all
-   * @route GET /shippingMethodRates
+   * @route GET /customerCreditDebitCards
    * @param req
    * @param res
    * @returns {never}
@@ -219,7 +226,7 @@ module.exports = {
       // Pre-setting variables
       criteria = { where: { is_deleted: 0 } };
       // Execute findAll query
-      data = await Model.ShippingMethodRates.findAll(criteria);
+      data = await Model.CustomerCreditDebitCards.findAll(criteria);
       if (!_.isEmpty(data[0])) {
         res.json({
           status: 200,
@@ -244,20 +251,20 @@ module.exports = {
 
   /**
    * Find all by shipping method id
-   * @route GET /shippingMethodRates/findAllbyShippingMethodId/:shippingMethodId
+   * @route GET /customerCreditDebitCards/findAllbyCustomerId/:customerId
    * @param req
    * @param res
    * @returns {never}
    */
-  findAllbyShippingMethodId: async (req, res) => {
+  findAllbyCustomerId: async (req, res) => {
     const params = req.params;
     let data, criteria;
 
     try {
       // Pre-setting variables
-      criteria = { where: { shipping_method_id: params.shippingMethodId, is_deleted: 0 } };
+      criteria = { where: { customer_id: params.customer_id, is_deleted: 0 } };
       // Execute findAll query
-      data = await Model.ShippingMethodRates.findAll(criteria);
+      data = await Model.CustomerCreditDebitCards.findAll(criteria);
       if (!_.isEmpty(data[0])) {
         res.json({
           status: 200,
@@ -282,7 +289,7 @@ module.exports = {
 
   /**
    * Find by id
-   * @route GET /shippingMethodRates/:id
+   * @route GET /customerCreditDebitCards/:id
    * @param req
    * @param res
    * @returns {never}
@@ -292,7 +299,7 @@ module.exports = {
 
     try {
       // Execute findAll query
-      data = await Model.ShippingMethodRates.findByPk(req.params.id);
+      data = await Model.CustomerCreditDebitCards.findByPk(req.params.id);
       if (!_.isEmpty(data)) {
         res.json({
           status: 200,

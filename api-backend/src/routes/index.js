@@ -4,6 +4,7 @@ var router = express.Router();
 router.use('/roles', require('./roles'));
 router.use('/users', require('./users'));
 router.use('/banks', require('./banks'));
+router.use('/customerCreditDebitCards', require('./customerCreditDebitCards'));
 router.use('/customers', require('./customers'));
 router.use('/employees', require('./employees'));
 router.use('/frontendPolicyPages', require('./frontendPolicyPages'));
