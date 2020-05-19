@@ -36,7 +36,10 @@ module.exports = {
       if (_.isEmpty(params.type)) return res.json({ status: 200, message: "Type is required.", result: false });
 
       // Pre-setting variables
-      criteria = { where: { card_no: params.card_no, is_deleted: 0 } };
+      criteria = { 
+        where: { card_no: params.card_no, is_deleted: 0 },
+        include: [{ model: Model.Banks, as: 'banks', attributes: ['code', 'name'] }]
+      };
       initialValues = _.pick(params, [
         'card_no', 
         'security_code', 
@@ -51,12 +54,16 @@ module.exports = {
       // Execute findAll query
       data = await Model.CustomerCreditDebitCards.findAll(criteria);
       if (_.isEmpty(data[0])) {
-        let finalData = await Model.CustomerCreditDebitCards.create(initialValues);
-        res.json({
-          status: 200,
-          message: "Successfully created data.",
-          result: _.omit(finalData.get({ plain: true }), ['is_deleted'])
-        });
+        await Model.CustomerCreditDebitCards.create(initialValues)
+          .then(() => Model.CustomerCreditDebitCards.findOrCreate(criteria))
+          .then(async ([finalData, created]) => {
+            let plainData = finalData.get({ plain: true });
+            res.json({
+              status: 200,
+              message: "Successfully created data.",
+              result: _.omit(plainData, ["is_deleted"])
+            });
+          });
       } else {
         res.json({
           status: 200,
@@ -94,6 +101,7 @@ module.exports = {
 
     try {
       // Pre-setting variables
+      criteria = { include: [{ model: Model.Banks, as: 'banks', attributes: ['code', 'name'] }] };
       initialValues = _.pick(params, [
         'card_no', 
         'security_code', 
@@ -106,14 +114,17 @@ module.exports = {
         'type'
       ]);
       // Execute findByPk query
-      data = await Model.CustomerCreditDebitCards.findByPk(req.params.id);
+      data = await Model.CustomerCreditDebitCards.findByPk(req.params.id, criteria);
       if (!_.isEmpty(data)) {
-        let finalData = await data.update(initialValues);
-        res.json({
-          status: 200,
-          message: "Successfully updated data.",
-          result: finalData
-        });
+        await data.update(initialValues)
+          .then(() => Model.CustomerCreditDebitCards.findByPk(data.id, criteria)
+          .then(finalData => {
+            res.json({
+              status: 200,
+              message: "Successfully updated data.",
+              result: _.omit(finalData.get({ plain: true }), ['is_deleted'])
+            });
+          }));
       } else {
         res.json({
           status: 200,
@@ -262,7 +273,10 @@ module.exports = {
 
     try {
       // Pre-setting variables
-      criteria = { where: { customer_id: params.customer_id, is_deleted: 0 } };
+      criteria = { 
+        where: { customer_id: params.customerId, is_deleted: 0 },
+        include: [{ model: Model.Banks, as: 'banks', attributes: ['code', 'name'] }]
+      };
       // Execute findAll query
       data = await Model.CustomerCreditDebitCards.findAll(criteria);
       if (!_.isEmpty(data[0])) {

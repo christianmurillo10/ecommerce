@@ -3,7 +3,8 @@ import FormData from 'form-data';
 
 const state = {
   customerList: [],
-  customerTotalCountByStatusAndIsActive: 0
+  customerTotalCountByStatusAndIsActive: 0,
+  customerDataById: ""
 };
 
 const getters = {
@@ -49,6 +50,22 @@ const actions = {
         axios.get(url, header)
           .then(response => {
             commit("SET_TOTAL_COUNT_BY_STATUS_AND_IS_ACTIVE", response.data.result);
+            resolve(response);
+          });
+      } catch (err) {
+        reject(err);
+      }
+    });
+  },
+  getDataById({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
+    let url = `${process.env.VUE_APP_API_BACKEND}/customers/${payload}`;
+    let header = { headers: { Token: localStorage.getItem("token") } };
+    return new Promise((resolve, reject) => {
+      try {
+        axios
+          .get(url, header)
+          .then(response => {
+            commit("SET_DATA_BY_ID", response.data.result);
             resolve(response);
           });
       } catch (err) {
@@ -159,6 +176,13 @@ const mutations = {
       state.customerTotalCountByStatusAndIsActive = payload;
     } else {
       state.customerTotalCountByStatusAndIsActive = 0;
+    }
+  },
+  SET_DATA_BY_ID(state, payload) {
+    if (payload) {
+      state.customerDataById = payload;
+    } else {
+      state.customerDataById = "";
     }
   },
   ADD_DATA(state, payload) {

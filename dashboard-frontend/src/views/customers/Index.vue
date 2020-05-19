@@ -47,7 +47,13 @@
             <td class="text-xs-left">
               <v-chip :color='getCustomerStatusColor(props.item.status)' text-color='white' disabled>{{ getCustomerStatus(props.item.status) }}</v-chip>
             </td>
-            <td class="text-xs-center">
+            <td class="text-xs-center px-0">
+              <v-tooltip left>
+                <template v-slot:activator="{ on }">
+                  <v-icon small class="mr-2" color="purple darken-2" @click="editCards(props.item.id)" v-on="on">credit_card</v-icon>
+                </template>
+                <span>Cards</span>
+              </v-tooltip>
               <v-tooltip left>
                 <template v-slot:activator="{ on }">
                   <v-icon small class="mr-2" @click="editItem(props.item.id)" v-on="on">edit</v-icon>
@@ -138,6 +144,10 @@ export default {
       getCustomerData: "getData",
       deleteCustomerData: "deleteData"
     }),
+
+    editCards(id) {
+      this.$router.push(`/customers/cards/${id}`);
+    },
 
     editItem(id) {
       this.setDialog(true);

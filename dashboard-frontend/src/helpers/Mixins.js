@@ -20,6 +20,10 @@ export default {
       { id: 1, name: "Amount" },
       { id: 2, name: "Percentage" }
     ],
+    creditDebitTypeList: [
+      { id: 1, name: "Credit" },
+      { id: 2, name: "Debit" }
+    ],
     rules: {
       required: value => !!value || 'Required.',
       max50Chars: value => value.length <= 50 || 'Max 50 characters',
@@ -64,6 +68,12 @@ export default {
       if (value == 1) return "green";
       else if (value == 2) return "red";
       else if (value == 3) return "primary";
+      else return "";
+    },
+
+    getCreditDebitTypes(value) {
+      if (value == 1) return "Credit";
+      else if (value == 2) return "Debit";
       else return "";
     },
 

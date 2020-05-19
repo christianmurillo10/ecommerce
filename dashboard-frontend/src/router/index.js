@@ -6,6 +6,7 @@ import Dashboard from "../views/dashboard/Index";
 import Users from "../views/users/Index";
 import Roles from "../views/roles/Index";
 import Banks from "../views/banks/Index";
+import CustomerCreditDebitCards from "../views/customers/Cards";
 import Customers from "../views/customers/Index";
 import Employees from "../views/employees/Index";
 import FrontendPolicyPages from "../views/frontendPolicyPages/Index";
@@ -66,6 +67,11 @@ let router = new Router({
       path: "/customers",
       name: "customers",
       component: Customers
+    },
+    {
+      path: "/customers/cards/:customerId",
+      name: "customerCreditDebitCards",
+      component: CustomerCreditDebitCards
     },
     {
       path: "/employees",

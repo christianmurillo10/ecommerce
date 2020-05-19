@@ -10,6 +10,7 @@ import userAuthentication from './modules/userAuthentication'
 import users from './modules/users'
 import roles from './modules/roles'
 import banks from './modules/banks'
+import customerCreditDebitCards from './modules/customerCreditDebitCards'
 import customers from './modules/customers'
 import employees from './modules/employees'
 import frontendPolicyPages from './modules/frontendPolicyPages'
@@ -44,6 +45,7 @@ export default new Vuex.Store({
     users,
     roles,
     banks,
+    customerCreditDebitCards,
     customers,
     employees,
     frontendPolicyPages,
