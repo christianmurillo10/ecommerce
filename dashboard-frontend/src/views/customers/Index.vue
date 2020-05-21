@@ -47,10 +47,16 @@
             <td class="text-xs-left">
               <v-chip :color='getCustomerStatusColor(props.item.status)' text-color='white' disabled>{{ getCustomerStatus(props.item.status) }}</v-chip>
             </td>
-            <td class="text-xs-center px-0">
+            <td class="justify-center" width="100">
               <v-tooltip left>
                 <template v-slot:activator="{ on }">
-                  <v-icon small class="mr-2" color="purple darken-2" @click="editCards(props.item.id)" v-on="on">credit_card</v-icon>
+                  <v-icon small class="mr-2" color="purple darken-2" @click="viewCarts(props.item.id)" v-on="on">shopping_cart</v-icon>
+                </template>
+                <span>Carts</span>
+              </v-tooltip>
+              <v-tooltip left>
+                <template v-slot:activator="{ on }">
+                  <v-icon small class="mr-2" color="blue-grey darken-2" @click="viewCards(props.item.id)" v-on="on">credit_card</v-icon>
                 </template>
                 <span>Cards</span>
               </v-tooltip>
@@ -145,7 +151,11 @@ export default {
       deleteCustomerData: "deleteData"
     }),
 
-    editCards(id) {
+    viewCarts(id) {
+      this.$router.push(`/customers/carts/${id}`);
+    },
+
+    viewCards(id) {
       this.$router.push(`/customers/cards/${id}`);
     },
 

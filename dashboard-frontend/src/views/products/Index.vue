@@ -81,7 +81,7 @@
                 hide-details
               ></v-switch>
             </td>
-            <td class="justify-center">
+            <td class="justify-center" width="100">
               <v-tooltip left>
                 <template v-slot:activator="{ on }">
                   <v-icon small class="mr-2" color="purple darken-2" @click="editVariantOption(props.item.id)" v-on="on">list_alt</v-icon>

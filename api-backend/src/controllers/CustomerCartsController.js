@@ -196,7 +196,6 @@ module.exports = {
         });
       }
     } catch (err) {
-      console.log("ASDASD", err)
       res.json({
         status: 401,
         err: err,
