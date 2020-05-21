@@ -479,6 +479,70 @@ module.exports = {
   /**
    * Public Functions
    */
+
+  /**
+   * Update Stock Reserved and Available
+   */
+  updateStockReservedAndAvailable: async (obj) => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        let initialValues, data, criteria;
+        // Pre-setting variables
+        criteria = { where: { sku: obj.sku, product_id: obj.product_id, is_deleted: 0 } };
+        // Execute findByPk query
+        data = await Model.Inventories.findOne(criteria);
+        if (!_.isEmpty(data)) {
+          let computedQuantity, newStockReserved, newStockAvailable;
+          switch(obj.type) {
+            case 'INSERT':
+              newStockAvailable = parseInt(data.stock_available) - parseInt(obj.new_quantity);
+              initialValues = { stock_reserved: obj.new_quantity, stock_available: newStockAvailable };
+              break;
+            case 'UPDATE':
+              if (obj.old_quantity > obj.new_quantity) {
+                // old_quantity - new_quantity
+                computedQuantity = parseInt(obj.old_quantity) - parseInt(obj.new_quantity);
+                newStockReserved = parseInt(data.stock_reserved) - computedQuantity;
+                newStockAvailable = parseInt(data.stock_available) + computedQuantity;
+                initialValues = { stock_reserved: newStockReserved, stock_available: newStockAvailable };
+              } else if (obj.old_quantity < obj.new_quantity) {
+                // new_quantity - old_quantity
+                computedQuantity = parseInt(obj.new_quantity) - parseInt(obj.old_quantity);
+                newStockReserved = parseInt(data.stock_reserved) + computedQuantity;
+                newStockAvailable = parseInt(data.stock_available) - computedQuantity;
+                initialValues = { stock_reserved: newStockReserved, stock_available: newStockAvailable };
+              }
+              break;
+            case 'DELETE':
+              newStockReserved = parseInt(data.stock_reserved) - parseInt(obj.old_quantity);
+              newStockAvailable = parseInt(data.stock_available) + parseInt(obj.old_quantity);
+              initialValues = { stock_reserved: newStockReserved, stock_available: newStockAvailable };
+              break;
+          }
+          await data.update(initialValues)
+            .then(response => {
+              res.json({
+                status: 200,
+                message: "Successfully update data.",
+                result: true
+              });
+            });
+        } else {
+          res.json({
+            status: 200,
+            message: "Data doesn't exist.",
+            result: false
+          });
+        }
+      } catch (err) {
+        resolve({
+          status: 401,
+          err: err,
+          message: "Failed to find data."
+        });
+      }
+    });
+  },
 };
 
 

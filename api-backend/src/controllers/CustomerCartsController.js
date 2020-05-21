@@ -1,4 +1,5 @@
 const Model = require('../models');
+const InventoriesController = require("./InventoriesController");
 
 module.exports = {
   /**
@@ -51,11 +52,21 @@ module.exports = {
       // Execute create query
       await Model.CustomerCarts.create(initialValues)
         .then(response =>  Model.CustomerCarts.findByPk(response.id, criteria)
-        .then(finalData => {
+        .then(async finalData => {
+          let finalPlainData = finalData.get({ plain: true });
+          // Update inventory stocks
+          await InventoriesController.updateStockReservedAndAvailable({
+            sku: finalPlainData.sku,
+            old_quantity: 0,
+            new_quantity: finalPlainData.quantity,
+            product_id: finalPlainData.product_id,
+            type: 'INSERT'
+          });
+
           res.json({
             status: 200,
             message: "Successfully updated data.",
-            result: finalData.get({ plain: true })
+            result: finalPlainData
           });
         }));
     } catch (err) {
@@ -102,13 +113,26 @@ module.exports = {
       // Execute findByPk query
       data = await Model.CustomerCarts.findByPk(req.params.id, criteria);
       if (!_.isEmpty(data)) {
+        let oldQuantity = data.quantity;
         await data.update(initialValues)
           .then(() => Model.CustomerCarts.findByPk(data.id, criteria)
-          .then(finalData => {
+          .then(async finalData => {
+            let finalPlainData = finalData.get({ plain: true });
+            // Update inventory stocks
+            if (parseInt(oldQuantity) !== parseInt(finalPlainData.quantity)) {
+              await InventoriesController.updateStockReservedAndAvailable({
+                sku: finalPlainData.sku,
+                old_quantity: oldQuantity,
+                new_quantity: finalPlainData.quantity,
+                product_id: finalPlainData.product_id,
+                type: 'UPDATE'
+              });
+            }
+
             res.json({
               status: 200,
               message: "Successfully updated data.",
-              result: finalData.get({ plain: true })
+              result: finalPlainData
             });
           }));
       } else {
@@ -135,17 +159,35 @@ module.exports = {
    * @returns {never}
    */
   delete: async (req, res) => {
-    let data;
+    let data, cartData;
 
     try {
       // Execute destroy query
-      data = await Model.CustomerCarts.destroy({ where: { id: req.params.id} });
-      if (data !== 0) {
-        res.json({
-          status: 200,
-          message: "Successfully deleted data.",
-          result: true
-        });
+      cartData = await Model.CustomerCarts.findByPk(req.params.id);
+      if (!_.isEmpty(cartData)) {
+        data = await Model.CustomerCarts.destroy({ where: { id: req.params.id} });
+        if (data !== 0) {
+          // Update inventory stocks
+          await InventoriesController.updateStockReservedAndAvailable({
+            sku: cartData.sku,
+            old_quantity: cartData.quantity,
+            new_quantity: 0,
+            product_id: cartData.product_id,
+            type: 'DELETE'
+          });
+          
+          res.json({
+            status: 200,
+            message: "Successfully deleted data.",
+            result: true
+          });
+        } else {
+          res.json({
+            status: 200,
+            message: "No data has been deleted.",
+            result: false
+          });
+        }
       } else {
         res.json({
           status: 200,
@@ -154,6 +196,7 @@ module.exports = {
         });
       }
     } catch (err) {
+      console.log("ASDASD", err)
       res.json({
         status: 401,
         err: err,
