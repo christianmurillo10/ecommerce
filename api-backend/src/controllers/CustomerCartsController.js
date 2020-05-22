@@ -87,7 +87,7 @@ module.exports = {
    */
   update: async (req, res) => {
     const params = req.body;
-    let initialValues, data;
+    let criteria, initialValues, data;
 
     if (_.isUndefined(params))
       return res.badRequest({ err: "Invalid Parameter: [params]" });

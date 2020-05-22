@@ -93,7 +93,7 @@ module.exports = {
    */
   update: async (req, res) => {
     const params = req.body;
-    let initialValues, data;
+    let criteria, initialValues, data;
 
     if (_.isUndefined(params))
       return res.badRequest({ err: "Invalid Parameter: [params]" });
@@ -122,7 +122,7 @@ module.exports = {
         'date_confirmed', 
         'date_delivery', 
         'date_delivered', 
-        'created_at',
+        'updated_at',
         'payment_method_type ',
         'status',
         'is_with_vat',
