@@ -6,7 +6,7 @@ module.exports = {
    * @param req
    * @param res
    * @returns {Promise<void>}
-   * @routes POST /customerCreditDebitCards/create
+   * @routes POST /salesOrders/create
    */
   create: async (req, res) => {
     const params = req.body;
@@ -20,42 +20,46 @@ module.exports = {
 
     // Override variables
     params.created_at = moment().utc(8).format('YYYY-MM-DD HH:mm:ss');
-    params.bank_id = params.bank_id === undefined ? null : params.bank_id.toLocaleString();
+    params.sub_total_amount = params.sub_total_amount.toLocaleString();
+    params.vat_amount = params.vat_amount === null ? null : params.vat_amount.toLocaleString();
+    params.shipping_fee_amount = params.shipping_fee_amount === null ? null : params.shipping_fee_amount.toLocaleString();
+    params.total_amount = params.total_amount === null ? null : params.total_amount.toLocaleString();
     params.customer_id = params.customer_id === undefined ? null : params.customer_id.toLocaleString();
-    params.type = params.type === undefined ? null : params.type.toLocaleString();
+    params.payment_method_type = params.payment_method_type === undefined ? null : params.payment_method_type.toLocaleString();
 
     try {
       // Validators
-      if (_.isEmpty(params.card_no)) return res.json({ status: 200, message: "Card No. is required.", result: false });
-      if (_.isEmpty(params.security_code)) return res.json({ status: 200, message: "Security Code is required.", result: false });
-      if (_.isEmpty(params.firstname)) return res.json({ status: 200, message: "Firstname is required.", result: false });
-      if (_.isEmpty(params.lastname)) return res.json({ status: 200, message: "Lastname is required.", result: false });
-      if (_.isEmpty(params.bank_id)) return res.json({ status: 200, message: "Bank is required.", result: false });
+      if (_.isEmpty(params.order_no)) return res.json({ status: 200, message: "Order No. is required.", result: false });
+      if (_.isEmpty(params.sub_total_amount)) return res.json({ status: 200, message: "Sub-total Amount is required.", result: false });
+      if (_.isEmpty(params.total_amount)) return res.json({ status: 200, message: "Total Amount is required.", result: false });
       if (_.isEmpty(params.customer_id)) return res.json({ status: 200, message: "Customer is required.", result: false });
-      if (_.isEmpty(params.date_expired)) return res.json({ status: 200, message: "Date Expired is required.", result: false });
-      if (_.isEmpty(params.type)) return res.json({ status: 200, message: "Type is required.", result: false });
+      if (_.isEmpty(params.date_ordered)) return res.json({ status: 200, message: "Date Ordered is required.", result: false });
+      if (_.isEmpty(params.payment_method_type)) return res.json({ status: 200, message: "Payment Method is required.", result: false });
 
       // Pre-setting variables
       criteria = { 
-        where: { card_no: params.card_no, is_deleted: 0 },
-        include: [{ model: Model.Banks, as: 'banks', attributes: ['code', 'name'] }]
+        where: { order_no: params.order_no, is_deleted: 0 },
+        include: [{ model: Model.Customers, as: 'customers', attributes: ['customer_no', 'firstname', 'middlename', 'lastname'] }]
       };
       initialValues = _.pick(params, [
-        'card_no', 
-        'security_code', 
-        'firstname', 
-        'lastname', 
-        'bank_id', 
+        'order_no', 
+        'remarks', 
+        'sub_total_amount', 
+        'vat_amount', 
+        'shipping_fee_amount', 
+        'total_amount', 
         'customer_id', 
-        'date_expired', 
+        'date_ordered', 
         'created_at',
-        'type'
+        'payment_method_type ',
+        'status',
+        'is_with_vat'
       ]);
       // Execute findAll query
-      data = await Model.CustomerCreditDebitCards.findAll(criteria);
+      data = await Model.SalesOrders.findAll(criteria);
       if (_.isEmpty(data[0])) {
-        await Model.CustomerCreditDebitCards.create(initialValues)
-          .then(() => Model.CustomerCreditDebitCards.findOrCreate(criteria))
+        await Model.SalesOrders.create(initialValues)
+          .then(() => Model.SalesOrders.findOrCreate(criteria))
           .then(async ([finalData, created]) => {
             let plainData = finalData.get({ plain: true });
             res.json({
@@ -82,7 +86,7 @@ module.exports = {
 
   /**
    * Update
-   * @route PUT /customerCreditDebitCards/update/:id
+   * @route PUT /salesOrders/update/:id
    * @param req
    * @param res
    * @returns {never}
@@ -101,23 +105,37 @@ module.exports = {
 
     try {
       // Pre-setting variables
-      criteria = { include: [{ model: Model.Banks, as: 'banks', attributes: ['code', 'name'] }] };
+      criteria = { include: [{ model: Model.Customers, as: 'customers', attributes: ['customer_no', 'firstname', 'middlename', 'lastname'] }] };
       initialValues = _.pick(params, [
-        'card_no', 
-        'security_code', 
-        'firstname', 
-        'lastname', 
-        'bank_id', 
+        'order_no', 
+        'remarks', 
+        'sub_total_amount', 
+        'vat_amount', 
+        'shipping_fee_amount', 
+        'total_amount', 
+        'total_balance_amount', 
         'customer_id', 
-        'date_expired', 
-        'updated_at',
-        'type'
+        'reviewed_by', 
+        'approved_by', 
+        'date_ordered', 
+        'date_approved', 
+        'date_confirmed', 
+        'date_delivery', 
+        'date_delivered', 
+        'created_at',
+        'payment_method_type ',
+        'status',
+        'is_with_vat',
+        'is_paid',
+        'is_fully_paid',
+        'is_with_return',
+        'is_viewed'
       ]);
       // Execute findByPk query
-      data = await Model.CustomerCreditDebitCards.findByPk(req.params.id, criteria);
+      data = await Model.SalesOrders.findByPk(req.params.id, criteria);
       if (!_.isEmpty(data)) {
         await data.update(initialValues)
-          .then(() => Model.CustomerCreditDebitCards.findByPk(data.id, criteria)
+          .then(() => Model.SalesOrders.findByPk(data.id, criteria)
           .then(finalData => {
             res.json({
               status: 200,
@@ -143,7 +161,7 @@ module.exports = {
 
   /**
    * Delete
-   * @route PUT /customerCreditDebitCards/delete/:id
+   * @route PUT /salesOrders/delete/:id
    * @param req
    * @param res
    * @returns {never}
@@ -153,7 +171,7 @@ module.exports = {
 
     try {
       // Execute findByPk query
-      data = await Model.CustomerCreditDebitCards.findByPk(req.params.id);
+      data = await Model.SalesOrders.findByPk(req.params.id);
       if (!_.isEmpty(data)) {
         let finalData = await data.update({ is_deleted: 1 });
         res.json({
@@ -179,7 +197,7 @@ module.exports = {
 
   /**
    * Search
-   * @route POST /customerCreditDebitCards/search/:value
+   * @route POST /salesOrders/search/:value
    * @param req
    * @param res
    * @returns {never}
@@ -195,7 +213,7 @@ module.exports = {
 
     try {
       // Pre-setting variables
-      query = `SELECT id, rate_amount, card_no, security_code, firstname, lastname, bank_id, customer_id, date_expired, created_at, updated_at, type FROM customer_credit_debit_cards WHERE CONCAT(card_no) LIKE ? AND is_deleted = 0;`;
+      query = `SELECT * FROM sales_orders WHERE CONCAT(order_no) LIKE ? AND is_deleted = 0;`;
       // Execute native query
       data = await Model.sequelize.query(query, {
         replacements: [`%${params.value}%`],
@@ -225,7 +243,7 @@ module.exports = {
 
   /**
    * Find all
-   * @route GET /customerCreditDebitCards
+   * @route GET /salesOrders
    * @param req
    * @param res
    * @returns {never}
@@ -237,7 +255,7 @@ module.exports = {
       // Pre-setting variables
       criteria = { where: { is_deleted: 0 } };
       // Execute findAll query
-      data = await Model.CustomerCreditDebitCards.findAll(criteria);
+      data = await Model.SalesOrders.findAll(criteria);
       if (!_.isEmpty(data[0])) {
         res.json({
           status: 200,
@@ -262,7 +280,7 @@ module.exports = {
 
   /**
    * Find all by customer id
-   * @route GET /customerCreditDebitCards/findAllbyCustomerId/:customerId
+   * @route GET /salesOrders/findAllbyCustomerId/:customerId
    * @param req
    * @param res
    * @returns {never}
@@ -275,10 +293,51 @@ module.exports = {
       // Pre-setting variables
       criteria = { 
         where: { customer_id: params.customerId, is_deleted: 0 },
-        include: [{ model: Model.Banks, as: 'banks', attributes: ['code', 'name'] }]
+        include: [{ model: Model.Customers, as: 'customers', attributes: ['customer_no', 'firstname', 'middlename', 'lastname'] }]
       };
       // Execute findAll query
-      data = await Model.CustomerCreditDebitCards.findAll(criteria);
+      data = await Model.SalesOrders.findAll(criteria);
+      if (!_.isEmpty(data[0])) {
+        res.json({
+          status: 200,
+          message: "Successfully find all data.",
+          result: data
+        });
+      } else {
+        res.json({
+          status: 200,
+          message: "No Data Found.",
+          result: false
+        });
+      }
+    } catch (err) {
+      res.json({
+        status: 401,
+        err: err,
+        message: "Failed to find all data."
+      });
+    }
+  },
+
+  /**
+   * Find all by status
+   * @route GET /salesOrders/findAllbyStatus/:status
+   * @param req
+   * @param res
+   * @returns {never}
+   */
+  findAllbyStatus: async (req, res) => {
+    const params = req.params;
+    let data, criteria;
+
+    try {
+      // Pre-setting variables
+      criteria = { 
+        where: { status: params.status, is_deleted: 0 },
+        include: [{ model: Model.Customers, as: 'customers', attributes: ['customer_no', 'firstname', 'middlename', 'lastname'] }]
+      };
+      // Execute findAll query
+      data = await Model.SalesOrders.findAll(criteria);
       if (!_.isEmpty(data[0])) {
         res.json({
           status: 200,
@@ -303,7 +362,7 @@ module.exports = {
 
   /**
    * Find by id
-   * @route GET /customerCreditDebitCards/:id
+   * @route GET /salesOrders/:id
    * @param req
    * @param res
    * @returns {never}
@@ -313,7 +372,7 @@ module.exports = {
 
     try {
       // Execute findAll query
-      data = await Model.CustomerCreditDebitCards.findByPk(req.params.id);
+      data = await Model.SalesOrders.findByPk(req.params.id);
       if (!_.isEmpty(data)) {
         res.json({
           status: 200,

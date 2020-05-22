@@ -286,7 +286,7 @@ module.exports = {
   },
 
   /**
-   * Find all by shipping method id
+   * Find all by customer id
    * @route GET /customerCarts/findAllbyCustomerId/:customerId
    * @param req
    * @param res
