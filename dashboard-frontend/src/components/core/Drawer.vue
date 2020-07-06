@@ -154,6 +154,17 @@ export default {
         text: "Employees"
       },
       {
+        icon: "list_alt",
+        text: "Sales Orders",
+        submenus: true,
+        childs: [
+          {
+            to: "/salesOrders/open",
+            text: "Open"
+          }
+        ]
+      },
+      {
         icon: "description",
         text: "Reports",
         submenus: true,

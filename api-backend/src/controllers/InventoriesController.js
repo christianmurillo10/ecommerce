@@ -131,7 +131,7 @@ module.exports = {
                   result: true
                 });
               });
-          })
+          });
       } else {
         res.json({
           status: 200,
@@ -435,6 +435,44 @@ module.exports = {
         status: 401,
         err: err,
         message: "Failed to find all data."
+      });
+    }
+  },
+
+  /**
+   * Find by sku
+   * @route GET /inventories/findBySku/:sku
+   * @param req
+   * @param res
+   * @returns {never}
+   */
+  findBySku: async (req, res) => {
+    const params = req.params;
+    let data, criteria;
+
+    try {
+      // Pre-setting variables
+      criteria = { attributes: ['sku', 'stock_available', 'unit', 'price_amount', 'product_id'], where: { sku: params.sku, is_deleted: 0 }, order: [ [ 'created_at', 'DESC' ]] };
+      // Execute findAll query
+      data = await Model.Inventories.findOne(criteria);
+      if (!_.isEmpty(data)) {
+        res.json({
+          status: 200,
+          message: "Successfully find data.",
+          result: data.get({ plain: true })
+        });
+      } else {
+        res.json({
+          status: 200,
+          message: "No Data Found.",
+          result: false
+        });
+      }
+    } catch (err) {
+      res.json({
+        status: 401,
+        err: err,
+        message: "Failed to find data."
       });
     }
   },

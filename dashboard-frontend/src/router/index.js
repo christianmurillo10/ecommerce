@@ -25,6 +25,7 @@ import ProductsImage from "../views/products/Image";
 import ProductsOption from "../views/products/Option";
 import ProductFlashDealHeaders from "../views/productFlashDealHeaders/Index";
 import ProductFlashDealDetails from "../views/productFlashDealHeaders/Details";
+import SalesOrdersOpen from "../views/salesOrders/Open";
 import ShippingMethods from "../views/shippingMethods/Index";
 import ShippingMethodRates from "../views/shippingMethods/Rates";
 
@@ -158,6 +159,11 @@ let router = new Router({
       path: "/productFlashDeals/details/:headerId",
       name: "productFlashDealDetails",
       component: ProductFlashDealDetails
+    },
+    {
+      path: "/salesOrders/open",
+      name: "salesOrdersOpen",
+      component: SalesOrdersOpen
     },
     {
       path: "/shippingMethods",

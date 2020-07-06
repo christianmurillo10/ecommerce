@@ -24,6 +24,29 @@ export default {
       { id: 1, name: "Credit" },
       { id: 2, name: "Debit" }
     ],
+    paymentMethodTypeList: [
+      { id: 1, name: "Cash" },
+      { id: 2, name: "Deposit" },
+      { id: 3, name: "Credit Card" },
+      { id: 4, name: "Bank Transfer" },
+      { id: 5, name: "E-Wallet" },
+      { id: 6, name: "Cheque" },
+      { id: 7, name: "PDC" }
+    ],
+    salesOrderStatusList: [
+      { id: 1, name: "Closed" },
+      { id: 2, name: "Delivered" },
+      { id: 3, name: "On Process" },
+      { id: 4, name: "Approved" },
+      { id: 5, name: "For Review" },
+      { id: 6, name: "Open" },
+      { id: 7, name: "Cancelled" },
+      { id: 8, name: "Failed" }
+    ],
+    claimTypeList: [
+      { id: 1, name: "Delivery" },
+      { id: 2, name: "Pick up" }
+    ],
     rules: {
       required: value => !!value || 'Required.',
       max50Chars: value => value.length <= 50 || 'Max 50 characters',
@@ -74,6 +97,35 @@ export default {
     getCreditDebitTypes(value) {
       if (value == 1) return "Credit";
       else if (value == 2) return "Debit";
+      else return "";
+    },
+
+    getPaymentMethodTypes(value) {
+      if (value == 1) return "Cash";
+      else if (value == 2) return "Deposit";
+      else if (value == 3) return "Credit Card";
+      else if (value == 4) return "Bank Transfer";
+      else if (value == 5) return "E-Wallet";
+      else if (value == 6) return "Cheque";
+      else if (value == 7) return "PDC";
+      else return "";
+    },
+
+    getSalesOrderStatus(value) {
+      if (value == 1) return "Closed";
+      else if (value == 2) return "Delivered";
+      else if (value == 3) return "On Process";
+      else if (value == 4) return "Approved";
+      else if (value == 5) return "For Review";
+      else if (value == 6) return "Open";
+      else if (value == 7) return "Cancelled";
+      else if (value == 8) return "Failed";
+      else return "";
+    },
+
+    getClaimTypes(value) {
+      if (value == 1) return "Delivery";
+      else if (value == 2) return "Pick up";
       else return "";
     },
 

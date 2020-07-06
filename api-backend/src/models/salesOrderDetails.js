@@ -11,6 +11,10 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING(100),
       allowNull: false
     },
+    'option_details': {
+      type: DataTypes.TEXT,
+      allowNull: false
+    },
     'remarks': {
       type: DataTypes.TEXT,
       allowNull: true

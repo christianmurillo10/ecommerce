@@ -59,6 +59,21 @@ const actions = {
       }
     });
   },
+  getDataBySku({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
+    let url = `${process.env.VUE_APP_API_BACKEND}/inventories/findBySku/${payload}`;
+    let header = { headers: { Token: localStorage.getItem("token") } };
+    return new Promise((resolve, reject) => {
+      try {
+        axios
+          .get(url, header)
+          .then(response => {
+            resolve(response);
+          });
+      } catch (err) {
+        reject(err);
+      }
+    });
+  },
   getDataById({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
     let url = `${process.env.VUE_APP_API_BACKEND}/inventories/${payload}`;
     let header = { headers: { Token: localStorage.getItem("token") } };

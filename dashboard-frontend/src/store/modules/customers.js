@@ -30,6 +30,12 @@ const actions = {
             let obj = response.data.result
             if (obj) {
               obj.forEach(element => {
+                // set fullname lastname first
+                let firstname = element.firstname ? element.firstname.charAt(0).toUpperCase() + element.firstname.slice(1) : "";
+                let middlename = element.middlename ? `${element.middlename.charAt(0).toUpperCase()}.` : "";
+                let lastname = element.lastname ? `${element.lastname.toUpperCase()},` : "";
+                element.name = `${lastname} ${firstname} ${middlename}`;
+
                 if (!_.isEmpty(obj.file_name) && !_.isNull(obj.file_name)) element.file_path = `${process.env.VUE_APP_API_BACKEND}/customers/viewImage/${element.file_name}`;
                 else element.file_path = require("../../assets/images/no-image.png");
               });

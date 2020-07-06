@@ -27,6 +27,7 @@ import productFlashDealHeaders from './modules/productFlashDealHeaders'
 import productFlashDealDetails from './modules/productFlashDealDetails'
 import products from './modules/products'
 import inventories from './modules/inventories'
+import salesOrders from './modules/salesOrders'
 import shippingMethods from './modules/shippingMethods'
 import shippingMethodRates from './modules/shippingMethodRates'
 
@@ -63,6 +64,7 @@ export default new Vuex.Store({
     productFlashDealDetails,
     products,
     inventories,
+    salesOrders,
     shippingMethods,
     shippingMethodRates
   }

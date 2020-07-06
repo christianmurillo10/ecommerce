@@ -19,13 +19,16 @@ module.exports = {
       return res.badRequest({ err: "Empty Parameter: [params]" });
 
     // Override variables
+    params.order_no = await generateOrderNo();
     params.created_at = moment().utc(8).format('YYYY-MM-DD HH:mm:ss');
     params.sub_total_amount = params.sub_total_amount.toLocaleString();
     params.vat_amount = params.vat_amount === null ? null : params.vat_amount.toLocaleString();
     params.shipping_fee_amount = params.shipping_fee_amount === null ? null : params.shipping_fee_amount.toLocaleString();
+    params.total_discount_amount = params.total_discount_amount === null ? null : params.total_discount_amount.toLocaleString();
     params.total_amount = params.total_amount === null ? null : params.total_amount.toLocaleString();
     params.customer_id = params.customer_id === undefined ? null : params.customer_id.toLocaleString();
     params.payment_method_type = params.payment_method_type === undefined ? null : params.payment_method_type.toLocaleString();
+    params.is_with_vat = params.is_with_vat === undefined ? null : params.is_with_vat.toLocaleString();
 
     try {
       // Validators
@@ -47,6 +50,7 @@ module.exports = {
         'sub_total_amount', 
         'vat_amount', 
         'shipping_fee_amount', 
+        'total_discount_amount', 
         'total_amount', 
         'customer_id', 
         'date_ordered', 
@@ -62,11 +66,35 @@ module.exports = {
           .then(() => Model.SalesOrders.findOrCreate(criteria))
           .then(async ([finalData, created]) => {
             let plainData = finalData.get({ plain: true });
-            res.json({
-              status: 200,
-              message: "Successfully created data.",
-              result: _.omit(plainData, ["is_deleted"])
+
+            // Set and filtering Bulk Data of Inventory History
+            const salesOrderDetails = params.details;
+            let salesOrderDetailsInitialValue = [];
+            salesOrderDetails.forEach(element => {
+              let salesOrderDetailsData = {
+                sku: element.sku,
+                option_details: JSON.stringify(element.option_details),
+                remarks: element.remarks,
+                quantity: element.quantity,
+                rate_amount: element.rate_amount,
+                discount_amount: element.discount_amount,
+                amount: element.amount,
+                product_id: element.product_id,
+                sales_order_id: plainData.id,
+                claim_type: element.claim_type,
+              }
+              salesOrderDetailsInitialValue.push(salesOrderDetailsData);
             });
+            
+            // Saving Bulk Inventory History
+            Model.SalesOrderDetails.bulkCreate(salesOrderDetailsInitialValue)
+              .then(response => {
+                res.json({
+                  status: 200,
+                  message: "Successfully created data.",
+                  result: _.omit(plainData, ["is_deleted"])
+                });
+              });
           });
       } else {
         res.json({
@@ -112,6 +140,7 @@ module.exports = {
         'sub_total_amount', 
         'vat_amount', 
         'shipping_fee_amount', 
+        'total_discount_amount', 
         'total_amount', 
         'total_balance_amount', 
         'customer_id', 
@@ -119,7 +148,6 @@ module.exports = {
         'approved_by', 
         'date_ordered', 
         'date_approved', 
-        'date_confirmed', 
         'date_delivery', 
         'date_delivered', 
         'updated_at',
@@ -395,3 +423,34 @@ module.exports = {
     }
   },
 };
+
+/**
+ * Other Functions
+ */
+const generateOrderNo = () => {
+  return new Promise(async (resolve, reject) => {
+    let data, criteria, value;
+
+    try {
+      let date = moment().utc(8).format('YYYY-MM-DD');
+      date = date.split('-').join('');
+      // Pre-setting variables
+      criteria = { attributes: ['order_no'], where: { order_no: { $ne: null }, is_deleted: 0 }, order: [ [ 'id', 'DESC' ]] };
+      // Execute findOne query
+      data = await Model.SalesOrders.findOne(criteria);
+      if (_.isEmpty(data)) {
+        value = `SO${date}-000001`;
+      } else {
+        let numLength = 6;
+        let stringNumber = data.order_no.substring(11);
+        let newNumber = (parseInt(stringNumber) + 1);
+        let leadingZero = Array(numLength - (newNumber.toString().length) + 1).join(0);
+        value = `SO${date}-${leadingZero}${newNumber}`;
+      }
+      resolve(value);
+    } catch (err) {
+      console.log(err);
+      reject(err);
+    }
+  });
+}

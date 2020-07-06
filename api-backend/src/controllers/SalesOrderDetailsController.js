@@ -31,6 +31,7 @@ module.exports = {
     try {
       // Validators
       if (_.isEmpty(params.sku)) return res.json({ status: 200, message: "SKU is required.", result: false });
+      if (_.isEmpty(params.option_details)) return res.json({ status: 200, message: "Option is required.", result: false });
       if (_.isEmpty(params.quantity)) return res.json({ status: 200, message: "Quantity is required.", result: false });
       if (_.isEmpty(params.rate_amount)) return res.json({ status: 200, message: "Rate Amount is required.", result: false });
       if (_.isEmpty(params.amount)) return res.json({ status: 200, message: "Amount is required.", result: false });
@@ -45,6 +46,7 @@ module.exports = {
       };
       initialValues = _.pick(params, [
         'sku', 
+        'option_details',
         'remarks', 
         'quantity', 
         'rate_amount', 
@@ -104,6 +106,7 @@ module.exports = {
       criteria = { include: [ { model: Model.Products, as: 'products', attributes: ['name', 'unit'] } ] };
       initialValues = _.pick(params, [
         'sku', 
+        'option_details',
         'remarks', 
         'quantity', 
         'rate_amount', 

@@ -30,6 +30,11 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: true,
       defaultValue: '0.00'
     },
+    'total_discount_amount': {
+      type: DataTypes.DECIMAL(12, 2),
+      allowNull: true,
+      defaultValue: '0.00'
+    },
     'total_amount': {
       type: DataTypes.DECIMAL(12, 2),
       allowNull: false,
@@ -77,11 +82,6 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: true,
       defaultValue: sequelize.NOW
     },
-    'date_confirmed': {
-      type: 'DATE',
-      allowNull: true,
-      defaultValue: sequelize.NOW
-    },
     'date_delivery': {
       type: 'DATE',
       allowNull: true,
@@ -102,7 +102,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: true,
       defaultValue: sequelize.literal('CURRENT_TIMESTAMP')
     },
-    'payment_method': {
+    'payment_method_type': {
       type: DataTypes.SMALLINT(1),
       comment: '1=Cash 2=Deposit 3=Credit Card 4=Bank Transfer 5=E-Wallet 6=Cheque 7=PDC',
       allowNull: true,

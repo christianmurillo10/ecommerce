@@ -584,12 +584,12 @@ module.exports = {
           'is_published'
         ],
         where: { is_deleted: 0 },
-        include: [
-          { model: Model.ProductBrands, as: "productBrands", attributes: ['name', 'description'] },
-          { model: Model.ProductCategories, as: "productCategories", attributes: ['name', 'description'] },
-          { model: Model.ProductSubCategories, as: "productSubCategories", attributes: ['name', 'description'] },
-          { model: Model.ProductSubSubCategories, as: "productSubSubCategories", attributes: ['name', 'description'] }
-        ]
+        // include: [
+        //   { model: Model.ProductBrands, as: "productBrands", attributes: ['name', 'description'] },
+        //   { model: Model.ProductCategories, as: "productCategories", attributes: ['name', 'description'] },
+        //   { model: Model.ProductSubCategories, as: "productSubCategories", attributes: ['name', 'description'] },
+        //   { model: Model.ProductSubSubCategories, as: "productSubSubCategories", attributes: ['name', 'description'] }
+        // ]
       };
       // Execute findAll query
       data = await Model.Products.findAll(criteria);

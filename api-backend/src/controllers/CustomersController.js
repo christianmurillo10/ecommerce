@@ -405,7 +405,7 @@ module.exports = {
 
     try {
       // Pre-setting variables
-      criteria = { where: { is_deleted: 0 } };
+      criteria = { where: { is_active: 1, is_deleted: 0 } };
       // Execute findAll query
       data = await Model.Customers.findAll(criteria);
       if (!_.isEmpty(data[0])) {
