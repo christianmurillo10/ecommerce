@@ -1,6 +1,7 @@
 <template>
   <v-container fluid>
     <Alerts />
+    <Loading />
     <v-divider></v-divider>
     <v-card>
       <v-card-title>
@@ -76,6 +77,7 @@
 
 <script>
 import Alerts from "@/components/utilities/Alerts";
+import Loading from "@/components/utilities/Loading";
 import ModalFormOpen from "./components/ModalFormOpen";
 import Mixins from "@/helpers/Mixins.js";
 import { mapState, mapActions } from "vuex";
@@ -84,6 +86,7 @@ export default {
   mixins: [Mixins],
   components: {
     Alerts,
+    Loading,
     ModalFormOpen
   },
 

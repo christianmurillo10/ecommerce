@@ -184,8 +184,8 @@ export default {
   },
 
   methods: {
-    ...mapActions("alerts", ["setAlert"]),
     ...mapMutations("loading", { setLoading: "SET_LOADING" }),
+    ...mapActions("alerts", ["setAlert"]),
     ...mapActions("customers", {
       saveCustomerData: "saveData",
       updateCustomerData: "updateData"

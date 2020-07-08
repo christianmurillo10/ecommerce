@@ -283,7 +283,7 @@
 <script>
 import Open from "../Open";
 import Mixins from "@/helpers/Mixins.js";
-import { mapGetters, mapActions } from "vuex";
+import { mapGetters, mapActions, mapMutations } from "vuex";
 
 export default {
   mixins: [Mixins],
@@ -391,6 +391,7 @@ export default {
   },
 
   methods: {
+    ...mapMutations("loading", { setLoading: "SET_LOADING" }),
     ...mapActions("alerts", ["setAlert"]),
     ...mapActions("customers", { getCustomersData: "getData" }),
     // ...mapActions("shippingMethods", { getShippingMethodData: "getData" }),
@@ -575,6 +576,8 @@ export default {
 
     save() {
       if (this.$refs.form.validate()) {
+        this.setLoading({ dialog: true, text: "Please wait" });
+
         if (this.formType === "new") {
           this.saveSalesOrderData(this.formData)
             .then(response => {
@@ -586,6 +589,7 @@ export default {
               
               if (!response.data.result) obj.type = "error"
               this.setAlert(obj);
+              this.setLoading({ dialog: false, text: "" });
             })
             .catch(err => console.log(err));
         } else if (this.formType === "update") {
@@ -599,6 +603,7 @@ export default {
               
               if (!response.data.result) obj.type = "error"
               this.setAlert(obj);
+              this.setLoading({ dialog: false, text: "" });
             })
             .catch(err => console.log(err));
         }
