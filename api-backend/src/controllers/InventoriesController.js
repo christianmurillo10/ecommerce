@@ -106,6 +106,7 @@ module.exports = {
         // Setup bulk data by product option values
         let bulkInitialValue = await setBulkInventoryData(params, dataOptions, dataProduct);
 
+        // Bulk delete of data by product_id
         await Model.Inventories.update({ is_deleted : 1 },{ where : { product_id : params.product_id }});
         Model.Inventories.bulkCreate(bulkInitialValue)
           .then(async response => {
@@ -530,11 +531,12 @@ module.exports = {
         // Execute findByPk query
         data = await Model.Inventories.findOne(criteria);
         if (!_.isEmpty(data)) {
+          const updatedAt = moment().utc(8).format('YYYY-MM-DD HH:mm:ss');
           let computedQuantity, newStockReserved, newStockAvailable;
           switch(obj.type) {
             case 'INSERT':
               newStockAvailable = parseInt(data.stock_available) - parseInt(obj.new_quantity);
-              initialValues = { stock_reserved: obj.new_quantity, stock_available: newStockAvailable };
+              initialValues = { stock_reserved: obj.new_quantity, stock_available: newStockAvailable, updated_at: updatedAt };
               break;
             case 'UPDATE':
               if (obj.old_quantity > obj.new_quantity) {
@@ -542,19 +544,19 @@ module.exports = {
                 computedQuantity = parseInt(obj.old_quantity) - parseInt(obj.new_quantity);
                 newStockReserved = parseInt(data.stock_reserved) - computedQuantity;
                 newStockAvailable = parseInt(data.stock_available) + computedQuantity;
-                initialValues = { stock_reserved: newStockReserved, stock_available: newStockAvailable };
+                initialValues = { stock_reserved: newStockReserved, stock_available: newStockAvailable, updated_at: updatedAt };
               } else if (obj.old_quantity < obj.new_quantity) {
                 // new_quantity - old_quantity
                 computedQuantity = parseInt(obj.new_quantity) - parseInt(obj.old_quantity);
                 newStockReserved = parseInt(data.stock_reserved) + computedQuantity;
                 newStockAvailable = parseInt(data.stock_available) - computedQuantity;
-                initialValues = { stock_reserved: newStockReserved, stock_available: newStockAvailable };
+                initialValues = { stock_reserved: newStockReserved, stock_available: newStockAvailable, updated_at: updatedAt };
               }
               break;
             case 'DELETE':
               newStockReserved = parseInt(data.stock_reserved) - parseInt(obj.old_quantity);
               newStockAvailable = parseInt(data.stock_available) + parseInt(obj.old_quantity);
-              initialValues = { stock_reserved: newStockReserved, stock_available: newStockAvailable };
+              initialValues = { stock_reserved: newStockReserved, stock_available: newStockAvailable, updated_at: updatedAt };
               break;
           }
           await data.update(initialValues)

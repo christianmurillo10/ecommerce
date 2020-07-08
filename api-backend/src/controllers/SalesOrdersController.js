@@ -1,4 +1,5 @@
 const Model = require('../models');
+const InventoriesController = require("./InventoriesController");
 
 module.exports = {
   /**
@@ -70,7 +71,7 @@ module.exports = {
             // Set and filtering Bulk Data of Inventory History
             const salesOrderDetails = params.details;
             let salesOrderDetailsInitialValue = [];
-            salesOrderDetails.forEach(element => {
+            salesOrderDetails.forEach(async element => {
               let salesOrderDetailsData = {
                 sku: element.sku,
                 option_details: JSON.stringify(element.option_details),
@@ -89,6 +90,16 @@ module.exports = {
             // Saving Bulk Inventory History
             Model.SalesOrderDetails.bulkCreate(salesOrderDetailsInitialValue)
               .then(response => {
+                salesOrderDetailsInitialValue.forEach(async element => {
+                  // Update inventory stocks
+                  await InventoriesController.updateStockReservedAndAvailable({
+                    sku: element.sku,
+                    old_quantity: 0,
+                    new_quantity: element.quantity,
+                    product_id: element.product_id,
+                    type: 'INSERT'
+                  });
+                });
                 res.json({
                   status: 200,
                   message: "Successfully created data.",
