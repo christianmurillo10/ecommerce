@@ -73,6 +73,9 @@
         </v-data-table>
       </v-card-text>
     </v-card>
+    <v-dialog v-model="dialogStatus" max-width="500px">
+      <ModalFormStatus ref="modalFormStatus" @setDialogStatus="setDialogStatus" />
+    </v-dialog>
     <v-dialog v-model="modalDelete.dialog" persistent max-width="300">
       <v-card>
         <v-card-title class="title">Confirmation</v-card-title>
@@ -91,6 +94,7 @@
 import Alerts from "@/components/utilities/Alerts";
 import Loading from "@/components/utilities/Loading";
 import ModalFormOpen from "./components/ModalFormOpen";
+import ModalFormStatus from "./components/ModalFormStatus";
 import Mixins from "@/helpers/Mixins.js";
 import { mapState, mapActions } from "vuex";
 
@@ -99,11 +103,13 @@ export default {
   components: {
     Alerts,
     Loading,
-    ModalFormOpen
+    ModalFormOpen,
+    ModalFormStatus
   },
 
   data: () => ({
     dialog: false,
+    dialogStatus: false,
     modalDelete: {
       dialog: false,
       id: null
@@ -129,6 +135,9 @@ export default {
   watch: {
     dialog(val) {
       val || this.close();
+    },
+    dialogStatus(val) {
+      val || this.closeStatus();
     }
   },
 
@@ -144,7 +153,8 @@ export default {
     },
 
     editStatus(id) {
-      console.log("STATUS")
+      this.setDialogStatus(true);
+      this.$refs.modalFormStatus.editStatus(id);
     },
 
     editItem(id) {
@@ -179,8 +189,17 @@ export default {
       this.$refs.modalFormOpen.close();
     },
 
+    closeStatus() {
+      this.setDialog(false);
+      this.$refs.modalFormStatus.close();
+    },
+
     setDialog(value) {
       this.dialog = value;
+    },
+
+    setDialogStatus(value) {
+      this.dialogStatus = value;
     }
   }
 };

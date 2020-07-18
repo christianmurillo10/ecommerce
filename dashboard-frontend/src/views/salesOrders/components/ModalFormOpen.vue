@@ -375,7 +375,6 @@ export default {
     // ...mapGetters("shippingMethods", ["getShippingMethodList"]),
     ...mapGetters("products", ["getProductList", "getProductNameById"]),
     ...mapGetters("productOptions", ["getProductOptionList"]),
-    ...mapGetters("salesOrders", ["getSalesOrderByStatusAndId"]),
     formTitle() {
       return this.formType === "new" ? "Sales Order - Create" : "Sales Order - Update";
     },
