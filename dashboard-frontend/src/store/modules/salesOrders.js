@@ -9,6 +9,9 @@ const getters = {
   getSalesOrderById: (state) => (id) => {
     return state.salesOrderList.find(salesOrder => salesOrder.id === id);
   },
+  getSalesOrderByStatusAndId: (state) => (id) => {
+    return state.salesOrderByStatusList.find(salesOrder => salesOrder.id === id);
+  },
   getSalesOrderList: (state) => {
     return state.salesOrderList;
   }
@@ -64,7 +67,6 @@ const actions = {
     return new Promise((resolve, reject) => {
       try {
         let obj = {
-          order_no: payload.order_no,
           remarks: payload.remarks,
           sub_total_amount: payload.sub_total_amount,
           vat_amount: payload.vat_amount,
@@ -97,7 +99,6 @@ const actions = {
     return new Promise((resolve, reject) => {
       try {
         let obj = {
-          order_no: payload.order_no,
           remarks: payload.remarks,
           sub_total_amount: payload.sub_total_amount,
           vat_amount: payload.vat_amount,
@@ -105,25 +106,16 @@ const actions = {
           total_discount_amount: payload.total_discount_amount,
           total_amount: payload.total_amount,
           customer_id: payload.customer_id,
-          reviewed_by: payload.reviewed_by,
-          approved_by: payload.approved_by,
           date_ordered: payload.date_ordered,
-          date_approved: payload.date_approved,
-          date_delivery: payload.date_delivery,
-          date_delivered: payload.date_delivered,
           payment_method_type: payload.payment_method_type,
-          status: payload.status,
           is_with_vat: payload.is_with_vat,
-          is_with_return: payload.is_with_return,
-          is_paid: payload.is_paid,
-          is_fully_paid: payload.is_fully_paid,
-          is_viewed: payload.is_viewed
+          details: payload.details
         };
 
         axios
           .put(url, obj, header)
           .then(response => {
-            commit("UPDATE_DATA", response.data.result);
+            commit("UPDATE_DATA_BY_STATUS", response.data.result);
             resolve(response);
           });
       } catch (err) {
@@ -173,6 +165,32 @@ const mutations = {
   UPDATE_DATA(state, payload) {
     let index = state.salesOrderList.map(salesOrder => salesOrder.id).indexOf(payload.id);
     Object.assign(state.salesOrderList[index], {
+      order_no: payload.order_no,
+      remarks: payload.remarks,
+      sub_total_amount: payload.sub_total_amount,
+      vat_amount: payload.vat_amount,
+      shipping_fee_amount: payload.shipping_fee_amount,
+      total_discount_amount: payload.total_discount_amount,
+      total_amount: payload.total_amount,
+      customer_id: payload.customer_id,
+      reviewed_by: payload.reviewed_by,
+      approved_by: payload.approved_by,
+      date_ordered: payload.date_ordered,
+      date_approved: payload.date_approved,
+      date_delivery: payload.date_delivery,
+      date_delivered: payload.date_delivered,
+      payment_method_type: payload.payment_method_type,
+      status: payload.status,
+      is_with_vat: payload.is_with_vat,
+      is_with_return: payload.is_with_return,
+      is_paid: payload.is_paid,
+      is_fully_paid: payload.is_fully_paid,
+      is_viewed: payload.is_viewed
+    });
+  },
+  UPDATE_DATA_BY_STATUS(state, payload) {
+    let index = state.salesOrderByStatusList.map(salesOrder => salesOrder.id).indexOf(payload.id);
+    Object.assign(state.salesOrderByStatusList[index], {
       order_no: payload.order_no,
       remarks: payload.remarks,
       sub_total_amount: payload.sub_total_amount,

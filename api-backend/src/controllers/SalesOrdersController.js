@@ -56,7 +56,7 @@ module.exports = {
         'customer_id', 
         'date_ordered', 
         'created_at',
-        'payment_method_type ',
+        'payment_method_type',
         'status',
         'is_with_vat'
       ]);
@@ -68,10 +68,10 @@ module.exports = {
           .then(async ([finalData, created]) => {
             let plainData = finalData.get({ plain: true });
 
-            // Set and filtering Bulk Data of Inventory History
+            // 1. Set and filtering Bulk Data of Sales Order Details
             const salesOrderDetails = params.details;
             let salesOrderDetailsInitialValue = [];
-            salesOrderDetails.forEach(async element => {
+            salesOrderDetails.forEach(element => {
               let salesOrderDetailsData = {
                 sku: element.sku,
                 option_details: JSON.stringify(element.option_details),
@@ -87,19 +87,21 @@ module.exports = {
               salesOrderDetailsInitialValue.push(salesOrderDetailsData);
             });
             
-            // Saving Bulk Inventory History
+            // 2. Saving Bulk Sales Order Details
             Model.SalesOrderDetails.bulkCreate(salesOrderDetailsInitialValue)
-              .then(response => {
-                salesOrderDetailsInitialValue.forEach(async element => {
-                  // Update inventory stocks
+              .then(async response => {
+                for (let i = 0; i < salesOrderDetailsInitialValue.length; i++) {
+                  let details = salesOrderDetailsInitialValue[i];
+                  // 2.1 Update inventory stocks
                   await InventoriesController.updateStockReservedAndAvailable({
-                    sku: element.sku,
+                    sku: details.sku,
                     old_quantity: 0,
-                    new_quantity: element.quantity,
-                    product_id: element.product_id,
+                    new_quantity: details.quantity,
+                    product_id: details.product_id,
                     type: 'INSERT'
                   });
-                });
+                }
+                
                 res.json({
                   status: 200,
                   message: "Successfully created data.",
@@ -146,7 +148,6 @@ module.exports = {
       // Pre-setting variables
       criteria = { include: [{ model: Model.Customers, as: 'customers', attributes: ['customer_no', 'firstname', 'middlename', 'lastname'] }] };
       initialValues = _.pick(params, [
-        'order_no', 
         'remarks', 
         'sub_total_amount', 
         'vat_amount', 
@@ -162,7 +163,7 @@ module.exports = {
         'date_delivery', 
         'date_delivered', 
         'updated_at',
-        'payment_method_type ',
+        'payment_method_type',
         'status',
         'is_with_vat',
         'is_paid',
@@ -175,11 +176,125 @@ module.exports = {
       if (!_.isEmpty(data)) {
         await data.update(initialValues)
           .then(() => Model.SalesOrders.findByPk(data.id, criteria)
-          .then(finalData => {
-            res.json({
-              status: 200,
-              message: "Successfully updated data.",
-              result: _.omit(finalData.get({ plain: true }), ['is_deleted'])
+          .then(async finalData => {
+            let promises = [];
+            let plainData = finalData.get({ plain: true });
+
+            // 1. Set and filtering Bulk Data of Sales Order Details
+            const salesOrderDetails = params.details;
+            let salesOrderDetailsInitialUpdateValue = [];
+            let salesOrderDetailsInitialCreateValue = [];
+            let existingIds = [];
+            salesOrderDetails.forEach(element => {
+              let salesOrderDetailsData = {
+                id: element.id,
+                sku: element.sku,
+                option_details: JSON.stringify(element.option_details),
+                remarks: element.remarks,
+                quantity: element.quantity,
+                rate_amount: element.rate_amount,
+                discount_amount: element.discount_amount,
+                amount: element.amount,
+                product_id: element.product_id,
+                sales_order_id: plainData.id,
+                claim_type: element.claim_type,
+              }
+
+              if (_.isUndefined(element.id)) {
+                salesOrderDetailsInitialCreateValue.push(_.omit(salesOrderDetailsData, ["id"]));
+              } else {
+                salesOrderDetailsInitialUpdateValue.push(salesOrderDetailsData);
+                existingIds.push(element.id);
+              }
+            });
+            
+            // 2. UPDATE
+            if (salesOrderDetailsInitialUpdateValue.length > 0) {
+              // 2.1 Update sales order details and inventory
+              for (let i = 0; i < salesOrderDetailsInitialUpdateValue.length; i++) {
+                let detailsUpdateValue = salesOrderDetailsInitialUpdateValue[i];
+                let dataDetails = await Model.SalesOrderDetails.findByPk(detailsUpdateValue.id);
+                if (!_.isEmpty(dataDetails)) {
+                  // 2.1.1 Update inventory stocks
+                  if (detailsUpdateValue.product_id === dataDetails.product_id) {
+                    await InventoriesController.updateStockReservedAndAvailable({
+                      sku: detailsUpdateValue.sku,
+                      old_quantity: dataDetails.quantity,
+                      new_quantity: detailsUpdateValue.quantity,
+                      product_id: detailsUpdateValue.product_id,
+                      type: 'UPDATE'
+                    });
+                  } else {
+                    await InventoriesController.updateStockReservedAndAvailable({
+                      sku: detailsUpdateValue.sku,
+                      old_quantity: 0,
+                      new_quantity: detailsUpdateValue.quantity,
+                      product_id: detailsUpdateValue.product_id,
+                      type: 'INSERT'
+                    });
+                    await InventoriesController.updateStockReservedAndAvailable({
+                      sku: dataDetails.sku,
+                      old_quantity: dataDetails.quantity,
+                      new_quantity: 0,
+                      product_id: dataDetails.product_id,
+                      type: 'DELETE'
+                    });
+                  }
+                  // 2.1.2 Update sales order details
+                  await dataDetails.update(detailsUpdateValue);
+                }
+              }
+              
+              // 2.2 Find to be deleted sales order details
+              let criteriaDeletedDetails = { attributes: ['id', 'sku', 'quantity', 'product_id'], where: { id: { $notIn: existingIds }, sales_order_id: plainData.id, is_deleted: 0 }, raw: true };
+              let deletedDetailsData = await Model.SalesOrderDetails.findAll(criteriaDeletedDetails);
+              for (let i = 0; i < deletedDetailsData.length; i++) {
+                let deletedDetails = deletedDetailsData[i];
+                // 2.2.1 Update inventory stocks
+                await InventoriesController.updateStockReservedAndAvailable({
+                  sku: deletedDetails.sku,
+                  old_quantity: deletedDetails.quantity,
+                  new_quantity: 0,
+                  product_id: deletedDetails.product_id,
+                  type: 'DELETE'
+                });
+              }
+
+              // 2.3 Delete sales order details
+              let criteriaDetails = { where: { id: { $notIn: existingIds }, sales_order_id: plainData.id, is_deleted: 0 } };
+              await Model.SalesOrderDetails.update({ is_deleted : 1 }, criteriaDetails);
+            }
+
+            // 3. CREATE
+            if (salesOrderDetailsInitialCreateValue.length > 0) {
+              // 3.1 Create bulk sales order details
+              promises.push(Model.SalesOrderDetails.bulkCreate(salesOrderDetailsInitialCreateValue));
+              for (let j = 0; j < salesOrderDetailsInitialCreateValue.length; j++) {
+                let detailsCreateValue = salesOrderDetailsInitialCreateValue[j];
+                // 3.1.1 Update inventory stocks
+                await InventoriesController.updateStockReservedAndAvailable({
+                  sku: detailsCreateValue.sku,
+                  old_quantity: 0,
+                  new_quantity: detailsCreateValue.quantity,
+                  product_id: detailsCreateValue.product_id,
+                  type: 'INSERT'
+                });
+              }
+            }
+
+            // 4. Query promises
+            Promise.all(promises).then(() => {
+              res.json({
+                status: 200,
+                message: "Successfully updated data.",
+                result: _.omit(plainData, ['is_deleted'])
+              });
+            }, (err) => {
+              res.json({
+                status: 401,
+                err: err,
+                message: "Failed updating data."
+              });
             });
           }));
       } else {
@@ -410,8 +525,39 @@ module.exports = {
     let data;
 
     try {
+      // Pre-setting variables
+      criteria = {
+        where: { is_deleted: 0 },
+        include: [
+          { model: Model.Customers, as: 'customers', attributes: ['customer_no', 'firstname', 'middlename', 'lastname'] },
+          { model: Model.Employees, as: 'reviewedBy', attributes: ['employee_no', 'firstname', 'middlename', 'lastname'] },
+          { model: Model.Employees, as: 'approvedBy', attributes: ['employee_no', 'firstname', 'middlename', 'lastname'] },
+          { 
+            model: Model.SalesOrderDetails, as: "salesOrderDetails", 
+            attributes: [
+              'id', 
+              'sku', 
+              'option_details', 
+              'remarks', 
+              'quantity', 
+              'rate_amount', 
+              'discount_amount', 
+              'amount',
+              'product_id',
+              'date',
+              'claim_type',
+              'status'
+            ], 
+            where: { is_deleted: 0 },
+            include: [
+              { model: Model.Products, as: "products", attributes: ['name', 'description'] }
+            ],
+            required: false 
+          },
+        ]
+      };
       // Execute findAll query
-      data = await Model.SalesOrders.findByPk(req.params.id);
+      data = await Model.SalesOrders.findByPk(req.params.id, criteria);
       if (!_.isEmpty(data)) {
         res.json({
           status: 200,

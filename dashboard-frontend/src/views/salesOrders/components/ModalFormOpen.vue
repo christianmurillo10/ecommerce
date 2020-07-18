@@ -192,7 +192,7 @@
                         v-model="formData.details[i].product_id"
                         :rules="[rules.required]"
                         label="Product"
-                        v-on:change="setProductOptions(i)"
+                        v-on:change="setProductOptions(i, formData.details[i].product_id, 'new')"
                       ></v-autocomplete>
                     </v-flex>
                     <v-flex xs12 sm12 md3></v-flex>
@@ -375,7 +375,7 @@ export default {
     // ...mapGetters("shippingMethods", ["getShippingMethodList"]),
     ...mapGetters("products", ["getProductList", "getProductNameById"]),
     ...mapGetters("productOptions", ["getProductOptionList"]),
-    ...mapGetters("salesOrders", ["getSalesOrderById"]),
+    ...mapGetters("salesOrders", ["getSalesOrderByStatusAndId"]),
     formTitle() {
       return this.formType === "new" ? "Sales Order - Create" : "Sales Order - Update";
     },
@@ -400,16 +400,17 @@ export default {
     ...mapActions("inventories", { getInventoryDataBySku: "getDataBySku" }),
     ...mapActions("salesOrders", {
       saveSalesOrderData: "saveData",
-      updateSalesOrderData: "updateData"
+      updateSalesOrderData: "updateData",
+      getSalesOrderDataById: "getDataById"
     }),
 
-    async setProductOptions(index) {
-      await this.getProductOptionDataByProductId(this.formData.details[index].product_id);
-      await this.setProductOptionIndexData(index);
+    async setProductOptions(index, productId, type) {
+      await this.getProductOptionDataByProductId(productId);
+      await this.setProductOptionIndexData(index, type);
       await this.computeSubTotalAmount();
     },
 
-    async setProductOptionIndexData(index) {
+    async setProductOptionIndexData(index, type) {
       try {
         let data = [];
 
@@ -426,7 +427,7 @@ export default {
           this.productOptions.push({ data: data });
         }
         
-        await this.setProductOptionListDefaultDataByIndex(index);
+        if (type === 'new') await this.setProductOptionListDefaultDataByIndex(index);
       } catch (err) {
         console.log(err);
       }
@@ -547,8 +548,30 @@ export default {
       }
     },
 
-    editItem(id) {
-      let data = this.getSalesOrderById(id);
+    async editItem(id) {
+      const response = await this.getSalesOrderDataById(id);
+      let data = response.data.result;
+
+      // set details values
+      let details = [];
+      for(let i = 0; i < data.salesOrderDetails.length; i++) {
+          let obj = data.salesOrderDetails[i];
+          details.push({
+            id: obj.id,
+            sku: obj.sku,
+            option_details: JSON.parse(obj.option_details),
+            remarks: obj.remarks,
+            quantity: obj.quantity.toString(),
+            rate_amount: obj.rate_amount,
+            discount_amount: obj.discount_amount,
+            amount: obj.amount,
+            product_id: obj.product_id,
+            claim_type: obj.claim_type
+          });
+
+          await this.setProductOptions(i, obj.product_id, "update");
+      }
+
       this.formData.id = data.id;
       this.formData.order_no = data.order_no;
       this.formData.remarks = data.remarks;
@@ -557,12 +580,11 @@ export default {
       this.formData.shipping_fee_amount = data.shipping_fee_amount;
       this.formData.total_discount_amount = data.total_discount_amount;
       this.formData.total_amount = data.total_amount;
-      this.formData.contact_no = data.contact_no;
       this.formData.customer_id = data.customer_id;
       this.formData.date_ordered = data.date_ordered;
       this.formData.payment_method_type = data.payment_method_type;
-      this.formData.is_paid = data.is_paid;
-      this.formData.is_fully_paid = data.is_fully_paid;
+      this.formData.is_with_vat = data.is_with_vat;
+      this.formData.details = details;
       this.formType = "update";
     },
 

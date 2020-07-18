@@ -535,8 +535,9 @@ module.exports = {
           let computedQuantity, newStockReserved, newStockAvailable;
           switch(obj.type) {
             case 'INSERT':
+              newStockReserved = parseInt(data.stock_reserved) + parseInt(obj.new_quantity);
               newStockAvailable = parseInt(data.stock_available) - parseInt(obj.new_quantity);
-              initialValues = { stock_reserved: obj.new_quantity, stock_available: newStockAvailable, updated_at: updatedAt };
+              initialValues = { stock_reserved: newStockReserved, stock_available: newStockAvailable, updated_at: updatedAt };
               break;
             case 'UPDATE':
               if (obj.old_quantity > obj.new_quantity) {
@@ -559,16 +560,16 @@ module.exports = {
               initialValues = { stock_reserved: newStockReserved, stock_available: newStockAvailable, updated_at: updatedAt };
               break;
           }
-          await data.update(initialValues)
+          data.update(initialValues)
             .then(response => {
-              res.json({
+              resolve({
                 status: 200,
                 message: "Successfully update data.",
                 result: true
               });
             });
         } else {
-          res.json({
+          resolve({
             status: 200,
             message: "Data doesn't exist.",
             result: false
@@ -585,7 +586,6 @@ module.exports = {
   },
 };
 
-
 /**
  * Other Functions
  */
@@ -597,14 +597,14 @@ const setBulkInventoryData = (params, data, product) => {
     sliceStart = 0,
     sliceEnd = 0
 
-  // Set array values and multiply length
+  // 1. Set array values and multiply length
   for (let i = 0; i < data.length; i++) {
     let value = data[i].values.split(',');
     multiplyLength = multiplyLength * value.length;
     arrayValues.push(value);
   }
 
-  // Set and filtering of Bulk Data
+  // 2. Set and filtering of Bulk Data
   for (let a = 0; a < arrayValues.length; a++) {
     let value = arrayValues[a];
     let valueLength = value.length;
@@ -631,7 +631,7 @@ const setBulkInventoryData = (params, data, product) => {
     })
   }
 
-  // Remove unnecessary data and return
+  // 3. Remove unnecessary data and return
   sliceStart = bulkData.length - multiplyLength;
   sliceEnd = bulkData.length;
   finalData = bulkData.slice(sliceStart, sliceEnd);

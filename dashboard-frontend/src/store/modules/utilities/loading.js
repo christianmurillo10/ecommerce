@@ -11,7 +11,6 @@ const actions = {};
 
 const mutations = {
   SET_LOADING(state, payload) {
-    console.log("QWEQEQW", payload)
     state.loadingDetails = payload;
   }
 };

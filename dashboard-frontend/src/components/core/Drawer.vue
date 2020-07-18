@@ -276,8 +276,32 @@ export default {
 };
 </script>
 
-<style>
+<style lang="css" scoped>
 .margin-left-n10 {
   margin-left: -10px !important;
+}
+
+.v-navigation-drawer {
+  overflow-y: hidden !important;
+}
+
+.v-navigation-drawer:hover {
+  overflow-y: visible !important;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1; 
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888; 
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555; 
 }
 </style>

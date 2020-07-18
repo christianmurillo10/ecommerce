@@ -162,6 +162,10 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: 'approved_by',
       as: 'approvedBy'
     });
+    SalesOrders.hasMany(models.SalesOrderDetails, {
+      foreignKey: 'sales_order_id',
+      as: 'salesOrderDetails'
+    });
   };
 
   return SalesOrders;
