@@ -40,6 +40,18 @@
             <td class="text-xs-center">
               <v-tooltip left>
                 <template v-slot:activator="{ on }">
+                  <v-icon small class="mr-2" color="purple darken-2" @click="viewInvoice(props.item.id)" v-on="on">list_alt</v-icon>
+                </template>
+                <span>Invoice</span>
+              </v-tooltip>
+              <v-tooltip left>
+                <template v-slot:activator="{ on }">
+                  <v-icon small class="mr-2" color="blue-grey darken-2" @click="editStatus(props.item.id)" v-on="on">assignment</v-icon>
+                </template>
+                <span>Status</span>
+              </v-tooltip>
+              <v-tooltip left>
+                <template v-slot:activator="{ on }">
                   <v-icon small class="mr-2" @click="editItem(props.item.id)" v-on="on">edit</v-icon>
                 </template>
                 <span>Update</span>
@@ -126,6 +138,14 @@ export default {
       getSalesOrderDataByStatus: "getDataByStatus",
       deleteSalesOrderData: "deleteData"
     }),
+
+    viewInvoice(id) {
+      this.$router.push(`/salesOrders/invoice/${id}`);
+    },
+
+    editStatus(id) {
+      console.log("STATUS")
+    },
 
     editItem(id) {
       this.setDialog(true);

@@ -13,6 +13,7 @@
     "form-data": "^3.0.0",
     "moment": "^2.24.0",
     "vue": "^2.6.6",
+    "vue-html2pdf": "^1.6.4",
     "vue-router": "^3.0.1",
     "vue2-editor": "^2.10.2",
     "vuetify": "^1.5.5",
