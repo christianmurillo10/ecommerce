@@ -8,6 +8,7 @@ router.route('/findAllbyCustomerId/:customerId').get(authController.authorizatio
 router.route('/findAllbyStatus/:status').get(authController.authorization, salesOrdersController.findAllbyStatus);
 router.route('/create').post(authController.authorization, salesOrdersController.create);
 router.route('/update/:id').put(authController.authorization, salesOrdersController.update);
+router.route('/updateStatus/:id').put(authController.authorization, salesOrdersController.updateStatus);
 router.route('/delete/:id').put(authController.authorization, salesOrdersController.delete);
 router.route('/search/:value').get(authController.authorization, salesOrdersController.search);
 router.route('/:id').get(authController.authorization, salesOrdersController.findById);

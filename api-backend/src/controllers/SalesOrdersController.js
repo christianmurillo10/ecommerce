@@ -314,6 +314,64 @@ module.exports = {
   },
 
   /**
+   * Update
+   * @route PUT /salesOrders/updateStatus/:id
+   * @param req
+   * @param res
+   * @returns {never}
+   */
+  updateStatus: async (req, res) => {
+    const params = req.body;
+    let criteria, initialValues, data;
+
+    if (_.isUndefined(params))
+      return res.badRequest({ err: "Invalid Parameter: [params]" });
+    if (_.isEmpty(params))
+      return res.badRequest({ err: "Empty Parameter: [params]" });
+
+    // Override variables
+    params.updated_at = moment().utc(8).format('YYYY-MM-DD HH:mm:ss');
+
+    try {
+      // Pre-setting variables
+      criteria = { include: [{ model: Model.Customers, as: 'customers', attributes: ['customer_no', 'firstname', 'middlename', 'lastname'] }] };
+      initialValues = _.pick(params, [
+        'status',
+        'date',
+        'updated_at'
+      ]);
+      // Execute findByPk query
+      data = await Model.SalesOrders.findByPk(req.params.id, criteria);
+      if (!_.isEmpty(data)) {
+        await data.update(initialValues)
+          .then(() => Model.SalesOrders.findByPk(data.id, criteria)
+          .then(async finalData => {
+            let plainData = finalData.get({ plain: true });
+            // DECIDE IF REDESIGN THE INVENTORY UPDATE (ONLY WHEN APPROVED TO UPDATE STOCK RESERVED)
+            res.json({
+              status: 200,
+              message: "Successfully updated role.",
+              result: plainData
+            });
+          }));
+      } else {
+        res.json({
+          status: 200,
+          message: "Data doesn't exist.",
+          result: false
+        });
+      }
+    } catch (err) {
+      console.log("ASDASD", err)
+      res.json({
+        status: 401,
+        err: err,
+        message: "Failed updating data."
+      });
+    }
+  },
+
+  /**
    * Delete
    * @route PUT /salesOrders/delete/:id
    * @param req
