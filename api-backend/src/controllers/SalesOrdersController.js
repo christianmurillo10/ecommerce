@@ -90,18 +90,6 @@ module.exports = {
             // 2. Saving Bulk Sales Order Details
             Model.SalesOrderDetails.bulkCreate(salesOrderDetailsInitialValue)
               .then(async response => {
-                for (let i = 0; i < salesOrderDetailsInitialValue.length; i++) {
-                  let details = salesOrderDetailsInitialValue[i];
-                  // 2.1 Update inventory stocks
-                  await InventoriesController.updateStockReservedAndAvailable({
-                    sku: details.sku,
-                    old_quantity: 0,
-                    new_quantity: details.quantity,
-                    product_id: details.product_id,
-                    type: 'INSERT'
-                  });
-                }
-                
                 res.json({
                   status: 200,
                   message: "Successfully created data.",
@@ -177,7 +165,6 @@ module.exports = {
         await data.update(initialValues)
           .then(() => Model.SalesOrders.findByPk(data.id, criteria)
           .then(async finalData => {
-            let promises = [];
             let plainData = finalData.get({ plain: true });
 
             // 1. Set and filtering Bulk Data of Sales Order Details
@@ -215,52 +202,12 @@ module.exports = {
                 let detailsUpdateValue = salesOrderDetailsInitialUpdateValue[i];
                 let dataDetails = await Model.SalesOrderDetails.findByPk(detailsUpdateValue.id);
                 if (!_.isEmpty(dataDetails)) {
-                  // 2.1.1 Update inventory stocks
-                  if (detailsUpdateValue.product_id === dataDetails.product_id) {
-                    await InventoriesController.updateStockReservedAndAvailable({
-                      sku: detailsUpdateValue.sku,
-                      old_quantity: dataDetails.quantity,
-                      new_quantity: detailsUpdateValue.quantity,
-                      product_id: detailsUpdateValue.product_id,
-                      type: 'UPDATE'
-                    });
-                  } else {
-                    await InventoriesController.updateStockReservedAndAvailable({
-                      sku: detailsUpdateValue.sku,
-                      old_quantity: 0,
-                      new_quantity: detailsUpdateValue.quantity,
-                      product_id: detailsUpdateValue.product_id,
-                      type: 'INSERT'
-                    });
-                    await InventoriesController.updateStockReservedAndAvailable({
-                      sku: dataDetails.sku,
-                      old_quantity: dataDetails.quantity,
-                      new_quantity: 0,
-                      product_id: dataDetails.product_id,
-                      type: 'DELETE'
-                    });
-                  }
-                  // 2.1.2 Update sales order details
+                  // 2.1.1 Update sales order details
                   await dataDetails.update(detailsUpdateValue);
                 }
               }
-              
-              // 2.2 Find to be deleted sales order details
-              let criteriaDeletedDetails = { attributes: ['id', 'sku', 'quantity', 'product_id'], where: { id: { $notIn: existingIds }, sales_order_id: plainData.id, is_deleted: 0 }, raw: true };
-              let deletedDetailsData = await Model.SalesOrderDetails.findAll(criteriaDeletedDetails);
-              for (let i = 0; i < deletedDetailsData.length; i++) {
-                let deletedDetails = deletedDetailsData[i];
-                // 2.2.1 Update inventory stocks
-                await InventoriesController.updateStockReservedAndAvailable({
-                  sku: deletedDetails.sku,
-                  old_quantity: deletedDetails.quantity,
-                  new_quantity: 0,
-                  product_id: deletedDetails.product_id,
-                  type: 'DELETE'
-                });
-              }
 
-              // 2.3 Delete sales order details
+              // 2.2 Delete sales order details
               let criteriaDetails = { where: { id: { $notIn: existingIds }, sales_order_id: plainData.id, is_deleted: 0 } };
               await Model.SalesOrderDetails.update({ is_deleted : 1 }, criteriaDetails);
             }
@@ -268,33 +215,13 @@ module.exports = {
             // 3. CREATE
             if (salesOrderDetailsInitialCreateValue.length > 0) {
               // 3.1 Create bulk sales order details
-              promises.push(Model.SalesOrderDetails.bulkCreate(salesOrderDetailsInitialCreateValue));
-              for (let j = 0; j < salesOrderDetailsInitialCreateValue.length; j++) {
-                let detailsCreateValue = salesOrderDetailsInitialCreateValue[j];
-                // 3.1.1 Update inventory stocks
-                await InventoriesController.updateStockReservedAndAvailable({
-                  sku: detailsCreateValue.sku,
-                  old_quantity: 0,
-                  new_quantity: detailsCreateValue.quantity,
-                  product_id: detailsCreateValue.product_id,
-                  type: 'INSERT'
-                });
-              }
+              await Model.SalesOrderDetails.bulkCreate(salesOrderDetailsInitialCreateValue);
             }
 
-            // 4. Query promises
-            Promise.all(promises).then(() => {
-              res.json({
-                status: 200,
-                message: "Successfully updated data.",
-                result: _.omit(plainData, ['is_deleted'])
-              });
-            }, (err) => {
-              res.json({
-                status: 401,
-                err: err,
-                message: "Failed updating data."
-              });
+            res.json({
+              status: 200,
+              message: "Successfully updated data.",
+              result: _.omit(plainData, ['is_deleted'])
             });
           }));
       } else {
@@ -331,13 +258,26 @@ module.exports = {
 
     // Override variables
     params.updated_at = moment().utc(8).format('YYYY-MM-DD HH:mm:ss');
+    switch(params.status) {
+      case 2:
+        params.date_delivered = params.date;
+        break;
+      case 3:
+        params.date_delivery = params.date;
+        break;
+      case 4:
+        params.date_approved = params.date;
+        break;
+    }
 
     try {
       // Pre-setting variables
       criteria = { include: [{ model: Model.Customers, as: 'customers', attributes: ['customer_no', 'firstname', 'middlename', 'lastname'] }] };
       initialValues = _.pick(params, [
         'status',
-        'date',
+        'date_approved',
+        'date_delivery',
+        'date_delivered',
         'updated_at'
       ]);
       // Execute findByPk query
@@ -347,7 +287,60 @@ module.exports = {
           .then(() => Model.SalesOrders.findByPk(data.id, criteria)
           .then(async finalData => {
             let plainData = finalData.get({ plain: true });
-            // DECIDE IF REDESIGN THE INVENTORY UPDATE (ONLY WHEN APPROVED TO UPDATE STOCK RESERVED)
+            let status = plainData.status;
+            let notIncludedStatus = [1, 3, 5, 6];
+
+            // Update inventory
+            if (!notIncludedStatus.includes(status)) {
+              let criteriaDetails = { attributes: ['id', 'sku', 'quantity', 'product_id'], where: { sales_order_id: plainData.id, is_deleted: 0 }, raw: true };
+              let dataDetails = await Model.SalesOrderDetails.findAll(criteriaDetails);
+
+              switch(status) {
+                case 2:
+                  // Delivered (No update stock out function yet)
+                  break;
+                case 4:
+                  // Approved
+                  for (let i = 0; i < dataDetails.length; i++) {
+                    let details = dataDetails[i];
+                    await InventoriesController.updateStockReservedAndAvailable({
+                      sku: details.sku,
+                      old_quantity: 0,
+                      new_quantity: details.quantity,
+                      product_id: details.product_id,
+                      type: 'INSERT'
+                    });
+                  }
+                  break;
+                case 7:
+                  // Cancelled
+                  for (let i = 0; i < dataDetails.length; i++) {
+                    let details = dataDetails[i];
+                    await InventoriesController.updateStockReservedAndAvailable({
+                      sku: details.sku,
+                      old_quantity: details.quantity,
+                      new_quantity: 0,
+                      product_id: details.product_id,
+                      type: 'DELETE'
+                    });
+                  }
+                  break;
+                case 8:
+                  // Failed
+                  for (let i = 0; i < dataDetails.length; i++) {
+                    let details = dataDetails[i];
+                    await InventoriesController.updateStockReservedAndAvailable({
+                      sku: details.sku,
+                      old_quantity: details.quantity,
+                      new_quantity: 0,
+                      product_id: details.product_id,
+                      type: 'DELETE'
+                    });
+                  }
+                  break;
+              }
+            }
+
             res.json({
               status: 200,
               message: "Successfully updated role.",
