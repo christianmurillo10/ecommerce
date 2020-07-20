@@ -209,7 +209,7 @@ module.exports = {
 
               // 2.2 Delete sales order details
               let criteriaDetails = { where: { id: { $notIn: existingIds }, sales_order_id: plainData.id, is_deleted: 0 } };
-              await Model.SalesOrderDetails.update({ is_deleted : 1 }, criteriaDetails);
+              await Model.SalesOrderDetails.update({ is_deleted: 1 }, criteriaDetails);
             }
 
             // 3. CREATE
@@ -288,57 +288,79 @@ module.exports = {
           .then(async finalData => {
             let plainData = finalData.get({ plain: true });
             let status = plainData.status;
-            let notIncludedStatus = [1, 3, 5, 6];
 
             // Update inventory
-            if (!notIncludedStatus.includes(status)) {
-              let criteriaDetails = { attributes: ['id', 'sku', 'quantity', 'product_id'], where: { sales_order_id: plainData.id, is_deleted: 0 }, raw: true };
-              let dataDetails = await Model.SalesOrderDetails.findAll(criteriaDetails);
+            switch(status) {
+              case 2:
+                // Delivered
+                let criteriaDeliveredDetails = { attributes: ['id', 'sku', 'quantity', 'product_id'], where: { sales_order_id: plainData.id, status: 2, is_deleted: 0 } };
+                let dataDeliveredDetails = await Model.SalesOrderDetails.findAll(criteriaDeliveredDetails);
+                await Model.SalesOrderDetails.update({ status: 1 }, criteriaDeliveredDetails);
+                
+                for (let i = 0; i < dataDeliveredDetails.length; i++) {
+                  let details = dataDeliveredDetails[i];
+                  await InventoriesController.updateStockOutAndReserved({
+                    sku: details.sku,
+                    new_quantity: details.quantity,
+                    product_id: details.product_id
+                  });
+                }
+                break;
+              case 3:
+                // On Process
+                let criteriaOnProcessDetails = { where: { sales_order_id: plainData.id, is_deleted: 0 } };
+                await Model.SalesOrderDetails.update({ status: 2}, criteriaOnProcessDetails);
+                break;
+              case 4:
+                // Approved
+                let criteriaAprovedDetails = { attributes: ['id', 'sku', 'quantity', 'product_id'], where: { sales_order_id: plainData.id, is_deleted: 0 }, raw: true };
+                let dataApprovedDetails = await Model.SalesOrderDetails.findAll(criteriaAprovedDetails);
 
-              switch(status) {
-                case 2:
-                  // Delivered (No update stock out function yet)
-                  break;
-                case 4:
-                  // Approved
-                  for (let i = 0; i < dataDetails.length; i++) {
-                    let details = dataDetails[i];
-                    await InventoriesController.updateStockReservedAndAvailable({
-                      sku: details.sku,
-                      old_quantity: 0,
-                      new_quantity: details.quantity,
-                      product_id: details.product_id,
-                      type: 'INSERT'
-                    });
-                  }
-                  break;
-                case 7:
-                  // Cancelled
-                  for (let i = 0; i < dataDetails.length; i++) {
-                    let details = dataDetails[i];
-                    await InventoriesController.updateStockReservedAndAvailable({
-                      sku: details.sku,
-                      old_quantity: details.quantity,
-                      new_quantity: 0,
-                      product_id: details.product_id,
-                      type: 'DELETE'
-                    });
-                  }
-                  break;
-                case 8:
-                  // Failed
-                  for (let i = 0; i < dataDetails.length; i++) {
-                    let details = dataDetails[i];
-                    await InventoriesController.updateStockReservedAndAvailable({
-                      sku: details.sku,
-                      old_quantity: details.quantity,
-                      new_quantity: 0,
-                      product_id: details.product_id,
-                      type: 'DELETE'
-                    });
-                  }
-                  break;
-              }
+                for (let i = 0; i < dataApprovedDetails.length; i++) {
+                  let details = dataApprovedDetails[i];
+                  await InventoriesController.updateStockReservedAndAvailable({
+                    sku: details.sku,
+                    old_quantity: 0,
+                    new_quantity: details.quantity,
+                    product_id: details.product_id,
+                    type: 'INSERT'
+                  });
+                }
+                break;
+              case 7:
+                // Cancelled
+                let criteriaCancelledDetails = { attributes: ['id', 'sku', 'quantity', 'product_id'], where: { sales_order_id: plainData.id, is_deleted: 0 } };
+                let dataCancelledDetails = await Model.SalesOrderDetails.findAll(criteriaCancelledDetails);
+                await Model.SalesOrderDetails.update({ status: 5 }, criteriaCancelledDetails);
+
+                for (let i = 0; i < dataCancelledDetails.length; i++) {
+                  let details = dataCancelledDetails[i];
+                  await InventoriesController.updateStockReservedAndAvailable({
+                    sku: details.sku,
+                    old_quantity: details.quantity,
+                    new_quantity: 0,
+                    product_id: details.product_id,
+                    type: 'DELETE'
+                  });
+                }
+                break;
+              case 8:
+                // Failed
+                let criteriaFailedDetails = { attributes: ['id', 'sku', 'quantity', 'product_id'], where: { sales_order_id: plainData.id, is_deleted: 0 } };
+                let dataFailedDetails = await Model.SalesOrderDetails.findAll(criteriaFailedDetails);
+                await Model.SalesOrderDetails.update({ status: 6 }, criteriaFailedDetails);
+
+                for (let i = 0; i < dataFailedDetails.length; i++) {
+                  let details = dataFailedDetails[i];
+                  await InventoriesController.updateStockReservedAndAvailable({
+                    sku: details.sku,
+                    old_quantity: details.quantity,
+                    new_quantity: 0,
+                    product_id: details.product_id,
+                    type: 'DELETE'
+                  });
+                }
+                break;
             }
 
             res.json({

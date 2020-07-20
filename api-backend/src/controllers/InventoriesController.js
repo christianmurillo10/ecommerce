@@ -584,6 +584,49 @@ module.exports = {
       }
     });
   },
+
+  /**
+   * Update Stock Out and Reserved
+   */
+  updateStockOutAndReserved: async (obj) => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        let initialValues, data, criteria;
+        // Pre-setting variables
+        criteria = { where: { sku: obj.sku, product_id: obj.product_id, is_deleted: 0 } };
+        // Execute findByPk query
+        data = await Model.Inventories.findOne(criteria);
+        if (!_.isEmpty(data)) {
+          const updatedAt = moment().utc(8).format('YYYY-MM-DD HH:mm:ss');
+          let newStockOut, newStockReserved;
+          newStockOut = parseInt(data.stock_out) + parseInt(obj.new_quantity);
+          newStockReserved = parseInt(data.stock_reserved) - parseInt(obj.new_quantity);
+          initialValues = { stock_out: newStockOut, stock_reserved: newStockReserved, updated_at: updatedAt };
+
+          data.update(initialValues)
+            .then(response => {
+              resolve({
+                status: 200,
+                message: "Successfully update data.",
+                result: true
+              });
+            });
+        } else {
+          resolve({
+            status: 200,
+            message: "Data doesn't exist.",
+            result: false
+          });
+        }
+      } catch (err) {
+        resolve({
+          status: 401,
+          err: err,
+          message: "Failed to find data."
+        });
+      }
+    });
+  },
 };
 
 /**
