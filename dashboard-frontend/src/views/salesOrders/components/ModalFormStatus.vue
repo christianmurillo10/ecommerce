@@ -15,12 +15,14 @@
                 v-model="formData.status"
                 :rules="[rules.required]"
                 label="Status"
+                v-on:change="setDateDetails()"
+                readonly
               ></v-autocomplete>
             </v-flex>
-            <v-flex xs12 sm12 md12>
+            <v-flex xs12 sm12 md12 v-if="date.display">
               <v-menu
                 ref="date"
-                v-model="date"
+                v-model="date.model"
                 :close-on-content-click="false"
                 :nudge-right="40"
                 :return-value.sync="formData.date"
@@ -33,14 +35,14 @@
                 <template v-slot:activator="{ on }">
                   <v-text-field
                     v-model="formData.date"
-                    label="Date"
+                    :label="date.label"
                     readonly
                     v-on="on"
                   ></v-text-field>
                 </template>
                 <v-date-picker v-model="formData.date" no-title scrollable>
                   <v-spacer></v-spacer>
-                  <v-btn flat color="primary" @click="date = false">Cancel</v-btn>
+                  <v-btn flat color="primary" @click="date.model = false">Cancel</v-btn>
                   <v-btn flat color="primary" @click="$refs.date.save(formData.date)">OK</v-btn>
                 </v-date-picker>
               </v-menu>
@@ -61,6 +63,7 @@
 <script>
 import Open from "../Open";
 import Mixins from "@/helpers/Mixins.js";
+import { STATUS_DELIVERED, STATUS_ON_PROCESS, STATUS_APPROVED } from "@/helpers/Constant.js";
 import { mapGetters, mapActions, mapMutations } from "vuex";
 
 export default {
@@ -70,7 +73,11 @@ export default {
   },
 
   data: () => ({
-    date: false,
+    date: {
+      display: false,
+      label: "",
+      model: false
+    },
     defaultFormData: {
       status: "",
       date: new Date().toISOString().substr(0, 10)
@@ -85,7 +92,7 @@ export default {
   computed: {
     ...mapGetters("salesOrders", ["getSalesOrderByStatusAndId"]),
     formTitle() {
-      return "Sales Order - Status";
+      return "Sales Order - Update Status";
     },
     formIcon() {
       return "edit";
@@ -96,14 +103,35 @@ export default {
     ...mapMutations("loading", { setLoading: "SET_LOADING" }),
     ...mapActions("alerts", ["setAlert"]),
     ...mapActions("salesOrders", {
-      updateSalesOrderData: "updateData"
+      updateSalesOrderStatusData: "updateStatusData"
     }),
 
-    editStatus(id) {
+    setDateDetails() {
+      const status = this.formData.status;
+      switch (status) {
+        case STATUS_DELIVERED:
+          this.date.display = true;
+          this.date.label = "Date Delivered";
+          break;
+        case STATUS_ON_PROCESS:
+          this.date.display = true;
+          this.date.label = "Date Delivery";
+          break;
+        case STATUS_APPROVED:
+          this.date.display = true;
+          this.date.label = "Date Approved";
+          break;
+        default:
+          this.date.display = false;
+          this.date.label = "";
+      }
+    },
+
+    editStatus(id, defaultStatus) {
       let data = this.getSalesOrderByStatusAndId(id);
       this.formData.id = data.id;
-      this.formData.status = data.status;
-      this.formData.date = data.date_ordered;
+      this.formData.status = defaultStatus;
+      this.setDateDetails();
     },
 
     close() {
@@ -116,8 +144,7 @@ export default {
     save() {
       if (this.$refs.form.validate()) {
         this.setLoading({ dialog: true, text: "Please wait" });
-
-        this.updateSalesOrderData(this.formData)
+        this.updateSalesOrderStatusData(this.formData)
           .then((response) => {
             let obj = {
               alert: true,

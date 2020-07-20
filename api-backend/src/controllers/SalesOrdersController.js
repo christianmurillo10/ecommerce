@@ -343,7 +343,7 @@ module.exports = {
 
             res.json({
               status: 200,
-              message: "Successfully updated role.",
+              message: "Successfully updated data.",
               result: plainData
             });
           }));
@@ -355,7 +355,6 @@ module.exports = {
         });
       }
     } catch (err) {
-      console.log("ASDASD", err)
       res.json({
         status: 401,
         err: err,

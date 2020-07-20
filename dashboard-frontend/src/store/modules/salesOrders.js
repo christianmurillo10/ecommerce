@@ -123,6 +123,27 @@ const actions = {
       }
     });
   },
+  updateStatusData({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
+    let url = `${process.env.VUE_APP_API_BACKEND}/salesOrders/updateStatus/${payload.id}`;
+    let header = { headers: { Token: localStorage.getItem("token") } };
+    return new Promise((resolve, reject) => {
+      try {
+        let obj = {
+          status: payload.status,
+          date: payload.date
+        };
+
+        axios
+          .put(url, obj, header)
+          .then(response => {
+            commit("DELETE_DATA_BY_STATUS", response.data.result);
+            resolve(response);
+          });
+      } catch (err) {
+        reject(err);
+      }
+    });
+  },
   deleteData({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
     let url = `${process.env.VUE_APP_API_BACKEND}/salesOrders/delete/${payload}`;
     let header = { headers: { Token: localStorage.getItem("token") } };
@@ -217,6 +238,10 @@ const mutations = {
   DELETE_DATA(state, payload) {
     let index = state.salesOrderList.map(salesOrder => salesOrder.id).indexOf(payload);
     state.salesOrderList.splice(index, 1);
+  },
+  DELETE_DATA_BY_STATUS(state, payload) {
+    let index = state.salesOrderByStatusList.map(salesOrder => salesOrder.id).indexOf(payload);
+    state.salesOrderByStatusList.splice(index, 1);
   }
 };
 

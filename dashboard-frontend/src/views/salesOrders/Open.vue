@@ -48,7 +48,7 @@
                 <template v-slot:activator="{ on }">
                   <v-icon small class="mr-2" color="blue-grey darken-2" @click="editStatus(props.item.id)" v-on="on">assignment</v-icon>
                 </template>
-                <span>Status</span>
+                <span>Update Status</span>
               </v-tooltip>
               <v-tooltip left>
                 <template v-slot:activator="{ on }">
@@ -96,6 +96,7 @@ import Loading from "@/components/utilities/Loading";
 import ModalFormOpen from "./components/ModalFormOpen";
 import ModalFormStatus from "./components/ModalFormStatus";
 import Mixins from "@/helpers/Mixins.js";
+import { STATUS_FOR_REVIEW, STATUS_OPEN } from "@/helpers/Constant.js";
 import { mapState, mapActions } from "vuex";
 
 export default {
@@ -125,7 +126,7 @@ export default {
   }),
 
   mounted() {
-    this.getSalesOrderDataByStatus(6);
+    this.getSalesOrderDataByStatus(STATUS_OPEN);
   },
 
   computed: {
@@ -154,7 +155,7 @@ export default {
 
     editStatus(id) {
       this.setDialogStatus(true);
-      this.$refs.modalFormStatus.editStatus(id);
+      this.$refs.modalFormStatus.editStatus(id, STATUS_FOR_REVIEW);
     },
 
     editItem(id) {
