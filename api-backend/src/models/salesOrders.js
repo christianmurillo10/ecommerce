@@ -110,7 +110,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     'status': {
       type: DataTypes.SMALLINT(1),
-      comment: '1=Closed 2=Delivered 3=On Process 4=Approved 5=For Review 6=Open 7=Cancelled 8=Failed',
+      comment: '1=Closed 2=Delivered 3=On Process 4=Approved 5=Reviewed 6=Open 7=Cancelled 8=Failed',
       allowNull: true,
       defaultValue: '6'
     },

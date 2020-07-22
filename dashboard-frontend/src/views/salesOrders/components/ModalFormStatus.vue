@@ -19,6 +19,16 @@
                 readonly
               ></v-autocomplete>
             </v-flex>
+            <v-flex xs12 sm12 md12 v-if="employee.display">
+              <v-autocomplete
+                :items="getEmployeeList"
+                item-text="name"
+                item-value="id"
+                v-model="formData.employee_id"
+                :rules="[rules.required]"
+                :label="employee.label"
+              ></v-autocomplete>
+            </v-flex>
             <v-flex xs12 sm12 md12 v-if="date.display">
               <v-menu
                 ref="date"
@@ -63,7 +73,7 @@
 <script>
 import Open from "../Open";
 import Mixins from "@/helpers/Mixins.js";
-import { STATUS_DELIVERED, STATUS_ON_PROCESS, STATUS_APPROVED } from "@/helpers/Constant.js";
+import { STATUS_DELIVERED, STATUS_ON_PROCESS, STATUS_APPROVED, STATUS_REVIEWED } from "@/helpers/Constant.js";
 import { mapGetters, mapActions, mapMutations } from "vuex";
 
 export default {
@@ -78,12 +88,18 @@ export default {
       label: "",
       model: false
     },
+    employee: {
+      display: false,
+      label: ""
+    },
     defaultFormData: {
       status: "",
+      employee_id: "",
       date: new Date().toISOString().substr(0, 10)
     },
     formData: {
       status: "",
+      employee_id: "",
       date: new Date().toISOString().substr(0, 10)
     },
     valid: true,
@@ -91,6 +107,7 @@ export default {
 
   computed: {
     ...mapGetters("salesOrders", ["getSalesOrderByStatusAndId"]),
+    ...mapGetters("employees", ["getEmployeeList"]),
     formTitle() {
       return "Sales Order - Update Status";
     },
@@ -99,9 +116,14 @@ export default {
     },
   },
 
+  created() {
+    this.getEmployeeData();
+  },
+
   methods: {
     ...mapMutations("loading", { setLoading: "SET_LOADING" }),
     ...mapActions("alerts", ["setAlert"]),
+    ...mapActions("employees", { getEmployeeData: "getData" }),
     ...mapActions("salesOrders", {
       updateSalesOrderStatusData: "updateStatusData"
     }),
@@ -120,7 +142,13 @@ export default {
         case STATUS_APPROVED:
           this.date.display = true;
           this.date.label = "Date Approved";
+          this.employee.display = true;
+          this.employee.label = "Approved By";
           break;
+        case STATUS_REVIEWED:
+          this.employee.display = true;
+          this.employee.label = "Reviewed By";
+        break;
         default:
           this.date.display = false;
           this.date.label = "";

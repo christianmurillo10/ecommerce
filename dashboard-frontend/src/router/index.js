@@ -26,6 +26,11 @@ import ProductsOption from "../views/products/Option";
 import ProductFlashDealHeaders from "../views/productFlashDealHeaders/Index";
 import ProductFlashDealDetails from "../views/productFlashDealHeaders/Details";
 import SalesOrdersOpen from "../views/salesOrders/Open";
+import SalesOrdersReviewed from "../views/salesOrders/Reviewed";
+import SalesOrdersApproved from "../views/salesOrders/Approved";
+import SalesOrdersOnProcess from "../views/salesOrders/OnProcess";
+import SalesOrdersDelivered from "../views/salesOrders/Delivered";
+import SalesOrders from "../views/salesOrders/Index";
 import SalesOrdersInvoice from "../views/salesOrders/Invoice";
 import ShippingMethods from "../views/shippingMethods/Index";
 import ShippingMethodRates from "../views/shippingMethods/Rates";
@@ -165,6 +170,31 @@ let router = new Router({
       path: "/salesOrders/open",
       name: "salesOrdersOpen",
       component: SalesOrdersOpen
+    },
+    {
+      path: "/salesOrders/reviewed",
+      name: "salesOrdersReviewed",
+      component: SalesOrdersReviewed
+    },
+    {
+      path: "/salesOrders/approved",
+      name: "salesOrdersApproved",
+      component: SalesOrdersApproved
+    },
+    {
+      path: "/salesOrders/onProcess",
+      name: "salesOrdersOnProcess",
+      component: SalesOrdersOnProcess
+    },
+    {
+      path: "/salesOrders/delivered",
+      name: "salesOrdersDelivered",
+      component: SalesOrdersDelivered
+    },
+    {
+      path: "/salesOrders/index",
+      name: "salesOrders",
+      component: SalesOrders
     },
     {
       path: "/salesOrders/invoice/:salesOrderId",

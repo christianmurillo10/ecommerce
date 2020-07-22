@@ -26,6 +26,15 @@ const actions = {
         axios.get(url, header)
           .then(response => {
             let obj = response.data.result;
+            if (obj) {
+              obj.forEach(element => {
+                // set fullname lastname first
+                let firstname = element.firstname ? element.firstname.charAt(0).toUpperCase() + element.firstname.slice(1) : "";
+                let middlename = element.middlename ? `${element.middlename.charAt(0).toUpperCase()}.` : "";
+                let lastname = element.lastname ? `${element.lastname.toUpperCase()},` : "";
+                element.name = `${lastname} ${firstname} ${middlename}`;
+              });
+            }
             commit("SET_DATA", obj);
             resolve(response);
           });

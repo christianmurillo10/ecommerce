@@ -38,7 +38,7 @@ export default {
       { id: 2, name: "Delivered" },
       { id: 3, name: "On Process" },
       { id: 4, name: "Approved" },
-      { id: 5, name: "For Review" },
+      { id: 5, name: "Reviewed" },
       { id: 6, name: "Open" },
       { id: 7, name: "Cancelled" },
       { id: 8, name: "Failed" }
@@ -116,7 +116,7 @@ export default {
       else if (value == 2) return "Delivered";
       else if (value == 3) return "On Process";
       else if (value == 4) return "Approved";
-      else if (value == 5) return "For Review";
+      else if (value == 5) return "Reviewed";
       else if (value == 6) return "Open";
       else if (value == 7) return "Cancelled";
       else if (value == 8) return "Failed";

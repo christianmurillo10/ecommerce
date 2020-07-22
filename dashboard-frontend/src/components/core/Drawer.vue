@@ -161,6 +161,26 @@ export default {
           {
             to: "/salesOrders/open",
             text: "Open"
+          },
+          {
+            to: "/salesOrders/reviewed",
+            text: "Reviewed"
+          },
+          {
+            to: "/salesOrders/approved",
+            text: "Approved"
+          },
+          {
+            to: "/salesOrders/onProcess",
+            text: "On Process"
+          },
+          {
+            to: "/salesOrders/delivered",
+            text: "Delivered"
+          },
+          {
+            to: "/salesOrders/index",
+            text: "Manage"
           }
         ]
       },

@@ -267,6 +267,10 @@ module.exports = {
         break;
       case 4:
         params.date_approved = params.date;
+        params.approved_by = params.employee_id;
+        break;
+      case 5:
+        params.reviewed_by = params.employee_id;
         break;
     }
 
@@ -479,7 +483,10 @@ module.exports = {
 
     try {
       // Pre-setting variables
-      criteria = { where: { is_deleted: 0 } };
+      criteria = { 
+        where: { is_deleted: 0 },
+        include: [{ model: Model.Customers, as: 'customers', attributes: ['customer_no', 'firstname', 'middlename', 'lastname'] }]
+      };
       // Execute findAll query
       data = await Model.SalesOrders.findAll(criteria);
       if (!_.isEmpty(data[0])) {

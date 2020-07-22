@@ -5,21 +5,8 @@
     <v-divider></v-divider>
     <v-card>
       <v-card-title>
-        <v-icon class="black--text">view_list</v-icon><span class="title">Sales Orders - Open</span>
+        <v-icon class="black--text">view_list</v-icon><span class="title">Sales Orders - On Process</span>
         <v-spacer></v-spacer>
-        <v-dialog v-model="dialog" scrollable persistent max-width="999px">
-          <template v-slot:activator="{ on: { click } }">
-            <v-tooltip left>
-              <template v-slot:activator="{ on }">
-                <v-btn icon v-on:click="click" v-on="on">
-                  <v-icon color="green">add_box</v-icon>
-                </v-btn>
-              </template>
-              <span>Create</span>
-            </v-tooltip>
-          </template>
-          <ModalFormOpen ref="modalFormOpen" @setDialog="setDialog" />
-        </v-dialog>
         <v-flex xs12 sm12 md4 offset-md8>
           <v-text-field
             v-model="search"
@@ -50,18 +37,6 @@
                 </template>
                 <span>Update Status</span>
               </v-tooltip>
-              <v-tooltip left>
-                <template v-slot:activator="{ on }">
-                  <v-icon small class="mr-2" @click="editItem(props.item.id)" v-on="on">edit</v-icon>
-                </template>
-                <span>Update</span>
-              </v-tooltip>
-              <v-tooltip left>
-                <template v-slot:activator="{ on }">
-                  <v-icon small color="red" class="mr-2" @click="deleteModal(props.item.id)" v-on="on">delete</v-icon>
-                </template>
-                <span>Delete</span>
-              </v-tooltip>
             </td>
           </template>
           <template v-slot:no-data>
@@ -76,27 +51,15 @@
     <v-dialog v-model="dialogStatus" max-width="500px">
       <ModalFormStatus ref="modalFormStatus" @setDialogStatus="setDialogStatus" />
     </v-dialog>
-    <v-dialog v-model="modalDelete.dialog" persistent max-width="300">
-      <v-card>
-        <v-card-title class="title">Confirmation</v-card-title>
-        <v-card-text>Are you sure you want to delete this item?</v-card-text>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn small outline color="error" @click="modalDelete.dialog = false">Cancel</v-btn>
-          <v-btn small outline color="success" @click="deleteItem()">Confirm</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
   </v-container>
 </template>
 
 <script>
 import Alerts from "@/components/utilities/Alerts";
 import Loading from "@/components/utilities/Loading";
-import ModalFormOpen from "./components/ModalFormOpen";
 import ModalFormStatus from "./components/ModalFormStatus";
 import Mixins from "@/helpers/Mixins.js";
-import { STATUS_REVIEWED, STATUS_OPEN } from "@/helpers/Constant.js";
+import { STATUS_ON_PROCESS, STATUS_DELIVERED } from "@/helpers/Constant.js";
 import { mapState, mapActions } from "vuex";
 
 export default {
@@ -104,17 +67,11 @@ export default {
   components: {
     Alerts,
     Loading,
-    ModalFormOpen,
     ModalFormStatus
   },
 
   data: () => ({
-    dialog: false,
     dialogStatus: false,
-    modalDelete: {
-      dialog: false,
-      id: null
-    },
     search: '',
     headers: [
       { text: "Order No.", value: "order_no" },
@@ -126,7 +83,7 @@ export default {
   }),
 
   mounted() {
-    this.getSalesOrderDataByStatus(STATUS_OPEN);
+    this.getSalesOrderDataByStatus(STATUS_ON_PROCESS);
   },
 
   computed: {
@@ -134,9 +91,6 @@ export default {
   },
 
   watch: {
-    dialog(val) {
-      val || this.close();
-    },
     dialogStatus(val) {
       val || this.closeStatus();
     }
@@ -146,7 +100,6 @@ export default {
     ...mapActions("alerts", ["setAlert"]),
     ...mapActions("salesOrders", {
       getSalesOrderDataByStatus: "getDataByStatus",
-      deleteSalesOrderData: "deleteData"
     }),
 
     viewInvoice(id) {
@@ -155,48 +108,12 @@ export default {
 
     editStatus(id) {
       this.setDialogStatus(true);
-      this.$refs.modalFormStatus.editStatus(id, STATUS_REVIEWED);
-    },
-
-    editItem(id) {
-      this.setDialog(true);
-      this.$refs.modalFormOpen.editItem(id);
-    },
-
-    deleteModal(id) {
-      this.modalDelete.id = id;
-      this.modalDelete.dialog = true;
-    },
-
-    deleteItem() {
-      this.deleteSalesOrderData(this.modalDelete.id)
-        .then(response => {
-          let obj = {
-            alert: true,
-            type: "success",
-            message: response.data.message
-          };
-
-          if (!response.data.result) obj.type = "error";
-          this.setAlert(obj);
-          this.modalDelete.id = null;
-          this.modalDelete.dialog = false;
-        })
-        .catch(err => console.log(err));
-    },
-
-    close() {
-      this.setDialog(false);
-      this.$refs.modalFormOpen.close();
+      this.$refs.modalFormStatus.editStatus(id, STATUS_DELIVERED);
     },
 
     closeStatus() {
       this.setDialogStatus(false);
       this.$refs.modalFormStatus.close();
-    },
-
-    setDialog(value) {
-      this.dialog = value;
     },
 
     setDialogStatus(value) {
