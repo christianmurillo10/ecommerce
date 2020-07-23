@@ -9,14 +9,13 @@
           <v-layout wrap>
             <v-flex xs12 sm12 md12>
               <v-autocomplete
-                :items="salesOrderStatusList"
+                :items="statusList"
                 item-text="name"
                 item-value="id"
                 v-model="formData.status"
                 :rules="[rules.required]"
                 label="Status"
                 v-on:change="setDateDetails()"
-                readonly
               ></v-autocomplete>
             </v-flex>
             <v-flex xs12 sm12 md12 v-if="employee.display">
@@ -73,7 +72,16 @@
 <script>
 import Open from "../Open";
 import Mixins from "@/helpers/Mixins.js";
-import { STATUS_DELIVERED, STATUS_ON_PROCESS, STATUS_APPROVED, STATUS_REVIEWED } from "@/helpers/Constant.js";
+import {
+    STATUS_CLOSED,
+    STATUS_DELIVERED,
+    STATUS_ON_PROCESS,
+    STATUS_APPROVED,
+    STATUS_REVIEWED,
+    STATUS_OPEN,
+    STATUS_CANCELLED,
+    STATUS_FAILED
+} from "@/helpers/Constant.js";
 import { mapGetters, mapActions, mapMutations } from "vuex";
 
 export default {
@@ -83,6 +91,7 @@ export default {
   },
 
   data: () => ({
+    statusList: [],
     date: {
       display: false,
       label: "",
@@ -130,6 +139,11 @@ export default {
 
     setDateDetails() {
       const status = this.formData.status;
+      this.date.display = false;
+      this.date.label = "";
+      this.employee.display = false;
+      this.employee.label = "";
+
       switch (status) {
         case STATUS_DELIVERED:
           this.date.display = true;
@@ -149,16 +163,38 @@ export default {
           this.employee.display = true;
           this.employee.label = "Reviewed By";
         break;
-        default:
-          this.date.display = false;
-          this.date.label = "";
       }
+    },
+
+    setStatusList(status) {
+      let filteredStatus = [];
+
+      switch (status) {
+        case STATUS_CLOSED:
+          filteredStatus = [STATUS_CLOSED];
+          break;
+        case STATUS_DELIVERED:
+          filteredStatus = [STATUS_DELIVERED, STATUS_FAILED];
+          break;
+        case STATUS_ON_PROCESS:
+          filteredStatus = [STATUS_ON_PROCESS, STATUS_CANCELLED, STATUS_FAILED];
+          break;
+        case STATUS_APPROVED:
+          filteredStatus = [STATUS_APPROVED, STATUS_CANCELLED, STATUS_FAILED];
+          break;
+        case STATUS_REVIEWED:
+          filteredStatus = [STATUS_REVIEWED, STATUS_CANCELLED, STATUS_FAILED];
+        break;
+      }
+
+      this.statusList = this.salesOrderStatusList.filter((item) => filteredStatus.includes(item.id));
     },
 
     editStatus(id, defaultStatus) {
       let data = this.getSalesOrderByStatusAndId(id);
       this.formData.id = data.id;
       this.formData.status = defaultStatus;
+      this.setStatusList(defaultStatus);
       this.setDateDetails();
     },
 
