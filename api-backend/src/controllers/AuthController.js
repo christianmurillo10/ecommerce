@@ -1,6 +1,13 @@
 const Model = require('../models');
 const jwt = require('../helpers/jwt-helper');
 const bcrypt = require('../helpers/bcrypt-helper');
+const { 
+  NO, 
+  YES,
+  CUSTOMER_STATUS_APPROVED,
+  CUSTOMER_STATUS_DECLINED,
+  CUSTOMER_STATUS_PENDING,
+} = require('../helpers/constant-helper');
 
 module.exports = {
   /**
@@ -33,7 +40,7 @@ module.exports = {
         let passwordCompare = await bcrypt.comparePassword(params.password, userInfo.password);
         if (passwordCompare) {
           // Update login status
-          let updatedUser = await user[0].update({ is_logged: 1 });
+          let updatedUser = await user[0].update({ is_logged: YES });
           data = updatedUser.get({ plain: true });
           token = await jwt.generateToken(data.id);
           console.log("AuthController@login - [ID]:%s [User]:%s [IP]%s", updatedUser.id, updatedUser.username, ip);
@@ -93,7 +100,7 @@ module.exports = {
 
         let user = await Model.Users.findByPk(tokenData.id);
         // Update login status
-        let updatedUser = await user.update({ is_logged: 0 });
+        let updatedUser = await user.update({ is_logged: NO });
         console.log("AuthController@logout - [ID]:%s [User]:%s [IP]%s", updatedUser.id, updatedUser.username, ip);
 
         res.json({
@@ -174,7 +181,7 @@ module.exports = {
       if (_.isEmpty(params.password)) return cb(null, { error: true, message: "Password is required." });
 
       // Pre-setting variables
-      criteria = { where: { email: params.email, is_deleted: 0 } };
+      criteria = { where: { email: params.email, is_deleted: NO } };
       // Execute findAll query
       customer = await Model.Customers.findAll(criteria);
       // Account checker
@@ -182,9 +189,9 @@ module.exports = {
         let customerInfo = customer[0].get({ plain: true });
         let passwordCompare = await bcrypt.comparePassword(params.password, customerInfo.password);
         if (passwordCompare) {
-          if (customerInfo.status === 1 && customerInfo.is_active === 1) {
+          if (customerInfo.status === CUSTOMER_STATUS_APPROVED && customerInfo.is_active === YES) {
             // Update login status
-            let updatedCustomer = await customer[0].update({ is_logged: 1 });
+            let updatedCustomer = await customer[0].update({ is_logged: YES });
             data = updatedCustomer.get({ plain: true });
             token = await jwt.generateToken(data.id);
             console.log("AuthController@customerLogin - [ID]:%s [Customer]:%s [IP]%s", updatedCustomer.id, updatedCustomer.email, ip);
@@ -197,7 +204,7 @@ module.exports = {
                 data: _.omit(data, ['password', 'created_at', 'updated_at', 'status', 'is_logged', 'is_active', 'is_deleted'])
               }
             });
-          } else if (customerInfo.is_active === 0) {
+          } else if (customerInfo.is_active === NO) {
             res.json({
               status: 200,
               message: "Your account is inactive, please contact administration to activate your account.",
@@ -257,7 +264,7 @@ module.exports = {
 
         let customer = await Model.Customers.findByPk(tokenData.id);
         // Update login status
-        let updatedCustomer = await customer.update({ is_logged: 0 });
+        let updatedCustomer = await customer.update({ is_logged: NO });
         console.log("AuthController@customerlogout - [ID]:%s [Customer]:%s [IP]%s", updatedCustomer.id, updatedCustomer.email, ip);
 
         res.json({

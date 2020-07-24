@@ -2,11 +2,14 @@ const Model = require('../models');
 const ProductsController = require("./ProductsController");
 const fs = require('fs');
 const path = require('path');
-
-const MAIN_IMAGE = 1;
-const THUMBNAIL_IMAGE = 2;
-const FEATURED_IMAGE = 3;
-const FLASH_DEAL_IMAGE = 4;
+const { 
+  NO, 
+  YES,
+  PRODUCT_IMAGES_TYPE_MAIN,
+  PRODUCT_IMAGES_TYPE_THUMBNAIL,
+  PRODUCT_IMAGES_TYPE_FEATURED,
+  PRODUCT_IMAGES_TYPE_FASH_DEAL
+} = require('../helpers/constant-helper');
 
 module.exports = {
   /**
@@ -151,7 +154,7 @@ module.exports = {
       // Execute findByPk query
       data = await Model.ProductImages.findByPk(req.params.id);
       if (!_.isEmpty(data)) {
-        let finalData = await data.update({ is_deleted: 1 });
+        let finalData = await data.update({ is_deleted: YES });
         res.json({
           status: 200,
           message: "Successfully deleted data.",
@@ -191,7 +194,7 @@ module.exports = {
 
     try {
       // Pre-setting variables
-      query = `SELECT id, file_name, order, type, created_at, updated_at FROM product_images WHERE CONCAT(file_name) LIKE ? AND is_deleted = 0;`;
+      query = `SELECT id, file_name, order, type, created_at, updated_at FROM product_images WHERE CONCAT(file_name) LIKE ? AND is_deleted = ${NO};`;
       // Execute native query
       data = await Model.sequelize.query(query, {
         replacements: [`%${params.value}%`],
@@ -232,7 +235,7 @@ module.exports = {
     try {
       // Pre-setting variables
       criteria = { 
-        where: { is_deleted: 0 }, 
+        where: { is_deleted: NO }, 
         include: [
           { model: Model.Products, as: "products", attributes: ['name', 'description'] },
           { model: Model.Users, as: "users", attributes: ['email', 'username'] }
@@ -276,7 +279,7 @@ module.exports = {
     try {
       // Pre-setting variables
       criteria = { 
-        where: { product_id: params.productId, is_deleted: 0 }, 
+        where: { product_id: params.productId, is_deleted: NO }, 
         include: [
           { model: Model.Products, as: "products", attributes: ['name', 'description'] },
           { model: Model.Users, as: "users", attributes: ['email', 'username'] }
@@ -320,7 +323,7 @@ module.exports = {
     try {
       // Pre-setting variables
       criteria = { 
-        where: { product_id: params.productId, type: params.type, is_deleted: 0 }, 
+        where: { product_id: params.productId, type: params.type, is_deleted: NO }, 
         include: [
           { model: Model.Products, as: "products", attributes: ['name', 'description'] },
           { model: Model.Users, as: "users", attributes: ['email', 'username'] }
@@ -395,16 +398,16 @@ module.exports = {
   viewImage: (req, res) => {
     let filePath;
     switch(parseInt(req.params.type)) {
-      case MAIN_IMAGE:
+      case PRODUCT_IMAGES_TYPE_MAIN:
         filePath = "../../images/products/main/";
         break;
-      case THUMBNAIL_IMAGE:
+      case PRODUCT_IMAGES_TYPE_THUMBNAIL:
         filePath = "../../images/products/thumbnail/";
         break;
-      case FEATURED_IMAGE:
+      case PRODUCT_IMAGES_TYPE_FEATURED:
         filePath = "../../images/products/featured/";
         break;
-      case FLASH_DEAL_IMAGE:
+      case PRODUCT_IMAGES_TYPE_FASH_DEAL:
         filePath = "../../images/products/flashDeal/";
         break;
     }
@@ -419,16 +422,16 @@ const uploadImage = (name, type, file) => {
   try {
     let filePath;
     switch(parseInt(type)) {
-      case MAIN_IMAGE:
+      case PRODUCT_IMAGES_TYPE_MAIN:
         filePath = "images/products/main/";
         break;
-      case THUMBNAIL_IMAGE:
+      case PRODUCT_IMAGES_TYPE_THUMBNAIL:
         filePath = "images/products/thumbnail/";
         break;
-      case FEATURED_IMAGE:
+      case PRODUCT_IMAGES_TYPE_FEATURED:
         filePath = "images/products/featured/";
         break;
-      case FLASH_DEAL_IMAGE:
+      case PRODUCT_IMAGES_TYPE_FASH_DEAL:
         filePath = "images/products/flashDeal/";
         break;
     }

@@ -1,6 +1,7 @@
 const Model = require('../models');
 const fs = require('fs');
 const path = require('path');
+const { NO, YES } = require('../helpers/constant-helper');
 
 module.exports = {
   /**
@@ -34,7 +35,7 @@ module.exports = {
       if (_.isEmpty(params.file_name)) return res.json({ status: 200, message: "File Name is required.", result: false });
 
       // Pre-setting variables
-      criteria = { where: { name: params.name, is_deleted: 0 } };
+      criteria = { where: { name: params.name, is_deleted: NO } };
       initialValues = _.pick(params, ['name', 'description', 'file_name', 'created_at']);
       // Execute findAll query
       data = await Model.ProductBrands.findAll(criteria);
@@ -137,7 +138,7 @@ module.exports = {
       // Execute findByPk query
       data = await Model.ProductBrands.findByPk(req.params.id);
       if (!_.isEmpty(data)) {
-        let finalData = await data.update({ is_deleted: 1 });
+        let finalData = await data.update({ is_deleted: YES });
         res.json({
           status: 200,
           message: "Successfully deleted data.",
@@ -177,7 +178,7 @@ module.exports = {
 
     try {
       // Pre-setting variables
-      query = `SELECT id, name, description, file_name, created_at, updated_at FROM product_brands WHERE CONCAT(name) LIKE ? AND is_deleted = 0;`;
+      query = `SELECT id, name, description, file_name, created_at, updated_at FROM product_brands WHERE CONCAT(name) LIKE ? AND is_deleted = ${NO};`;
       // Execute native query
       data = await Model.sequelize.query(query, {
         replacements: [`%${params.value}%`],
@@ -217,7 +218,7 @@ module.exports = {
 
     try {
       // Pre-setting variables
-      criteria = { where: { is_deleted: 0 } };
+      criteria = { where: { is_deleted: NO } };
       // Execute findAll query
       data = await Model.ProductBrands.findAll(criteria);
       if (!_.isEmpty(data[0])) {
@@ -289,7 +290,7 @@ module.exports = {
 
     try {
       // Pre-setting variables
-      criteria = { where: { is_deleted: 0 } };
+      criteria = { where: { is_deleted: NO } };
       // Execute findAll query
       count = await Model.ProductBrands.count(criteria);
       res.json({

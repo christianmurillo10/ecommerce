@@ -1,4 +1,5 @@
 const Model = require('../models');
+const { NO, YES } = require('../helpers/constant-helper');
 
 module.exports = {
   /**
@@ -90,7 +91,7 @@ module.exports = {
 
     try {
       // Pre-setting variables
-      criteria = { where: { is_deleted: 0 }, include: [{ model: Model.ProductCategories, as: 'productCategories' }, { model: Model.ProductSubCategories, as: 'productSubCategories' }] };
+      criteria = { where: { is_deleted: NO }, include: [{ model: Model.ProductCategories, as: 'productCategories' }, { model: Model.ProductSubCategories, as: 'productSubCategories' }] };
       initialValues = _.pick(params, [
         'name',
         'description',
@@ -139,7 +140,7 @@ module.exports = {
       // Execute findByPk query
       data = await Model.ProductSubSubCategories.findByPk(req.params.id);
       if (!_.isEmpty(data)) {
-        let finalData = await data.update({ is_deleted: 1 });
+        let finalData = await data.update({ is_deleted: YES });
         res.json({
           status: 200,
           message: "Successfully deleted data.",
@@ -188,7 +189,7 @@ module.exports = {
                 created_at, 
                 updated_at 
               FROM product_sub_sub_categories 
-              WHERE CONCAT(name) LIKE ? AND is_deleted = 0;`;
+              WHERE CONCAT(name) LIKE ? AND is_deleted = ${NO};`;
       // Execute native query
       data = await Model.sequelize.query(query, {
         replacements: [`%${params.value}%`],
@@ -228,7 +229,7 @@ module.exports = {
 
     try {
       // Pre-setting variables
-      criteria = { where: { is_deleted: 0 }, include: [{ model: Model.ProductCategories, as: 'productCategories' }, { model: Model.ProductSubCategories, as: 'productSubCategories' }] };
+      criteria = { where: { is_deleted: NO }, include: [{ model: Model.ProductCategories, as: 'productCategories' }, { model: Model.ProductSubCategories, as: 'productSubCategories' }] };
       // Execute findAll query
       data = await Model.ProductSubSubCategories.findAll(criteria);
       if (!_.isEmpty(data[0])) {
@@ -266,7 +267,7 @@ module.exports = {
 
     try {
       // Pre-setting variables
-      criteria = { where: { product_category_id: params.productCategoryId, is_deleted: 0 }, include: [{ model: Model.ProductCategories, as: 'productCategories' }, { model: Model.ProductSubCategories, as: 'productSubCategories' }] };
+      criteria = { where: { product_category_id: params.productCategoryId, is_deleted: NO }, include: [{ model: Model.ProductCategories, as: 'productCategories' }, { model: Model.ProductSubCategories, as: 'productSubCategories' }] };
       // Execute findAll query
       data = await Model.ProductSubSubCategories.findAll(criteria);
       if (!_.isEmpty(data[0])) {
@@ -304,7 +305,7 @@ module.exports = {
 
     try {
       // Pre-setting variables
-      criteria = { where: { product_sub_category_id: params.productSubCategoryId, is_deleted: 0 }, include: [{ model: Model.ProductCategories, as: 'productCategories' }, { model: Model.ProductSubCategories, as: 'productSubCategories' }] };
+      criteria = { where: { product_sub_category_id: params.productSubCategoryId, is_deleted: NO }, include: [{ model: Model.ProductCategories, as: 'productCategories' }, { model: Model.ProductSubCategories, as: 'productSubCategories' }] };
       // Execute findAll query
       data = await Model.ProductSubSubCategories.findAll(criteria);
       if (!_.isEmpty(data[0])) {
@@ -342,7 +343,7 @@ module.exports = {
 
     try {
       // Pre-setting variables
-      criteria = { where: { product_category_id: params.productCategoryId, product_sub_category_id: params.productSubCategoryId, is_deleted: 0 }, include: [{ model: Model.ProductCategories, as: 'productCategories' }, { model: Model.ProductSubCategories, as: 'productSubCategories' }] };
+      criteria = { where: { product_category_id: params.productCategoryId, product_sub_category_id: params.productSubCategoryId, is_deleted: NO }, include: [{ model: Model.ProductCategories, as: 'productCategories' }, { model: Model.ProductSubCategories, as: 'productSubCategories' }] };
       // Execute findAll query
       data = await Model.ProductSubSubCategories.findAll(criteria);
       if (!_.isEmpty(data[0])) {
@@ -379,7 +380,7 @@ module.exports = {
 
     try {
       // Pre-setting variables
-      criteria = { where: { is_deleted: 0 }, include: [{ model: Model.ProductCategories, as: 'productCategories' }, { model: Model.ProductSubCategories, as: 'productSubCategories' }] };
+      criteria = { where: { is_deleted: NO }, include: [{ model: Model.ProductCategories, as: 'productCategories' }, { model: Model.ProductSubCategories, as: 'productSubCategories' }] };
       // Execute findAll query
       data = await Model.ProductSubSubCategories.findByPk(req.params.id, criteria);
       if (!_.isEmpty(data)) {
@@ -416,7 +417,7 @@ module.exports = {
 
     try {
       // Pre-setting variables
-      criteria = { where: { is_deleted: 0 } };
+      criteria = { where: { is_deleted: NO } };
       // Execute findAll query
       count = await Model.ProductSubSubCategories.count(criteria);
       res.json({

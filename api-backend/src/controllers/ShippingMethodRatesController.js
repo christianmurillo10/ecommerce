@@ -1,4 +1,5 @@
 const Model = require('../models');
+const { NO, YES } = require('../helpers/constant-helper');
 
 module.exports = {
   /**
@@ -33,7 +34,7 @@ module.exports = {
       if (_.isEmpty(params.shipping_method_id)) return res.json({ status: 200, message: "Shipping Method is required.", result: false });
 
       // Pre-setting variables
-      criteria = { where: { rate_amount: params.rate_amount, is_deleted: 0 } };
+      criteria = { where: { rate_amount: params.rate_amount, is_deleted: NO } };
       initialValues = _.pick(params, [
         'rate_amount', 
         'subtotal_amount_from', 
@@ -137,7 +138,7 @@ module.exports = {
       // Execute findByPk query
       data = await Model.ShippingMethodRates.findByPk(req.params.id);
       if (!_.isEmpty(data)) {
-        let finalData = await data.update({ is_deleted: 1 });
+        let finalData = await data.update({ is_deleted: YES });
         res.json({
           status: 200,
           message: "Successfully deleted data.",
@@ -177,7 +178,7 @@ module.exports = {
 
     try {
       // Pre-setting variables
-      query = `SELECT id, rate_amount, subtotal_amount_from, subtotal_amount_to, quantity_from, quantity_to, shipping_method_id, created_at, updated_at FROM shipping_method_rates WHERE CONCAT(rate_amount) LIKE ? AND is_deleted = 0;`;
+      query = `SELECT id, rate_amount, subtotal_amount_from, subtotal_amount_to, quantity_from, quantity_to, shipping_method_id, created_at, updated_at FROM shipping_method_rates WHERE CONCAT(rate_amount) LIKE ? AND is_deleted = ${NO};`;
       // Execute native query
       data = await Model.sequelize.query(query, {
         replacements: [`%${params.value}%`],
@@ -217,7 +218,7 @@ module.exports = {
 
     try {
       // Pre-setting variables
-      criteria = { where: { is_deleted: 0 } };
+      criteria = { where: { is_deleted: NO } };
       // Execute findAll query
       data = await Model.ShippingMethodRates.findAll(criteria);
       if (!_.isEmpty(data[0])) {
@@ -255,7 +256,7 @@ module.exports = {
 
     try {
       // Pre-setting variables
-      criteria = { where: { shipping_method_id: params.shippingMethodId, is_deleted: 0 } };
+      criteria = { where: { shipping_method_id: params.shippingMethodId, is_deleted: NO } };
       // Execute findAll query
       data = await Model.ShippingMethodRates.findAll(criteria);
       if (!_.isEmpty(data[0])) {

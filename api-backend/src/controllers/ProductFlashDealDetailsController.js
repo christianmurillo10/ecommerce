@@ -1,4 +1,12 @@
 const Model = require('../models');
+const { 
+  NO, 
+  YES,
+  PRODUCT_IMAGES_TYPE_MAIN,
+  PRODUCT_IMAGES_TYPE_THUMBNAIL,
+  PRODUCT_IMAGES_TYPE_FEATURED,
+  PRODUCT_IMAGES_TYPE_FASH_DEAL
+} = require('../helpers/constant-helper');
 
 module.exports = {
   /**
@@ -37,7 +45,7 @@ module.exports = {
 
       // Pre-setting variables
       criteria = { 
-        where: { header_id: params.header_id, product_id: params.product_id, is_deleted: 0 }, 
+        where: { header_id: params.header_id, product_id: params.product_id, is_deleted: NO }, 
         include: [
           { 
             model: Model.Products, as: 'products', 
@@ -46,7 +54,7 @@ module.exports = {
               { 
                 model: Model.ProductImages, as: "productImages", 
                 attributes: ['file_name', 'order', 'type', 'product_id'],
-                where: { type: 2, is_deleted: 0 },
+                where: { type: PRODUCT_IMAGES_TYPE_THUMBNAIL, is_deleted: NO },
                 required: false 
               },
             ] 
@@ -112,7 +120,7 @@ module.exports = {
               { 
                 model: Model.ProductImages, as: "productImages", 
                 attributes: ['file_name', 'order', 'type', 'product_id'],
-                where: { type: 2, is_deleted: 0 },
+                where: { type: PRODUCT_IMAGES_TYPE_THUMBNAIL, is_deleted: NO },
                 required: false 
               },
             ] 
@@ -159,7 +167,7 @@ module.exports = {
       // Execute findByPk query
       data = await Model.ProductFlashDealDetails.findByPk(req.params.id);
       if (!_.isEmpty(data)) {
-        let finalData = await data.update({ is_deleted: 1 });
+        let finalData = await data.update({ is_deleted: YES });
         res.json({
           status: 200,
           message: "Successfully deleted data.",
@@ -199,7 +207,7 @@ module.exports = {
 
     try {
       // Pre-setting variables
-      query = `SELECT id, base_price_amount, current_price_amount, product_id, header_id, created_at, updated_at, discount_type FROM product_flash_deal_details WHERE CONCAT(product_id) LIKE ? AND is_deleted = 0;`;
+      query = `SELECT id, base_price_amount, current_price_amount, product_id, header_id, created_at, updated_at, discount_type FROM product_flash_deal_details WHERE CONCAT(product_id) LIKE ? AND is_deleted = ${NO};`;
       // Execute native query
       data = await Model.sequelize.query(query, {
         replacements: [`%${params.value}%`],
@@ -239,7 +247,7 @@ module.exports = {
 
     try {
       // Pre-setting variables
-      criteria = { where: { is_deleted: 0 } };
+      criteria = { where: { is_deleted: NO } };
       // Execute findAll query
       data = await Model.ProductFlashDealDetails.findAll(criteria);
       if (!_.isEmpty(data[0])) {
@@ -278,7 +286,7 @@ module.exports = {
     try {
       // Pre-setting variables
       criteria = { 
-        where: { header_id: params.headerId, is_deleted: 0 }, 
+        where: { header_id: params.headerId, is_deleted: NO }, 
         include: [
           { 
             model: Model.Products, as: 'products', 
@@ -287,7 +295,7 @@ module.exports = {
               { 
                 model: Model.ProductImages, as: "productImages", 
                 attributes: ['file_name', 'order', 'type', 'product_id'],
-                where: { type: 2, is_deleted: 0 },
+                where: { type: PRODUCT_IMAGES_TYPE_THUMBNAIL, is_deleted: NO },
                 required: false 
               },
             ] 

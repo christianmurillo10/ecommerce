@@ -1,4 +1,5 @@
 const Model = require('../models');
+const { NO, YES } = require('../helpers/constant-helper');
 
 module.exports = {
   /**
@@ -88,7 +89,7 @@ module.exports = {
 
     try {
       // Pre-setting variables
-      criteria = { where: { is_deleted: 0 }, include: [{ model: Model.Products, as: 'products' }] };
+      criteria = { where: { is_deleted: NO }, include: [{ model: Model.Products, as: 'products' }] };
       initialValues = _.pick(params, [
         'title',
         'values',
@@ -136,7 +137,7 @@ module.exports = {
       // Execute findByPk query
       data = await Model.ProductOptions.findByPk(req.params.id);
       if (!_.isEmpty(data)) {
-        let finalData = await data.update({ is_deleted: 1 });
+        let finalData = await data.update({ is_deleted: YES });
         res.json({
           status: 200,
           message: "Successfully deleted data.",
@@ -184,7 +185,7 @@ module.exports = {
                 created_at, 
                 updated_at 
               FROM product_options 
-              WHERE CONCAT(title) LIKE ? AND is_deleted = 0;`;
+              WHERE CONCAT(title) LIKE ? AND is_deleted = ${NO};`;
       // Execute native query
       data = await Model.sequelize.query(query, {
         replacements: [`%${params.value}%`],
@@ -224,7 +225,7 @@ module.exports = {
 
     try {
       // Pre-setting variables
-      criteria = { where: { is_deleted: 0 }, include: [{ model: Model.Products, as: 'products' }] };
+      criteria = { where: { is_deleted: NO }, include: [{ model: Model.Products, as: 'products' }] };
       // Execute findAll query
       data = await Model.ProductOptions.findAll(criteria);
       if (!_.isEmpty(data[0])) {
@@ -262,7 +263,7 @@ module.exports = {
 
     try {
       // Pre-setting variables
-      criteria = { where: { product_id: params.productId, is_deleted: 0 }, include: [{ model: Model.Products, as: 'products' }] };
+      criteria = { where: { product_id: params.productId, is_deleted: NO }, include: [{ model: Model.Products, as: 'products' }] };
       // Execute findAll query
       data = await Model.ProductOptions.findAll(criteria);
       if (!_.isEmpty(data[0])) {
@@ -299,7 +300,7 @@ module.exports = {
 
     try {
       // Pre-setting variables
-      criteria = { where: { is_deleted: 0 }, include: [{ model: Model.Products, as: 'products' }] };
+      criteria = { where: { is_deleted: NO }, include: [{ model: Model.Products, as: 'products' }] };
       // Execute findAll query
       data = await Model.ProductOptions.findByPk(req.params.id, criteria);
       if (!_.isEmpty(data)) {

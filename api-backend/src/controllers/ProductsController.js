@@ -1,4 +1,12 @@
 const Model = require("../models");
+const { 
+  NO, 
+  YES,
+  PRODUCT_IMAGES_TYPE_MAIN,
+  PRODUCT_IMAGES_TYPE_THUMBNAIL,
+  PRODUCT_IMAGES_TYPE_FEATURED,
+  PRODUCT_IMAGES_TYPE_FASH_DEAL
+} = require('../helpers/constant-helper');
 
 module.exports = {
   /**
@@ -229,7 +237,7 @@ module.exports = {
       // Execute findByPk query
       data = await Model.Products.findByPk(req.params.id);
       if (!_.isEmpty(data)) {
-        let finalData = await data.update({ is_deleted: 1 });
+        let finalData = await data.update({ is_deleted: YES });
         res.json({
           status: 200,
           message: "Successfully deleted data.",
@@ -291,7 +299,7 @@ module.exports = {
           'is_featured',
           'is_published'
         ],
-        where: { name: { $like: `%${params.keyword}%` }, is_deleted: 0 },
+        where: { name: { $like: `%${params.keyword}%` }, is_deleted: NO },
         order: [
           ['id', 'ASC'],
         ],
@@ -301,18 +309,18 @@ module.exports = {
           { 
             model: Model.ProductImages, as: "productImages", 
             attributes: ['file_name', 'order', 'type', 'product_id'],
-            where: { type: 2, is_deleted: 0 },
+            where: { type: PRODUCT_IMAGES_TYPE_THUMBNAIL, is_deleted: NO },
             required: false 
           },
           { 
             model: Model.Inventories, as: "inventories", 
             attributes: ['stock_available', 'price_amount', 'product_id'], 
-            where: { is_deleted: 0 },
+            where: { is_deleted: NO },
             required: false 
           },
         ]
       };
-      countCriteria = { where: { name: { $like: `%${params.keyword}%` }, is_deleted: 0 } };
+      countCriteria = { where: { name: { $like: `%${params.keyword}%` }, is_deleted: NO } };
 
       // Execute findAll query
       data = await Model.Products.findAll(criteria);
@@ -384,7 +392,7 @@ module.exports = {
           'is_featured',
           'is_published'
         ],
-        where: { name: { $like: `%${params.keyword}%` }, is_deleted: 0 },
+        where: { name: { $like: `%${params.keyword}%` }, is_deleted: NO },
         order: [
           ['id', 'ASC'],
         ],
@@ -394,21 +402,21 @@ module.exports = {
           { 
             model: Model.ProductImages, as: "productImages", 
             attributes: ['file_name', 'order', 'type', 'product_id'],
-            where: { type: 2, is_deleted: 0 },
+            where: { type: PRODUCT_IMAGES_TYPE_THUMBNAIL, is_deleted: NO },
             required: false 
           },
           { 
             model: Model.Inventories, as: "inventories", 
             attributes: ['stock_available', 'price_amount', 'product_id'], 
-            where: { is_deleted: 0 },
+            where: { is_deleted: NO },
             required: false 
           },
         ]
       };
-      countCriteria = { where: { name: { $like: `%${params.keyword}%` }, is_deleted: 0 } };
+      countCriteria = { where: { name: { $like: `%${params.keyword}%` }, is_deleted: NO } };
       relatedCategoriesCriteria = {
         attributes: ['product_sub_category_id'],
-        where: { name: { $like: `%${params.keyword}%` }, is_deleted: 0 },
+        where: { name: { $like: `%${params.keyword}%` }, is_deleted: NO },
         group: ['product_sub_category_id'],
         include: [
           { model: Model.ProductSubCategories, as: "productSubCategories", attributes: ['name', 'description'] }
@@ -487,7 +495,7 @@ module.exports = {
           'is_featured',
           'is_published'
         ],
-        where: { name: { $like: `%${params.keyword}%` }, product_sub_category_id: params.subCategoryId, is_deleted: 0 },
+        where: { name: { $like: `%${params.keyword}%` }, product_sub_category_id: params.subCategoryId, is_deleted: NO },
         order: [
           ['id', 'ASC'],
         ],
@@ -497,21 +505,21 @@ module.exports = {
           { 
             model: Model.ProductImages, as: "productImages", 
             attributes: ['file_name', 'order', 'type', 'product_id'],
-            where: { type: 2, is_deleted: 0 },
+            where: { type: PRODUCT_IMAGES_TYPE_THUMBNAIL, is_deleted: NO },
             required: false 
           },
           { 
             model: Model.Inventories, as: "inventories", 
             attributes: ['stock_available', 'price_amount', 'product_id'], 
-            where: { is_deleted: 0 },
+            where: { is_deleted: NO },
             required: false 
           },
         ]
       };
-      countCriteria = { where: { name: { $like: `%${params.keyword}%` }, product_sub_category_id: params.subCategoryId, is_deleted: 0 } };
+      countCriteria = { where: { name: { $like: `%${params.keyword}%` }, product_sub_category_id: params.subCategoryId, is_deleted: NO } };
       relatedCategoriesCriteria = {
         attributes: ['product_sub_category_id'],
-        where: { name: { $like: `%${params.keyword}%` }, is_deleted: 0 },
+        where: { name: { $like: `%${params.keyword}%` }, is_deleted: NO },
         group: ['product_sub_category_id'],
         include: [
           { model: Model.ProductSubCategories, as: "productSubCategories", attributes: ['name', 'description'] }
@@ -583,7 +591,7 @@ module.exports = {
           'is_featured',
           'is_published'
         ],
-        where: { is_deleted: 0 },
+        where: { is_deleted: NO },
         // include: [
         //   { model: Model.ProductBrands, as: "productBrands", attributes: ['name', 'description'] },
         //   { model: Model.ProductCategories, as: "productCategories", attributes: ['name', 'description'] },
@@ -638,7 +646,7 @@ module.exports = {
           'is_featured',
           'is_published'
         ],
-        where: { is_deleted: 0, is_featured: req.params.value, is_published: 1 },
+        where: { is_deleted: NO, is_featured: req.params.value, is_published: YES },
         order: [
           ['id', 'ASC'],
         ],
@@ -646,13 +654,13 @@ module.exports = {
           { 
             model: Model.ProductImages, as: "productImages", 
             attributes: ['file_name', 'order', 'type', 'product_id'],
-            where: { type: 3, is_deleted: 0 },
+            where: { type: PRODUCT_IMAGES_TYPE_FEATURED, is_deleted: NO },
             required: false 
           },
           { 
             model: Model.Inventories, as: "inventories", 
             attributes: ['stock_available', 'product_id'], 
-            where: { is_deleted: 0 },
+            where: { is_deleted: NO },
             required: false 
           },
         ]
@@ -717,7 +725,7 @@ module.exports = {
           'is_featured',
           'is_published'
         ],
-        where: { is_deleted: 0 },
+        where: { is_deleted: NO },
         order: [
           ['id', 'ASC'],
         ],
@@ -731,24 +739,24 @@ module.exports = {
           { 
             model: Model.ProductImages, as: "productImages", 
             attributes: ['file_name', 'order', 'type', 'product_id'],
-            where: { type: 2, is_deleted: 0 },
+            where: { type: PRODUCT_IMAGES_TYPE_THUMBNAIL, is_deleted: NO },
             required: false 
           },
           { 
             model: Model.ProductOptions, as: "productOptions", 
             attributes: ['id', 'title', 'values', 'product_id'], 
-            where: { is_deleted: 0 },
+            where: { is_deleted: NO },
             required: false 
           },
           { 
             model: Model.Inventories, as: "inventories", 
             attributes: ['stock_available', 'product_id'], 
-            where: { is_deleted: 0 },
+            where: { is_deleted: NO },
             required: false 
           },
         ]
       };
-      countCriteria = { where: { is_deleted: 0 } };
+      countCriteria = { where: { is_deleted: NO } };
 
       // Execute findAll query
       data = await Model.Products.findAll(criteria);
@@ -815,7 +823,7 @@ module.exports = {
           'is_featured',
           'is_published'
         ],
-        where: { product_category_id: params.productCategoryId, is_deleted: 0 },
+        where: { product_category_id: params.productCategoryId, is_deleted: NO },
         order: [
           ['id', 'ASC'],
         ],
@@ -825,18 +833,18 @@ module.exports = {
           { 
             model: Model.ProductImages, as: "productImages", 
             attributes: ['file_name', 'order', 'type', 'product_id'],
-            where: { type: 2, is_deleted: 0 },
+            where: { type: PRODUCT_IMAGES_TYPE_THUMBNAIL, is_deleted: NO },
             required: false 
           },
           { 
             model: Model.Inventories, as: "inventories", 
             attributes: ['stock_available', 'price_amount', 'product_id'], 
-            where: { is_deleted: 0 },
+            where: { is_deleted: NO },
             required: false 
           },
         ]
       };
-      countCriteria = { where: { product_category_id: params.productCategoryId, is_deleted: 0 } };
+      countCriteria = { where: { product_category_id: params.productCategoryId, is_deleted: NO } };
 
       // Execute findAll query
       data = await Model.Products.findAll(criteria);
@@ -903,7 +911,7 @@ module.exports = {
           'is_featured',
           'is_published'
         ],
-        where: { product_sub_category_id: params.productSubCategoryId, is_deleted: 0 },
+        where: { product_sub_category_id: params.productSubCategoryId, is_deleted: NO },
         order: [
           ['id', 'ASC'],
         ],
@@ -913,18 +921,18 @@ module.exports = {
           { 
             model: Model.ProductImages, as: "productImages", 
             attributes: ['file_name', 'order', 'type', 'product_id'],
-            where: { type: 2, is_deleted: 0 },
+            where: { type: PRODUCT_IMAGES_TYPE_THUMBNAIL, is_deleted: NO },
             required: false 
           },
           { 
             model: Model.Inventories, as: "inventories", 
             attributes: ['stock_available', 'price_amount', 'product_id'], 
-            where: { is_deleted: 0 },
+            where: { is_deleted: NO },
             required: false 
           },
         ]
       };
-      countCriteria = { where: { product_sub_category_id: params.productSubCategoryId, is_deleted: 0 } };
+      countCriteria = { where: { product_sub_category_id: params.productSubCategoryId, is_deleted: NO } };
 
       // Execute findAll query
       data = await Model.Products.findAll(criteria);
@@ -991,7 +999,7 @@ module.exports = {
           'is_featured',
           'is_published'
         ],
-        where: { product_sub_sub_category_id: params.productSubSubCategoryId, is_deleted: 0 },
+        where: { product_sub_sub_category_id: params.productSubSubCategoryId, is_deleted: NO },
         order: [
           ['id', 'ASC'],
         ],
@@ -1001,18 +1009,18 @@ module.exports = {
           { 
             model: Model.ProductImages, as: "productImages", 
             attributes: ['file_name', 'order', 'type', 'product_id'],
-            where: { type: 2, is_deleted: 0 },
+            where: { type: PRODUCT_IMAGES_TYPE_THUMBNAIL, is_deleted: NO },
             required: false 
           },
           { 
             model: Model.Inventories, as: "inventories", 
             attributes: ['stock_available', 'price_amount', 'product_id'], 
-            where: { is_deleted: 0 },
+            where: { is_deleted: NO },
             required: false 
           },
         ]
       };
-      countCriteria = { where: { product_sub_sub_category_id: params.productSubSubCategoryId, is_deleted: 0 } };
+      countCriteria = { where: { product_sub_sub_category_id: params.productSubSubCategoryId, is_deleted: NO } };
 
       // Execute findAll query
       data = await Model.Products.findAll(criteria);
@@ -1057,7 +1065,7 @@ module.exports = {
     try {
       // Pre-setting variables
       criteria = {
-        where: { is_deleted: 0 },
+        where: { is_deleted: NO },
         include: [
           { model: Model.ProductBrands, as: "productBrands", attributes: ['name', 'description'] },
           { model: Model.ProductCategories, as: "productCategories", attributes: ['name', 'description'] },
@@ -1066,19 +1074,19 @@ module.exports = {
           { 
             model: Model.ProductImages, as: "productImages", 
             attributes: ['file_name', 'order', 'type', 'product_id'],
-            where: { type: 1, is_deleted: 0 },
+            where: { type: PRODUCT_IMAGES_TYPE_MAIN, is_deleted: NO },
             required: false 
           },
           { 
             model: Model.ProductOptions, as: "productOptions", 
             attributes: ['id', 'title', 'values', 'product_id'], 
-            where: { is_deleted: 0 },
+            where: { is_deleted: NO },
             required: false 
           },
           { 
             model: Model.Inventories, as: "inventories", 
             attributes: ['name', 'price_amount', 'sku', 'stock_available', 'product_id'], 
-            where: { is_deleted: 0 },
+            where: { is_deleted: NO },
             required: false 
           },
         ]
@@ -1119,7 +1127,7 @@ module.exports = {
 
     try {
       // Pre-setting variables
-      criteria = { where: { is_deleted: 0 } };
+      criteria = { where: { is_deleted: NO } };
       // Execute findAll query
       count = await Model.Products.count(criteria);
       res.json({
@@ -1149,7 +1157,7 @@ module.exports = {
         // Pre-setting variables
         criteria = {
           attributes: ['name'],
-          where: { is_deleted: 0 }
+          where: { is_deleted: NO }
         };
         // Execute findAll query
         data = await Model.Products.findByPk(id, criteria);

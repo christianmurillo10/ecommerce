@@ -2,6 +2,13 @@ const Model = require('../models');
 const fs = require('fs');
 const path = require('path');
 const bcrypt = require('../helpers/bcrypt-helper');
+const { 
+  NO, 
+  YES,
+  CUSTOMER_STATUS_APPROVED,
+  CUSTOMER_STATUS_DECLINED,
+  CUSTOMER_STATUS_PENDING
+} = require('../helpers/constant-helper');
 const EmailerActions = require('../mailer/emailer-actions');
 
 module.exports = {
@@ -26,7 +33,7 @@ module.exports = {
     params.created_at = moment().utc(8).format('YYYY-MM-DD HH:mm:ss');
     params.gender_type = params.gender_type === null ? null : params.gender_type.toLocaleString();
     params.status = params.status.toLocaleString();
-    if (params.status === "1") params.customer_no = await generateCustomerNo();
+    if (params.status === CUSTOMER_STATUS_APPROVED.toLocaleString()) params.customer_no = await generateCustomerNo();
 
     if (!_.isUndefined(req.file)) {
       let extension = path.extname(params.file_name);
@@ -114,7 +121,7 @@ module.exports = {
     // Override variables
     params.created_at = moment().utc(8).format('YYYY-MM-DD HH:mm:ss');
     params.gender_type = params.gender_type === null ? null : params.gender_type.toLocaleString();
-    params.status = 3;
+    params.status = CUSTOMER_STATUS_PENDING;
 
     try {
       // Validators
@@ -189,7 +196,7 @@ module.exports = {
       let fileName = `${params.email}${extension}`;
       params.file_name = fileName;
     }
-    if (params.status === "1") params.customer_no = await generateCustomerNo();
+    if (params.status === CUSTOMER_STATUS_APPROVED.toLocaleString()) params.customer_no = await generateCustomerNo();
 
     try {
       // Pre-setting variables
@@ -251,7 +258,7 @@ module.exports = {
       // Execute findByPk query
       data = await Model.Customers.findByPk(req.params.id);
       if (!_.isEmpty(data)) {
-        let finalData = await data.update({ is_deleted: 1 });
+        let finalData = await data.update({ is_deleted: YES });
         res.json({
           status: 200,
           message: "Successfully deleted data.",
@@ -365,7 +372,7 @@ module.exports = {
 
     try {
       // Pre-setting variables
-      query = `SELECT * FROM customers WHERE CONCAT(customer_no) LIKE ? AND is_deleted = 0;`;
+      query = `SELECT * FROM customers WHERE CONCAT(customer_no) LIKE ? AND is_deleted = ${NO};`;
       // Execute native query
       data = await Model.sequelize.query(query, {
         replacements: [`%${params.value}%`],
@@ -405,7 +412,7 @@ module.exports = {
 
     try {
       // Pre-setting variables
-      criteria = { where: { is_active: 1, is_deleted: 0 } };
+      criteria = { where: { is_active: YES, is_deleted: NO } };
       // Execute findAll query
       data = await Model.Customers.findAll(criteria);
       if (!_.isEmpty(data[0])) {
@@ -477,7 +484,7 @@ module.exports = {
 
     try {
       // Pre-setting variables
-      criteria = { where: { status: req.params.status, is_active: req.params.isActive, is_deleted: 0 } };
+      criteria = { where: { status: req.params.status, is_active: req.params.isActive, is_deleted: NO } };
       // Execute findAll query
       count = await Model.Customers.count(criteria);
       res.json({
@@ -528,7 +535,7 @@ const generateCustomerNo = () => {
 
     try {
       // Pre-setting variables
-      criteria = { attributes: ['customer_no'], where: { customer_no: { $ne: null }, is_deleted: 0 }, order: [ [ 'id', 'DESC' ]] };
+      criteria = { attributes: ['customer_no'], where: { customer_no: { $ne: null }, is_deleted: NO }, order: [ [ 'id', 'DESC' ]] };
       // Execute findOne query
       data = await Model.Customers.findOne(criteria);
       if (_.isEmpty(data)) {

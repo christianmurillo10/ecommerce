@@ -1,4 +1,5 @@
 const Model = require('../models');
+const { NO, YES } = require('../helpers/constant-helper');
 
 module.exports = {
   /**
@@ -111,7 +112,7 @@ module.exports = {
       // Execute findByPk query
       data = await Model.Roles.findByPk(req.params.id);
       if (!_.isEmpty(data)) {
-        let finalData = await data.update({ is_deleted: 1 });
+        let finalData = await data.update({ is_deleted: YES });
         res.json({
           status: 200,
           message: "Successfully deleted role.",
@@ -151,7 +152,7 @@ module.exports = {
 
     try {
       // Pre-setting variables
-      query = `SELECT id, name, description, created_at, updated_at FROM roles WHERE CONCAT(name, description) LIKE ? AND is_deleted = 0;`;
+      query = `SELECT id, name, description, created_at, updated_at FROM roles WHERE CONCAT(name, description) LIKE ? AND is_deleted = ${NO};`;
       // Execute native query
       data = await Model.sequelize.query(query, {
         replacements: [`%${params.value}%`],
@@ -191,7 +192,7 @@ module.exports = {
 
     try {
       // Pre-setting variables
-      criteria = { where: { is_deleted: 0 } };
+      criteria = { where: { is_deleted: NO } };
       // Execute findAll query
       data = await Model.Roles.findAll(criteria);
       if (!_.isEmpty(data[0])) {

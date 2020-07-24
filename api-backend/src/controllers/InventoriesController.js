@@ -1,4 +1,5 @@
 const Model = require('../models');
+const { NO, YES } = require('../helpers/constant-helper');
 
 module.exports = {
   /**
@@ -32,7 +33,7 @@ module.exports = {
       if (_.isEmpty(params.product_id)) return res.json({ status: 200, message: "Product is required.", result: false });
 
       // Pre-setting variables
-      criteria = { where: { product_id: params.product_id, is_deleted: 0 }, include: [{ model: Model.Products, as: 'products' }, { model: Model.Users, as: 'users' }] };
+      criteria = { where: { product_id: params.product_id, is_deleted: NO }, include: [{ model: Model.Products, as: 'products' }, { model: Model.Users, as: 'users' }] };
       initialValues = _.pick(params, [
         'stock_in',
         'stock_available',
@@ -95,8 +96,8 @@ module.exports = {
       if (_.isEmpty(params.product_id)) return res.json({ status: 200, message: "Product is required.", result: false });
 
       // Pre-setting variables
-      criteriaProduct = { attributes: ['name', 'unit', 'price_amount'], where: { is_deleted: 0 } };
-      criteriaOptions = { where: { product_id: params.product_id, is_deleted: 0 } };
+      criteriaProduct = { attributes: ['name', 'unit', 'price_amount'], where: { is_deleted: NO } };
+      criteriaOptions = { where: { product_id: params.product_id, is_deleted: NO } };
 
       // Execute query
       dataProduct = await Model.Products.findByPk(params.product_id, criteriaProduct);
@@ -107,7 +108,7 @@ module.exports = {
         let bulkInitialValue = await setBulkInventoryData(params, dataOptions, dataProduct);
 
         // Bulk delete of data by product_id
-        await Model.Inventories.update({ is_deleted : 1 },{ where : { product_id : params.product_id }});
+        await Model.Inventories.update({ is_deleted : YES },{ where : { product_id : params.product_id }});
         Model.Inventories.bulkCreate(bulkInitialValue)
           .then(async response => {
             // Set and filtering Bulk Data of Inventory History
@@ -167,7 +168,7 @@ module.exports = {
 
     try {
       // Pre-setting variables
-      criteria = { where: { is_deleted: 0 } };
+      criteria = { where: { is_deleted: NO } };
       initialValues = _.pick(params, [
         'name',
         'sku',
@@ -222,7 +223,7 @@ module.exports = {
       // Execute findByPk query
       data = await Model.Inventories.findByPk(req.params.id);
       if (!_.isEmpty(data)) {
-        let finalData = await data.update({ is_deleted: 1 });
+        let finalData = await data.update({ is_deleted: YES });
         res.json({
           status: 200,
           message: "Successfully deleted data.",
@@ -253,7 +254,7 @@ module.exports = {
    */
   deleteAllByProductId: async (req, res) => {
     try {
-      Model.Inventories.update({ is_deleted : 1 },{ where : { product_id : req.params.productId }})
+      Model.Inventories.update({ is_deleted : YES },{ where : { product_id : req.params.productId }})
       .then(response => {
         res.json({
           status: 200,
@@ -299,7 +300,7 @@ module.exports = {
                 created_at, 
                 updated_at 
               FROM inventories 
-              WHERE CONCAT(stock_in, stock_out, stock_reserved, stock_returned, stock_available) LIKE ? AND is_deleted = 0;`;
+              WHERE CONCAT(stock_in, stock_out, stock_reserved, stock_returned, stock_available) LIKE ? AND is_deleted = ${NO};`;
       // Execute native query
       data = await Model.sequelize.query(query, {
         replacements: [`%${params.value}%`],
@@ -339,7 +340,7 @@ module.exports = {
 
     try {
       // Pre-setting variables
-      criteria = { where: { is_deleted: 0 }, include: [{ model: Model.Products, as: 'products' }, { model: Model.Users, as: 'users' }] };
+      criteria = { where: { is_deleted: NO }, include: [{ model: Model.Products, as: 'products' }, { model: Model.Users, as: 'users' }] };
       // Execute findAll query
       data = await Model.Inventories.findAll(criteria);
       if (!_.isEmpty(data[0])) {
@@ -377,7 +378,7 @@ module.exports = {
 
     try {
       // Pre-setting variables
-      criteria = { where: { product_id: params.productId, is_deleted: 0 }, order: [ [ 'created_at', 'ASC' ]] };
+      criteria = { where: { product_id: params.productId, is_deleted: NO }, order: [ [ 'created_at', 'ASC' ]] };
       // Execute findAll query
       data = await Model.Inventories.findAll(criteria);
       if (!_.isEmpty(data[0])) {
@@ -415,7 +416,7 @@ module.exports = {
 
     try {
       // Pre-setting variables
-      criteria = { attributes: ['stock_available'], where: { product_id: params.productId, is_deleted: 0 }, order: [ [ 'created_at', 'DESC' ]] };
+      criteria = { attributes: ['stock_available'], where: { product_id: params.productId, is_deleted: NO }, order: [ [ 'created_at', 'DESC' ]] };
       // Execute findAll query
       data = await Model.Inventories.findOne(criteria);
       if (!_.isEmpty(data)) {
@@ -453,7 +454,7 @@ module.exports = {
 
     try {
       // Pre-setting variables
-      criteria = { attributes: ['sku', 'stock_available', 'unit', 'price_amount', 'product_id'], where: { sku: params.sku, is_deleted: 0 }, order: [ [ 'created_at', 'DESC' ]] };
+      criteria = { attributes: ['sku', 'stock_available', 'unit', 'price_amount', 'product_id'], where: { sku: params.sku, is_deleted: NO }, order: [ [ 'created_at', 'DESC' ]] };
       // Execute findAll query
       data = await Model.Inventories.findOne(criteria);
       if (!_.isEmpty(data)) {
@@ -490,7 +491,7 @@ module.exports = {
 
     try {
       // Pre-setting variables
-      criteria = { where: { is_deleted: 0 }, include: [{ model: Model.Products, as: 'products' }, { model: Model.Users, as: 'users' }] };
+      criteria = { where: { is_deleted: NO }, include: [{ model: Model.Products, as: 'products' }, { model: Model.Users, as: 'users' }] };
       // Execute findAll query
       data = await Model.Inventories.findByPk(req.params.id, criteria);
       if (!_.isEmpty(data)) {
@@ -527,7 +528,7 @@ module.exports = {
       try {
         let initialValues, data, criteria;
         // Pre-setting variables
-        criteria = { where: { sku: obj.sku, product_id: obj.product_id, is_deleted: 0 } };
+        criteria = { where: { sku: obj.sku, product_id: obj.product_id, is_deleted: NO } };
         // Execute findByPk query
         data = await Model.Inventories.findOne(criteria);
         if (!_.isEmpty(data)) {
@@ -593,7 +594,7 @@ module.exports = {
       try {
         let initialValues, data, criteria;
         // Pre-setting variables
-        criteria = { where: { sku: obj.sku, product_id: obj.product_id, is_deleted: 0 } };
+        criteria = { where: { sku: obj.sku, product_id: obj.product_id, is_deleted: NO } };
         // Execute findByPk query
         data = await Model.Inventories.findOne(criteria);
         if (!_.isEmpty(data)) {

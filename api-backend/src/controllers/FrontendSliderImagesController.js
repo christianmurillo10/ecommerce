@@ -1,6 +1,7 @@
 const Model = require('../models');
 const fs = require('fs');
 const path = require('path');
+const { NO, YES } = require('../helpers/constant-helper');
 
 module.exports = {
   /**
@@ -128,7 +129,7 @@ module.exports = {
       // Execute findByPk query
       data = await Model.FrontendSliderImages.findByPk(req.params.id);
       if (!_.isEmpty(data)) {
-        let finalData = await data.update({ is_deleted: 1 });
+        let finalData = await data.update({ is_deleted: YES });
         res.json({
           status: 200,
           message: "Successfully deleted data.",
@@ -168,7 +169,7 @@ module.exports = {
 
     try {
       // Pre-setting variables
-      query = `SELECT id, file_name, url, order, created_at, updated_at FROM frontend_slider_images WHERE CONCAT(file_name) LIKE ? AND is_deleted = 0;`;
+      query = `SELECT id, file_name, url, order, created_at, updated_at FROM frontend_slider_images WHERE CONCAT(file_name) LIKE ? AND is_deleted = ${NO};`;
       // Execute native query
       data = await Model.sequelize.query(query, {
         replacements: [`%${params.value}%`],
@@ -208,7 +209,7 @@ module.exports = {
 
     try {
       // Pre-setting variables
-      criteria = { where: { is_deleted: 0 }, include: [{ model: Model.Users, as: 'users' }] };
+      criteria = { where: { is_deleted: NO }, include: [{ model: Model.Users, as: 'users' }] };
       // Execute findAll query
       data = await Model.FrontendSliderImages.findAll(criteria);
       if (!_.isEmpty(data[0])) {

@@ -1,4 +1,5 @@
 const Model = require('../models');
+const { NO, YES } = require('../helpers/constant-helper');
 
 module.exports = {
   /**
@@ -37,7 +38,7 @@ module.exports = {
 
       // Pre-setting variables
       criteria = { 
-        where: { card_no: params.card_no, is_deleted: 0 },
+        where: { card_no: params.card_no, is_deleted: NO },
         include: [{ model: Model.Banks, as: 'banks', attributes: ['code', 'name'] }]
       };
       initialValues = _.pick(params, [
@@ -155,7 +156,7 @@ module.exports = {
       // Execute findByPk query
       data = await Model.CustomerCreditDebitCards.findByPk(req.params.id);
       if (!_.isEmpty(data)) {
-        let finalData = await data.update({ is_deleted: 1 });
+        let finalData = await data.update({ is_deleted: YES });
         res.json({
           status: 200,
           message: "Successfully deleted data.",
@@ -195,7 +196,7 @@ module.exports = {
 
     try {
       // Pre-setting variables
-      query = `SELECT id, rate_amount, card_no, security_code, firstname, lastname, bank_id, customer_id, date_expired, created_at, updated_at, type FROM customer_credit_debit_cards WHERE CONCAT(card_no) LIKE ? AND is_deleted = 0;`;
+      query = `SELECT id, rate_amount, card_no, security_code, firstname, lastname, bank_id, customer_id, date_expired, created_at, updated_at, type FROM customer_credit_debit_cards WHERE CONCAT(card_no) LIKE ? AND is_deleted = ${NO};`;
       // Execute native query
       data = await Model.sequelize.query(query, {
         replacements: [`%${params.value}%`],
@@ -235,7 +236,7 @@ module.exports = {
 
     try {
       // Pre-setting variables
-      criteria = { where: { is_deleted: 0 } };
+      criteria = { where: { is_deleted: NO } };
       // Execute findAll query
       data = await Model.CustomerCreditDebitCards.findAll(criteria);
       if (!_.isEmpty(data[0])) {
@@ -274,7 +275,7 @@ module.exports = {
     try {
       // Pre-setting variables
       criteria = { 
-        where: { customer_id: params.customerId, is_deleted: 0 },
+        where: { customer_id: params.customerId, is_deleted: NO },
         include: [{ model: Model.Banks, as: 'banks', attributes: ['code', 'name'] }]
       };
       // Execute findAll query

@@ -1,4 +1,5 @@
 const Model = require('../models');
+const { NO, YES } = require('../helpers/constant-helper');
 
 module.exports = {
   /**
@@ -36,7 +37,7 @@ module.exports = {
 
       // Pre-setting variables
       criteria = { 
-        where: { shipping_no: params.shipping_no, sales_order_id: params.sales_order_id, is_deleted: 0 },
+        where: { shipping_no: params.shipping_no, sales_order_id: params.sales_order_id, is_deleted: NO },
         include: [ 
           { model: Model.ShippingMethods, as: 'shippingMethods', attributes: ['name'] },
           { model: Model.ShippingMethodRates, as: 'shippingMethodRates', attributes: ['rate_amount'] } 
@@ -154,7 +155,7 @@ module.exports = {
       // Execute findByPk query
       data = await Model.SalesOrderShippingDetails.findByPk(req.params.id);
       if (!_.isEmpty(data)) {
-        let finalData = await data.update({ is_deleted: 1 });
+        let finalData = await data.update({ is_deleted: YES });
         res.json({
           status: 200,
           message: "Successfully deleted data.",
@@ -194,7 +195,7 @@ module.exports = {
 
     try {
       // Pre-setting variables
-      query = `SELECT * FROM sales_order_shipping_details WHERE CONCAT(shipping_no) LIKE ? AND is_deleted = 0;`;
+      query = `SELECT * FROM sales_order_shipping_details WHERE CONCAT(shipping_no) LIKE ? AND is_deleted = ${NO};`;
       // Execute native query
       data = await Model.sequelize.query(query, {
         replacements: [`%${params.value}%`],
@@ -235,7 +236,7 @@ module.exports = {
     try {
       // Pre-setting variables
       criteria = { 
-        where: { is_deleted: 0 }, 
+        where: { is_deleted: NO }, 
         include: [ 
           { model: Model.ShippingMethods, as: 'shippingMethods', attributes: ['name'] },
           { model: Model.ShippingMethodRates, as: 'shippingMethodRates', attributes: ['rate_amount'] } 
@@ -279,7 +280,7 @@ module.exports = {
     try {
       // Pre-setting variables
       criteria = { 
-        where: { sales_order_id: params.salesOrderId, is_deleted: 0 }, 
+        where: { sales_order_id: params.salesOrderId, is_deleted: NO }, 
         include: [ 
           { model: Model.ShippingMethods, as: 'shippingMethods', attributes: ['name'] },
           { model: Model.ShippingMethodRates, as: 'shippingMethodRates', attributes: ['rate_amount'] } 

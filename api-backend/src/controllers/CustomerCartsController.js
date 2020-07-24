@@ -1,5 +1,6 @@
 const Model = require('../models');
 const InventoriesController = require("./InventoriesController");
+const { NO, YES } = require('../helpers/constant-helper');
 
 module.exports = {
   /**

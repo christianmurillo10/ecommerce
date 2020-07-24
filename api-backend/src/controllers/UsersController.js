@@ -1,4 +1,5 @@
 const Model = require('../models');
+const { NO, YES } = require('../helpers/constant-helper');
 
 module.exports = {
   /**
@@ -120,7 +121,7 @@ module.exports = {
       // Execute findByPk query
       data = await Model.Users.findByPk(req.params.id);
       if (!_.isEmpty(data)) {
-        let finalData = await data.update({ is_deleted: 1 });
+        let finalData = await data.update({ is_deleted: YES });
         res.json({
           status: 200,
           message: "Successfully deleted an account.",
@@ -160,7 +161,7 @@ module.exports = {
 
     try {
       // Pre-setting variables
-      query = `SELECT id, email, username, role_id, created_at, updated_at, permission_type, is_logged, is_active FROM users WHERE CONCAT(email, username) LIKE ? AND is_deleted = 0;`;
+      query = `SELECT id, email, username, role_id, created_at, updated_at, permission_type, is_logged, is_active FROM users WHERE CONCAT(email, username) LIKE ? AND is_deleted = ${NO};`;
       // Execute native query
       data = await Model.sequelize.query(query, {
         replacements: [`%${params.value}%`],
@@ -200,7 +201,7 @@ module.exports = {
 
     try {
       // Pre-setting variables
-      criteria = { where: { is_deleted: 0 }, include: [{ model: Model.Roles, as: 'roles' }] };
+      criteria = { where: { is_deleted: NO }, include: [{ model: Model.Roles, as: 'roles' }] };
       // Execute findAll query
       data = await Model.Users.findAll(criteria);
       if (!_.isEmpty(data[0])) {

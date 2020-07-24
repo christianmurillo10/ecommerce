@@ -1,4 +1,12 @@
 const Model = require('../models');
+const { 
+  NO, 
+  YES,
+  PRODUCT_IMAGES_TYPE_MAIN,
+  PRODUCT_IMAGES_TYPE_THUMBNAIL,
+  PRODUCT_IMAGES_TYPE_FEATURED,
+  PRODUCT_IMAGES_TYPE_FASH_DEAL
+} = require('../helpers/constant-helper');
 
 module.exports = {
   /**
@@ -35,7 +43,7 @@ module.exports = {
         where: { 
           date_from: { $lte: params.date_from },
           date_to: { $gte: params.date_from },
-          is_deleted: 0
+          is_deleted: NO
         },
       };
       initialValues = _.pick(params, ['title', 'date_from', 'date_to', 'user_id', 'created_at']);
@@ -97,7 +105,7 @@ module.exports = {
         where: { 
           date_from: { $lte: params.date_from },
           date_to: { $gte: params.date_from },
-          is_deleted: 0
+          is_deleted: NO
         },
       };
       initialValues = _.pick(params, ['title', 'date_from', 'date_to', 'is_active']);
@@ -113,7 +121,6 @@ module.exports = {
             result: finalData
           });
         } else {
-          console.log("QWEWQe", dataFindExistingDate)
           res.json({
             status: 200,
             message: "Date already exist.",
@@ -150,7 +157,7 @@ module.exports = {
       // Execute findByPk query
       data = await Model.ProductFlashDealHeaders.findByPk(req.params.id);
       if (!_.isEmpty(data)) {
-        let finalData = await data.update({ is_deleted: 1 });
+        let finalData = await data.update({ is_deleted: YES });
         res.json({
           status: 200,
           message: "Successfully deleted data.",
@@ -190,7 +197,7 @@ module.exports = {
 
     try {
       // Pre-setting variables
-      query = `SELECT id, title, date_from, date_to, created_at, updated_at, is_active FROM product_flash_deal_headers WHERE CONCAT(title) LIKE ? AND is_deleted = 0;`;
+      query = `SELECT id, title, date_from, date_to, created_at, updated_at, is_active FROM product_flash_deal_headers WHERE CONCAT(title) LIKE ? AND is_deleted = ${NO};`;
       // Execute native query
       data = await Model.sequelize.query(query, {
         replacements: [`%${params.value}%`],
@@ -230,7 +237,7 @@ module.exports = {
 
     try {
       // Pre-setting variables
-      criteria = { where: { is_deleted: 0 } };
+      criteria = { where: { is_deleted: NO } };
       // Execute findAll query
       data = await Model.ProductFlashDealHeaders.findAll(criteria);
       if (!_.isEmpty(data[0])) {
@@ -273,8 +280,8 @@ module.exports = {
         where: { 
           date_from: { $lte: dateToday },
           date_to: { $gte: dateToday },
-          is_active: 1, 
-          is_deleted: 0
+          is_active: YES, 
+          is_deleted: NO
         },
         order: [ ['id', 'DESC'] ],
         include: [
@@ -282,19 +289,19 @@ module.exports = {
             model: Model.ProductFlashDealDetails, 
             as: "productFlashDealDetails", 
             attributes: [ 'id', 'discount_value', 'base_price_amount', 'current_price_amount', 'product_id', 'discount_type'],
-            where: { is_deleted: 0 },
+            where: { is_deleted: NO },
             order: [ ['id', 'ASC'] ],
             include: [
               { 
                 model: Model.Products, 
                 as: "products", 
                 attributes: ['name', 'unit'],
-                where: { is_published: 1, is_deleted: 0 },
+                where: { is_published: YES, is_deleted: NO },
                 include: [
                   { 
                     model: Model.ProductImages, as: "productImages", 
                     attributes: ['file_name', 'order', 'type'],
-                    where: { type: 4, is_deleted: 0 },
+                    where: { type: PRODUCT_IMAGES_TYPE_FASH_DEAL, is_deleted: NO },
                     order: [ ['id', 'ASC'] ],
                     separate: true,
                     required: false 
