@@ -1,5 +1,23 @@
 const Model = require('../models');
 const InventoriesController = require("./InventoriesController");
+const {
+  NO,
+  YES,
+  SO_STATUS_CLOSED,
+  SO_STATUS_DELIVERED,
+  SO_STATUS_ON_PROCESS,
+  SO_STATUS_APPROVED,
+  SO_STATUS_REVIEWED,
+  SO_STATUS_OPEN,
+  SO_STATUS_CANCELLED,
+  SO_STATUS_FAILED,
+  SO_DETAILS_STATUS_CLAIMED,
+  SO_DETAILS_STATUS_ON_GOING,
+  SO_DETAILS_STATUS_PENDING,
+  SO_DETAILS_STATUS_RETURNED,
+  SO_DETAILS_STATUS_CANCELLED,
+  SO_DETAILS_STATUS_FAILED
+} = require('../helpers/constant-helper');
 
 module.exports = {
   /**
@@ -42,7 +60,7 @@ module.exports = {
 
       // Pre-setting variables
       criteria = { 
-        where: { order_no: params.order_no, is_deleted: 0 },
+        where: { order_no: params.order_no, is_deleted: NO },
         include: [{ model: Model.Customers, as: 'customers', attributes: ['customer_no', 'firstname', 'middlename', 'lastname'] }]
       };
       initialValues = _.pick(params, [
@@ -208,8 +226,8 @@ module.exports = {
               }
 
               // 2.2 Delete sales order details
-              let criteriaDetails = { where: { id: { $notIn: existingIds }, sales_order_id: plainData.id, is_deleted: 0 } };
-              await Model.SalesOrderDetails.update({ is_deleted: 1 }, criteriaDetails);
+              let criteriaDetails = { where: { id: { $notIn: existingIds }, sales_order_id: plainData.id, is_deleted: NO } };
+              await Model.SalesOrderDetails.update({ is_deleted: YES }, criteriaDetails);
             }
 
             // 3. CREATE
@@ -259,17 +277,17 @@ module.exports = {
     // Override variables
     params.updated_at = moment().utc(8).format('YYYY-MM-DD HH:mm:ss');
     switch(params.status) {
-      case 2:
+      case SO_STATUS_DELIVERED:
         params.date_delivered = params.date;
         break;
-      case 3:
+      case SO_STATUS_ON_PROCESS:
         params.date_delivery = params.date;
         break;
-      case 4:
+      case SO_STATUS_APPROVED:
         params.date_approved = params.date;
         params.approved_by = params.employee_id;
         break;
-      case 5:
+      case SO_STATUS_REVIEWED:
         params.reviewed_by = params.employee_id;
         break;
     }
@@ -287,19 +305,20 @@ module.exports = {
       // Execute findByPk query
       data = await Model.SalesOrders.findByPk(req.params.id, criteria);
       if (!_.isEmpty(data)) {
+        const oldStatus = data.status;
         await data.update(initialValues)
           .then(() => Model.SalesOrders.findByPk(data.id, criteria)
           .then(async finalData => {
             let plainData = finalData.get({ plain: true });
             let status = plainData.status;
+            const enableDeleteInventoryStockByStatus = [SO_STATUS_ON_PROCESS, SO_STATUS_APPROVED];
 
             // Update inventory
             switch(status) {
-              case 2:
-                // Delivered
-                let criteriaDeliveredDetails = { attributes: ['id', 'sku', 'quantity', 'product_id'], where: { sales_order_id: plainData.id, status: 2, is_deleted: 0 } };
+              case SO_STATUS_DELIVERED:
+                let criteriaDeliveredDetails = { attributes: ['id', 'sku', 'quantity', 'product_id'], where: { sales_order_id: plainData.id, status: SO_DETAILS_STATUS_ON_GOING, is_deleted: NO } };
                 let dataDeliveredDetails = await Model.SalesOrderDetails.findAll(criteriaDeliveredDetails);
-                await Model.SalesOrderDetails.update({ status: 1 }, criteriaDeliveredDetails);
+                await Model.SalesOrderDetails.update({ status: SO_DETAILS_STATUS_CLAIMED }, criteriaDeliveredDetails);
                 
                 for (let i = 0; i < dataDeliveredDetails.length; i++) {
                   let details = dataDeliveredDetails[i];
@@ -310,14 +329,12 @@ module.exports = {
                   });
                 }
                 break;
-              case 3:
-                // On Process
-                let criteriaOnProcessDetails = { where: { sales_order_id: plainData.id, is_deleted: 0 } };
-                await Model.SalesOrderDetails.update({ status: 2}, criteriaOnProcessDetails);
+              case SO_STATUS_ON_PROCESS:
+                let criteriaOnProcessDetails = { where: { sales_order_id: plainData.id, is_deleted: NO } };
+                await Model.SalesOrderDetails.update({ status: SO_DETAILS_STATUS_ON_GOING}, criteriaOnProcessDetails);
                 break;
-              case 4:
-                // Approved
-                let criteriaAprovedDetails = { attributes: ['id', 'sku', 'quantity', 'product_id'], where: { sales_order_id: plainData.id, is_deleted: 0 }, raw: true };
+              case SO_STATUS_APPROVED:
+                let criteriaAprovedDetails = { attributes: ['id', 'sku', 'quantity', 'product_id'], where: { sales_order_id: plainData.id, is_deleted: NO }, raw: true };
                 let dataApprovedDetails = await Model.SalesOrderDetails.findAll(criteriaAprovedDetails);
 
                 for (let i = 0; i < dataApprovedDetails.length; i++) {
@@ -331,38 +348,40 @@ module.exports = {
                   });
                 }
                 break;
-              case 7:
-                // Cancelled
-                let criteriaCancelledDetails = { attributes: ['id', 'sku', 'quantity', 'product_id'], where: { sales_order_id: plainData.id, is_deleted: 0 } };
-                let dataCancelledDetails = await Model.SalesOrderDetails.findAll(criteriaCancelledDetails);
-                await Model.SalesOrderDetails.update({ status: 5 }, criteriaCancelledDetails);
+              case SO_STATUS_CANCELLED:
+                let criteriaCancelledDetails = { attributes: ['id', 'sku', 'quantity', 'product_id'], where: { sales_order_id: plainData.id, is_deleted: NO } };
+                await Model.SalesOrderDetails.update({ status: SO_DETAILS_STATUS_CANCELLED }, criteriaCancelledDetails);
 
-                for (let i = 0; i < dataCancelledDetails.length; i++) {
-                  let details = dataCancelledDetails[i];
-                  await InventoriesController.updateStockReservedAndAvailable({
-                    sku: details.sku,
-                    old_quantity: details.quantity,
-                    new_quantity: 0,
-                    product_id: details.product_id,
-                    type: 'DELETE'
-                  });
+                if (enableDeleteInventoryStockByStatus.includes(oldStatus)) {
+                  let dataCancelledDetails = await Model.SalesOrderDetails.findAll(criteriaCancelledDetails);
+                  for (let i = 0; i < dataCancelledDetails.length; i++) {
+                    let details = dataCancelledDetails[i];
+                    await InventoriesController.updateStockReservedAndAvailable({
+                      sku: details.sku,
+                      old_quantity: details.quantity,
+                      new_quantity: 0,
+                      product_id: details.product_id,
+                      type: 'DELETE'
+                    });
+                  }
                 }
                 break;
-              case 8:
-                // Failed
-                let criteriaFailedDetails = { attributes: ['id', 'sku', 'quantity', 'product_id'], where: { sales_order_id: plainData.id, is_deleted: 0 } };
-                let dataFailedDetails = await Model.SalesOrderDetails.findAll(criteriaFailedDetails);
-                await Model.SalesOrderDetails.update({ status: 6 }, criteriaFailedDetails);
+              case SO_STATUS_FAILED:
+                let criteriaFailedDetails = { attributes: ['id', 'sku', 'quantity', 'product_id'], where: { sales_order_id: plainData.id, is_deleted: NO } };
+                await Model.SalesOrderDetails.update({ status: SO_DETAILS_STATUS_FAILED }, criteriaFailedDetails);
 
-                for (let i = 0; i < dataFailedDetails.length; i++) {
-                  let details = dataFailedDetails[i];
-                  await InventoriesController.updateStockReservedAndAvailable({
-                    sku: details.sku,
-                    old_quantity: details.quantity,
-                    new_quantity: 0,
-                    product_id: details.product_id,
-                    type: 'DELETE'
-                  });
+                if (enableDeleteInventoryStockByStatus.includes(oldStatus)) {
+                  let dataFailedDetails = await Model.SalesOrderDetails.findAll(criteriaFailedDetails);
+                  for (let i = 0; i < dataFailedDetails.length; i++) {
+                    let details = dataFailedDetails[i];
+                    await InventoriesController.updateStockReservedAndAvailable({
+                      sku: details.sku,
+                      old_quantity: details.quantity,
+                      new_quantity: 0,
+                      product_id: details.product_id,
+                      type: 'DELETE'
+                    });
+                  }
                 }
                 break;
             }
@@ -403,7 +422,7 @@ module.exports = {
       // Execute findByPk query
       data = await Model.SalesOrders.findByPk(req.params.id);
       if (!_.isEmpty(data)) {
-        let finalData = await data.update({ is_deleted: 1 });
+        let finalData = await data.update({ is_deleted: YES });
         res.json({
           status: 200,
           message: "Successfully deleted data.",
@@ -443,7 +462,7 @@ module.exports = {
 
     try {
       // Pre-setting variables
-      query = `SELECT * FROM sales_orders WHERE CONCAT(order_no) LIKE ? AND is_deleted = 0;`;
+      query = `SELECT * FROM sales_orders WHERE CONCAT(order_no) LIKE ? AND is_deleted = ${NO};`;
       // Execute native query
       data = await Model.sequelize.query(query, {
         replacements: [`%${params.value}%`],
@@ -484,7 +503,7 @@ module.exports = {
     try {
       // Pre-setting variables
       criteria = { 
-        where: { is_deleted: 0 },
+        where: { is_deleted: NO },
         include: [{ model: Model.Customers, as: 'customers', attributes: ['customer_no', 'firstname', 'middlename', 'lastname'] }]
       };
       // Execute findAll query
@@ -525,7 +544,7 @@ module.exports = {
     try {
       // Pre-setting variables
       criteria = { 
-        where: { customer_id: params.customerId, is_deleted: 0 },
+        where: { customer_id: params.customerId, is_deleted: NO },
         include: [{ model: Model.Customers, as: 'customers', attributes: ['customer_no', 'firstname', 'middlename', 'lastname'] }]
       };
       // Execute findAll query
@@ -566,7 +585,7 @@ module.exports = {
     try {
       // Pre-setting variables
       criteria = { 
-        where: { status: params.status, is_deleted: 0 },
+        where: { status: params.status, is_deleted: NO },
         include: [{ model: Model.Customers, as: 'customers', attributes: ['customer_no', 'firstname', 'middlename', 'lastname'] }]
       };
       // Execute findAll query
@@ -606,7 +625,7 @@ module.exports = {
     try {
       // Pre-setting variables
       criteria = {
-        where: { is_deleted: 0 },
+        where: { is_deleted: NO },
         include: [
           { model: Model.Customers, as: 'customers', attributes: ['customer_no', 'firstname', 'middlename', 'lastname'] },
           { model: Model.Employees, as: 'reviewedBy', attributes: ['employee_no', 'firstname', 'middlename', 'lastname'] },
@@ -627,7 +646,7 @@ module.exports = {
               'claim_type',
               'status'
             ], 
-            where: { is_deleted: 0 },
+            where: { is_deleted: NO },
             include: [
               { model: Model.Products, as: "products", attributes: ['name', 'description'] }
             ],
@@ -671,7 +690,7 @@ const generateOrderNo = () => {
       let date = moment().utc(8).format('YYYY-MM-DD');
       date = date.split('-').join('');
       // Pre-setting variables
-      criteria = { attributes: ['order_no'], where: { order_no: { $ne: null }, is_deleted: 0 }, order: [ [ 'id', 'DESC' ]] };
+      criteria = { attributes: ['order_no'], where: { order_no: { $ne: null }, is_deleted: NO }, order: [ [ 'id', 'DESC' ]] };
       // Execute findOne query
       data = await Model.SalesOrders.findOne(criteria);
       if (_.isEmpty(data)) {

@@ -1,20 +1,16 @@
-const NO = 'No';
-const YES = 'Yes';
+const { NO, YES } = require("./constant-helper");
 
 module.exports = {
-  NO: 0,
-  YES: 1,
-
   getStatus: (value) => {
     return new Promise((resolve, reject) => {
       try {
         let data;
         switch (value) {
-          case 0:
-            data = NO;
+          case NO:
+            data = "No";
             break;
-          case 1:
-            data = YES;
+          case YES:
+            data = "Yes";
             break;
         }
         return data;
@@ -26,5 +22,5 @@ module.exports = {
 
   generateReferralCode: () => {
     return Math.random().toString(36).substr(2, 8).toUpperCase();
-  }
+  },
 };
