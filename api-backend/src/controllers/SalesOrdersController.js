@@ -627,7 +627,7 @@ module.exports = {
       criteria = {
         where: { is_deleted: NO },
         include: [
-          { model: Model.Customers, as: 'customers', attributes: ['customer_no', 'firstname', 'middlename', 'lastname'] },
+          { model: Model.Customers, as: 'customers', attributes: ['customer_no', 'firstname', 'middlename', 'lastname', 'email', 'primary_address', 'contact_no'] },
           { model: Model.Employees, as: 'reviewedBy', attributes: ['employee_no', 'firstname', 'middlename', 'lastname'] },
           { model: Model.Employees, as: 'approvedBy', attributes: ['employee_no', 'firstname', 'middlename', 'lastname'] },
           { 
