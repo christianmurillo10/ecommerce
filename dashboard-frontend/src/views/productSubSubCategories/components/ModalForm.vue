@@ -1,9 +1,9 @@
 <template>
-  <v-card>
-    <v-card-title>
-      <v-icon class="black--text">{{ formIcon }}</v-icon><span class="title">{{ formTitle }}</span>
-    </v-card-title>
-    <v-form ref="form" @submit.prevent="save" v-model="valid" lazy-validation>
+  <v-form ref="form" @submit.prevent="save" v-model="valid" lazy-validation>
+    <v-card>
+      <v-card-title>
+        <v-icon class="black--text">{{ formIcon }}</v-icon><span class="title">{{ formTitle }}</span>
+      </v-card-title>
       <v-card-text>
         <v-container grid-list-md>
           <v-layout wrap>
@@ -59,8 +59,8 @@
           >Save</v-btn
         >
       </v-card-actions>
-    </v-form>
-  </v-card>
+    </v-card>
+  </v-form>
 </template>
 
 <script>

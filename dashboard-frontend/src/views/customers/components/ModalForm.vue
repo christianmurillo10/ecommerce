@@ -1,9 +1,9 @@
 <template>
-  <v-card>
-    <v-card-title>
-      <v-icon class="black--text">{{ formIcon }}</v-icon><span class="title">{{ formTitle }}</span>
-    </v-card-title>
-    <v-form ref="form" @submit.prevent="save" v-model="valid" lazy-validation>
+  <v-form ref="form" @submit.prevent="save" v-model="valid" lazy-validation>
+    <v-card>
+      <v-card-title>
+        <v-icon class="black--text">{{ formIcon }}</v-icon><span class="title">{{ formTitle }}</span>
+      </v-card-title>
       <v-card-text>
         <v-container grid-list-md>
           <v-layout wrap>
@@ -61,7 +61,7 @@
                 </v-flex>
                 <v-flex xs12 sm12 md6>
                   <v-text-field
-                   v-if="formType === 'new'"
+                    v-if="formType === 'new'"
                     v-model="formData.password"
                     :rules="[rules.required, rules.max50Chars]"
                     label="Password"
@@ -123,8 +123,8 @@
         <v-btn color="blue darken-1" flat @click="close">Cancel</v-btn>
         <v-btn color="blue darken-1" type="submit" flat :disabled="!valid">Save</v-btn>
       </v-card-actions>
-    </v-form>
-  </v-card>
+    </v-card>
+  </v-form>
 </template>
 
 <script>

@@ -1,9 +1,9 @@
 <template>
-  <v-card>
-    <v-card-title>
-      <v-icon class="black--text">{{ formIcon }}</v-icon><span class="title">{{ formTitle }}</span>
-    </v-card-title>
-    <v-form ref="form" @submit.prevent="save" v-model="valid" lazy-validation>
+  <v-form ref="form" @submit.prevent="save" v-model="valid" lazy-validation>
+    <v-card>
+      <v-card-title>
+        <v-icon class="black--text">{{ formIcon }}</v-icon><span class="title">{{ formTitle }}</span>
+      </v-card-title>
       <v-card-text>
         <v-container grid-list-md>
           <v-layout wrap>
@@ -41,7 +41,7 @@
             </v-flex>
             <v-flex xs12 sm12 md12>
               <v-layout wrap justify-center>
-                <img :src="formData.banner_file_path" height="230" width="968" />
+                <img :src="formData.banner_file_path" height="200" width="860" />
               </v-layout>
             </v-flex>
             <v-flex xs12 sm12 md12>
@@ -67,8 +67,8 @@
         <v-btn color="blue darken-1" flat @click="close">Cancel</v-btn>
         <v-btn color="blue darken-1" type="submit" flat :disabled="!valid">Save</v-btn>
       </v-card-actions>
-    </v-form>
-  </v-card>
+    </v-card>
+  </v-form>
 </template>
 
 <script>
