@@ -4,6 +4,7 @@ const authController = require('../controllers').auth;
 const salesOrdersController = require('../controllers').salesOrders;
 
 router.route('/').get(authController.authorization, salesOrdersController.findAll);
+router.route('/count/all').get(authController.authorization, salesOrdersController.countAll);
 router.route('/findAllbyCustomerId/:customerId').get(authController.authorization, salesOrdersController.findAllbyCustomerId);
 router.route('/findAllbyStatus/:status').get(authController.authorization, salesOrdersController.findAllbyStatus);
 router.route('/create').post(authController.authorization, salesOrdersController.create);

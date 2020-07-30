@@ -677,6 +677,35 @@ module.exports = {
       });
     }
   },
+
+  /**
+   * Count all
+   * @route GET /salesOrders/count/all
+   * @param req
+   * @param res
+   * @returns {never}
+   */
+  countAll: async (req, res) => {
+    let count, criteria;
+
+    try {
+      // Pre-setting variables
+      criteria = { where: { is_deleted: NO } };
+      // Execute findAll query
+      count = await Model.SalesOrders.count(criteria);
+      res.json({
+        status: 200,
+        message: "Successfully count all data.",
+        result: count
+      });
+    } catch (err) {
+      res.json({
+        status: 401,
+        err: err,
+        message: "Failed to count all data."
+      });
+    }
+  },
 };
 
 /**

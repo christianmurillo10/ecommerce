@@ -2,7 +2,8 @@ import axios from "axios";
 
 const state = {
   salesOrderList: [],
-  salesOrderByStatusList: []
+  salesOrderByStatusList: [],
+  salesOrderTotalCount: 0
 };
 
 const getters = {
@@ -54,6 +55,21 @@ const actions = {
         axios
           .get(url, header)
           .then(response => {
+            resolve(response);
+          });
+      } catch (err) {
+        reject(err);
+      }
+    });
+  },
+  getTotalCount({ dispatch, commit, state, rootState, getters, rootGetters }) {
+    let url = `${process.env.VUE_APP_API_BACKEND}/salesOrders/count/all`;
+    let header = { headers: { Token: localStorage.getItem("token") } };
+    return new Promise((resolve, reject) => {
+      try {
+        axios.get(url, header)
+          .then(response => {
+            commit("SET_TOTAL_COUNT", response.data.result);
             resolve(response);
           });
       } catch (err) {
@@ -175,6 +191,13 @@ const mutations = {
       state.salesOrderByStatusList = payload;
     } else {
       state.salesOrderByStatusList = [];
+    }
+  },
+  SET_TOTAL_COUNT(state, payload) {
+    if (payload) {
+      state.salesOrderTotalCount = payload;
+    } else {
+      state.salesOrderTotalCount = 0;
     }
   },
   ADD_DATA(state, payload) {
