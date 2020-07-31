@@ -1,10 +1,7 @@
 <template>
   <v-flex xs12 sm12 md12 lg12>
     <v-toolbar dense prominent elevation="1">
-      <v-container
-        class="col-lg-10 offset-lg-1 mx-auto"
-        style="max-width: 1280px;"
-      >
+      <v-container class="mx-auto" style="max-width: 1280px;">
         <v-layout row wrap class="hidden-sm-and-down">
           <v-flex xs12 sm12 md6 lg6>
             <v-layout>

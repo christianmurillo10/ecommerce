@@ -1,5 +1,5 @@
 <template>
-  <v-card v-if="productIsFeaturedList.length !== 0">
+  <v-card v-if="productIsFeaturedList.length !== 0" elevation="0">
     <v-card-title>
       FEATURED PRODUCTS
       <v-spacer></v-spacer>
@@ -22,7 +22,7 @@
                     <span>{{ productIsFeatured.name }}</span>
                   </v-tooltip>
                   <div class="subtitle-2 font-weight-bold black--text">
-                    {{ `&#8369 ${productIsFeatured.price_amount}` }}
+                    {{ `&#8369; ${productIsFeatured.price_amount}` }}
                   </div>
                   <v-row align="center" class="mx-0">
                     <v-rating
