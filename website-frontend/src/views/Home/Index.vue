@@ -1,69 +1,66 @@
 <template>
-  <v-container fluid grid-list-sm class="col-lg-10 offset-lg-1">
+  <v-layout row wrap>
+    <v-container>
+      <v-layout row wrap>
+        <v-flex xs12 sm12 md12 lg12>
+          <v-card>
+            <v-layout row wrap>
+              <v-flex xs12 sm12 md3 lg3>
+                <Categories />
+              </v-flex>
+              <v-flex xs12 sm12 md9 lg9>
+                <Slider />
+              </v-flex>
+            </v-layout>
+          </v-card>
+        </v-flex>
+      </v-layout>
+    </v-container>
     <v-layout row wrap>
       <v-container>
         <v-layout row wrap>
           <v-flex xs12 sm12 md12 lg12>
+            <TodayFlashDeals />
+          </v-flex>
+        </v-layout>
+      </v-container>
+      <v-container>
+        <v-layout row wrap>
+          <v-flex xs12 sm12 md12 lg12>
             <v-card>
-              <v-layout row wrap>
-                <v-flex xs12 sm12 md3 lg3>
-                  <Categories />
+              <v-card-title>(PROMO BANNERS HERE)</v-card-title>
+              <v-card-text>
+                <v-flex xs12 sm12 md12 lg12>
+                  <v-layout row wrap></v-layout>
                 </v-flex>
-                <v-flex xs12 sm12 md9 lg9>
-                  <Slider />
-                </v-flex>
-              </v-layout>
+              </v-card-text>
             </v-card>
           </v-flex>
         </v-layout>
       </v-container>
-
-      <v-layout row wrap>
-        <v-container>
-          <v-layout row wrap>
-            <v-flex xs12 sm12 md12 lg12>
-              <TodayFlashDeals />
-            </v-flex>
-          </v-layout>
-        </v-container>
-        <v-container>
-          <v-layout row wrap>
-            <v-flex xs12 sm12 md12 lg12>
-              <v-card>
-                <v-card-title>(PROMO BANNERS HERE)</v-card-title>
-                <v-card-text>
-                  <v-flex xs12 sm12 md12 lg12>
-                    <v-layout row wrap></v-layout>
-                  </v-flex>
-                </v-card-text>
-              </v-card>
-            </v-flex>
-          </v-layout>
-        </v-container>
-        <v-container>
-          <v-layout row wrap>
-            <v-flex xs12 sm12 md12 lg12>
-              <FeaturedProducts />
-            </v-flex>
-          </v-layout>
-        </v-container>
-        <v-container>
-          <v-layout row wrap>
-            <v-flex xs12 sm12 md12 lg12>
-              <v-card>
-                <v-card-title>TOP PRODUCTS (VIA STAR)</v-card-title>
-                <v-card-text>
-                  <v-flex xs12 sm12 md12 lg12>
-                    <v-layout row wrap></v-layout>
-                  </v-flex>
-                </v-card-text>
-              </v-card>
-            </v-flex>
-          </v-layout>
-        </v-container>
-      </v-layout>
+      <v-container>
+        <v-layout row wrap>
+          <v-flex xs12 sm12 md12 lg12>
+            <FeaturedProducts />
+          </v-flex>
+        </v-layout>
+      </v-container>
+      <v-container>
+        <v-layout row wrap>
+          <v-flex xs12 sm12 md12 lg12>
+            <v-card>
+              <v-card-title>TOP PRODUCTS (VIA STAR)</v-card-title>
+              <v-card-text>
+                <v-flex xs12 sm12 md12 lg12>
+                  <v-layout row wrap></v-layout>
+                </v-flex>
+              </v-card-text>
+            </v-card>
+          </v-flex>
+        </v-layout>
+      </v-container>
     </v-layout>
-  </v-container>
+  </v-layout>
 </template>
 
 <script>
@@ -78,16 +75,16 @@ export default {
     Categories,
     Slider,
     TodayFlashDeals,
-    FeaturedProducts
+    FeaturedProducts,
   },
 
   data: () => ({}),
 
-  mounted() { },
+  mounted() {},
 
-  computed: { },
+  computed: {},
 
-  methods: { }
+  methods: {},
 };
 </script>
 

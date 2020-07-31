@@ -1,7 +1,6 @@
 <template>
-  <v-container fluid grid-list-md>
     <v-layout row wrap>
-      <v-container class="col-lg-10 offset-lg-1">
+      <v-container grid-list-lg>
         <v-layout row wrap>
           <v-flex xs12 sm12 md12 lg12>
               <v-layout row wrap>
@@ -16,7 +15,6 @@
         </v-layout>
       </v-container>
     </v-layout>
-  </v-container>
 </template>
 
 <script>

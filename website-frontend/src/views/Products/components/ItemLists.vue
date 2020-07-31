@@ -28,7 +28,7 @@
       <v-row dense>
         <v-col v-for="item in props.items" :key="item.name" cols="6" sm="4" md="3" lg="3">
           <v-hover>
-            <v-card tile class="product-card" slot-scope="{ hover }" :class="`elevation-${hover ? 5 : 1}`">
+            <v-card rounded class="product-card" slot-scope="{ hover }" :class="`elevation-${hover ? 5 : 1}`">
               <v-container fluid>
                 <v-img class="product-image" :src="item.productImages[0].file_path" lazy-src="@/assets/images/no-image.png" @click="viewProduct(item.id)" />
                 <v-container fluid>

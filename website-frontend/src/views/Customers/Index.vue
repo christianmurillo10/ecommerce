@@ -1,18 +1,16 @@
 <template>
-  <v-container fluid grid-list-lg class="col-lg-10 offset-lg-1">
-    <v-layout row wrap>
-      <v-container>
-        <v-layout row wrap>
-          <v-flex xs12 sm12 md3 lg3>
-            <Information />
-          </v-flex>
-          <v-flex xs12 sm12 md9 lg9>
-            <Tabs />
-          </v-flex>
-        </v-layout>
-      </v-container>
-    </v-layout>
-  </v-container>
+  <v-layout row wrap>
+    <v-container grid-list-lg>
+      <v-layout row wrap>
+        <v-flex xs12 sm12 md3 lg3>
+          <Information />
+        </v-flex>
+        <v-flex xs12 sm12 md9 lg9>
+          <Tabs />
+        </v-flex>
+      </v-layout>
+    </v-container>
+  </v-layout>
 </template>
 
 <script>
@@ -22,7 +20,7 @@ import Tabs from "./components/Tabs/Index";
 export default {
   components: {
     Information,
-    Tabs
-  }
-}
+    Tabs,
+  },
+};
 </script>
