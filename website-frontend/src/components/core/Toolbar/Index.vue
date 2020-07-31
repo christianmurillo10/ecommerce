@@ -1,52 +1,32 @@
 <template>
   <v-flex xs12 sm12 md12 lg12>
-    <v-toolbar dense prominent elevation="1">
-      <v-container class="mx-auto" style="max-width: 1280px;">
-        <v-layout row wrap class="hidden-sm-and-down">
-          <v-flex xs12 sm12 md6 lg6>
-            <v-layout>
-              <p class="font-weight-medium subtitle-2 my-1">Follow us on</p>
-              <v-btn icon small>
-                <v-icon>mdi-facebook</v-icon>
-              </v-btn>
-              <v-btn icon small>
-                <v-icon>mdi-instagram</v-icon>
-              </v-btn>
-            </v-layout>
-          </v-flex>
-          <v-flex xs12 sm12 md6 lg6>
-            <v-layout justify-end>
-              <v-btn text small>Track My Order</v-btn>
-              <div v-if="isLoggedIn">
-                <v-btn text small to="/profile">Profile</v-btn>
-                <v-btn text small @click="logout">Logout</v-btn>
-              </div>
-              <div v-else>
-                <v-btn text small to="/register">Register</v-btn>
-                <v-btn text small to="/login">Login</v-btn>
-              </div>
-            </v-layout>
-          </v-flex>
-        </v-layout>
+    <v-toolbar elevation="0">
+      <v-container class="mx-auto mt-2" style="max-width: 1280px;">
         <v-layout row wrap>
-          <v-flex xs4 sm4 md4 lg4>
+          <v-flex xs8 sm8 md4 lg4>
             <v-layout justify-start>
-              <Categories />
               <v-app-bar-nav-icon
                 class="hidden-md-and-up"
                 @click.stop="setPrimaryDrawerModel(!primaryDrawer.model)"
               />
-              <router-link to="/">
-                <v-img :src="avatar" max-height="50px" max-width="50px"></v-img>
-              </router-link>
+              <v-layout wrap row>
+                <router-link to="/">
+                  <v-img
+                    :src="avatar"
+                    max-height="40px"
+                    max-width="40px"
+                  ></v-img>
+                </router-link>
+                <h2 class="blue--text">E-Commerce</h2>
+              </v-layout>
             </v-layout>
           </v-flex>
-          <v-flex xs4 sm4 md4 lg4>
+          <v-flex md4 lg4 class="hidden-sm-and-down">
             <Search />
           </v-flex>
           <v-flex xs4 sm4 md4 lg4>
             <v-layout justify-end>
-              <v-tooltip right>
+              <v-tooltip left>
                 <template v-slot:activator="onTooltip">
                   <v-btn icon v-on="onTooltip.on">
                     <v-badge color="red" content="0">
@@ -58,6 +38,45 @@
               </v-tooltip>
               <Cart />
             </v-layout>
+          </v-flex>
+        </v-layout>
+      </v-container>
+    </v-toolbar>
+    <v-divider></v-divider>
+    <v-toolbar dense elevation="1" class="hidden-sm-and-down">
+      <v-container style="max-width: 1280px;">
+        <v-layout row wrap>
+          <v-flex xs12 sm12 md4 lg4>
+            <v-container fill-height>
+              <v-row justify="start">
+                <Categories />
+              </v-row>
+            </v-container>
+          </v-flex>
+          <v-flex xs12 sm12 md4 lg4>
+            <v-container fill-height>
+              <v-row justify="center">
+                <v-btn text small to="/" color="blue">Home</v-btn>
+                <v-btn text small color="blue">Promo</v-btn>
+                <v-btn text small color="blue">About Us</v-btn>
+                <v-btn text small color="blue">Contact Us</v-btn>
+              </v-row>
+            </v-container>
+          </v-flex>
+          <v-flex xs12 sm12 md4 lg4>
+            <v-container fill-height justify-end>
+              <v-row justify="end">
+                <v-btn text small color="blue">Track My Order</v-btn>
+                <div v-if="isLoggedIn">
+                  <v-btn text small to="/profile" color="blue">Profile</v-btn>
+                  <v-btn text small @click="logout" color="blue">Logout</v-btn>
+                </div>
+                <div v-else>
+                  <v-btn text small to="/register" color="blue">Register</v-btn>
+                  <v-btn text small to="/login" color="blue">Login</v-btn>
+                </div>
+              </v-row>
+            </v-container>
           </v-flex>
         </v-layout>
       </v-container>
