@@ -9,16 +9,13 @@
                 class="hidden-md-and-up"
                 @click.stop="setPrimaryDrawerModel(!primaryDrawer.model)"
               />
-              <v-layout wrap row>
-                <router-link to="/">
-                  <v-img
-                    :src="avatar"
-                    max-height="40px"
-                    max-width="40px"
-                  ></v-img>
-                </router-link>
-                <h2 class="blue--text">E-Commerce</h2>
-              </v-layout>
+              <router-link to="/">
+                <v-img
+                  :src="avatar"
+                  max-height="40px"
+                  max-width="250px"
+                ></v-img>
+              </router-link>
             </v-layout>
           </v-flex>
           <v-flex md4 lg4 class="hidden-sm-and-down">
