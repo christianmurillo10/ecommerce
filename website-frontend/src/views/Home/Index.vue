@@ -3,58 +3,38 @@
     <v-container>
       <v-layout row wrap>
         <v-flex xs12 sm12 md12 lg12>
-          <v-card>
-            <v-layout row wrap>
-              <v-flex xs12 sm12 md3 lg3>
-                <Categories />
-              </v-flex>
-              <v-flex xs12 sm12 md9 lg9>
-                <Slider />
-              </v-flex>
-            </v-layout>
-          </v-card>
+          <Slider />
         </v-flex>
       </v-layout>
     </v-container>
     <v-layout row wrap>
+      <TodayFlashDeals />
       <v-container>
         <v-layout row wrap>
           <v-flex xs12 sm12 md12 lg12>
-            <TodayFlashDeals />
-          </v-flex>
-        </v-layout>
-      </v-container>
-      <v-container>
-        <v-layout row wrap>
-          <v-flex xs12 sm12 md12 lg12>
-            <v-card>
-              <v-card-title>(PROMO BANNERS HERE)</v-card-title>
-              <v-card-text>
-                <v-flex xs12 sm12 md12 lg12>
-                  <v-layout row wrap></v-layout>
-                </v-flex>
-              </v-card-text>
+            <v-card flat class="grey lighten-1" height="150" width="1240">
+              <v-container fill-height justify-center>
+                <span class="display-3">150 x 1240</span>
+              </v-container>
             </v-card>
           </v-flex>
         </v-layout>
       </v-container>
+      <FeaturedProducts />
       <v-container>
         <v-layout row wrap>
-          <v-flex xs12 sm12 md12 lg12>
-            <FeaturedProducts />
+          <v-flex xs12 sm12 md6 lg6>
+            <v-card flat class="grey lighten-1" height="250" width="620">
+              <v-container fill-height justify-center>
+                <span class="display-3">250 x 620</span>
+              </v-container>
+            </v-card>
           </v-flex>
-        </v-layout>
-      </v-container>
-      <v-container>
-        <v-layout row wrap>
-          <v-flex xs12 sm12 md12 lg12>
-            <v-card>
-              <v-card-title>TOP PRODUCTS (VIA STAR)</v-card-title>
-              <v-card-text>
-                <v-flex xs12 sm12 md12 lg12>
-                  <v-layout row wrap></v-layout>
-                </v-flex>
-              </v-card-text>
+          <v-flex xs12 sm12 md6 lg6>
+            <v-card flat class="grey lighten-1" height="250" width="620">
+              <v-container fill-height justify-center>
+                <span class="display-3">250 x 620</span>
+              </v-container>
             </v-card>
           </v-flex>
         </v-layout>
@@ -87,14 +67,3 @@ export default {
   methods: {},
 };
 </script>
-
-<style>
-.v-card--reveal {
-  align-items: center;
-  bottom: 0;
-  justify-content: center;
-  opacity: 0.5;
-  position: absolute;
-  width: 100%;
-}
-</style>

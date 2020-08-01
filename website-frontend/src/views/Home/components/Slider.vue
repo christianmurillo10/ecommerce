@@ -1,17 +1,20 @@
 <template>
-  <v-card-text>
-    <v-carousel cycle height="315" width="850" hide-delimiter-background show-arrows-on-hover>
-      <v-carousel-item
+  <v-carousel
+    cycle
+    height="400"
+    hide-delimiter-background
+    delimiter-icon="mdi-minus"
+    show-arrows-on-hover
+  >
+    <v-carousel-item
       v-for="(frontendSliderImage, i) in frontendSliderImageList"
       :key="i"
       :src="frontendSliderImage.file_path"
-      max-height="315"
-      max-width="850"
-      contain
+      max-height="400"
+      max-width="1240"
       class="grey darken-4"
-      ></v-carousel-item>
-    </v-carousel>
-  </v-card-text>
+    ></v-carousel-item>
+  </v-carousel>
 </template>
 
 <script>
@@ -28,8 +31,8 @@ export default {
 
   methods: {
     ...mapActions("frontendSliderImages", {
-      getFrontendSliderImageData: "getData"
+      getFrontendSliderImageData: "getData",
     }),
-  }
-}
+  },
+};
 </script>

@@ -1,20 +1,22 @@
 <template>
   <v-footer dark padless>
-    <v-container class="col-lg-10 offset-lg-1 mx-auto" style="max-width: 1280px;">
+    <v-container
+      class="col-lg-10 offset-lg-1 mx-auto"
+      style="max-width: 1280px;"
+    >
       <v-layout row wrap>
         <v-flex xs12 sm12 md4 lg4>
           <v-container>
             <v-layout row wrap>
-              <v-flex xs2 sm2 md2 lg2>
+              <v-flex xs12 sm12 md12 lg12>
                 <v-container>
                   <router-link to="/">
-                    <v-img :src="avatar" max-height="50px" max-width="50px"></v-img>
+                    <v-img
+                      :src="avatar"
+                      max-height="40px"
+                      max-width="250px"
+                    ></v-img>
                   </router-link>
-                </v-container>
-              </v-flex>
-              <v-flex xs10 sm10 md10 lg10>
-                <v-container>
-                  <h2>E-Commerce</h2>
                 </v-container>
               </v-flex>
               <v-flex xs12 sm12 md12 lg12>
@@ -46,9 +48,7 @@
                     <span class="caption grey--text">Email:</span>
                     <br />
                     <a class="caption" :href="`mailto:${contactInfo.email}`">
-                      {{
-                      contactInfo.email
-                      }}
+                      {{ contactInfo.email }}
                     </a>
                   </div>
                 </v-container>
@@ -88,9 +88,17 @@
       <v-card-title class="grey darken-3">
         <div class="col-lg-10 offset-lg-1 mx-auto" style="max-width: 1280px;">
           <v-layout row>
-            <strong class="subheading">Get connected with us on social networks!</strong>
+            <strong class="subheading"
+              >Get connected with us on social networks!</strong
+            >
             <v-spacer></v-spacer>
-            <v-btn v-for="(social, i) in socials" :key="i" class="mx-4" dark icon>
+            <v-btn
+              v-for="(social, i) in socials"
+              :key="i"
+              class="mx-4"
+              dark
+              icon
+            >
               <v-icon size="24px">{{ social.icon }}</v-icon>
             </v-btn>
           </v-layout>
@@ -116,15 +124,15 @@ export default {
       address:
         "4th floor Visual Color Building, 101 Kalayaan Avenue Central Quezon City 2nd District, Philippines",
       phone: "09478850164 | 09451107821",
-      email: "talktous.ecommerce@gmail.com"
+      email: "talktous.ecommerce@gmail.com",
     },
     socials: [
       { icon: "mdi-facebook", url: "/" },
       { icon: "mdi-twitter", url: "/" },
       { icon: "mdi-google-plus", url: "/" },
       { icon: "mdi-linkedin", url: "/" },
-      { icon: "mdi-instagram", url: "/" }
-    ]
+      { icon: "mdi-instagram", url: "/" },
+    ],
   }),
 
   created() {
@@ -134,14 +142,14 @@ export default {
   computed: {
     ...mapState("frontendUsefulLinks", ["frontendUsefulLinkList"]),
     avatar() {
-      return "/img/logo.png";
-    }
+      return "/img/logo-white.png";
+    },
   },
 
   methods: {
     ...mapActions("frontendUsefulLinks", {
-      getFrontendUsefulLinkData: "getData"
-    })
-  }
+      getFrontendUsefulLinkData: "getData",
+    }),
+  },
 };
 </script>

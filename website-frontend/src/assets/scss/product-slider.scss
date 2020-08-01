@@ -1,14 +1,17 @@
 
 .swiper-container {
   padding: 2px;
-  height: 305px;
+  height: 340px;
   width: 100%;
 }
+
 .swiper {
   .swiper-slide {
-    height: 295px !important;
-    width: 201.5px !important;
-    background-color: #fafafa;
+    height: 310px !important;
+    width: 217.5px !important;
+    background-color: #FFFFFF;
+    border: 1px solid #ebecf0;
+    border-radius: 4px;
     
     .container  {
       padding: 5px !important;
@@ -36,5 +39,9 @@
     color: grey;
     right: 0px !important;
     cursor: pointer !important;
+  }
+
+  .swiper-pagination {
+    bottom: 0 !important;
   }
 }

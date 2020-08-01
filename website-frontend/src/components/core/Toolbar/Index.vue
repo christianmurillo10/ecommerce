@@ -13,7 +13,7 @@
                 <v-img
                   :src="avatar"
                   max-height="40px"
-                  max-width="250px"
+                  max-width="200px"
                 ></v-img>
               </router-link>
             </v-layout>
