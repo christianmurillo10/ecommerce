@@ -4,15 +4,18 @@
       <v-layout row wrap>
         <Snackbars />
         <v-flex xs12 sm12 md8 lg8 offset-md2 offset-lg2>
-          <v-card fluid>
+          <v-card outlined>
             <v-card-title>
-              Welcome to E-Commerce! Please login.
+              <span>
+                Welcome to <span class="blue--text">E-Commerce!</span>
+                Please login.
+              </span>
               <v-spacer></v-spacer>
-              <span class="caption"
-                >New member?
+              <span class="caption">
+                New member?
                 <router-link v-bind:to="'/register'">Register</router-link>
-                here.</span
-              >
+                here.
+              </span>
             </v-card-title>
             <v-card-text>
               <v-container fluid grid-list-lg>
@@ -25,6 +28,7 @@
                         label="Email"
                         required
                         outlined
+                        rounded
                         dense
                       ></v-text-field>
                       <v-text-field
@@ -36,22 +40,23 @@
                         @click:append="showPassword = !showPassword"
                         required
                         outlined
+                        rounded
                         dense
                       ></v-text-field>
                       <div class="text-right">
-                        <span class="caption"
-                          ><router-link v-bind:to="'/forgot-password'"
-                            >Forgot Password?</router-link
-                          ></span
-                        >
+                        <span class="caption">
+                          <router-link v-bind:to="'/forgot-password'">
+                            Forgot Password?
+                          </router-link>
+                        </span>
                       </div>
                     </v-flex>
                     <v-flex xs12 sm12 md6 lg6>
                       <v-layout wrap row>
                         <v-flex xs12 sm12 md12 lg12>
-                          <v-btn block tile color="success" type="submit"
-                            >Login</v-btn
-                          >
+                          <v-btn block rounded color="success" type="submit">
+                            Login
+                          </v-btn>
                         </v-flex>
                         <v-flex xs12 sm12 md12 lg12>
                           <v-layout wrap row>
@@ -59,16 +64,16 @@
                               <span class="caption">Or, sign up with</span>
                             </v-flex>
                             <v-flex xs12 sm12 md12 lg12>
-                              <v-btn block tile dark color="indigo"
-                                ><v-icon left>mdi-facebook</v-icon
-                                >Facebook</v-btn
-                              >
+                              <v-btn block rounded dark color="indigo">
+                                <v-icon left>mdi-facebook</v-icon>
+                                Facebook
+                              </v-btn>
                             </v-flex>
                             <v-flex xs12 sm12 md12 lg12>
-                              <v-btn block tile dark color="red"
-                                ><v-icon left>mdi-google-plus</v-icon
-                                >Google</v-btn
-                              >
+                              <v-btn block rounded dark color="red">
+                                <v-icon left>mdi-google-plus</v-icon>
+                                Google
+                              </v-btn>
                             </v-flex>
                           </v-layout>
                         </v-flex>

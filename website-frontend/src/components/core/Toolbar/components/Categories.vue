@@ -9,7 +9,6 @@
   >
     <template v-slot:activator="{ on: { click } }">
       <v-btn
-        text
         v-on:click="click"
         class="hidden-sm-and-down blue white--text"
         width="300"
