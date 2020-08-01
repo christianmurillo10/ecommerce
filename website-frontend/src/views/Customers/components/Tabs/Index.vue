@@ -1,10 +1,6 @@
 <template>
-  <v-card>
-    <v-tabs
-      v-model="tab"
-      background-color="white"
-      grow
-    >
+  <v-card outlined>
+    <v-tabs v-model="tab" background-color="white" grow>
       <v-tabs-slider></v-tabs-slider>
       <v-tab v-for="(item, i) in items" :key="i" :href="'#' + item.url">
         <v-icon>{{ item.icon }}</v-icon>
@@ -39,17 +35,25 @@ export default {
     Overview,
     OrderList,
     History,
-    AccountSettings
+    AccountSettings,
   },
 
   data: () => ({
     items: [
-      { name: 'Overview', icon: 'mdi-home', url: 'tab-overview' },
-      { name: 'Order List', icon: 'mdi-basket', url: 'tab-order-list' },
-      { name: 'History', icon: 'mdi-file-document-outline', url: 'tab-history' },
-      { name: 'Account Settings', icon: 'mdi-account', url: 'tab-account-settings' },
+      { name: "Overview", icon: "mdi-home", url: "tab-overview" },
+      { name: "Order List", icon: "mdi-basket", url: "tab-order-list" },
+      {
+        name: "History",
+        icon: "mdi-file-document-outline",
+        url: "tab-history",
+      },
+      {
+        name: "Account Settings",
+        icon: "mdi-account",
+        url: "tab-account-settings",
+      },
     ],
-    tab: null
+    tab: null,
   }),
-}
+};
 </script>

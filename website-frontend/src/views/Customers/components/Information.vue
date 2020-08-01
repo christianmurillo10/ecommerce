@@ -1,11 +1,9 @@
 <template>
-  <v-card>
+  <v-card outlined>
     <v-container>
       <v-layout row wrap>
         <v-flex xs12 sm12 md12 lg12 class="text-center">
-          <v-avatar
-            size="120"
-          >
+          <v-avatar size="120">
             <v-img :src="customerInfo.file_path"></v-img>
           </v-avatar>
         </v-flex>
@@ -18,23 +16,43 @@
               <tbody>
                 <tr>
                   <td><v-icon>mdi-account</v-icon></td>
-                  <td><span class="body-2">{{ setFullname(customerInfo.firstname, customerInfo.middlename, customerInfo.lastname) }}</span></td>
+                  <td>
+                    <span class="body-2">{{
+                      setFullname(
+                        customerInfo.firstname,
+                        customerInfo.middlename,
+                        customerInfo.lastname
+                      )
+                    }}</span>
+                  </td>
                 </tr>
                 <tr>
                   <td><v-icon>mdi-gender-male-female</v-icon></td>
-                  <td><span class="body-2">{{ getGenderTypes(customerInfo.gender_type) }}</span></td>
+                  <td>
+                    <span class="body-2">{{
+                      getGenderTypes(customerInfo.gender_type)
+                    }}</span>
+                  </td>
                 </tr>
                 <tr>
                   <td><v-icon>mdi-email</v-icon></td>
-                  <td><span class="body-2">{{ customerInfo.email }}</span></td>
+                  <td>
+                    <span class="body-2">{{ customerInfo.email }}</span>
+                  </td>
                 </tr>
                 <tr>
                   <td><v-icon>mdi-contacts</v-icon></td>
-                  <td><span class="body-2">{{ customerInfo.contact_no }}</span></td>
+                  <td>
+                    <span class="body-2">{{ customerInfo.contact_no }}</span>
+                  </td>
                 </tr>
                 <tr>
                   <td><v-icon>mdi-bank</v-icon></td>
-                  <td><span class="body-2">{{ customerInfo.primary_address }}</span></td>
+                  <td>
+                    <span class="body-2">{{
+                      customerInfo.primary_address
+                    }}</span>
+                  </td>
                 </tr>
               </tbody>
             </template>
@@ -53,13 +71,13 @@ export default {
   mixins: [Mixins],
 
   data: () => ({
-    image: require("@/assets/images/no-image.png")
+    image: require("@/assets/images/no-image.png"),
   }),
 
   computed: {
     ...mapState("customerAuthentication", ["customerInfo"]),
-  }
-}
+  },
+};
 </script>
 
 <style lang="scss" scoped>
@@ -67,8 +85,9 @@ export default {
   overflow: hidden;
 }
 
-.v-data-table td, .v-data-table th {
-    padding: 0 10px 0 0;
-    height: 35px;
+.v-data-table td,
+.v-data-table th {
+  padding: 0 10px 0 0;
+  height: 35px;
 }
 </style>
