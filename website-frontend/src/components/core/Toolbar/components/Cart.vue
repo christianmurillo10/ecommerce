@@ -24,14 +24,11 @@
         <span>Cart</span>
       </v-tooltip>
     </template>
-
     <v-card width="350" v-if="customerCartList.length !== 0">
       <v-layout row wrap justify-center>
         <v-card-title class="title">Cart Items</v-card-title>
       </v-layout>
-
       <v-divider></v-divider>
-
       <v-card-text class="pa-0">
         <v-simple-table fixed-header height="200px">
           <template v-slot:default>
@@ -65,9 +62,7 @@
           </template>
         </v-simple-table>
       </v-card-text>
-
       <v-divider></v-divider>
-
       <v-card-subtitle class="mx-10 mb-n5">
         <v-layout row wrap>
           <v-layout>
@@ -80,9 +75,7 @@
           </v-layout>
         </v-layout>
       </v-card-subtitle>
-
       <v-divider></v-divider>
-
       <v-layout row wrap justify-center>
         <v-card-actions>
           <v-spacer></v-spacer>
@@ -132,6 +125,10 @@ export default {
     cart: false,
   }),
 
+  mounted() {
+    this.setCardData();
+  },
+
   computed: {
     ...mapState("customerCarts", ["customerCartList"]),
     ...mapGetters("customerCarts", ["getCustomerCartTotalPrice"]),
@@ -139,7 +136,7 @@ export default {
   },
 
   methods: {
-    ...mapMutations("customerCarts", { deleteCartData: "DELETE_DATA" }),
+    ...mapMutations("customerCarts", { deleteCartData: "DELETE_DATA", setCardData: "SET_DATA" }),
   },
 };
 </script>
