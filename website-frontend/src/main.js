@@ -15,6 +15,13 @@ sync(store, router);
 // set token
 Vue.prototype.$http = Axios;
 
+const token = localStorage.getItem("cToken");
+
+if (token) {
+  Vue.prototype.$http.defaults.headers.common["Authorization"] = token;
+  Vue.prototype.$http.defaults.headers.common["token"] = token;
+}
+
 Vue.config.productionTip = false
 
 new Vue({
