@@ -21,7 +21,7 @@ const getters = {
 const actions = {
   getData({ dispatch, commit, state, rootState, getters, rootGetters }) {
     let url = `${process.env.VUE_APP_API_BACKEND}/products/`;
-    let header = { headers: { Token: localStorage.getItem("token") } };
+    let header = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
     return new Promise((resolve, reject) => {
       try {
         axios.get(url, header)
@@ -35,7 +35,7 @@ const actions = {
   },
   getDataByIsFeatured({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
     let url = `${process.env.VUE_APP_API_BACKEND}/products/featured/${payload}`;
-    let header = { headers: { Token: localStorage.getItem("token") } };
+    let header = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
     return new Promise((resolve, reject) => {
       try {
         axios.get(url, header)
@@ -60,7 +60,7 @@ const actions = {
   },
   getDataWithLimitAndOffset({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
     let url = `${process.env.VUE_APP_API_BACKEND}/products/findAllWithLimitAndOffset/${payload.limit}/${payload.offset}`;
-    let header = { headers: { Token: localStorage.getItem("token") } };
+    let header = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
     return new Promise((resolve, reject) => {
       try {
         axios.get(url, header)
@@ -86,7 +86,7 @@ const actions = {
   },
   getDataById({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
     let url = `${process.env.VUE_APP_API_BACKEND}/products/${payload}`;
-    let header = { headers: { Token: localStorage.getItem("token") } };
+    let header = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
     return new Promise((resolve, reject) => {
       try {
         axios
@@ -108,7 +108,7 @@ const actions = {
   },
   getTotalCount({ dispatch, commit, state, rootState, getters, rootGetters }) {
     let url = `${process.env.VUE_APP_API_BACKEND}/products/count/all`;
-    let header = { headers: { Token: localStorage.getItem("token") } };
+    let header = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
     return new Promise((resolve, reject) => {
       try {
         axios.get(url, header)
@@ -123,7 +123,7 @@ const actions = {
   },
   saveData({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
     let url = `${process.env.VUE_APP_API_BACKEND}/products/create`;
-    let header = { headers: { Token: localStorage.getItem("token") } };
+    let header = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
     return new Promise((resolve, reject) => {
       try {
         let obj = {
@@ -160,7 +160,7 @@ const actions = {
   },
   updateData({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
     let url = `${process.env.VUE_APP_API_BACKEND}/products/update/${payload.id}`;
-    let header = { headers: { Token: localStorage.getItem("token") } };
+    let header = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
     return new Promise((resolve, reject) => {
       try {
         let obj = {
@@ -195,7 +195,7 @@ const actions = {
   },
   updateStatusData({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
     let url = `${process.env.VUE_APP_API_BACKEND}/products/updateStatus/${payload.id}`;
-    let header = { headers: { Token: localStorage.getItem("token") } };
+    let header = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
     return new Promise((resolve, reject) => {
       try {
         let fieldName = payload.fieldName;
@@ -216,7 +216,7 @@ const actions = {
   },
   deleteData({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
     let url = `${process.env.VUE_APP_API_BACKEND}/products/delete/${payload}`;
-    let header = { headers: { Token: localStorage.getItem("token") } };
+    let header = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
     return new Promise((resolve, reject) => {
       try {
         axios

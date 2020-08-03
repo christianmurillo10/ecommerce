@@ -27,7 +27,7 @@ const getters = {
 const actions = {
   getDataByIsFeatured({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
     let url = `${process.env.VUE_APP_API_BACKEND}/products/featured/${payload}`;
-    let header = { headers: { Token: localStorage.getItem("token") } };
+    let header = { headers: { Authorization: `Bearer ${localStorage.getItem("cToken")}` } };
     return new Promise((resolve, reject) => {
       try {
         axios.get(url, header)
@@ -212,7 +212,7 @@ const actions = {
   },
   getDataById({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
     let url = `${process.env.VUE_APP_API_BACKEND}/products/${payload}`;
-    let header = { headers: { Token: localStorage.getItem("token") } };
+    let header = { headers: { Authorization: `Bearer ${localStorage.getItem("cToken")}` } };
     return new Promise((resolve, reject) => {
       try {
         axios

@@ -9,7 +9,7 @@ const getters = { };
 const actions = {
   getDataTodayFlashDeal({ dispatch, commit, state, rootState, getters, rootGetters }) {
     let url = `${process.env.VUE_APP_API_BACKEND}/productFlashDealHeaders/findOne/todayFlashDeal`;
-    let header = { headers: { Token: localStorage.getItem("token") } };
+    let header = { headers: { Authorization: `Bearer ${localStorage.getItem("cToken")}` } };
     return new Promise((resolve, reject) => {
       try {
         axios.get(url, header)

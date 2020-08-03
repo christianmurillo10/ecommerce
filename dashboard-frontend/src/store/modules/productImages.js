@@ -40,7 +40,7 @@ const getters = {
 const actions = {
   // getData({ dispatch, commit, state, rootState, getters, rootGetters }) {
   //   let url = `${process.env.VUE_APP_API_BACKEND}/productImages/`;
-  //   let header = { headers: { Token: localStorage.getItem("token") } };
+  //   let header = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
   //   return new Promise((resolve, reject) => {
   //     try {
   //       axios.get(url, header)
@@ -54,7 +54,7 @@ const actions = {
   // },
   getDataById({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
     let url = `${process.env.VUE_APP_API_BACKEND}/productImages/${payload}`;
-    let header = { headers: { Token: localStorage.getItem("token") } };
+    let header = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
     return new Promise((resolve, reject) => {
       try {
         axios
@@ -69,7 +69,7 @@ const actions = {
   },
   // getDataByProductId({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
   //   let url = `${process.env.VUE_APP_API_BACKEND}/productImages/findAllbyProductId/${payload}`;
-  //   let header = { headers: { Token: localStorage.getItem("token") } };
+  //   let header = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
   //   return new Promise((resolve, reject) => {
   //     try {
   //       axios
@@ -93,7 +93,7 @@ const actions = {
   // },
   getDataByProductIdAndType({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
     let url = `${process.env.VUE_APP_API_BACKEND}/productImages/findAllbyProductIdAndType/${payload.productId}/${payload.type}`;
-    let header = { headers: { Token: localStorage.getItem("token") } };
+    let header = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
     return new Promise((resolve, reject) => {
       try {
         axios
@@ -119,7 +119,7 @@ const actions = {
   },
   saveData({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
     let url = `${process.env.VUE_APP_API_BACKEND}/productImages/create`;
-    let header = { headers: { Token: localStorage.getItem("token") } };
+    let header = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
     return new Promise((resolve, reject) => {
       try {
         var data = new FormData();
@@ -144,7 +144,7 @@ const actions = {
   },
   updateData({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
     let url = `${process.env.VUE_APP_API_BACKEND}/productImages/update/${payload.id}`;
-    let header = { headers: { Token: localStorage.getItem("token") } };
+    let header = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
     return new Promise((resolve, reject) => {
       try {
         var data = new FormData();
@@ -167,7 +167,7 @@ const actions = {
   },
   deleteData({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
     let url = `${process.env.VUE_APP_API_BACKEND}/productImages/delete/${payload.id}`;
-    let header = { headers: { Token: localStorage.getItem("token") } };
+    let header = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
     return new Promise((resolve, reject) => {
       try {
         axios

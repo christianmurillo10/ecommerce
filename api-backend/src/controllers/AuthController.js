@@ -42,7 +42,7 @@ module.exports = {
           // Update login status
           let updatedUser = await user[0].update({ is_logged: YES });
           data = updatedUser.get({ plain: true });
-          token = await jwt.generateToken(data.id);
+          token = await jwt.generateToken({id: data.id, type: 'user'});
           console.log("AuthController@login - [ID]:%s [User]:%s [IP]%s", updatedUser.id, updatedUser.username, ip);
 
           res.json({
@@ -193,7 +193,7 @@ module.exports = {
             // Update login status
             let updatedCustomer = await customer[0].update({ is_logged: YES });
             data = updatedCustomer.get({ plain: true });
-            token = await jwt.generateToken(data.id);
+            token = await jwt.generateToken({id: data.id, type: 'customer'});
             console.log("AuthController@customerLogin - [ID]:%s [Customer]:%s [IP]%s", updatedCustomer.id, updatedCustomer.email, ip);
 
             res.json({

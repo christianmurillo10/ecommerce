@@ -24,7 +24,7 @@ const actions = {
   },
   getDataById({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
     let url = `${process.env.VUE_APP_API_BACKEND}/productSubCategories/${payload}`;
-    let header = { headers: { Token: localStorage.getItem("token") } };
+    let header = { headers: { Authorization: `Bearer ${localStorage.getItem("cToken")}` } };
     return new Promise((resolve, reject) => {
       try {
         axios

@@ -21,7 +21,7 @@ const getters = {
 const actions = {
   getData({ dispatch, commit, state, rootState, getters, rootGetters }) {
     let url = `${process.env.VUE_APP_API_BACKEND}/productFlashDealHeaders/`;
-    let header = { headers: { Token: localStorage.getItem("token") } };
+    let header = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
     return new Promise((resolve, reject) => {
       try {
         axios.get(url, header)
@@ -35,7 +35,7 @@ const actions = {
   },
   getDataTodayFlashDeal({ dispatch, commit, state, rootState, getters, rootGetters }) {
     let url = `${process.env.VUE_APP_API_BACKEND}/productFlashDealHeaders/findOne/todayFlashDeal`;
-    let header = { headers: { Token: localStorage.getItem("token") } };
+    let header = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
     return new Promise((resolve, reject) => {
       try {
         axios.get(url, header)
@@ -63,7 +63,7 @@ const actions = {
   },
   getDataById({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
     let url = `${process.env.VUE_APP_API_BACKEND}/productFlashDealHeaders/${payload}`;
-    let header = { headers: { Token: localStorage.getItem("token") } };
+    let header = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
     return new Promise((resolve, reject) => {
       try {
         axios
@@ -79,7 +79,7 @@ const actions = {
   },
   saveData({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
     let url = `${process.env.VUE_APP_API_BACKEND}/productFlashDealHeaders/create`;
-    let header = { headers: { Token: localStorage.getItem("token") } };
+    let header = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
     return new Promise((resolve, reject) => {
       try {
         let obj = {
@@ -103,7 +103,7 @@ const actions = {
   },
   updateData({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
     let url = `${process.env.VUE_APP_API_BACKEND}/productFlashDealHeaders/update/${payload.id}`;
-    let header = { headers: { Token: localStorage.getItem("token") } };
+    let header = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
     return new Promise((resolve, reject) => {
       try {
         let obj = {
@@ -128,7 +128,7 @@ const actions = {
   },
   updateStatusData({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
     let url = `${process.env.VUE_APP_API_BACKEND}/productFlashDealHeaders/update/${payload.id}`;
-    let header = { headers: { Token: localStorage.getItem("token") } };
+    let header = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
     return new Promise((resolve, reject) => {
       try {
         let obj = {
@@ -148,7 +148,7 @@ const actions = {
   },
   deleteData({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
     let url = `${process.env.VUE_APP_API_BACKEND}/productFlashDealHeaders/delete/${payload}`;
-    let header = { headers: { Token: localStorage.getItem("token") } };
+    let header = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
     return new Promise((resolve, reject) => {
       try {
         axios
