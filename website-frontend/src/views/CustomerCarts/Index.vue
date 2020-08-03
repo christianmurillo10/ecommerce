@@ -1,20 +1,18 @@
 <template>
+  <v-container grid-list-lg>
     <v-layout row wrap>
-      <v-container grid-list-lg>
+      <v-flex xs12 sm12 md12 lg12>
         <v-layout row wrap>
-          <v-flex xs12 sm12 md12 lg12>
-              <v-layout row wrap>
-                <v-flex xs12 sm12 md8 lg8>
-                  <MyCart :items="customerCartList" />
-                </v-flex>
-                <v-flex xs12 sm12 md4 lg4>
-                  <Summary :items="customerCartList" />
-                </v-flex>
-              </v-layout>
+          <v-flex xs12 sm12 md8 lg8>
+            <MyCart :items="customerCartList" />
+          </v-flex>
+          <v-flex xs12 sm12 md4 lg4>
+            <Summary :items="customerCartList" />
           </v-flex>
         </v-layout>
-      </v-container>
+      </v-flex>
     </v-layout>
+  </v-container>
 </template>
 
 <script>
@@ -25,11 +23,11 @@ import { mapState } from "vuex";
 export default {
   components: {
     MyCart,
-    Summary
+    Summary,
   },
 
   computed: {
-    ...mapState("customerCarts", ["customerCartList"])
+    ...mapState("customerCarts", ["customerCartList"]),
   },
 };
 </script>

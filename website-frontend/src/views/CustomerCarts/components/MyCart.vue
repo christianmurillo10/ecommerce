@@ -1,5 +1,5 @@
 <template>
-  <v-card>
+  <v-card outlined>
     <v-card-title>MY CART</v-card-title>
     <v-divider></v-divider>
     <v-card-text>
@@ -8,7 +8,7 @@
           <thead>
             <tr>
               <th class="text-left">Image</th>
-              <th class="text-left">Product</th>
+              <th class="text-left">Item</th>
               <th class="text-left">Price</th>
               <th class="text-center">Quantity</th>
               <th class="text-left">Total Price</th>
@@ -25,7 +25,7 @@
               <td>
                 <v-menu open-on-hover offset-x :nudge-width="200">
                   <template v-slot:activator="{ on }">
-                    <span v-on="on">{{ item.name }}</span>
+                    <span class="blue--text" v-on="on">{{ item.name }}</span>
                   </template>
                   <v-card>
                     <v-card-title>Options</v-card-title>
@@ -44,7 +44,7 @@
                   </v-card>
                 </v-menu>
               </td>
-              <td class="text-right">{{ `&#8369 ${item.price}` }}</td>
+              <td class="text-right">{{ `&#8369; ${item.price}` }}</td>
               <td class="text-center" width="200px">
                 <v-text-field
                   v-model="item.quantity"
@@ -60,7 +60,7 @@
                   required
                 ></v-text-field>
               </td>
-              <td class="text-right">{{ `&#8369 ${item.total_price}` }}</td>
+              <td class="text-right">{{ `&#8369; ${item.total_price}` }}</td>
               <td class="text-center">
                 <v-icon small color="error" @click="deleteCartData(item.index)">mdi-delete</v-icon>
               </td>
