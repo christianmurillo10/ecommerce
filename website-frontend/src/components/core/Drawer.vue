@@ -11,12 +11,8 @@
   >
     <v-list dense class="ml-n0">
       <v-list-item>
-        <v-list-item-avatar>
-          <v-img :src="avatar"></v-img>
-        </v-list-item-avatar>
-
         <v-list-item-content>
-          <v-list-item-title>{{ title }}</v-list-item-title>
+          <v-img :src="avatar"></v-img>
         </v-list-item-content>
       </v-list-item>
     </v-list>
@@ -84,7 +80,7 @@ export default {
   computed: {
     ...mapState("appbar", ["primaryDrawer"]),
     avatar() {
-      return "/img/logo.png";
+      return "/img/logo-white.png";
     },
     title() {
       return "Welcome to E-Commerce";

@@ -1,25 +1,23 @@
 <template>
-  <v-layout row wrap>
-    <v-container>
-      <v-layout row wrap>
-        <v-flex xs12 sm3 md3 lg3 class="pr-5">
-          <Filters
-            :route-id="routeId"
-            :item-list="productBySearchRelatedCategories"
-            @onRelatedCategoriesChange="onRelatedCategoriesChange"
-          />
-        </v-flex>
-        <v-flex xs12 sm9 md9 lg9>
-          <ItemLists
-            :header="keyword"
-            :items="productBySearchList"
-            :item-count="productBySearchTotalCount"
-            @onPageChange="onPageChange"
-          />
-        </v-flex>
-      </v-layout>
-    </v-container>
-  </v-layout>
+  <v-container grid-list-lg>
+    <v-layout row wrap>
+      <v-flex xs12 sm3 md3 lg3>
+        <Filters
+          :route-id="routeId"
+          :item-list="productBySearchRelatedCategories"
+          @onRelatedCategoriesChange="onRelatedCategoriesChange"
+        />
+      </v-flex>
+      <v-flex xs12 sm9 md9 lg9>
+        <ItemLists
+          :header="keyword"
+          :items="productBySearchList"
+          :item-count="productBySearchTotalCount"
+          @onPageChange="onPageChange"
+        />
+      </v-flex>
+    </v-layout>
+  </v-container>
 </template>
 
 <script>
