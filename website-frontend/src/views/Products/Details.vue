@@ -1,39 +1,41 @@
 <template>
-  <v-layout row wrap>
-    <v-container grid-list-lg>
-      <v-layout row wrap>
-        <v-flex xs12 sm12 md12 lg12>
-          <v-card>
-            <v-card-text>
-              <v-container>
-                <v-layout row wrap>
-                  <v-flex xs12 sm12 md5 lg5>
-                    <Gallery :images="productDataById.productImages" />
-                  </v-flex>
-                  <v-flex xs12 sm12 md7 lg7>
-                    <Index :details="productDataById" />
-                  </v-flex>
-                </v-layout>
-              </v-container>
-            </v-card-text>
-          </v-card>
-        </v-flex>
-        <v-flex xs12 sm12 md9 lg9>
-          <Description :details="productDataById" />
-        </v-flex>
-        <v-flex xs12 sm12 md3 lg3>
-          <v-card>
-            <v-card-title>Sponsored Products</v-card-title>
-          </v-card>
-        </v-flex>
-        <v-flex xs12 sm12 md9 lg9>
-          <v-card>
-            <v-card-title>Ratings & Reviews</v-card-title>
-          </v-card>
-        </v-flex>
-      </v-layout>
-    </v-container>
-  </v-layout>
+  <v-container grid-list-lg>
+    <v-layout row wrap>
+      <v-flex xs12 sm12 md12 lg12>
+        <v-card outlined>
+          <v-card-text>
+            <v-container>
+              <v-layout row wrap>
+                <v-flex xs12 sm12 md5 lg5>
+                  <Gallery :images="productDataById.productImages" />
+                </v-flex>
+                <v-flex xs12 sm12 md7 lg7>
+                  <Index :details="productDataById" />
+                </v-flex>
+              </v-layout>
+            </v-container>
+          </v-card-text>
+        </v-card>
+      </v-flex>
+      <v-flex xs12 sm12 md9 lg9>
+        <v-layout wrap>
+          <v-flex xs12 sm12 md12 lg12>
+            <Description :details="productDataById" />
+          </v-flex>
+          <v-flex xs12 sm12 md12 lg12>
+            <v-card outlined>
+              <v-card-title class="blue--text">Ratings & Reviews</v-card-title>
+            </v-card>
+          </v-flex>
+        </v-layout>
+      </v-flex>
+      <v-flex xs12 sm12 md3 lg3>
+        <v-card outlined>
+          <v-card-title class="blue--text">Sponsored Products</v-card-title>
+        </v-card>
+      </v-flex>
+    </v-layout>
+  </v-container>
 </template>
 
 <script>
@@ -51,9 +53,7 @@ export default {
 
   data: () => ({}),
 
-  mounted() {},
-
-  created() {
+  mounted() {
     this.getProductDataById(this.$route.params.id);
   },
 

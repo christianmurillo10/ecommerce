@@ -1,6 +1,6 @@
 <template>
-  <v-card>
-    <v-card-title>Description</v-card-title>
+  <v-card outlined>
+    <v-card-title class="blue--text">Description</v-card-title>
     <v-card-text>
       <v-sheet
         class="d-flex"

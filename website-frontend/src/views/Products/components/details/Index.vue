@@ -19,10 +19,13 @@
       </v-layout>
     </v-flex>
     <v-flex xs12 sm12 md12 lg12 class="pt-2">
-      <v-card outlined color="#fafafa">
+      <v-card outlined>
         <v-card-text>
-          <span class="headline font-weight-bold black--text">{{ `&#8369 ${details.price_amount === undefined ? "0.00" : details.price_amount}` }}</span>
-          <!-- <span class="body-1 ml-5" style="text-decoration: line-through;">{{ `&#8369 ${details.price_amount}` }}</span> -->
+          <span class="headline font-weight-bold black--text">{{
+            `&#8369; ${
+              details.price_amount === undefined ? "0.00" : details.price_amount
+            }`
+          }}</span>
         </v-card-text>
       </v-card>
     </v-flex>
@@ -38,8 +41,10 @@
               :key="j"
               :value="value"
               outlined
+              color="blue"
               @click="setOptionValues(i, value)"
-            >{{ value }}</v-chip>
+              >{{ value }}</v-chip
+            >
           </v-chip-group>
         </v-flex>
       </div>
@@ -68,23 +73,32 @@
             ></v-text-field>
           </v-flex>
           <v-flex xs4 sm4 md5 lg5 offset-xs1 offset-sm1 offset-md1 offset-lg1>
-            <span v-if="stockAvailable === 0" class="body-2 red--text">Out of stock</span>
-            <span v-else class="body-2">{{ `${stockAvailable} ${details.unit} available` }}</span>
+            <span v-if="stockAvailable === 0" class="body-2 red--text"
+              >Out of stock</span
+            >
+            <span v-else class="body-2">{{
+              `${stockAvailable} ${details.unit} available`
+            }}</span>
           </v-flex>
         </v-layout>
       </v-container>
     </v-flex>
     <v-flex xs12 sm12 md12 lg12>
-      <v-layout row wrap class="text-center">
-        <v-flex xs12 sm12 md12 lg12>
+      <v-layout wrap row>
+        <v-flex xs12 sm12 md6 lg6>
           <v-btn
-            color="blue-grey"
+            block
             outlined
+            color="blue"
             class="ma-1 white--text"
             :disabled="!valid"
-          >BUY NOW</v-btn>
+            >BUY NOW</v-btn
+          >
+        </v-flex>
+        <v-flex xs12 sm12 md6 lg6>
           <v-btn
-            color="blue-grey"
+            block
+            color="blue"
             class="ma-1 white--text"
             type="submit"
             :disabled="!valid"
@@ -102,42 +116,47 @@
 
 <script>
 import Mixins from "@/helpers/Mixins.js";
-import AddToCartModal from '../modals/AddToCartModal';
+import AddToCartModal from "../modals/AddToCartModal";
 import { mapGetters, mapMutations } from "vuex";
 
 export default {
   props: {
-    details: Object
+    details: Object,
   },
 
   mixins: [Mixins],
   components: {
-    AddToCartModal
+    AddToCartModal,
   },
 
   data: () => ({
     stockAvailable: 0,
     formData: {
       options: [],
-      quantity: 1
+      quantity: 1,
     },
-    valid: true
+    valid: true,
   }),
 
   computed: {
     ...mapGetters("products", ["getProductAvailableStockBySku"]),
     ...mapGetters("customerAuthentication", ["isLoggedIn"]),
     totalPrice() {
-      this.formData.total_price = this.details.price_amount * this.formData.quantity;
+      this.formData.total_price =
+        this.details.price_amount * this.formData.quantity;
       return this.formData.total_price.toFixed(2);
-    }
+    },
   },
 
   watch: {
     details(val) {
-      val.productOptions.forEach(element => {
-        let valueArr = element.values.split(',');
-        this.formData.options.push({ id: element.id, title: element.title, value: valueArr[0] });
+      val.productOptions.forEach((element) => {
+        let valueArr = element.values.split(",");
+        this.formData.options.push({
+          id: element.id,
+          title: element.title,
+          value: valueArr[0],
+        });
       });
 
       let sku = this.generateSKU();
@@ -146,13 +165,13 @@ export default {
 
       // enable disable buttons
       if (this.stockAvailable === 0) this.valid = false;
-      else  this.valid = true;
-    }
+      else this.valid = true;
+    },
   },
-  
+
   methods: {
     ...mapMutations("customerCarts", {
-      addCartData: "ADD_DATA"
+      addCartData: "ADD_DATA",
     }),
 
     decrement() {
@@ -160,13 +179,19 @@ export default {
     },
 
     increment() {
-      if (this.formData.quantity < 10 && this.formData.quantity < this.stockAvailable) this.formData.quantity++;
+      if (
+        this.formData.quantity < 10 &&
+        this.formData.quantity < this.stockAvailable
+      )
+        this.formData.quantity++;
     },
 
     quantityValueChecker(val) {
       if (val < 1) this.formData.quantity = "";
-      else if (val > 10 && this.stockAvailable > 10) this.formData.quantity = 10;
-      else if (val > this.stockAvailable) this.formData.quantity = this.stockAvailable;
+      else if (val > 10 && this.stockAvailable > 10)
+        this.formData.quantity = 10;
+      else if (val > this.stockAvailable)
+        this.formData.quantity = this.stockAvailable;
       else this.formData.quantity = val;
     },
 
@@ -178,16 +203,21 @@ export default {
 
       // enable disable buttons
       if (this.stockAvailable === 0) this.valid = false;
-      else  this.valid = true;
+      else this.valid = true;
     },
 
     generateSKU() {
-      let acronymName, code = '', sku = '';
-      this.formData.options.forEach(element => {
+      let acronymName,
+        code = "",
+        sku = "";
+      this.formData.options.forEach((element) => {
         code += `-${element.value.toUpperCase()}`;
       });
-      
-      acronymName = this.details.name.match(/\b(\w)/g).join('').toUpperCase();
+
+      acronymName = this.details.name
+        .match(/\b(\w)/g)
+        .join("")
+        .toUpperCase();
       sku = acronymName + code;
 
       return sku;
@@ -211,9 +241,9 @@ export default {
       } else {
         this.$router.push("/login");
       }
-    }
-  }
-}
+    },
+  },
+};
 </script>
 
 <style>

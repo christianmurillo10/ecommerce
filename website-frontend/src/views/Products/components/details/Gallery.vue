@@ -49,7 +49,7 @@ export default {
     swiperOptionThumbs: {
       loop: true,
       loopedSlides: 5, // looped slides should be the same
-      spaceBetween: 10,
+      spaceBetween: 1,
       centeredSlides: true,
       slidesPerView: 'auto',
       touchRatio: 0.2,
@@ -81,7 +81,7 @@ export default {
     }
 
     &.gallery-top {
-      height: 80%;
+      height: 60%;
       width: 100%;
     }
     &.gallery-thumbs {
