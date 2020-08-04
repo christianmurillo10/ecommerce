@@ -3,12 +3,12 @@ import axios from "axios";
 const state = {
   isLogin: false,
   token: localStorage.getItem("token") || "",
-  userInfo: []
+  userInfo: [],
 };
 
 const getters = {
-  isLoggedIn: state => !!state.token,
-  authStatus: state => state.isLogin
+  isLoggedIn: (state) => !!state.token,
+  authStatus: (state) => state.isLogin,
 };
 
 const actions = {
@@ -19,13 +19,13 @@ const actions = {
     let url = `${process.env.VUE_APP_API_BACKEND}/users/login`;
     let data = payload;
     let config = {
-      "Content-Type": "application/json"
+      "Content-Type": "application/json",
     };
     return new Promise((resolve, reject) => {
       try {
         axios
           .post(url, data, config)
-          .then(response => {
+          .then((response) => {
             let result = response.data.result;
             let token = result.token;
 
@@ -33,71 +33,84 @@ const actions = {
               resolve(response.data);
             } else {
               localStorage.setItem("token", token);
-              axios.defaults.headers.common["Authorization"] = token;
+              axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 
               commit("SET_LOGIN", result);
               resolve(response.data);
             }
           })
-          .catch(err => {
+          .catch((err) => {
             console.log(err);
             localStorage.removeItem("token");
           });
-        } catch (err) {
-          reject(err);
-        }
-      });
+      } catch (err) {
+        reject(err);
+      }
+    });
   },
   setLogout({ dispatch, commit, state, rootState, getters, rootGetters }) {
     let url = `${process.env.VUE_APP_API_BACKEND}/users/logout`;
     let data = {
       username: state.userInfo.username,
-      token: localStorage.getItem("token")
+      token: localStorage.getItem("token"),
     };
     let config = {
-      "Content-Type": "application/json"
+      "Content-Type": "application/json",
     };
-    axios
-      .post(url, data, config)
-      .then(response => {
-        let status = response.data.status;
+    return new Promise((resolve, reject) => {
+      try {
+        axios
+          .post(url, data, config)
+          .then((response) => {
+            let status = response.data.status;
 
-        if (status === 200) {
-          commit("SET_LOGOUT");
-          localStorage.removeItem("token");
-          delete axios.defaults.headers.common["Authorization"];
-        }
-      })
-      .catch(err => {
-        console.log(err);
-        localStorage.removeItem("token");
-      });
+            if (status === 200) {
+              commit("SET_LOGOUT");
+              localStorage.removeItem("token");
+              delete axios.defaults.headers.common["Authorization"];
+              resolve(response.data);
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+            localStorage.removeItem("token");
+          });
+      } catch (err) {
+        reject(err);
+      }
+    });
   },
   validateToken({ dispatch, commit, state, rootState, getters, rootGetters }) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/users/validateToken`;
+    let url = `${process.env.VUE_APP_API_BACKEND}/authorizations/validateToken`;
     let data = {
-      username: state.userInfo.username,
-      token: localStorage.getItem("token")
+      token: localStorage.getItem("token"),
     };
     let config = {
-      "Content-Type": "application/json"
+      "Content-Type": "application/json",
     };
-    axios
-      .post(url, data, config)
-      .then(response => {
-        let result = response.data.result;
+    return new Promise((resolve, reject) => {
+      try {
+        axios
+          .post(url, data, config)
+          .then((response) => {
+            let result = response.data.result;
 
-        if (result) {
-          commit("SET_LOGOUT");
-          localStorage.removeItem("token");
-          delete axios.defaults.headers.common["Authorization"];
-        }
-      })
-      .catch(err => {
-        console.log(err);
-        localStorage.removeItem("token");
-      });
-  }
+            if (result) {
+              commit("SET_LOGOUT");
+              localStorage.removeItem("token");
+              delete axios.defaults.headers.common["Authorization"];
+              resolve(response.data);
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+            localStorage.removeItem("token");
+          });
+      } catch (err) {
+        reject(err);
+      }
+    });
+  },
 };
 
 const mutations = {
@@ -109,7 +122,7 @@ const mutations = {
     state.isLogin = "";
     state.token = "";
     state.userInfo = [];
-  }
+  },
 };
 
 export default {
@@ -117,5 +130,5 @@ export default {
   state,
   getters,
   actions,
-  mutations
+  mutations,
 };

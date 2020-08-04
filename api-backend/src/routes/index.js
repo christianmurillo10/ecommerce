@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 
+router.use('/authorizations', require('./authorizations'));
 router.use('/roles', require('./roles'));
 router.use('/users', require('./users'));
 router.use('/banks', require('./banks'));

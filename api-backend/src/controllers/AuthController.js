@@ -117,48 +117,6 @@ module.exports = {
       });
     }
   },
-
-  /**
-   * Validate Token
-   * @param req
-   * @param res
-   * @returns {Promise<void>}
-   * @routes POST /users/validateToken
-   */
-  validateToken: async (req, res) => {
-    // let ip = req.headers["x-forwarded-for"] || req.ip;
-    var token = req.body.token; // Value needs to be changed, so keep it to `var`
-
-    try {
-      if (token) {
-        let tokenData = await jwt.verifyToken(token);
-        if (tokenData.id !== null) {
-          res.json({
-            status: 200,
-            message: "Token Exist.",
-            result: false
-          });
-        } else {
-          // let user = await Model.Users.findByPk(tokenData.id);
-          // Update login status
-          // let updatedUser = await user.update({ is_logged: 0 });
-          // console.log("AuthController@validateToken - [ID]:%s [User]:%s [IP]%s", updatedUser.id, updatedUser.username, ip);
-  
-          res.json({
-            status: 200,
-            message: "Token Already Expired.",
-            result: true
-          });
-        }
-      }
-    } catch (err) {
-      res.json({
-        status: 401,
-        err: err,
-        message: "Failed to signout account."
-      });
-    }
-  },
   
   /**
    * Customer Login Account
@@ -278,6 +236,43 @@ module.exports = {
         status: 401,
         err: err,
         message: "Failed to sign out account."
+      });
+    }
+  },
+
+  /**
+   * Validate Token
+   * @param req
+   * @param res
+   * @returns {Promise<void>}
+   * @routes POST /authorizations/validateToken
+   */
+  validateToken: async (req, res) => {
+    // let ip = req.headers["x-forwarded-for"] || req.ip;
+    var token = req.body.token; // Value needs to be changed, so keep it to `var`
+
+    try {
+      if (token) {
+        let tokenData = await jwt.verifyToken(token);
+        if (tokenData) {
+          res.json({
+            status: 200,
+            message: "Token Exist.",
+            result: false
+          });
+        } else {
+          res.json({
+            status: 200,
+            message: "Token Already Expired.",
+            result: true
+          });
+        }
+      }
+    } catch (err) {
+      res.json({
+        status: 401,
+        err: err,
+        message: "Failed to signout account."
       });
     }
   },

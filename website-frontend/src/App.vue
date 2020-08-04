@@ -1,34 +1,37 @@
 <template>
   <v-app>
-    <Drawer/>
-    <Toolbar/>
-    <Content/>
-    <Footer/>
+    <Drawer />
+    <Toolbar />
+    <Content />
+    <Footer />
   </v-app>
 </template>
 
 <script>
-import Drawer from './components/core/Drawer';
-import Toolbar from './components/core/Toolbar/Index';
-import Content from './components/core/Content';
-import Footer from './components/core/Footer';
+import Drawer from "./components/core/Drawer";
+import Toolbar from "./components/core/Toolbar/Index";
+import Content from "./components/core/Content";
+import Footer from "./components/core/Footer";
+import { mapActions } from "vuex";
 
 export default {
-  name: 'App',
-
+  name: "App",
   components: {
     Drawer,
     Toolbar,
     Content,
-    Footer
+    Footer,
   },
-
-  data: () => ({
-    //
-  }),
+  data: () => ({}),
+  mounted() {
+    this.validateToken();
+  },
+  methods: {
+    ...mapActions("customerAuthentication", ["validateToken"])
+  }
 };
 </script>
 
 <style lang="sass">
-  @import '../node_modules/typeface-roboto/index.css'
+@import '../node_modules/typeface-roboto/index.css'
 </style>
