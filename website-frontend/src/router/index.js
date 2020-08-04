@@ -11,9 +11,7 @@ import TermsAndConditions from '../views/Pages/Policies/TermsAndConditions.vue'
 import Home from '../views/Home/Index.vue'
 import Customers from '../views/Customers/Index.vue'
 import CustomerCart from '../views/CustomerCarts/Index.vue'
-import ProductCategories from '../views/Products/Categories.vue'
-import ProductSubCategories from '../views/Products/SubCategories.vue'
-import ProductSubSubCategories from '../views/Products/SubSubCategories.vue'
+import Products from '../views/Products/Index.vue'
 import ProductSearch from '../views/Products/Search.vue'
 import ProductDetails from '../views/Products/Details.vue'
 import store from '../store'
@@ -112,28 +110,13 @@ const routes = [
     }
   },
   {
-    path: '/category/:id/page/:page',
-    name: 'productByCategoryId',
-    component: ProductCategories
+    path: '/products',
+    name: 'products',
+    component: Products
   },
   {
-    path: '/category/:categoryId/sub-category/:id/page/:page',
-    name: 'productBySubCategoryId',
-    component: ProductSubCategories
-  },
-  {
-    path: '/category/:categoryId/sub-category/:subCategoryId/sub-sub-category/:id/page/:page',
-    name: 'productBySubSubCategoryId',
-    component: ProductSubSubCategories
-  },
-  {
-    path: '/search/:keyword/page/:page',
+    path: '/search',
     name: 'productSearch',
-    component: ProductSearch
-  },
-  {
-    path: '/related/:relatedId/search/:keyword/page/:page',
-    name: 'productSearchBySubCategory',
     component: ProductSearch
   },
   {

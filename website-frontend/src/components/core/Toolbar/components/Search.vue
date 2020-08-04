@@ -27,26 +27,22 @@ export default {
   },
 
   watch: {
-    "$route.params.keyword": function(val) {
-      if (!_.isUndefined(val)) this.keyword = this.$route.params.keyword;
+    "$route.query.keyword": function(val) {
+      if (!_.isUndefined(val)) this.keyword = val;
       else this.keyword = "";
     },
   },
 
   methods: {
     initialLoad() {
-      if (!_.isUndefined(this.$route.params.keyword))
-        this.keyword = this.$route.params.keyword;
+      if (!_.isUndefined(this.$route.query.keyword)) this.keyword = this.$route.query.keyword;
       else this.keyword = "";
     },
 
     search() {
       if (this.$refs.form.validate()) {
-        if (
-          !_.isEmpty(this.keyword) &&
-          this.$route.params.keyword !== this.keyword
-        )
-          this.$router.push(`/search/${this.keyword}/page/1`);
+        if (!_.isEmpty(this.keyword) && this.$route.query.keyword !== this.keyword)
+          this.$router.push({ path: `/search`, query: { keyword: this.keyword } });
       }
     },
   },

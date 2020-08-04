@@ -12,13 +12,13 @@
           <v-expansion-panel-content>
             <v-list dense flat color="transparent">
               <v-list-item-group
-                :value="indexOfItemListByRouteId"
+                :value="indexOfItemListByRelatedId"
                 color="primary"
               >
                 <v-list-item
                   v-for="(item, i) in itemList"
                   :key="i"
-                  :disabled="i === indexOfItemListByRouteId ? true : false"
+                  :disabled="i === indexOfItemListByRelatedId ? true : false"
                   @click="onRelatedCategoriesChange(item.id)"
                 >
                   <v-list-item-content>
@@ -144,7 +144,7 @@
 <script>
 export default {
   props: {
-    routeId: Number,
+    relatedId: Number,
     itemList: Array,
   },
 
@@ -155,10 +155,10 @@ export default {
   }),
 
   computed: {
-    indexOfItemListByRouteId() {
+    indexOfItemListByRelatedId() {
       return this.itemList
         .map((item) => item.id)
-        .indexOf(parseInt(this.routeId));
+        .indexOf(parseInt(this.relatedId));
     },
   },
 

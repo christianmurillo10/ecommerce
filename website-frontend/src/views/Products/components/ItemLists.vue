@@ -104,8 +104,8 @@ export default {
     "itemCount": function (val) {
       if (!_.isUndefined(val)) this.setDefault();
     },
-    "$route.params.page": function (val) {
-      if (!_.isUndefined(val) && parseInt(this.$route.params.page) !== 1) this.setDefault();
+    "$route.query.page": function (val) {
+      if (!_.isUndefined(val) && parseInt(this.$route.query.page) !== 1) this.setDefault();
     }
   },
 
@@ -115,7 +115,7 @@ export default {
     },
 
     setDefault() {
-      this.pagination.page = parseInt(this.$route.params.page);
+      this.pagination.page = _.isUndefined(this.$route.query.page) ? 1 : parseInt(this.$route.query.page);
       this.computePaginationLength();
     },
 

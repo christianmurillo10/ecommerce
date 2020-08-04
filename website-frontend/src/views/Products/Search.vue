@@ -3,7 +3,7 @@
     <v-layout row wrap>
       <v-flex xs12 sm3 md3 lg3>
         <Filters
-          :route-id="routeId"
+          :related-id="relatedId"
           :item-list="productBySearchRelatedCategories"
           @onRelatedCategoriesChange="onRelatedCategoriesChange"
         />
@@ -33,7 +33,7 @@ export default {
 
   data: () => ({
     keyword: "",
-    routeId: -1,
+    relatedId: -1,
     routePage: 0,
     limit: 60,
     offset: 0,
@@ -52,13 +52,13 @@ export default {
   },
 
   watch: {
-    "$route.params.relatedId": function(val) {
+    "$route.query.related": function(val) {
       if (!_.isUndefined(val)) this.initialLoad();
     },
-    "$route.params.keyword": function(val) {
+    "$route.query.keyword": function(val) {
       if (!_.isUndefined(val)) this.initialLoad();
     },
-    "$route.params.page": function(val) {
+    "$route.query.page": function(val) {
       if (!_.isUndefined(val) && parseInt(val) !== this.routePage)
         this.initialLoad();
     },
@@ -73,15 +73,11 @@ export default {
     }),
 
     initialLoad() {
-      this.keyword = this.$route.params.keyword;
-      this.routeId =
-        this.$route.params.relatedId === undefined
-          ? -1
-          : parseInt(this.$route.params.relatedId);
-      this.routePage = parseInt(this.$route.params.page);
-      this.offset =
-        this.routePage === 1 ? 0 : (this.routePage - 1) * this.limit;
-      if (this.routeId === -1)
+      this.keyword = _.isUndefined(this.$route.query.keyword) ? "" : this.$route.query.keyword;
+      this.relatedId = _.isUndefined(this.$route.query.related) ? -1 : parseInt(this.$route.query.related);
+      this.routePage = _.isUndefined(this.$route.query.page) ? 1 : parseInt(this.$route.query.page);
+      this.offset = this.routePage === 1 ? 0 : (this.routePage - 1) * this.limit;
+      if (this.relatedId === -1)
         this.getProductDataBySearchWithRelatedCategories({
           keyword: this.keyword,
           limit: this.limit,
@@ -89,7 +85,7 @@ export default {
         });
       else
         this.getProductDataBySearchBySubCategoryIdWithRelatedCategories({
-          sub_category_id: this.routeId,
+          sub_category_id: this.relatedId,
           keyword: this.keyword,
           limit: this.limit,
           offset: this.offset,
@@ -97,18 +93,16 @@ export default {
     },
 
     onRelatedCategoriesChange(id) {
-      if (parseInt(this.routeId) !== id) {
-        this.$router.push(`/related/${id}/search/${this.keyword}/page/1`);
+      if (parseInt(this.relatedId) !== id) {
+        this.$router.push({ path: `/search`, query: { keyword: this.keyword, related: id } });
       }
     },
 
     onPageChange(page) {
-      if (this.routeId === -1)
-        this.$router.push(`/search/${this.keyword}/page/${page}`);
+      if (this.relatedId === -1)
+        this.$router.push({ path: `/search`, query: { keyword: this.keyword, page: page } });
       else
-        this.$router.push(
-          `/related/${this.routeId}/search/${this.keyword}/page/${page}`
-        );
+        this.$router.push({ path: `/search`, query: { keyword: this.keyword, related: this.relatedId, page: page } });
     },
   },
 };
