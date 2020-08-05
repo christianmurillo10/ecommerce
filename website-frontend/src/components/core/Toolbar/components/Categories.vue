@@ -1,10 +1,12 @@
 <template>
   <v-menu
+    content-class="category-card"
+    :close-on-content-click="false"
     open-on-click
     :nudge-width="200"
     offset-y
     right
-    transition="slide-x-reverse-transition"
+    transition="scale-transition"
     max-width="300"
   >
     <template v-slot:activator="{ on: { click } }">
@@ -13,12 +15,21 @@
         class="hidden-sm-and-down blue white--text"
         width="300"
       >
-        Categories <v-icon right>mdi-view-list</v-icon>
+        <v-icon left>mdi-view-list</v-icon> Categories
       </v-btn>
     </template>
 
-    <v-list dense height="500">
+    <v-list dense>
       <v-list-item-group v-model="model" color="blue">
+        <v-list-item
+          v-on:click="redirectTo('products')"
+          :value="0"
+        >
+          <v-list-item-content>
+            <v-list-item-title>All</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+        <v-divider></v-divider>
         <div
           v-for="(productCategory, i) in productCategoryWithSubList"
           :key="i"
@@ -47,15 +58,16 @@
                     <v-icon>mdi-menu-right</v-icon>
                   </v-list-item-icon>
                 </v-list-item>
+                <v-divider></v-divider>
               </template>
-              <v-card outlined height="492" width="600">
+              <v-card outlined width="850">
                 <v-container fluid grid-list-sm class="pa-5">
                   <v-layout row wrap>
                     <v-flex
                       xs12
                       sm12
-                      md6
-                      lg6
+                      md4
+                      lg4
                       class="pb-3"
                       v-for="(productSubCategory, i) in productCategory.productSubCategories"
                       :key="i"
@@ -161,8 +173,13 @@ export default {
     0px 0px 0px 0px rgba(0, 0, 0, 0.14), 0px 0px 14px 0px rgba(0, 0, 0, 0.12) !important;
 }
 
+.category-card {
+  border: 1px solid #2196F3;
+}
+
 .sub-category-card {
   top: 114px !important;
+  border: 1px solid #2196F3;
 }
 
 .v-application .black--text span:hover {
