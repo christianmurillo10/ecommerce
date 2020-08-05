@@ -53,6 +53,8 @@ export default {
 
   computed: {
     ...mapState("products", [
+      "productList",
+      "productTotalCount",
       "productByCategoryList",
       "productByCategoryTotalCount",
       "productBySubCategoryList",
@@ -108,6 +110,7 @@ export default {
 
   methods: {
     ...mapActions("products", {
+      getProductDataWithLimitOffset: "getDataWithLimitOffset",
       getProductDataByProductCategoryIdWithLimitOffset: "getDataByProductCategoryIdWithLimitOffset",
       getProductDataByProductSubCategoryIdWithLimitOffset: "getDataByProductSubCategoryIdWithLimitOffset",
       getProductDataByProductSubSubCategoryIdWithLimitOffset: "getDataByProductSubSubCategoryIdWithLimitOffset",
@@ -166,6 +169,12 @@ export default {
         });
         this.getProductCategoryDataById(this.relatedId);
         this.getProductCategoryData();
+      } else {
+        this.getProductDataWithLimitOffset({
+          limit: this.limit,
+          offset: this.offset,
+        });
+        this.getProductCategoryData();
       }
     },
 
@@ -185,6 +194,11 @@ export default {
         this.productItemData = this.productCategoryDataById;
         this.productItemList = this.productByCategoryList;
         this.productItemTotalCount = this.productByCategoryTotalCount;
+      } else {
+        this.productFilterItemList = this.productCategoryList;
+        this.productItemData = { name: "All" };
+        this.productItemList = this.productList;
+        this.productItemTotalCount = this.productTotalCount;
       }
     },
 
@@ -197,6 +211,8 @@ export default {
         } else if (!_.isNull(this.categoryId) && !_.isNull(this.subCategoryId)) {
           query = { category: this.categoryId, subCategory: id };
         } else if (!_.isNull(this.categoryId)) {
+          query = { category: id };
+        } else {
           query = { category: id };
         }
 
@@ -213,6 +229,8 @@ export default {
         query = { category: this.categoryId, subCategory: this.subCategoryId, page: page };
       } else if (!_.isNull(this.categoryId)) {
         query = { category: this.categoryId, page: page };
+      } else {
+        query = { page: page }
       }
       
       this.$router.push({ path: `/products`, query: query });

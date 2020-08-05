@@ -708,7 +708,6 @@ module.exports = {
         attributes: [
           'id',
           'name',
-          'description',
           'unit',
           'tags',
           'price_amount',
