@@ -1,5 +1,6 @@
 <template>
   <v-menu
+    content-class="cart"
     v-model="cart"
     :close-on-content-click="false"
     :nudge-width="200"
@@ -26,7 +27,7 @@
     </template>
     <v-card width="350" v-if="customerCartList.length !== 0">
       <v-layout row wrap justify-center>
-        <v-card-title class="title">Cart Items</v-card-title>
+        <v-card-title class="title blue--text">Cart Items</v-card-title>
       </v-layout>
       <v-divider></v-divider>
       <v-card-text class="pa-0">
@@ -79,22 +80,16 @@
       <v-layout row wrap justify-center>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn
-            small
-            color="blue-grey"
-            outlined
-            class="ma-2 white--text"
-            to="/cart"
-          >
-            <v-icon left dark>mdi-cart</v-icon>VIEW CART
+          <v-btn small color="blue" outlined class="ma-2" to="/cart">
+            <v-icon left>mdi-cart</v-icon>VIEW CART
           </v-btn>
           <v-btn
             small
-            color="blue-grey"
+            color="blue"
             class="ma-2 white--text"
             @click="cart = false"
           >
-            <v-icon left dark>mdi-basket</v-icon>CHECKOUT
+            <v-icon left>mdi-basket</v-icon>CHECKOUT
           </v-btn>
         </v-card-actions>
       </v-layout>
@@ -136,7 +131,16 @@ export default {
   },
 
   methods: {
-    ...mapMutations("customerCarts", { deleteCartData: "DELETE_DATA", setCardData: "SET_DATA" }),
+    ...mapMutations("customerCarts", {
+      deleteCartData: "DELETE_DATA",
+      setCardData: "SET_DATA",
+    }),
   },
 };
 </script>
+
+<style scoped lang="scss">
+.cart {
+  border: 1px solid #2196f3;
+}
+</style>
