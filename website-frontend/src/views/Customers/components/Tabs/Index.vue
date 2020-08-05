@@ -11,11 +11,8 @@
       <v-tab-item value="tab-overview">
         <Overview />
       </v-tab-item>
-      <v-tab-item value="tab-order-list">
-        <OrderList />
-      </v-tab-item>
-      <v-tab-item value="tab-history">
-        <History />
+      <v-tab-item value="tab-transactions">
+        <Transactions />
       </v-tab-item>
       <v-tab-item value="tab-account-settings">
         <AccountSettings />
@@ -26,26 +23,23 @@
 
 <script>
 import Overview from "./components/Overview";
-import OrderList from "./components/OrderList";
-import History from "./components/History";
+import Transactions from "./components/Transactions";
 import AccountSettings from "./components/AccountSettings";
 
 export default {
   components: {
     Overview,
-    OrderList,
-    History,
+    Transactions,
     AccountSettings,
   },
 
   data: () => ({
     items: [
       { name: "Overview", icon: "mdi-home", url: "tab-overview" },
-      { name: "Order List", icon: "mdi-basket", url: "tab-order-list" },
       {
-        name: "History",
+        name: "Transactions",
         icon: "mdi-file-document-outline",
-        url: "tab-history",
+        url: "tab-transactions",
       },
       {
         name: "Account Settings",

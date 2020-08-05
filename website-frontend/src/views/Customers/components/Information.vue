@@ -18,7 +18,7 @@
                   <td><v-icon>mdi-account</v-icon></td>
                   <td>
                     <span class="body-2">{{
-                      setFullname(
+                      setFullnameLastnameFirst(
                         customerInfo.firstname,
                         customerInfo.middlename,
                         customerInfo.lastname
