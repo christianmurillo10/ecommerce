@@ -11,6 +11,7 @@
   >
     <template v-slot:activator="{ on: { click } }">
       <v-btn
+        @click="setResetModel()"
         v-on:click="click"
         class="hidden-sm-and-down blue white--text"
         width="300"
@@ -47,6 +48,7 @@
                 <v-list-item
                   v-on="on"
                   v-on:click="redirectTo('products', { category: productCategory.id })"
+                  v-on:mouseover="setModel(productCategory.id)"
                   :value="productCategory.id"
                 >
                   <v-list-item-content>
@@ -83,7 +85,6 @@
                                 subCategory: productSubCategory.id,
                               },
                             }"
-                            @click.native="setModel()"
                           >
                             <span class="subtitle-2 font-weight-bold">
                               {{ productSubCategory.name }}
@@ -106,7 +107,6 @@
                                 subSubCategory: productSubSubCategory.id,
                               },
                             }"
-                            @click.native="setModel()"
                           >
                             <span class="caption">
                               {{ productSubSubCategory.name }}
@@ -140,7 +140,7 @@ export default {
   }),
 
   mounted() {
-    this.setModel();
+    this.setModel(this.$route.query.category)
     this.getProductCategoriesDataWithSubCategories();
   },
 
@@ -153,12 +153,16 @@ export default {
       getProductCategoriesDataWithSubCategories: "getDataWithSubCategories",
     }),
 
-    setModel() {
-      this.model = _.isUndefined(this.$route.query.category) ? null : parseInt(this.$route.query.category);
+    setModel(value) {
+      const model = _.isUndefined(value) ? null : parseInt(value);
+      this.model = model;
+    },
+
+    setResetModel() {
+      this.setModel(this.$route.query.category);
     },
 
     redirectTo(path, query) {
-      this.setModel();
       this.$router.push({ path: path, query: query });
     },
   },
