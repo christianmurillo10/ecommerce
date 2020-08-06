@@ -1,6 +1,6 @@
 <template>
   <v-menu
-    content-class="cart"
+    content-class="blue-border"
     v-model="cart"
     :close-on-content-click="false"
     :nudge-width="200"
@@ -138,9 +138,3 @@ export default {
   },
 };
 </script>
-
-<style scoped lang="scss">
-.cart {
-  border: 1px solid #2196f3;
-}
-</style>

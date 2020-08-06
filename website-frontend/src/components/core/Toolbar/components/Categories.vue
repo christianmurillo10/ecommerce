@@ -1,6 +1,6 @@
 <template>
   <v-menu
-    content-class="category-card"
+    content-class="blue-border"
     :close-on-content-click="false"
     open-on-click
     :nudge-width="200"
@@ -37,7 +37,7 @@
         >
           <div v-if="productCategory.productSubCategories.length !== 0">
             <v-menu
-              content-class="sub-category-card"
+              content-class="sub-category-card blue-border"
               :close-on-content-click="false"
               open-on-hover
               close-delay="200"
@@ -177,13 +177,8 @@ export default {
     0px 0px 0px 0px rgba(0, 0, 0, 0.14), 0px 0px 14px 0px rgba(0, 0, 0, 0.12) !important;
 }
 
-.category-card {
-  border: 1px solid #2196F3;
-}
-
 .sub-category-card {
   top: 114px !important;
-  border: 1px solid #2196F3;
 }
 
 .v-application .black--text span:hover {
