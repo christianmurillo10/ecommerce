@@ -54,7 +54,7 @@
                   @click:append="increment(item.index)"
                   prepend-inner-icon="mdi-minus"
                   @click:prepend-inner="decrement(item.index)"
-                  @keyup="quantityValueChecker($event.target.value)"
+                  @keyup="quantityValueChecker($event.target.value, item.index)"
                   :rules="[rules.required, rules.lessThanOrEqualTo10]"
                   dense
                   required
@@ -62,7 +62,9 @@
               </td>
               <td class="text-right">{{ `&#8369; ${item.total_price}` }}</td>
               <td class="text-center">
-                <v-icon small color="error" @click="deleteCartData(item.index)">mdi-delete</v-icon>
+                <v-icon small color="error" @click="deleteCartData(item.index)">
+                  mdi-delete
+                </v-icon>
               </td>
             </tr>
           </tbody>
@@ -78,19 +80,19 @@ import { mapMutations } from "vuex";
 
 export default {
   props: {
-    items: Array
+    items: Array,
   },
 
   mixins: [Mixins],
 
-  data: () => ({ }),
+  data: () => ({}),
 
   methods: {
     ...mapMutations("customerCarts", {
-      updateCartData: "UPDATE_DATA"
+      updateCartData: "UPDATE_DATA",
     }),
     ...mapMutations("customerCarts", {
-      deleteCartData: "DELETE_DATA"
+      deleteCartData: "DELETE_DATA",
     }),
 
     decrement(index) {
@@ -98,7 +100,7 @@ export default {
         this.items[index].quantity--;
         let obj = {
           index: index,
-          quantity: this.items[index].quantity
+          quantity: this.items[index].quantity,
         };
         this.updateCartData(obj);
       }
@@ -108,19 +110,25 @@ export default {
         this.items[index].quantity++;
         let obj = {
           index: index,
-          quantity: this.items[index].quantity
+          quantity: this.items[index].quantity,
         };
         this.updateCartData(obj);
       }
     },
 
-    quantityValueChecker(val) {
-      if (val < 1) this.formData.quantity = "";
-      else if (val > 10) this.formData.quantity = 10;
-      else this.formData.quantity = val;
-    }
-  }
-}
+    quantityValueChecker(val, index) {
+      if (val < 1) this.items[index].quantity = "";
+      else if (val > 10) this.items[index].quantity = 10;
+      else this.items[index].quantity = val;
+
+      let obj = {
+        index: index,
+        quantity: this.items[index].quantity,
+      };
+      this.updateCartData(obj);
+    },
+  },
+};
 </script>
 
 <style>

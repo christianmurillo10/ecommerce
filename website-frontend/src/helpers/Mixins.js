@@ -53,6 +53,7 @@ export default {
       max100Chars: value => value.length <= 100 || 'Max 100 characters',
       max255Chars: value => value.length <= 255 || 'Max 255 characters',
       max500Chars: value => value.length <= 500 || 'Max 500 characters',
+      lessThanOrEqualTo10: value => value <= 10 || 'Must be less than or equal 10',
       email: value => {
         const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
         return pattern.test(value) || 'Invalid e-mail.'
