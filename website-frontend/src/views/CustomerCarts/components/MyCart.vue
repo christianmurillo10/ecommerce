@@ -3,73 +3,71 @@
     <v-card-title>MY CART</v-card-title>
     <v-divider></v-divider>
     <v-card-text>
-      <v-simple-table>
-        <template v-slot:default>
-          <thead>
-            <tr>
-              <th class="text-left">Image</th>
-              <th class="text-left">Item</th>
-              <th class="text-left">Price</th>
-              <th class="text-center">Quantity</th>
-              <th class="text-left">Total Price</th>
-              <th class="text-center">Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="item in items" :key="item.index">
-              <td class="py-1">
-                <router-link v-bind:to="`/products/${item.product_id}`">
-                  <v-img :src="item.file_path" max-width="100px"></v-img>
-                </router-link>
-              </td>
-              <td>
-                <v-menu open-on-hover offset-x :nudge-width="200">
-                  <template v-slot:activator="{ on }">
-                    <span class="blue--text" v-on="on">{{ item.name }}</span>
-                  </template>
-                  <v-card>
-                    <v-card-title>Options</v-card-title>
-                    <v-card-text>
-                      <v-simple-table dense>
-                        <template v-slot:default>
-                          <tbody>
-                            <tr v-for="(option, i) in item.options" :key="i">
-                              <td>{{ option.title }}</td>
-                              <td>{{ option.value }}</td>
-                            </tr>
-                          </tbody>
-                        </template>
-                      </v-simple-table>
-                    </v-card-text>
-                  </v-card>
-                </v-menu>
-              </td>
-              <td class="text-right">{{ `&#8369; ${item.price}` }}</td>
-              <td class="text-center" width="200px">
-                <v-text-field
-                  v-model="item.quantity"
-                  type="number"
-                  class="inputQuantity mt-2 mb-n4"
-                  append-icon="mdi-plus"
-                  @click:append="increment(item.index)"
-                  prepend-inner-icon="mdi-minus"
-                  @click:prepend-inner="decrement(item.index)"
-                  @keyup="quantityValueChecker($event.target.value, item.index)"
-                  :rules="[rules.required, rules.lessThanOrEqualTo10]"
-                  dense
-                  required
-                ></v-text-field>
-              </td>
-              <td class="text-right">{{ `&#8369; ${item.total_price}` }}</td>
-              <td class="text-center">
-                <v-icon small color="error" @click="deleteCartData(item.index)">
-                  mdi-delete
-                </v-icon>
-              </td>
-            </tr>
-          </tbody>
+      <v-data-table :headers="headers" :items="items" single-expand show-expand>
+        <template v-slot:top>
+          <v-toolbar dense flat>
+            <v-spacer></v-spacer>
+            <span class="font-italic red--text">
+              NOTE: Click "Quantity" value to update.
+            </span>
+          </v-toolbar>
         </template>
-      </v-simple-table>
+        <template v-slot:item.file_path="{ item }">
+          <router-link v-bind:to="`/products/${item.product_id}`">
+            <v-img :src="item.file_path" max-width="100px"></v-img>
+          </router-link>
+        </template>
+        <template v-slot:item.quantity="props">
+          <v-edit-dialog>
+            {{ props.item.quantity }}
+            <template v-slot:input>
+              <v-text-field
+                v-model="props.item.quantity"
+                type="number"
+                class="inputQuantity"
+                append-icon="mdi-plus"
+                @click:append="increment(props.item.index)"
+                prepend-inner-icon="mdi-minus"
+                @click:prepend-inner="decrement(props.item.index)"
+                @keyup="
+                  quantityValueChecker($event.target.value, props.item.index)
+                "
+                :rules="[rules.required, rules.lessThanOrEqualTo10]"
+                required
+              ></v-text-field>
+            </template>
+          </v-edit-dialog>
+        </template>
+        <template v-slot:item.actions="{ item }">
+          <v-icon small color="error" @click="deleteCartData(item.index)">
+            mdi-delete
+          </v-icon>
+        </template>
+        <template v-slot:expanded-item="{ headers, item }">
+          <td :colspan="headers.length">
+            <table>
+              <thead>
+                <tr>
+                  <th
+                    class="text-left"
+                    v-for="(option, i) in item.options"
+                    :key="i"
+                  >
+                    {{ option.title }}
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td v-for="(option, i) in item.options" :key="i">
+                    {{ option.value }}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </template>
+      </v-data-table>
     </v-card-text>
   </v-card>
 </template>
@@ -85,7 +83,39 @@ export default {
 
   mixins: [Mixins],
 
-  data: () => ({}),
+  data: () => ({
+    headers: [
+      { text: "Image", value: "file_path", filterable: false, sortable: false },
+      { text: "Item", value: "name", filterable: false },
+      { text: "Price", value: "price", filterable: false, sortable: false },
+      {
+        text: "Quantity",
+        value: "quantity",
+        align: "center",
+        filterable: false,
+        sortable: false,
+      },
+      {
+        text: "Total Price",
+        value: "total_price",
+        filterable: false,
+        sortable: false,
+      },
+      {
+        text: "Actions",
+        value: "actions",
+        align: "center",
+        filterable: false,
+        sortable: false,
+      },
+      {
+        text: "",
+        value: "data-table-expand",
+        filterable: false,
+        sortable: false,
+      },
+    ],
+  }),
 
   methods: {
     ...mapMutations("customerCarts", {
@@ -105,6 +135,7 @@ export default {
         this.updateCartData(obj);
       }
     },
+
     increment(index) {
       if (this.items[index].quantity < 10) {
         this.items[index].quantity++;
