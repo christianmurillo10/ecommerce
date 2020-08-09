@@ -43,10 +43,9 @@
           <v-flex xs12 sm12 md4 lg4>
             <v-container fill-height>
               <v-row justify="center">
-                <v-btn text small to="/" color="blue">Home</v-btn>
-                <v-btn text small color="blue">Promo</v-btn>
-                <v-btn text small color="blue">About Us</v-btn>
-                <v-btn text small color="blue">Contact Us</v-btn>
+                <v-btn text small color="blue" to="/">Home</v-btn>
+                <v-btn text small color="blue" to="/about-us">About Us</v-btn>
+                <v-btn text small color="blue" to="/contact-us">Contact Us</v-btn>
               </v-row>
             </v-container>
           </v-flex>

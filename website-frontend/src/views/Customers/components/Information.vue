@@ -70,10 +70,6 @@ import { mapState, mapActions } from "vuex";
 export default {
   mixins: [Mixins],
 
-  data: () => ({
-    image: require("@/assets/images/no-image.png"),
-  }),
-
   computed: {
     ...mapState("customerAuthentication", ["customerInfo"]),
   },
