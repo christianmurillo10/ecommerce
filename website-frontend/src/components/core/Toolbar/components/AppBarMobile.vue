@@ -15,31 +15,43 @@
         <v-flex xs4 sm4 md4 lg4>
           <v-layout justify-end>
             <v-tooltip left>
-              <template v-slot:activator="onTooltip">
-                <v-btn icon v-on="onTooltip.on">
-                  <v-badge color="red" content="0">
-                    <v-icon>mdi-heart</v-icon>
-                  </v-badge>
+              <template v-slot:activator="{ on }">
+                <v-btn icon v-on="on" v-on:click="setSearch">
+                  <v-icon>{{ search ? "mdi-close" : "mdi-magnify" }}</v-icon>
                 </v-btn>
               </template>
-              <span>Wishlist</span>
+              <span>{{ search ? "Close" : "Search" }}</span>
             </v-tooltip>
             <Cart />
           </v-layout>
         </v-flex>
       </v-layout>
+      <v-divider v-if="search"></v-divider>
     </v-container>
+    <template v-slot:extension v-if="search">
+      <v-container style="max-width: 1280px;">
+        <v-flex xs12 sm12 md12 lg12>
+          <Search />
+        </v-flex>
+      </v-container>
+    </template>
   </v-app-bar>
 </template>
 
 <script>
 import Cart from "./Cart";
+import Search from "./Search";
 import { mapState, mapActions } from "vuex";
 
 export default {
   components: {
     Cart,
+    Search,
   },
+
+  data: () => ({
+    search: false,
+  }),
 
   computed: {
     ...mapState("appbar", ["primaryDrawer"]),
@@ -51,6 +63,10 @@ export default {
 
   methods: {
     ...mapActions("appbar", ["setPrimaryDrawerModel"]),
+
+    setSearch() {
+      this.search = this.search ? false : true;
+    },
   },
 };
 </script>
