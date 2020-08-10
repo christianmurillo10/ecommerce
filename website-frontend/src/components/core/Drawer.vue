@@ -92,7 +92,7 @@
             <v-list-item-title>{{ parentLink.text }}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-        <v-divider></v-divider>
+        <v-divider v-if="parentLink"></v-divider>
         <v-list-item
           v-for="(link, i) in links"
           :key="link.value"
