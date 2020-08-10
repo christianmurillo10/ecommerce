@@ -95,7 +95,7 @@ const actions = {
           .then((response) => {
             let result = response.data.result;
 
-            if (result) {
+            if (!result) {
               commit("SET_LOGOUT");
               localStorage.removeItem("token");
               delete axios.defaults.headers.common["Authorization"];

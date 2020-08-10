@@ -105,7 +105,7 @@ const actions = {
           .then((response) => {
             let result = response.data.result;
 
-            if (result) {
+            if (!result) {
               commit("SET_LOGOUT");
               localStorage.removeItem("cDetails");
               localStorage.removeItem("cToken");
