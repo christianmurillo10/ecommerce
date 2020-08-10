@@ -1,23 +1,25 @@
 <template>
   <v-navigation-drawer
-    color="blue"
     v-model="primaryDrawer.model"
     :temporary="primaryDrawer.type"
     overflow
     app
-    dark
     mobile-break-point="991"
     width="80%"
   >
-    <v-list-item two-line>
-      <v-list-item-avatar>
-        <v-img :src="avatar" />
-      </v-list-item-avatar>
-      <v-list-item-content>
-        <v-list-item-title>{{ title }}</v-list-item-title>
-        <v-list-item-subtitle>{{ subtitle }}</v-list-item-subtitle>
-      </v-list-item-content>
-    </v-list-item>
+    <v-card outlined tile color="blue">
+      <v-list dark>
+        <v-list-item>
+          <v-list-item-avatar>
+            <v-img :src="avatar" />
+          </v-list-item-avatar>
+          <v-list-item-content>
+            <v-list-item-title>{{ title }}</v-list-item-title>
+            <v-list-item-subtitle>{{ subtitle }}</v-list-item-subtitle>
+          </v-list-item-content>
+        </v-list-item>
+      </v-list>
+    </v-card>
     <v-divider></v-divider>
     <v-list dense nav>
       <template v-if="isLoggedIn">
@@ -154,9 +156,6 @@ export default {
       if (val) {
         this.setModelLinks(null);
         this.setLinks(1);
-        this.oldParentLink = null;
-        this.parentLink = null;
-        this.oldLinks = [];
       }
     },
   },
@@ -224,6 +223,9 @@ export default {
       this.setModel(id);
       switch (id) {
         case 1:
+          this.oldParentLink = null;
+          this.parentLink = null;
+          this.oldLinks = [];
           this.links = this.menuLinks;
           break;
         case 2:
