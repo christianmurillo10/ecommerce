@@ -1,14 +1,11 @@
-import Vue from 'vue'
-import App from './App.vue'
+import Vue from 'vue';
+import App from './App.vue';
 import { sync } from 'vuex-router-sync';
-import router from './router'
-import store from './store'
+import router from './router';
+import store from './store';
 import vuetify from './plugins/vuetify';
 import Axios from "axios";
-import _ from 'lodash'
-import VueZoomer from 'vue-zoomer'
-
-Vue.use(VueZoomer)
+import _ from 'lodash';
 
 sync(store, router);
 
