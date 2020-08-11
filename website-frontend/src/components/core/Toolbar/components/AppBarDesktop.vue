@@ -40,19 +40,13 @@
               </v-row>
             </v-container>
           </v-flex>
-          <v-flex xs12 sm12 md4 lg4>
-            <v-container fill-height>
-              <v-row justify="center">
+          <v-flex xs12 sm12 md8 lg8>
+            <v-container fill-height justify-end>
+              <v-row justify="end">
                 <v-btn text small color="blue" to="/">Home</v-btn>
                 <v-btn text small color="blue" to="/about-us">About Us</v-btn>
                 <v-btn text small color="blue" to="/contact-us">Contact Us</v-btn>
-              </v-row>
-            </v-container>
-          </v-flex>
-          <v-flex xs12 sm12 md4 lg4>
-            <v-container fill-height justify-end>
-              <v-row justify="end">
-                <v-btn text small color="blue">Track My Order</v-btn>
+                <v-btn text small color="blue" to="/track-order">Track Order</v-btn>
                 <div v-if="isLoggedIn">
                   <v-btn text small to="/profile" color="blue">Profile</v-btn>
                   <v-btn text small @click="logout" color="blue">Logout</v-btn>

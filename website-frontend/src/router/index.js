@@ -8,6 +8,9 @@ import ReturnPolicy from '../views/Pages/Policies/Return.vue'
 import SellerPolicy from '../views/Pages/Policies/Seller.vue'
 import SupportPolicy from '../views/Pages/Policies/Support.vue'
 import TermsAndConditions from '../views/Pages/Policies/TermsAndConditions.vue'
+import AboutUs from '../views/Pages/AboutUs.vue'
+import ContactUs from '../views/Pages/ContactUs.vue'
+import TrackOrder from '../views/Pages/TrackOrder.vue'
 import Home from '../views/Home/Index.vue'
 import Customers from '../views/Customers/Index.vue'
 import CustomerCart from '../views/CustomerCarts/Index.vue'
@@ -54,6 +57,21 @@ const routes = [
         next();
       }
     }
+  },
+  {
+    path: '/about-us',
+    name: 'aboutUs',
+    component: AboutUs
+  },
+  {
+    path: '/contact-us',
+    name: 'contactUs',
+    component: ContactUs
+  },
+  {
+    path: '/track-order',
+    name: 'trackOrder',
+    component: TrackOrder
   },
   {
     path: '/privacy-policy',

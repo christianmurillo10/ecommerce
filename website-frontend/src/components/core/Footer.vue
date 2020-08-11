@@ -68,7 +68,7 @@
                       <v-hover>
                         <router-link
                           slot-scope="{ hover }"
-                          :class="`${hover ? 'grey' : 'white'}--text`"
+                          :class="`${hover ? 'blue' : 'white'}--text`"
                           style="text-decoration: none;"
                           :to="link.url"
                         >
