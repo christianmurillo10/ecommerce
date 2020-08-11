@@ -8,8 +8,8 @@
         :class="`slide-${i}`"
         :style="`background-image: url('${image.file_path}');`"
       ></swiper-slide>
-      <div class="swiper-button-next swiper-button-white" slot="button-next"></div>
-      <div class="swiper-button-prev swiper-button-white" slot="button-prev"></div>
+      <div class="swiper-button-next" slot="button-next"></div>
+      <div class="swiper-button-prev" slot="button-prev"></div>
     </swiper>
     <!-- swiper2 Thumbs -->
     <swiper class="swiper gallery-thumbs" :options="swiperOptionThumbs" ref="swiperThumbs">
@@ -49,7 +49,7 @@ export default {
     swiperOptionThumbs: {
       loop: true,
       loopedSlides: 5, // looped slides should be the same
-      spaceBetween: 1,
+      spaceBetween: 10,
       centeredSlides: true,
       slidesPerView: 'auto',
       touchRatio: 0.2,
@@ -70,7 +70,7 @@ export default {
 
 <style lang="scss" scoped>
   .thumb-gallery {
-    height: 480px;
+    height: 300px;
     background-color: transparent;
   }
 
@@ -81,13 +81,13 @@ export default {
     }
 
     &.gallery-top {
-      height: 60%;
+      height: 80%;
       width: 100%;
     }
     &.gallery-thumbs {
-      height: 20%;
+      height: 25%;
       box-sizing: border-box;
-      padding: 1rem 0;
+      padding: 10px 0 0 0;
     }
     &.gallery-thumbs .swiper-slide {
       width: 25%;
