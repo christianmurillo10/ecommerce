@@ -26,30 +26,77 @@
     </template>
     <template v-slot:default="props">
       <v-row dense>
-        <v-col v-for="item in props.items" :key="item.name" cols="6" sm="4" md="3" lg="3">
-          <v-hover>
-            <v-card outlined rounded class="product-card" slot-scope="{ hover }" :class="`elevation-${hover ? 3 : 0}`">
-              <v-container fluid>
-                <v-img class="product-image" :src="item.productImages[0].file_path" lazy-src="@/assets/images/no-image.png" @click="viewProduct(item.id)" />
-                <v-container fluid>
-                  <v-tooltip bottom>
-                    <template v-slot:activator="{ on }">
-                      <div v-on="on" class="caption black--text">
+        <v-col
+          v-for="item in props.items"
+          :key="item.name"
+          cols="6"
+          sm="4"
+          md="3"
+          lg="3"
+        >
+          <v-hover v-slot:default="{ hover }">
+            <v-card
+              height="335"
+              class="mx-auto"
+              :class="`elevation-${hover ? 3 : 1}`"
+            >
+              <v-img
+                height="200"
+                width="218"
+                :src="item.productImages[0].file_path"
+                lazy-src="@/assets/images/no-image.png"
+              >
+                <v-row class="pa-2" v-if="hover">
+                  <v-col>
+                    <div>
+                      <v-btn icon color="red" class="white--text" x-small top>
+                        <v-icon>mdi-heart</v-icon>
+                      </v-btn>
+                    </div>
+                    <div>
+                      <v-btn icon color="blue" class="white--text" x-small top>
+                        <v-icon>mdi-cart</v-icon>
+                      </v-btn>
+                    </div>
+                  </v-col>
+                </v-row>
+              </v-img>
+              <v-tooltip bottom>
+                <template v-slot:activator="{ on }">
+                  <v-card-title>
+                    <v-hover v-slot:default="{ hover }">
+                      <span
+                        v-on="on"
+                        :class="
+                          `caption cursor-pointer ${
+                            hover ? 'blue--text' : 'black--text'
+                          }`
+                        "
+                        @click="viewProduct(item.id)"
+                      >
                         {{ truncateText(item.name, 20) }}
-                      </div>
-                    </template>
-                    <span>{{ item.name }}</span>
-                  </v-tooltip>
-                  <div class="subtitle-2 font-weight-bold black--text">
-                    {{ `&#8369; ${item.price_amount}` }}
-                  </div>
-                  <v-row class="mx-0">
-                    <v-rating :value="4.5" color="amber" dense half-increments readonly size="14"
-                    ></v-rating>
-                    <div class="subtitle-2 grey--text">4.5 (413)</div>
-                  </v-row>
-                </v-container>
-              </v-container>
+                      </span>
+                    </v-hover>
+                  </v-card-title>
+                </template>
+                <span>{{ item.name }}</span>
+              </v-tooltip>
+              <v-card-text>
+                <div class="subtitle-2 font-weight-bold black--text">
+                  {{ `&#8369; ${item.price_amount}` }}
+                </div>
+                <v-row align="center" class="mx-0">
+                  <v-rating
+                    :value="4.5"
+                    color="amber"
+                    dense
+                    half-increments
+                    readonly
+                    size="14"
+                  ></v-rating>
+                  <div class="grey--text ml-4">4.5 (413)</div>
+                </v-row>
+              </v-card-text>
             </v-card>
           </v-hover>
         </v-col>
@@ -92,8 +139,8 @@ export default {
       limit: 60,
       page: 1,
       length: 1,
-      visible: 7
-    }
+      visible: 7,
+    },
   }),
 
   mounted() {
@@ -101,12 +148,13 @@ export default {
   },
 
   watch: {
-    "itemCount": function (val) {
+    itemCount: function(val) {
       if (!_.isUndefined(val)) this.setDefault();
     },
-    "$route.query.page": function (val) {
-      if (!_.isUndefined(val) && parseInt(this.$route.query.page) !== 1) this.setDefault();
-    }
+    "$route.query.page": function(val) {
+      if (!_.isUndefined(val) && parseInt(this.$route.query.page) !== 1)
+        this.setDefault();
+    },
   },
 
   methods: {
@@ -115,21 +163,21 @@ export default {
     },
 
     setDefault() {
-      this.pagination.page = _.isUndefined(this.$route.query.page) ? 1 : parseInt(this.$route.query.page);
+      this.pagination.page = _.isUndefined(this.$route.query.page)
+        ? 1
+        : parseInt(this.$route.query.page);
       this.computePaginationLength();
     },
 
     computePaginationLength() {
-      this.pagination.length =  Math.ceil(this.itemCount / this.pagination.limit);
+      this.pagination.length = Math.ceil(
+        this.itemCount / this.pagination.limit
+      );
     },
 
     onPageChange() {
       this.$emit("onPageChange", this.pagination.page);
-    }
-  }
-}
+    },
+  },
+};
 </script>
-
-<style lang="scss" scoped>
-@import '@/assets/scss/product-items.scss';
-</style>

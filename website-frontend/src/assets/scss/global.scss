@@ -3,3 +3,11 @@ $blue: #2196f3;
 .blue-border {
   border: 1px solid $blue;
 }
+
+.line-through {
+  text-decoration: line-through !important;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}

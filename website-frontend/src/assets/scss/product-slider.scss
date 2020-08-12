@@ -1,27 +1,17 @@
 
 .swiper-container {
   padding: 2px;
-  height: 340px;
+  height: 360px;
   width: 100%;
 }
 
 .swiper {
   .swiper-slide {
-    height: 310px !important;
+    height: 335px !important;
     width: 217.5px !important;
     background-color: #FFFFFF;
     border: thin solid rgba(0, 0, 0, 0.12);
     border-radius: 4px;
-    
-    .container  {
-      padding: 5px !important;
-
-      .swiper-image {
-        cursor: pointer;
-        height: 200px;
-        width: 192px;
-      }
-    }
   }
 
   .swiper-slide:hover {
