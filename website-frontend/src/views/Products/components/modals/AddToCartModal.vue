@@ -81,6 +81,7 @@
                 <v-btn
                   block
                   outlined
+                  rounded
                   color="blue"
                   class="white--text"
                   to="/cart"
@@ -91,6 +92,7 @@
               <v-flex xs12 sm12 md6 lg6>
                 <v-btn
                   block
+                  rounded
                   color="blue"
                   class="white--text"
                   @click="dialog = false"

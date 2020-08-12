@@ -11,9 +11,11 @@
   >
     <template v-slot:activator="{ on: { click } }">
       <v-btn
+        outlined
         @click="setResetModel()"
         v-on:click="click"
-        class="hidden-sm-and-down blue white--text"
+        color="blue"
+        class="hidden-sm-and-down white--text"
         width="300"
       >
         <v-icon left>mdi-view-list</v-icon> Categories
@@ -22,10 +24,7 @@
 
     <v-list dense>
       <v-list-item-group v-model="model" color="blue">
-        <v-list-item
-          v-on:click="redirectTo('products')"
-          :value="0"
-        >
+        <v-list-item v-on:click="redirectTo('products')" :value="0">
           <v-list-item-content>
             <v-list-item-title>All</v-list-item-title>
           </v-list-item-content>
@@ -47,7 +46,9 @@
               <template v-slot:activator="{ on }">
                 <v-list-item
                   v-on="on"
-                  v-on:click="redirectTo('products', { category: productCategory.id })"
+                  v-on:click="
+                    redirectTo('products', { category: productCategory.id })
+                  "
                   v-on:mouseover="setModel(productCategory.id)"
                   :value="productCategory.id"
                 >
@@ -71,7 +72,8 @@
                       md4
                       lg4
                       class="pb-3"
-                      v-for="(productSubCategory, i) in productCategory.productSubCategories"
+                      v-for="(productSubCategory,
+                      i) in productCategory.productSubCategories"
                       :key="i"
                     >
                       <ul>
@@ -94,7 +96,8 @@
                         </li>
                         <li
                           class="remove-bullet"
-                          v-for="(productSubSubCategory, i) in productSubCategory.productSubSubCategories"
+                          v-for="(productSubSubCategory,
+                          i) in productSubCategory.productSubSubCategories"
                           :key="i"
                         >
                           <router-link
@@ -121,7 +124,11 @@
             </v-menu>
           </div>
           <div v-else>
-            <v-list-item v-on:click="redirectTo('products', { category: productCategory.id })">
+            <v-list-item
+              v-on:click="
+                redirectTo('products', { category: productCategory.id })
+              "
+            >
               <v-list-item-title>{{ productCategory.name }}</v-list-item-title>
             </v-list-item>
           </div>
@@ -140,7 +147,7 @@ export default {
   }),
 
   mounted() {
-    this.setModel(this.$route.query.category)
+    this.setModel(this.$route.query.category);
     this.getProductCategoriesDataWithSubCategories();
   },
 

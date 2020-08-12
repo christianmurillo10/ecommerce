@@ -54,7 +54,7 @@
                     <v-flex xs12 sm12 md6 lg6>
                       <v-layout wrap row>
                         <v-flex xs12 sm12 md12 lg12>
-                          <v-btn block rounded color="success" type="submit">
+                          <v-btn block rounded dark color="blue" type="submit">
                             Login
                           </v-btn>
                         </v-flex>
@@ -63,14 +63,14 @@
                             <v-flex xs12 sm12 md12 lg12>
                               <span class="caption">Or, sign up with</span>
                             </v-flex>
-                            <v-flex xs12 sm12 md12 lg12>
-                              <v-btn block rounded dark color="indigo">
+                            <v-flex xs12 sm12 md6 lg6>
+                              <v-btn block rounded outlined dark color="indigo">
                                 <v-icon left>mdi-facebook</v-icon>
                                 Facebook
                               </v-btn>
                             </v-flex>
-                            <v-flex xs12 sm12 md12 lg12>
-                              <v-btn block rounded dark color="red">
+                            <v-flex xs12 sm12 md6 lg6>
+                              <v-btn block rounded outlined dark color="red">
                                 <v-icon left>mdi-google-plus</v-icon>
                                 Google
                               </v-btn>

@@ -89,6 +89,7 @@
           <v-btn
             block
             outlined
+            rounded
             color="blue"
             class="ma-1 white--text"
             :disabled="!valid"
@@ -98,6 +99,7 @@
         <v-flex xs12 sm12 md6 lg6>
           <v-btn
             block
+            rounded
             color="blue"
             class="ma-1 white--text"
             type="submit"

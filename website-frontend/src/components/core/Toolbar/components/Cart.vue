@@ -13,7 +13,7 @@
         <template v-slot:activator="{ on }">
           <v-btn icon v-on:click="click" v-on="on">
             <v-badge
-              color="green"
+              color="blue"
               :content="
                 customerCartList.length !== 0 ? customerCartList.length : '0'
               "

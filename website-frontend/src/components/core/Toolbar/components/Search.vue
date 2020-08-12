@@ -4,13 +4,14 @@
       <v-text-field
         class="toolbar-search-input"
         v-model="keyword"
-        filled
         rounded
+        outlined
         dense
         hide-details
         clearable
         placeholder="Search..."
         prepend-inner-icon="mdi-magnify"
+        color="blue"
       />
     </v-layout>
   </v-form>
