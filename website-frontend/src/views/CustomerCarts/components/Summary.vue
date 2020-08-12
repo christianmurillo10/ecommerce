@@ -98,7 +98,7 @@
       <v-flex xs12 sm12 md12 lg12>
         <v-layout row wrap class="text-center">
           <v-flex xs12 sm12 md12 lg12>
-            <v-btn block color="blue" class="ma-2 white--text" @click="cart = false">
+            <v-btn block rounded color="blue" class="ma-2 white--text" @click="cart = false">
               <v-icon left dark>mdi-basket</v-icon>CHECKOUT
             </v-btn>
           </v-flex>

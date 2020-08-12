@@ -19,7 +19,7 @@
       </v-layout>
     </v-flex>
     <v-flex xs12 sm12 md12 lg12 class="pt-2">
-      <v-card outlined>
+      <v-card outlined shaped>
         <v-card-text>
           <span class="headline font-weight-bold black--text">{{
             `&#8369; ${

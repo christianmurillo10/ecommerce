@@ -2,8 +2,8 @@
   <v-dialog v-model="dialog" max-width="800">
     <v-card>
       <v-card-title>
-        <v-icon class="success--text">mdi-cart</v-icon>
-        <span class="title success--text">
+        <v-icon class="blue--text">mdi-cart</v-icon>
+        <span class="title blue--text">
           Item added to your cart!
         </span>
         <v-spacer></v-spacer>

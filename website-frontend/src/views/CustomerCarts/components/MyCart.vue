@@ -3,7 +3,7 @@
     <v-card-title>MY CART</v-card-title>
     <v-divider></v-divider>
     <v-card-text>
-      <v-data-table :headers="headers" :items="items" item-key="name" single-expand show-expand>
+      <v-data-table :headers="headers" :items="items" item-key="index" single-expand show-expand>
         <template v-slot:top>
           <v-toolbar dense flat>
             <v-spacer></v-spacer>

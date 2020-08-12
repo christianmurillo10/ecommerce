@@ -149,7 +149,7 @@ export default {
   },
 
   data: () => ({
-    panels: [0],
+    panels: [],
     price_from: "",
     price_to: "",
   }),

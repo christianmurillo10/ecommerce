@@ -2,20 +2,16 @@
   <v-container grid-list-lg>
     <v-layout row wrap>
       <v-flex xs12 sm12 md12 lg12>
-        <v-card outlined>
-          <v-card-text>
-            <v-container>
-              <v-layout row wrap>
-                <v-flex xs12 sm12 md5 lg5>
-                  <Gallery :images="productDataById.productImages" />
-                </v-flex>
-                <v-flex xs12 sm12 md7 lg7>
-                  <Index :details="productDataById" />
-                </v-flex>
-              </v-layout>
-            </v-container>
-          </v-card-text>
-        </v-card>
+        <v-container>
+          <v-layout row wrap>
+            <v-flex xs12 sm12 md5 lg5>
+              <Gallery :images="productDataById.productImages" />
+            </v-flex>
+            <v-flex xs12 sm12 md7 lg7>
+              <Index :details="productDataById" />
+            </v-flex>
+          </v-layout>
+        </v-container>
       </v-flex>
       <v-flex xs12 sm12 md9 lg9>
         <v-layout wrap>
