@@ -24,7 +24,7 @@
 
     <v-list dense>
       <v-list-item-group v-model="model" color="blue">
-        <v-list-item v-on:click="redirectTo('products')" :value="0">
+        <v-list-item v-on:click="redirectTo('/products')" :value="0">
           <v-list-item-content>
             <v-list-item-title>All</v-list-item-title>
           </v-list-item-content>
@@ -47,7 +47,7 @@
                 <v-list-item
                   v-on="on"
                   v-on:click="
-                    redirectTo('products', { category: productCategory.id })
+                    redirectTo('/products', { category: productCategory.id })
                   "
                   v-on:mouseover="setModel(productCategory.id)"
                   :value="productCategory.id"
@@ -81,7 +81,7 @@
                           <router-link
                             class="text-decoration black--text"
                             :to="{
-                              path: 'products',
+                              path: '/products',
                               query: {
                                 category: productCategory.id,
                                 subCategory: productSubCategory.id,
@@ -103,7 +103,7 @@
                           <router-link
                             class="text-decoration black--text"
                             :to="{
-                              path: 'products',
+                              path: '/products',
                               query: {
                                 category: productCategory.id,
                                 subCategory: productSubCategory.id,
@@ -126,7 +126,7 @@
           <div v-else>
             <v-list-item
               v-on:click="
-                redirectTo('products', { category: productCategory.id })
+                redirectTo('/products', { category: productCategory.id })
               "
             >
               <v-list-item-title>{{ productCategory.name }}</v-list-item-title>
