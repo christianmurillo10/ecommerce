@@ -18,105 +18,19 @@
                 i) in productFlashDealHeaderTodayFlashDeal.productFlashDealDetails"
                 :key="i"
               >
-                <v-hover v-slot:default="{ hover }">
-                  <v-card height="335" class="mx-auto">
-                    <v-img
-                      height="200"
-                      width="218"
-                      :src="
-                        productFlashDealDetail.products.productImages[0]
-                          .file_path
-                      "
-                      lazy-src="@/assets/images/no-image.png"
-                    >
-                      <v-row class="pa-2" v-if="hover">
-                        <v-col>
-                          <div>
-                            <v-btn
-                              icon
-                              color="red"
-                              class="white--text"
-                              x-small
-                              top
-                            >
-                              <v-icon>mdi-heart</v-icon>
-                            </v-btn>
-                          </div>
-                          <div>
-                            <v-btn
-                              icon
-                              color="blue"
-                              class="white--text"
-                              x-small
-                              top
-                            >
-                              <v-icon>mdi-cart</v-icon>
-                            </v-btn>
-                          </div>
-                        </v-col>
-                      </v-row>
-                    </v-img>
-                    <v-tooltip bottom>
-                      <template v-slot:activator="{ on }">
-                        <v-card-title>
-                          <v-hover v-slot:default="{ hover }">
-                            <span
-                              v-on="on"
-                              :class="
-                                `caption cursor-pointer ${
-                                  hover ? 'blue--text' : 'black--text'
-                                }`
-                              "
-                              @click="
-                                viewProduct(productFlashDealDetail.product_id)
-                              "
-                            >
-                              {{
-                                truncateText(
-                                  productFlashDealDetail.products.name,
-                                  20
-                                )
-                              }}
-                            </span>
-                          </v-hover>
-                        </v-card-title>
-                      </template>
-                      <span>{{ productFlashDealDetail.products.name }}</span>
-                    </v-tooltip>
-                    <v-card-text>
-                      <div class="subtitle-2 font-weight-bold black--text">
-                        {{
-                          `&#8369; ${productFlashDealDetail.current_price_amount}`
-                        }}
-                        <span class="line-through grey--text ml-1">
-                          {{
-                            `&#8369; ${productFlashDealDetail.base_price_amount}`
-                          }}
-                        </span>
-                      </div>
-                      <div class="subtitle-2 font-weight-bold blue--text">
-                        {{
-                          setRateTypeValue(
-                            productFlashDealDetail.discount_value,
-                            productFlashDealDetail.discount_type
-                          )
-                        }}
-                        OFF
-                      </div>
-                      <v-row align="center" class="mx-0">
-                        <v-rating
-                          :value="4.5"
-                          color="amber"
-                          dense
-                          half-increments
-                          readonly
-                          size="14"
-                        ></v-rating>
-                        <div class="grey--text ml-4">4.5 (413)</div>
-                      </v-row>
-                    </v-card-text>
-                  </v-card>
-                </v-hover>
+                <ProductCard
+                  :item="{
+                    id: productFlashDealDetail.product_id,
+                    name: productFlashDealDetail.products.name,
+                    file_path:
+                      productFlashDealDetail.products.productImages[0]
+                        .file_path,
+                    price_amount: productFlashDealDetail.current_price_amount,
+                    base_price_amount: productFlashDealDetail.base_price_amount,
+                    discount_value: productFlashDealDetail.discount_value,
+                    discount_type: productFlashDealDetail.discount_type,
+                  }"
+                />
               </swiper-slide>
               <div class="swiper-pagination" slot="pagination"></div>
             </swiper>
@@ -128,16 +42,16 @@
 </template>
 
 <script>
-import Mixins from "@/helpers/Mixins.js";
 import { Swiper, SwiperSlide } from "vue-awesome-swiper";
 import "swiper/css/swiper.css";
+import ProductCard from "@/components/modules/products/Card";
 import { mapState, mapActions } from "vuex";
 
 export default {
-  mixins: [Mixins],
   components: {
     Swiper,
     SwiperSlide,
+    ProductCard,
   },
 
   data: () => ({
@@ -165,10 +79,6 @@ export default {
     ...mapActions("productFlashDealHeaders", {
       getProductFlashDealHeaderDataTodayFlashDeal: "getDataTodayFlashDeal",
     }),
-
-    viewProduct(id) {
-      this.$router.push(`/products/${id}`);
-    },
   },
 };
 </script>
