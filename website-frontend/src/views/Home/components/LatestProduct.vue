@@ -2,7 +2,7 @@
   <v-container fluid v-if="productIsFeaturedList.length !== 0" elevation="0">
     <v-flex xs12 sm12 md12 lg12>
       <v-container>
-        <span class="title blue--text">FEATURED PRODUCTS</span>
+        <span class="title blue--text">Latest Product</span>
         <v-divider></v-divider>
       </v-container>
     </v-flex>

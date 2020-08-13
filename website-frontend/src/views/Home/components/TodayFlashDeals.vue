@@ -1,39 +1,47 @@
 <template>
-  <v-container fluid v-if="productFlashDealHeaderTodayFlashDeal.length !== 0">
-    <v-flex xs12 sm12 md12 lg12>
-      <v-flex xs12 sm12 md12 lg12>
-        <v-layout row wrap>
-          <v-container fill-height>
-            <h1 class="blue--text">TODAY'S DEAL</h1>
-            <v-divider></v-divider>
-          </v-container>
-        </v-layout>
-      </v-flex>
-      <v-flex xs12 sm12 md12 lg12>
-        <swiper class="swiper" :options="swiperOption">
-          <swiper-slide
-            v-for="(productFlashDealDetail,
-            i) in productFlashDealHeaderTodayFlashDeal.productFlashDealDetails"
-            :key="i"
-          >
-            <ProductCard
-              :item="{
-                id: productFlashDealDetail.product_id,
-                name: productFlashDealDetail.products.name,
-                file_path:
-                  productFlashDealDetail.products.productImages[0].file_path,
-                price_amount: productFlashDealDetail.current_price_amount,
-                base_price_amount: productFlashDealDetail.base_price_amount,
-                discount_value: productFlashDealDetail.discount_value,
-                discount_type: productFlashDealDetail.discount_type,
-              }"
-            />
-          </swiper-slide>
-          <div class="swiper-pagination" slot="pagination"></div>
-        </swiper>
-      </v-flex>
+  <div>
+    <v-flex
+      xs12
+      sm12
+      md12
+      lg12
+      v-if="productFlashDealHeaderTodayFlashDeal.length !== 0"
+    >
+      <v-layout row wrap>
+        <v-container>
+          <v-layout>
+            <span class="title blue--text">TODAY'S DEAL</span>
+            <v-spacer></v-spacer>
+            <span class="title">01:12:04:05</span>
+          </v-layout>
+          <v-divider></v-divider>
+        </v-container>
+      </v-layout>
     </v-flex>
-  </v-container>
+    <v-flex xs12 sm12 md12 lg12>
+      <swiper class="swiper" :options="swiperOption">
+        <swiper-slide
+          v-for="(productFlashDealDetail,
+          i) in productFlashDealHeaderTodayFlashDeal.productFlashDealDetails"
+          :key="i"
+        >
+          <ProductCard
+            :item="{
+              id: productFlashDealDetail.product_id,
+              name: productFlashDealDetail.products.name,
+              file_path:
+                productFlashDealDetail.products.productImages[0].file_path,
+              price_amount: productFlashDealDetail.current_price_amount,
+              base_price_amount: productFlashDealDetail.base_price_amount,
+              discount_value: productFlashDealDetail.discount_value,
+              discount_type: productFlashDealDetail.discount_type,
+            }"
+          />
+        </swiper-slide>
+        <div class="swiper-pagination" slot="pagination"></div>
+      </swiper>
+    </v-flex>
+  </div>
 </template>
 
 <script>
