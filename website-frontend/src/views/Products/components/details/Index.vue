@@ -84,31 +84,35 @@
       </v-container>
     </v-flex>
     <v-flex xs12 sm12 md12 lg12>
-      <v-layout wrap row>
-        <v-flex xs12 sm12 md6 lg6>
-          <v-btn
-            block
-            outlined
-            rounded
-            color="blue"
-            class="ma-1 white--text"
-            :disabled="!valid"
-            >BUY NOW</v-btn
-          >
-        </v-flex>
-        <v-flex xs12 sm12 md6 lg6>
-          <v-btn
-            block
-            rounded
-            color="blue"
-            class="ma-1 white--text"
-            type="submit"
-            :disabled="!valid"
-          >
-            <v-icon left dark>mdi-cart</v-icon>ADD TO CART
-          </v-btn>
-        </v-flex>
-      </v-layout>
+      <v-container grid-list-md>
+        <v-layout wrap row>
+          <v-flex xs12 sm12 md6 lg6>
+            <v-btn
+              block
+              outlined
+              rounded
+              color="blue"
+              class="white--text"
+              :disabled="!valid"
+            >
+              BUY NOW
+            </v-btn>
+          </v-flex>
+          <v-flex xs12 sm12 md6 lg6>
+            <v-btn
+              block
+              rounded
+              color="blue"
+              class="white--text"
+              type="submit"
+              :disabled="!valid"
+            >
+              <v-icon left dark>mdi-cart</v-icon>
+              ADD TO CART
+            </v-btn>
+          </v-flex>
+        </v-layout>
+      </v-container>
     </v-flex>
     <v-flex xs12 sm12 md12 lg12>
       <AddToCartModal ref="addToCartModal" />

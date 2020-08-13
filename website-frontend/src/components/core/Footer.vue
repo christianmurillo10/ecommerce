@@ -1,9 +1,6 @@
 <template>
   <v-footer dark padless>
-    <v-container
-      class="col-lg-10 offset-lg-1 mx-auto"
-      style="max-width: 1280px;"
-    >
+    <v-container style="max-width: 1280px;">
       <v-layout row wrap>
         <v-flex xs12 sm12 md4 lg4>
           <v-container>

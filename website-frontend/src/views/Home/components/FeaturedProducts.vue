@@ -1,35 +1,29 @@
 <template>
-  <v-container v-if="productIsFeaturedList.length !== 0" elevation="0">
-    <v-layout row wrap>
-      <v-flex xs12 sm12 md12 lg12>
-        <v-layout row wrap>
-          <v-container fill-height>
-            <h1 class="blue--text">FEATURED PRODUCTS</h1>
-            <v-divider></v-divider>
-          </v-container>
-        </v-layout>
-      </v-flex>
-      <v-flex xs12 sm12 md12 lg12>
-        <v-layout row wrap>
-          <swiper class="swiper" :options="swiperOption">
-            <swiper-slide
-              v-for="(productIsFeatured, i) in productIsFeaturedList"
-              :key="i"
-            >
-              <ProductCard
-                :item="{
-                  id: productIsFeatured.id,
-                  name: productIsFeatured.name,
-                  file_path: productIsFeatured.productImages[0].file_path,
-                  price_amount: productIsFeatured.price_amount,
-                }"
-              />
-            </swiper-slide>
-            <div class="swiper-pagination" slot="pagination"></div>
-          </swiper>
-        </v-layout>
-      </v-flex>
-    </v-layout>
+  <v-container fluid v-if="productIsFeaturedList.length !== 0" elevation="0">
+    <v-flex xs12 sm12 md12 lg12>
+      <v-container fill-height>
+        <h1 class="blue--text">FEATURED PRODUCTS</h1>
+        <v-divider></v-divider>
+      </v-container>
+    </v-flex>
+    <v-flex xs12 sm12 md12 lg12>
+      <swiper class="swiper" :options="swiperOption">
+        <swiper-slide
+          v-for="(productIsFeatured, i) in productIsFeaturedList"
+          :key="i"
+        >
+          <ProductCard
+            :item="{
+              id: productIsFeatured.id,
+              name: productIsFeatured.name,
+              file_path: productIsFeatured.productImages[0].file_path,
+              price_amount: productIsFeatured.price_amount,
+            }"
+          />
+        </swiper-slide>
+        <div class="swiper-pagination" slot="pagination"></div>
+      </swiper>
+    </v-flex>
   </v-container>
 </template>
 

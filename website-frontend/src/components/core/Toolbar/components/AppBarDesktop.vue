@@ -45,8 +45,12 @@
               <v-row justify="end">
                 <v-btn text small color="blue" to="/">Home</v-btn>
                 <v-btn text small color="blue" to="/about-us">About Us</v-btn>
-                <v-btn text small color="blue" to="/contact-us">Contact Us</v-btn>
-                <v-btn text small color="blue" to="/track-order">Track Order</v-btn>
+                <v-btn text small color="blue" to="/contact-us"
+                  >Contact Us</v-btn
+                >
+                <v-btn text small color="blue" to="/track-order"
+                  >Track Order</v-btn
+                >
                 <div v-if="isLoggedIn">
                   <v-btn text small to="/profile" color="blue">Profile</v-btn>
                   <v-btn text small @click="logout" color="blue">Logout</v-btn>

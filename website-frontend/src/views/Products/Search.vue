@@ -1,23 +1,25 @@
 <template>
-  <v-container grid-list-lg>
-    <v-layout row wrap>
-      <v-flex xs12 sm3 md3 lg3>
+  <v-layout row wrap>
+    <v-flex xs12 sm3 md3 lg3>
+      <v-container>
         <Filters
           :related-id="relatedId"
           :item-list="productBySearchRelatedCategories"
           @onRelatedCategoriesChange="onRelatedCategoriesChange"
         />
-      </v-flex>
-      <v-flex xs12 sm9 md9 lg9>
+      </v-container>
+    </v-flex>
+    <v-flex xs12 sm9 md9 lg9>
+      <v-container>
         <ItemLists
           :header="keyword"
           :items="productBySearchList"
           :item-count="productBySearchTotalCount"
           @onPageChange="onPageChange"
         />
-      </v-flex>
-    </v-layout>
-  </v-container>
+      </v-container>
+    </v-flex>
+  </v-layout>
 </template>
 
 <script>
@@ -73,10 +75,17 @@ export default {
     }),
 
     initialLoad() {
-      this.keyword = _.isUndefined(this.$route.query.keyword) ? "" : this.$route.query.keyword;
-      this.relatedId = _.isUndefined(this.$route.query.related) ? -1 : parseInt(this.$route.query.related);
-      this.routePage = _.isUndefined(this.$route.query.page) ? 1 : parseInt(this.$route.query.page);
-      this.offset = this.routePage === 1 ? 0 : (this.routePage - 1) * this.limit;
+      this.keyword = _.isUndefined(this.$route.query.keyword)
+        ? ""
+        : this.$route.query.keyword;
+      this.relatedId = _.isUndefined(this.$route.query.related)
+        ? -1
+        : parseInt(this.$route.query.related);
+      this.routePage = _.isUndefined(this.$route.query.page)
+        ? 1
+        : parseInt(this.$route.query.page);
+      this.offset =
+        this.routePage === 1 ? 0 : (this.routePage - 1) * this.limit;
       if (this.relatedId === -1)
         this.getProductDataBySearchWithRelatedCategories({
           keyword: this.keyword,
@@ -94,15 +103,24 @@ export default {
 
     onRelatedCategoriesChange(id) {
       if (parseInt(this.relatedId) !== id) {
-        this.$router.push({ path: `/search`, query: { keyword: this.keyword, related: id } });
+        this.$router.push({
+          path: `/search`,
+          query: { keyword: this.keyword, related: id },
+        });
       }
     },
 
     onPageChange(page) {
       if (this.relatedId === -1)
-        this.$router.push({ path: `/search`, query: { keyword: this.keyword, page: page } });
+        this.$router.push({
+          path: `/search`,
+          query: { keyword: this.keyword, page: page },
+        });
       else
-        this.$router.push({ path: `/search`, query: { keyword: this.keyword, related: this.relatedId, page: page } });
+        this.$router.push({
+          path: `/search`,
+          query: { keyword: this.keyword, related: this.relatedId, page: page },
+        });
     },
   },
 };

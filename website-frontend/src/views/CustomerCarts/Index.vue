@@ -1,18 +1,20 @@
 <template>
-  <v-container grid-list-lg>
-    <v-layout row wrap>
-      <v-flex xs12 sm12 md12 lg12>
-        <v-layout row wrap>
-          <v-flex xs12 sm12 md8 lg8>
+  <v-layout wrap>
+    <v-flex xs12 sm12 md12 lg12>
+      <v-layout row wrap>
+        <v-flex xs12 sm12 md8 lg8>
+          <v-container>
             <MyCart :items="customerCartList" />
-          </v-flex>
-          <v-flex xs12 sm12 md4 lg4>
+          </v-container>
+        </v-flex>
+        <v-flex xs12 sm12 md4 lg4>
+          <v-container>
             <Summary :items="customerCartList" />
-          </v-flex>
-        </v-layout>
-      </v-flex>
-    </v-layout>
-  </v-container>
+          </v-container>
+        </v-flex>
+      </v-layout>
+    </v-flex>
+  </v-layout>
 </template>
 
 <script>

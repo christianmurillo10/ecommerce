@@ -1,64 +1,60 @@
 <template>
   <v-card outlined>
     <v-container>
-      <v-layout row wrap>
-        <v-flex xs12 sm12 md12 lg12 class="text-center">
-          <v-avatar size="120">
-            <v-img :src="customerInfo.file_path"></v-img>
-          </v-avatar>
-        </v-flex>
-        <v-flex xs12 sm12 md12 lg12>
-          <v-divider></v-divider>
-        </v-flex>
-        <v-flex xs12 sm12 md12 lg12>
-          <v-simple-table dense>
-            <template v-slot:default>
-              <tbody>
-                <tr>
-                  <td><v-icon>mdi-account</v-icon></td>
-                  <td>
-                    <span class="body-2">{{
-                      setFullnameLastnameFirst(
-                        customerInfo.firstname,
-                        customerInfo.middlename,
-                        customerInfo.lastname
-                      )
-                    }}</span>
-                  </td>
-                </tr>
-                <tr>
-                  <td><v-icon>mdi-gender-male-female</v-icon></td>
-                  <td>
-                    <span class="body-2">{{
-                      getGenderTypes(customerInfo.gender_type)
-                    }}</span>
-                  </td>
-                </tr>
-                <tr>
-                  <td><v-icon>mdi-email</v-icon></td>
-                  <td>
-                    <span class="body-2">{{ customerInfo.email }}</span>
-                  </td>
-                </tr>
-                <tr>
-                  <td><v-icon>mdi-contacts</v-icon></td>
-                  <td>
-                    <span class="body-2">{{ customerInfo.contact_no }}</span>
-                  </td>
-                </tr>
-                <tr>
-                  <td><v-icon>mdi-bank</v-icon></td>
-                  <td>
-                    <span class="body-2">{{
-                      customerInfo.primary_address
-                    }}</span>
-                  </td>
-                </tr>
-              </tbody>
-            </template>
-          </v-simple-table>
-        </v-flex>
-      </v-layout>
+      <v-flex xs12 sm12 md12 lg12 class="text-center">
+        <v-avatar size="120">
+          <v-img :src="customerInfo.file_path"></v-img>
+        </v-avatar>
+      </v-flex>
+      <v-flex xs12 sm12 md12 lg12>
+        <v-divider></v-divider>
+      </v-flex>
+      <v-flex xs12 sm12 md12 lg12>
+        <v-simple-table dense>
+          <template v-slot:default>
+            <tbody>
+              <tr>
+                <td><v-icon>mdi-account</v-icon></td>
+                <td>
+                  <span class="body-2">{{
+                    setFullnameLastnameFirst(
+                      customerInfo.firstname,
+                      customerInfo.middlename,
+                      customerInfo.lastname
+                    )
+                  }}</span>
+                </td>
+              </tr>
+              <tr>
+                <td><v-icon>mdi-gender-male-female</v-icon></td>
+                <td>
+                  <span class="body-2">{{
+                    getGenderTypes(customerInfo.gender_type)
+                  }}</span>
+                </td>
+              </tr>
+              <tr>
+                <td><v-icon>mdi-email</v-icon></td>
+                <td>
+                  <span class="body-2">{{ customerInfo.email }}</span>
+                </td>
+              </tr>
+              <tr>
+                <td><v-icon>mdi-contacts</v-icon></td>
+                <td>
+                  <span class="body-2">{{ customerInfo.contact_no }}</span>
+                </td>
+              </tr>
+              <tr>
+                <td><v-icon>mdi-bank</v-icon></td>
+                <td>
+                  <span class="body-2">{{ customerInfo.primary_address }}</span>
+                </td>
+              </tr>
+            </tbody>
+          </template>
+        </v-simple-table>
+      </v-flex>
     </v-container>
   </v-card>
 </template>
