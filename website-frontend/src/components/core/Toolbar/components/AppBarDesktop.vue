@@ -1,6 +1,6 @@
 <template>
   <v-app-bar app fixed>
-    <v-container class="mx-auto mt-2" style="max-width: 1280px;">
+    <v-container class="content mx-auto mt-2">
       <v-layout row wrap>
         <v-flex xs8 sm8 md4 lg4>
           <v-layout justify-start>
@@ -31,7 +31,7 @@
       <v-divider></v-divider>
     </v-container>
     <template v-slot:extension>
-      <v-container style="max-width: 1280px;">
+      <v-container class="content">
         <v-layout row wrap>
           <v-flex xs12 sm12 md4 lg4>
             <v-container fill-height>

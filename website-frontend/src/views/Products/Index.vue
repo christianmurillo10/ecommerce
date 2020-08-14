@@ -1,24 +1,28 @@
 <template>
-  <v-layout row wrap>
-    <v-flex xs12 sm3 md3 lg3>
-      <v-container>
-        <Filters
-          :related-id="relatedId"
-          :item-list="filterItemList"
-          @onRelatedCategoriesChange="onRelatedCategoriesChange"
-        />
-      </v-container>
-    </v-flex>
-    <v-flex xs12 sm9 md9 lg9>
-      <v-container>
-        <ItemLists
-          :header="itemHeader"
-          :items="itemList"
-          :item-count="itemTotalCount"
-          @onPageChange="onPageChange"
-        />
-      </v-container>
-    </v-flex>
+  <v-layout wrap>
+    <v-container class="content">
+      <v-layout row wrap>
+        <v-flex xs12 sm3 md3 lg3>
+          <v-container>
+            <Filters
+              :related-id="relatedId"
+              :item-list="filterItemList"
+              @onRelatedCategoriesChange="onRelatedCategoriesChange"
+            />
+          </v-container>
+        </v-flex>
+        <v-flex xs12 sm9 md9 lg9>
+          <v-container>
+            <ItemLists
+              :header="itemHeader"
+              :items="itemList"
+              :item-count="itemTotalCount"
+              @onPageChange="onPageChange"
+            />
+          </v-container>
+        </v-flex>
+      </v-layout>
+    </v-container>
   </v-layout>
 </template>
 

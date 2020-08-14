@@ -1,6 +1,6 @@
 <template>
   <v-footer dark padless>
-    <v-container style="max-width: 1280px;">
+    <v-container class="content">
       <v-layout row wrap>
         <v-flex xs12 sm12 md4 lg4>
           <v-container>
@@ -83,7 +83,7 @@
     </v-container>
     <v-card flat tile width="100%" class="black text-center">
       <v-card-title class="grey darken-3">
-        <div class="col-lg-10 offset-lg-1 mx-auto" style="max-width: 1280px;">
+        <div class="content col-lg-10 offset-lg-1 mx-auto">
           <v-layout row>
             <strong class="subheading"
               >Get connected with us on social networks!</strong

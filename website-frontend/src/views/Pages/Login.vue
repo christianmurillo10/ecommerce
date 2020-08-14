@@ -1,6 +1,6 @@
 <template>
-  <v-layout row wrap>
-    <v-container fluid>
+  <v-layout wrap>
+    <v-container class="content">
       <Snackbars />
       <v-flex xs12 sm12 md8 lg8 offset-md2 offset-lg2>
         <v-card outlined>

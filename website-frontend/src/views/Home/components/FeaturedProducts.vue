@@ -1,6 +1,13 @@
 <template>
-  <v-container fluid v-if="productIsFeaturedList.length !== 0" elevation="0">
-    <v-flex xs12 sm12 md12 lg12>
+  <div>
+    <v-flex
+      xs12
+      sm12
+      md12
+      lg12
+      v-if="productIsFeaturedList.length !== 0"
+      elevation="0"
+    >
       <v-container>
         <span class="title blue--text">FEATURED PRODUCTS</span>
         <v-divider></v-divider>
@@ -24,7 +31,7 @@
         <div class="swiper-pagination" slot="pagination"></div>
       </swiper>
     </v-flex>
-  </v-container>
+  </div>
 </template>
 
 <script>

@@ -1,6 +1,6 @@
 <template>
-  <v-layout row wrap>
-    <v-container fluid>
+  <v-layout wrap>
+    <v-container class="content" fluid>
       <v-flex xs12 sm12 md12 lg12>
         <v-card outlined>
           <v-card-title class="justify-center">Seller Policy</v-card-title>

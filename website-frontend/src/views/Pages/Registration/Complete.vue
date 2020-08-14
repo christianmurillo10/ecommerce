@@ -1,24 +1,26 @@
 <template>
-  <v-container fluid>
-    <Snackbars />
-    <v-flex xs12 sm12 md6 lg6 offset-md3 offset-lg3>
-      <v-card outlined>
-        <v-card-title class="justify-center">
-          <v-icon x-large color="success">
-            mdi-clipboard-check-outline
-          </v-icon>
-          <span>Registration Complete</span>
-        </v-card-title>
-        <v-card-text>
-          <v-container fluid grid-list-lg class="text-center">
-            <span class="subtitle-1 black--text">
-              We will send you an email to validate your account!
-            </span>
-          </v-container>
-        </v-card-text>
-      </v-card>
-    </v-flex>
-  </v-container>
+  <v-layout wrap>
+    <v-container class="content">
+      <Snackbars />
+      <v-flex xs12 sm12 md6 lg6 offset-md3 offset-lg3>
+        <v-card outlined>
+          <v-card-title class="justify-center">
+            <v-icon x-large color="success">
+              mdi-clipboard-check-outline
+            </v-icon>
+            <span>Registration Complete</span>
+          </v-card-title>
+          <v-card-text>
+            <v-container fluid grid-list-lg class="text-center">
+              <span class="subtitle-1 black--text">
+                We will send you an email to validate your account!
+              </span>
+            </v-container>
+          </v-card-text>
+        </v-card>
+      </v-flex>
+    </v-container>
+  </v-layout>
 </template>
 
 <script>

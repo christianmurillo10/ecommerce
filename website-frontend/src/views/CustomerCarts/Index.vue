@@ -1,19 +1,23 @@
 <template>
   <v-layout wrap>
-    <v-flex xs12 sm12 md12 lg12>
+    <v-container class="content">
       <v-layout row wrap>
-        <v-flex xs12 sm12 md8 lg8>
-          <v-container>
-            <MyCart :items="customerCartList" />
-          </v-container>
-        </v-flex>
-        <v-flex xs12 sm12 md4 lg4>
-          <v-container>
-            <Summary :items="customerCartList" />
-          </v-container>
+        <v-flex xs12 sm12 md12 lg12>
+          <v-layout wrap>
+            <v-flex xs12 sm12 md8 lg8>
+              <v-container>
+                <MyCart :items="customerCartList" />
+              </v-container>
+            </v-flex>
+            <v-flex xs12 sm12 md4 lg4>
+              <v-container>
+                <Summary :items="customerCartList" />
+              </v-container>
+            </v-flex>
+          </v-layout>
         </v-flex>
       </v-layout>
-    </v-flex>
+    </v-container>
   </v-layout>
 </template>
 
