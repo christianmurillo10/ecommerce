@@ -32,7 +32,7 @@
     </v-container>
     <template v-slot:extension>
       <v-container class="content">
-        <v-layout row wrap>
+        <v-layout wrap>
           <v-flex xs12 sm12 md4 lg4>
             <v-container fill-height>
               <v-row justify="start">

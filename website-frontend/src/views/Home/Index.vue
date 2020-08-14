@@ -90,7 +90,7 @@
             <v-layout row wrap>
               <v-flex xs12 sm12 md5 lg5>
                 <v-container>
-                  <v-card shaped height="440" width="480">
+                  <v-card shaped class="blue-border elevation-5" height="440" width="480">
                     <v-container>
                       <TodayFlashDeals />
                     </v-container>
