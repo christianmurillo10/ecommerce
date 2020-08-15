@@ -37,7 +37,7 @@
 <script>
 import { Swiper, SwiperSlide } from "vue-awesome-swiper";
 import "swiper/css/swiper.css";
-import ProductCard from "@/components/modules/products/Card";
+import ProductCard from "../Products/Card";
 import { mapState, mapActions } from "vuex";
 
 export default {

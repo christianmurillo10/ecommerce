@@ -22,8 +22,8 @@
 </template>
 
 <script>
-import MyCart from "./components/MyCart";
-import Summary from "./components/Summary";
+import MyCart from "@/components/modules/CustomerCarts/MyCart";
+import Summary from "@/components/modules/CustomerCarts/Summary";
 import { mapState } from "vuex";
 
 export default {

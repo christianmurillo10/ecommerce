@@ -122,7 +122,7 @@
 
 <script>
 import Mixins from "@/helpers/Mixins.js";
-import AddToCartModal from "@/components/modules/products/modals/AddToCartModal";
+import AddToCartModal from "../modals/AddToCartModal";
 import { mapGetters, mapMutations } from "vuex";
 
 export default {

@@ -22,8 +22,8 @@
 </template>
 
 <script>
-import Information from "./components/Information";
-import Tabs from "./components/Tabs/Index";
+import Information from "@/components/modules/Customers/Information";
+import Tabs from "@/components/modules/Customers/Tabs/Index";
 
 export default {
   components: {

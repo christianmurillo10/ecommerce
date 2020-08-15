@@ -35,8 +35,8 @@
 </template>
 
 <script>
-import Gallery from "@/views/Products/components/details/Gallery";
-import Index from "@/views/Products/components/details/Index";
+import Gallery from "../details/Gallery";
+import Index from "../details/Index";
 import { mapState, mapActions } from "vuex";
 
 export default {

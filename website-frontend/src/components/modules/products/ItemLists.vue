@@ -67,7 +67,7 @@
 </template>
 
 <script>
-import ProductCard from "@/components/modules/products/Card";
+import ProductCard from "./Card";
 
 export default {
   props: {

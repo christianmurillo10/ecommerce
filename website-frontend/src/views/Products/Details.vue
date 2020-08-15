@@ -49,9 +49,9 @@
 </template>
 
 <script>
-import Gallery from "./components/details/Gallery";
-import Index from "./components/details/Index";
-import Description from "./components/details/Description";
+import Gallery from "@/components/modules/Products/details/Gallery";
+import Index from "@/components/modules/Products/details/Index";
+import Description from "@/components/modules/Products/details/Description";
 import { mapState, mapActions, mapMutations } from "vuex";
 
 export default {

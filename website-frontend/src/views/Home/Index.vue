@@ -167,16 +167,14 @@
 </template>
 
 <script>
-import Categories from "./components/Categories";
-import Slider from "./components/Slider";
-import TodayFlashDeals from "./components/TodayFlashDeals";
-import LatestProduct from "./components/LatestProduct";
-import FeaturedProducts from "./components/FeaturedProducts";
+import Slider from "@/components/modules/Home/Slider";
+import TodayFlashDeals from "@/components/modules/Home/TodayFlashDeals";
+import LatestProduct from "@/components/modules/Home/LatestProduct";
+import FeaturedProducts from "@/components/modules/Home/FeaturedProducts";
 import { mapState, mapActions } from "vuex";
 
 export default {
   components: {
-    Categories,
     Slider,
     TodayFlashDeals,
     LatestProduct,

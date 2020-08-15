@@ -27,8 +27,8 @@
 </template>
 
 <script>
-import Filters from "./components/Filters";
-import ItemLists from "./components/ItemLists";
+import Filters from "@/components/modules/Products/Filters";
+import ItemLists from "@/components/modules/Products/ItemLists";
 import { mapState, mapActions } from "vuex";
 
 export default {
