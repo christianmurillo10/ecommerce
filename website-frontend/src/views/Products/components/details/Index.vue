@@ -122,7 +122,7 @@
 
 <script>
 import Mixins from "@/helpers/Mixins.js";
-import AddToCartModal from "../modals/AddToCartModal";
+import AddToCartModal from "@/components/modules/products/modals/AddToCartModal";
 import { mapGetters, mapMutations } from "vuex";
 
 export default {
@@ -156,6 +156,7 @@ export default {
 
   watch: {
     details(val) {
+      this.resetFormData();
       val.productOptions.forEach((element) => {
         let valueArr = element.values.split(",");
         this.formData.options.push({
@@ -227,6 +228,13 @@ export default {
       sku = acronymName + code;
 
       return sku;
+    },
+
+    resetFormData() {
+      this.formData = {
+        options: [],
+        quantity: 1,
+      };
     },
 
     submit() {

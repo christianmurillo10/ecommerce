@@ -109,8 +109,6 @@
 </template>
 
 <script>
-import { mapState, mapActions, mapMutations } from "vuex";
-
 export default {
   data: () => ({
     dialog: false,
