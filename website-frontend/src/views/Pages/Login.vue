@@ -3,7 +3,7 @@
     <v-container class="content">
       <Snackbars />
       <v-flex xs12 sm12 md8 lg8 offset-md2 offset-lg2>
-        <v-card outlined>
+        <v-card flat>
           <v-card-title>
             <span>
               Welcome to <span class="blue--text">E-Commerce!</span>

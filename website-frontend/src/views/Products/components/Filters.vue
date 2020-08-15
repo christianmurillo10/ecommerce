@@ -124,10 +124,16 @@
                     ></v-text-field>
                   </v-flex>
                   <v-flex xs12 sm12 md12 lg12>
-                    <v-btn block outlined small color="primary">Search</v-btn>
-                  </v-flex>
-                  <v-flex xs12 sm12 md12 lg12>
-                    <v-btn block outlined small color="error">Reset</v-btn>
+                    <div class="pb-1">
+                      <v-btn block outlined rounded small color="primary">
+                        Search
+                      </v-btn>
+                    </div>
+                    <div class="pt-1">
+                      <v-btn block outlined rounded small color="error">
+                        Reset
+                      </v-btn>
+                    </div>
                   </v-flex>
                 </v-layout>
               </v-form>

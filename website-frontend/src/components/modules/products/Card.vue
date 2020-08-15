@@ -12,25 +12,20 @@
           :src="item.file_path"
           lazy-src="@/assets/images/no-image.png"
         >
-          <v-row class="pa-2" v-if="hover">
-            <v-col>
-              <div>
-                <v-btn icon color="red" class="white--text" x-small top>
-                  <v-icon>mdi-heart</v-icon>
-                </v-btn>
-              </div>
-              <div>
-                <v-btn
-                  icon
-                  color="blue"
-                  class="white--text"
-                  x-small
-                  top
-                  @click="viewDetails(item.id)"
-                >
-                  <v-icon>mdi-cart</v-icon>
-                </v-btn>
-              </div>
+          <v-row class="fill-height pa-2" align="end" v-if="hover">
+            <v-col align="end">
+              <v-btn outlined rounded color="red" x-small>
+                <v-icon small>mdi-heart</v-icon>
+              </v-btn>
+              <v-btn
+                outlined
+                rounded
+                color="blue"
+                x-small
+                @click="viewDetails(item.id)"
+              >
+                <v-icon small>mdi-cart</v-icon>
+              </v-btn>
             </v-col>
           </v-row>
         </v-img>

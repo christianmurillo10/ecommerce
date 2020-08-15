@@ -123,7 +123,7 @@
         </v-flex>
       </v-container>
     </v-layout>
-    <v-card flat tile class="light-blue lighten-5">
+    <v-card flat tile>
       <v-layout wrap>
         <v-container class="content">
           <v-flex xs12 sm12 md12 lg12>

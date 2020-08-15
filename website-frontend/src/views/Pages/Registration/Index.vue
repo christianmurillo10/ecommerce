@@ -4,7 +4,7 @@
       <Snackbars />
       <Loading />
       <v-flex xs12 sm12 md8 lg8 offset-md2 offset-lg2>
-        <v-card outlined>
+        <v-card flat>
           <v-card-title>
             <span>
               Create your <span class="blue--text">E-Commerce</span> Account

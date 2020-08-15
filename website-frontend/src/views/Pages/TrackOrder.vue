@@ -2,7 +2,7 @@
   <v-layout wrap>
     <v-container class="content" fluid>
       <v-flex xs12 sm12 md12 lg12>
-        <v-card outlined>
+        <v-card flat>
           <v-card-title class="justify-center">Track Order</v-card-title>
           <v-card-text>
             <v-sheet class="d-flex" color="grey lighten-5">

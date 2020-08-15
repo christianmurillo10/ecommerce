@@ -24,7 +24,7 @@
                   <Description :details="productDataById" />
                 </v-flex>
                 <v-flex xs12 sm12 md12 lg12>
-                  <v-card outlined>
+                  <v-card flat>
                     <v-card-title class="blue--text"
                       >Ratings & Reviews</v-card-title
                     >
@@ -33,7 +33,7 @@
               </v-flex>
               <v-flex xs12 sm12 md3 lg3>
                 <v-flex xs12 sm12 md12 lg12>
-                  <v-card outlined>
+                  <v-card flat>
                     <v-card-title class="blue--text">
                       Sponsored Products
                     </v-card-title>

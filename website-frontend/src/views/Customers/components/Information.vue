@@ -1,5 +1,5 @@
 <template>
-  <v-card outlined>
+  <v-card flat>
     <v-container>
       <v-flex xs12 sm12 md12 lg12 class="text-center">
         <v-avatar size="120">

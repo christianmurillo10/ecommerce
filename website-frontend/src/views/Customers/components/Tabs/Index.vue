@@ -1,5 +1,5 @@
 <template>
-  <v-card outlined>
+  <v-card flat>
     <v-tabs v-model="tab" background-color="white" grow>
       <v-tabs-slider></v-tabs-slider>
       <v-tab v-for="(item, i) in items" :key="i" :href="'#' + item.url">

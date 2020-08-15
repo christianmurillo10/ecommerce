@@ -1,5 +1,5 @@
 <template>
-  <v-card outlined>
+  <v-card flat>
     <v-card-title>MY CART</v-card-title>
     <v-divider></v-divider>
     <v-card-text>

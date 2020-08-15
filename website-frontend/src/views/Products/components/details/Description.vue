@@ -1,5 +1,5 @@
 <template>
-  <v-card outlined>
+  <v-card flat>
     <v-card-title class="blue--text">Description</v-card-title>
     <v-card-text>
       <v-sheet

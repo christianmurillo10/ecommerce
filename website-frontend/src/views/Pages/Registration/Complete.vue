@@ -3,7 +3,7 @@
     <v-container class="content">
       <Snackbars />
       <v-flex xs12 sm12 md6 lg6 offset-md3 offset-lg3>
-        <v-card outlined>
+        <v-card flat>
           <v-card-title class="justify-center">
             <v-icon x-large color="success">
               mdi-clipboard-check-outline
