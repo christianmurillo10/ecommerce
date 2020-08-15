@@ -46,7 +46,7 @@
             }"
           />
         </swiper-slide>
-        <div class="swiper-pagination" slot="pagination"></div>
+        <!-- <div class="swiper-pagination" slot="pagination"></div> -->
       </swiper>
     </v-flex>
   </div>
@@ -71,10 +71,10 @@ export default {
     swiperOption: {
       slidesPerView: "auto",
       spaceBetween: 15,
-      pagination: {
-        el: ".swiper-pagination",
-        clickable: true,
-      },
+      // pagination: {
+      //   el: ".swiper-pagination",
+      //   clickable: true,
+      // },
     },
   }),
 
