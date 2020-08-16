@@ -90,19 +90,20 @@ export default {
         : parseInt(this.$route.query.page);
       this.offset =
         this.routePage === 1 ? 0 : (this.routePage - 1) * this.limit;
-      if (this.relatedId === -1)
+      if (this.relatedId === -1) {
         this.getProductDataBySearchWithRelatedCategories({
           keyword: this.keyword,
           limit: this.limit,
           offset: this.offset,
         });
-      else
+      } else {
         this.getProductDataBySearchBySubCategoryIdWithRelatedCategories({
           sub_category_id: this.relatedId,
           keyword: this.keyword,
           limit: this.limit,
           offset: this.offset,
         });
+      }
     },
 
     onRelatedCategoriesChange(id) {

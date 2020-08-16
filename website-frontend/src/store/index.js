@@ -18,6 +18,7 @@ import productSubSubCategories from './modules/productSubSubCategories'
 import productFlashDealHeaders from './modules/productFlashDealHeaders'
 import products from './modules/products'
 import salesOrders from './modules/salesOrders'
+import search from './modules/search'
 
 Vue.use(Vuex)
 
@@ -44,6 +45,7 @@ export default new Vuex.Store({
     productSubSubCategories,
     productFlashDealHeaders,
     products,
-    salesOrders
+    salesOrders,
+    search
   }
 })

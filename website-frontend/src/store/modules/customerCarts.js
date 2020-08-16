@@ -1,5 +1,3 @@
-// import axios from "axios";
-
 const state = {
   customerCartList: []
 };
@@ -19,7 +17,7 @@ const actions = {
 
 const mutations = {
   SET_DATA(state, payload) {
-    state.customerCartList = _.isUndefined(localStorage.getItem("cCarts")) ? [] : JSON.parse(localStorage.getItem("cCarts"));
+    state.customerCartList = _.isNull(localStorage.getItem("cCarts")) ? [] : JSON.parse(localStorage.getItem("cCarts"));
   },
   ADD_DATA(state, payload) {
     let index = state.customerCartList.length;

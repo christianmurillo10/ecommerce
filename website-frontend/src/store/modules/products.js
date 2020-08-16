@@ -9,12 +9,14 @@ const state = {
   productBySubCategoryList: [],
   productBySubSubCategoryList: [],
   productBySearchList: [],
+  productBySearchBarList: [],
   productTotalCount: 0,
   productByCategoryTotalCount: 0,
   productBySubCategoryTotalCount: 0,
   productBySubSubCategoryTotalCount: 0,
   productBySearchTotalCount: 0,
   productBySearchRelatedCategories: [],
+  productBySearchBarTotalCount: 0,
   productDataById: {}
 };
 
@@ -150,6 +152,31 @@ const actions = {
       }
     });
   },
+  getDataBySearchBar({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
+    let url = `${process.env.VUE_APP_API_BACKEND}/products/search/${payload.keyword}/${payload.limit}/${payload.offset}`;
+    return new Promise((resolve, reject) => {
+      try {
+        axios.get(url)
+          .then(response => {
+            let obj = response.data.result;
+            if (obj) {
+              obj.data.forEach(element => {
+                if (element.productImages.length > 0) {
+                  element.productImages.forEach(elementImage => {
+                    elementImage.file_path = `${process.env.VUE_APP_API_BACKEND}/productImages/viewImage/${elementImage.file_name}/${elementImage.type}`;
+                  })
+                } else {
+                  element.productImages.push({ file_path: require("../../assets/images/no-image.png") });
+                }
+              });
+            }
+            commit("SET_DATA_BY_SEARCH_BAR", obj);
+          });
+      } catch (err) {
+        reject(err);
+      }
+    });
+  },
   getDataBySearchWithRelatedCategories({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
     let url = `${process.env.VUE_APP_API_BACKEND}/products/searchWithRelatedCategories/${payload.keyword}/${payload.limit}/${payload.offset}`;
     return new Promise((resolve, reject) => {
@@ -277,6 +304,15 @@ const mutations = {
     } else {
       state.productBySubSubCategoryList = [];
       state.productBySubSubCategoryTotalCount = 0;
+    }
+  },
+  SET_DATA_BY_SEARCH_BAR(state, payload) {
+    if (payload) {
+      state.productBySearchBarList = payload.data;
+      state.productBySearchBarTotalCount = payload.count;
+    } else {
+      state.productBySearchBarList = [];
+      state.productBySearchBarTotalCount = 0;
     }
   },
   SET_DATA_BY_SEARCH_WITH_RELATED_CATEGORIES(state, payload) {
