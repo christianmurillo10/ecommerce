@@ -22,7 +22,11 @@
                 </v-flex>
                 <v-flex xs12 sm12 md7 lg7>
                   <v-container>
-                    <Index :details="productDataById" />
+                    <Index
+                      :is-modal="true"
+                      :details="productDataById"
+                      @setProductDetailsDialog="setDialog"
+                    />
                   </v-container>
                 </v-flex>
               </v-layout>
@@ -60,7 +64,9 @@ export default {
 
     setDialog(value, id) {
       this.dialog = value;
-      this.getProductDataById(id);
+      if (value) {
+        this.getProductDataById(id);
+      }
     },
   },
 };

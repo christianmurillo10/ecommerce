@@ -11,7 +11,7 @@
             </v-flex>
             <v-flex xs12 sm12 md7 lg7>
               <v-container>
-                <Index :details="productDataById" />
+                <Index :is-modal="false" :details="productDataById" />
               </v-container>
             </v-flex>
           </v-layout>

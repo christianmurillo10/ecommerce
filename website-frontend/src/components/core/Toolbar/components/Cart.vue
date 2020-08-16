@@ -15,7 +15,9 @@
             <v-badge
               color="blue"
               :content="
-                customerCartList.length !== 0 ? customerCartList.length : '0'
+                isLoggedIn && customerCartList.length !== 0
+                  ? customerCartList.length
+                  : '0'
               "
             >
               <v-icon>mdi-cart</v-icon>
@@ -25,7 +27,7 @@
         <span>Cart</span>
       </v-tooltip>
     </template>
-    <v-card width="350" v-if="customerCartList.length !== 0">
+    <v-card width="350" v-if="isLoggedIn && customerCartList.length !== 0">
       <v-layout row wrap justify-center>
         <v-card-title class="title blue--text">Cart Items</v-card-title>
       </v-layout>
@@ -46,17 +48,18 @@
                 </td>
                 <td>
                   <v-row class="font-weight-medium">{{ item.name }}</v-row>
-                  <v-row>{{
-                    `x${item.quantity} &#8369; ${item.total_price}`
-                  }}</v-row>
+                  <v-row>
+                    {{ `x${item.quantity} &#8369; ${item.total_price}` }}
+                  </v-row>
                 </td>
                 <td class="justify-center">
                   <v-icon
                     small
                     color="error"
                     @click="deleteCartData(item.index)"
-                    >mdi-delete</v-icon
                   >
+                    mdi-delete
+                  </v-icon>
                 </td>
               </tr>
             </tbody>
@@ -94,19 +97,19 @@
         </v-card-actions>
       </v-layout>
     </v-card>
-    <v-card width="400" v-else-if="isLoggedIn === false">
+    <v-card width="400" v-else-if="!isLoggedIn">
       <v-layout row wrap justify-center>
-        <v-card-title class="title"
-          ><span
-            >You haven't login. please
-            <router-link v-bind:to="'/login'">login</router-link>.</span
-          ></v-card-title
-        >
+        <v-card-title class="subtitle-2">
+          <span>
+            You haven't login. please
+            <router-link v-bind:to="'/login'">login</router-link>.
+          </span>
+        </v-card-title>
       </v-layout>
     </v-card>
     <v-card width="400" v-else>
       <v-layout row wrap justify-center>
-        <v-card-title class="title">Your Cart is empty!</v-card-title>
+        <v-card-title class="subtitle-2">Your Cart is empty!</v-card-title>
       </v-layout>
     </v-card>
   </v-menu>

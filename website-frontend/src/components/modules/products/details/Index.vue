@@ -127,6 +127,7 @@ import { mapGetters, mapMutations } from "vuex";
 
 export default {
   props: {
+    isModal: Boolean,
     details: Object,
   },
 
@@ -251,6 +252,9 @@ export default {
           };
           this.addCartData(obj);
           this.$refs.addToCartModal.setDialog(true, obj);
+          if (this.isModal) {
+            this.$emit("setProductDetailsDialog", false, null);
+          }
         }
       } else {
         this.$router.push("/login");
