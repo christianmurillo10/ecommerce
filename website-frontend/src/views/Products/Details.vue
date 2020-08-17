@@ -71,6 +71,12 @@ export default {
     ...mapState("products", ["productDataById"]),
   },
 
+  watch: {
+    "$route.params.id": function(val) {
+      this.getProductDataById(val);
+    },
+  },
+
   methods: {
     ...mapActions("products", {
       getProductDataById: "getDataById",

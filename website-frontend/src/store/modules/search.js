@@ -13,7 +13,7 @@ const mutations = {
       : JSON.parse(localStorage.getItem("cRecentSearch"));
   },
   ADD_DATA(state, payload) {
-    if (!state.recentSearchList.includes(payload)) {
+    if (!state.recentSearchList.includes(payload) && !_.isEmpty(payload)) {
       state.recentSearchList.push(payload);
       localStorage.setItem(
         "cRecentSearch",
