@@ -8,26 +8,31 @@
       >
         <v-img
           height="200"
-          width="218"
           :src="item.file_path"
           lazy-src="@/assets/images/no-image.png"
         >
-          <v-row class="fill-height pa-2" align="end" v-if="hover">
-            <v-col align="end">
-              <v-btn outlined rounded color="red" x-small>
-                <v-icon small>mdi-heart</v-icon>
-              </v-btn>
-              <v-btn
-                outlined
-                rounded
-                color="blue"
-                x-small
-                @click="viewDetails(item.id)"
-              >
-                <v-icon small>mdi-cart</v-icon>
-              </v-btn>
-            </v-col>
-          </v-row>
+          <v-expand-transition>
+            <v-row
+              class="fill-height pa-2 transition-fast-in-fast-out blue-grey lighten-3 v-card--reveal"
+              align="end"
+              v-if="hover"
+            >
+              <v-col align="end">
+                <v-btn rounded x-small color="white" class="red--text">
+                  <v-icon small>mdi-heart</v-icon>
+                </v-btn>
+                <v-btn
+                  rounded
+                  x-small
+                  color="white"
+                  class="blue--text"
+                  @click="viewDetails(item.id)"
+                >
+                  <v-icon small>mdi-cart</v-icon>
+                </v-btn>
+              </v-col>
+            </v-row>
+          </v-expand-transition>
         </v-img>
         <v-tooltip bottom>
           <template v-slot:activator="{ on }">
@@ -110,3 +115,9 @@ export default {
   },
 };
 </script>
+
+<style lang="scss" scoped>
+.v-card--reveal {
+  opacity: 0.8;
+}
+</style>

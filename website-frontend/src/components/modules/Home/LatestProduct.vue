@@ -9,7 +9,7 @@
       elevation="0"
     >
       <v-container>
-        <span class="title blue--text">Latest Product</span>
+        <span class="title blue--text">LATEST PRODUCTS</span>
         <v-divider></v-divider>
       </v-container>
     </v-flex>
