@@ -107,7 +107,7 @@ export default {
     price_amount: null,
     base_price_amount: null,
     discount_type: null,
-    discount_type: null,
+    discount_value: null,
   }),
 
   created() {
