@@ -36,6 +36,7 @@
         >
           <ProductCard
             :item="{
+              type: 'normal',
               id: item.id,
               name: item.name,
               file_path: item.productImages[0].file_path,
@@ -68,6 +69,7 @@
 
 <script>
 import ProductCard from "./Card";
+import { mapActions } from "vuex";
 
 export default {
   props: {
@@ -103,7 +105,12 @@ export default {
   },
 
   methods: {
+    ...mapActions("productFlashDealHeaders", {
+      getProductFlashDealHeaderDataTodayFlashDeal: "getDataTodayFlashDeal",
+    }),
+
     setDefault() {
+      this.getProductFlashDealHeaderDataTodayFlashDeal();
       this.pagination.page = _.isUndefined(this.$route.query.page)
         ? 1
         : parseInt(this.$route.query.page);

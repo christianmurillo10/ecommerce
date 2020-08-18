@@ -21,6 +21,7 @@
         >
           <ProductCard
             :item="{
+              type: 'latest',
               id: productIsFeatured.id,
               name: productIsFeatured.name,
               file_path: productIsFeatured.productImages[0].file_path,

@@ -35,6 +35,7 @@
         >
           <ProductCard
             :item="{
+              type: 'flashDeal',
               id: productFlashDealDetail.product_id,
               name: productFlashDealDetail.products.name,
               file_path:

@@ -8,7 +8,7 @@
       >
         <v-img
           height="200"
-          :src="item.file_path"
+          :src="productDetails.file_path"
           lazy-src="@/assets/images/no-image.png"
         >
           <v-expand-transition>
@@ -26,7 +26,7 @@
                   x-small
                   color="white"
                   class="blue--text"
-                  @click="viewDetails(item.id)"
+                  @click="viewDetails(productDetails.id)"
                 >
                   <v-icon small>mdi-cart</v-icon>
                 </v-btn>
@@ -45,30 +45,27 @@
                       hover ? 'blue--text' : 'black--text'
                     }`
                   "
-                  @click="viewProduct(item.id)"
+                  @click="viewProduct(productDetails.id)"
                 >
-                  {{ truncateText(item.name, 20) }}
+                  {{ truncateText(productDetails.name, 20) }}
                 </span>
               </v-hover>
             </v-card-title>
           </template>
-          <span>{{ item.name }}</span>
+          <span>{{ productDetails.name }}</span>
         </v-tooltip>
         <v-card-text>
           <div class="subtitle-2 font-weight-bold black--text">
-            {{ `&#8369; ${item.price_amount}` }}
-            <span
-              class="line-through grey--text ml-1"
-              v-if="item.base_price_amount"
-            >
-              {{ `&#8369; ${item.base_price_amount}` }}
+            {{ `&#8369; ${priceAmount}` }}
+            <span class="line-through grey--text ml-1" v-if="basePriceAmount">
+              {{ `&#8369; ${basePriceAmount}` }}
             </span>
           </div>
           <div
             class="subtitle-2 font-weight-bold blue--text"
-            v-if="item.discount_value && item.discount_type"
+            v-if="discountValue && discountType"
           >
-            {{ setRateTypeValue(item.discount_value, item.discount_type) }}
+            {{ setRateTypeValue(discountValue, discountType) }}
             OFF
           </div>
           <v-row align="center" class="mx-0">
@@ -92,6 +89,7 @@
 <script>
 import Mixins from "@/helpers/Mixins.js";
 import ProductDetailsModal from "./modals/DetailsModal";
+import { mapState } from "vuex";
 
 export default {
   props: {
@@ -104,7 +102,59 @@ export default {
     ProductDetailsModal,
   },
 
+  data: () => ({
+    productDetails: null,
+    price_amount: null,
+    base_price_amount: null,
+    discount_type: null,
+    discount_type: null,
+  }),
+
+  created() {
+    this.initialLoad();
+  },
+
+  computed: {
+    ...mapState("productFlashDealHeaders", [
+      "productFlashDealHeaderTodayFlashDeal",
+    ]),
+
+    priceAmount() {
+      return this.price_amount ? this.price_amount : this.productDetails.price_amount;
+    },
+
+    basePriceAmount() {
+      return this.base_price_amount ? this.base_price_amount : this.productDetails.base_price_amount;
+    },
+
+    discountType() {
+      return this.discount_type ? this.discount_type : this.productDetails.discount_type;
+    },
+
+    discountValue() {
+      return this.discount_value ? this.discount_value : this.productDetails.discount_value;
+    },
+  },
+
+  watch: {
+    productFlashDealHeaderTodayFlashDeal(val) {
+      if (val && this.item.type !== "flashDeal") {
+        const flashDeal = val.productFlashDealDetails.find(val => val.product_id == this.item.id);
+        if (flashDeal) {
+          this.price_amount = flashDeal.current_price_amount;
+          this.base_price_amount = flashDeal.base_price_amount;
+          this.discount_type = flashDeal.discount_type;
+          this.discount_value = flashDeal.discount_value;
+        }
+      }
+    },
+  },
+
   methods: {
+    initialLoad() {
+      this.productDetails = this.item;
+    },
+
     viewProduct(id) {
       this.$router.push(`/products/${id}`);
     },
