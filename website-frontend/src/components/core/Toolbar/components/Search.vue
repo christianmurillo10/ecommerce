@@ -81,7 +81,7 @@ export default {
 
   watch: {
     keyword(val) {
-      clearTimeout(this.typing);
+      this.clearTypingTimeout();
       if (_.isEmpty(val) || _.isNull(val) || val === "/") {
         this.items = [];
       } else {
@@ -116,12 +116,17 @@ export default {
       this.keyword = "";
     },
 
+    clearTypingTimeout() {
+      if (this.typing) clearTimeout(this.typing);
+    },
+
     viewProduct(id) {
       this.keyword = "";
       this.$router.push(`/products/${id}`);
     },
 
     searchByRecent(val) {
+      this.clearTypingTimeout();
       if (!_.isEmpty(val)) {
         this.keyword = "";
         this.$router.push({
@@ -132,6 +137,7 @@ export default {
     },
 
     search() {
+      this.clearTypingTimeout();
       if (
         !_.isEmpty(this.keyword) &&
         this.$route.query.keyword !== this.keyword &&
