@@ -299,7 +299,7 @@ module.exports = {
           'is_featured',
           'is_published'
         ],
-        where: { name: { $like: `%${params.keyword}%` }, is_deleted: NO },
+        where: { name: { $like: `${params.keyword}%` }, is_deleted: NO },
         order: [
           ['id', 'ASC'],
         ],
@@ -320,7 +320,7 @@ module.exports = {
           },
         ]
       };
-      countCriteria = { where: { name: { $like: `%${params.keyword}%` }, is_deleted: NO } };
+      countCriteria = { where: { name: { $like: `${params.keyword}%` }, is_deleted: NO } };
 
       // Execute findAll query
       data = await Model.Products.findAll(criteria);
@@ -392,7 +392,7 @@ module.exports = {
           'is_featured',
           'is_published'
         ],
-        where: { name: { $like: `%${params.keyword}%` }, is_deleted: NO },
+        where: { name: { $like: `${params.keyword}%` }, is_deleted: NO },
         order: [
           ['id', 'ASC'],
         ],
@@ -413,10 +413,10 @@ module.exports = {
           },
         ]
       };
-      countCriteria = { where: { name: { $like: `%${params.keyword}%` }, is_deleted: NO } };
+      countCriteria = { where: { name: { $like: `${params.keyword}%` }, is_deleted: NO } };
       relatedCategoriesCriteria = {
         attributes: ['product_sub_category_id'],
-        where: { name: { $like: `%${params.keyword}%` }, is_deleted: NO },
+        where: { name: { $like: `${params.keyword}%` }, is_deleted: NO },
         group: ['product_sub_category_id'],
         include: [
           { model: Model.ProductSubCategories, as: "productSubCategories", attributes: ['name', 'description'] }
@@ -495,7 +495,7 @@ module.exports = {
           'is_featured',
           'is_published'
         ],
-        where: { name: { $like: `%${params.keyword}%` }, product_sub_category_id: params.subCategoryId, is_deleted: NO },
+        where: { name: { $like: `${params.keyword}%` }, product_sub_category_id: params.subCategoryId, is_deleted: NO },
         order: [
           ['id', 'ASC'],
         ],
@@ -516,10 +516,10 @@ module.exports = {
           },
         ]
       };
-      countCriteria = { where: { name: { $like: `%${params.keyword}%` }, product_sub_category_id: params.subCategoryId, is_deleted: NO } };
+      countCriteria = { where: { name: { $like: `${params.keyword}%` }, product_sub_category_id: params.subCategoryId, is_deleted: NO } };
       relatedCategoriesCriteria = {
         attributes: ['product_sub_category_id'],
-        where: { name: { $like: `%${params.keyword}%` }, is_deleted: NO },
+        where: { name: { $like: `${params.keyword}%` }, is_deleted: NO },
         group: ['product_sub_category_id'],
         include: [
           { model: Model.ProductSubCategories, as: "productSubCategories", attributes: ['name', 'description'] }
