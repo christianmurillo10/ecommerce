@@ -13,7 +13,7 @@
         >
           <v-expand-transition>
             <v-row
-              class="fill-height pa-2 transition-fast-in-fast-out blue-grey lighten-3 v-card--reveal"
+              class="fill-height pa-2 transition-fast-in-fast-out grey darken-3 v-card--reveal"
               align="end"
               v-if="hover"
             >

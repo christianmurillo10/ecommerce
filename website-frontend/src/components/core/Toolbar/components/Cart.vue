@@ -9,7 +9,7 @@
     transition="slide-x-reverse-transition"
   >
     <template v-slot:activator="{ on: { click } }">
-      <v-tooltip left>
+      <v-tooltip bottom>
         <template v-slot:activator="{ on }">
           <v-btn icon v-on:click="click" v-on="on">
             <v-badge

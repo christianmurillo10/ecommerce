@@ -14,7 +14,7 @@
         </v-flex>
         <v-flex xs4 sm4 md4 lg4>
           <v-layout justify-end>
-            <v-tooltip left>
+            <v-tooltip bottom>
               <template v-slot:activator="onTooltip">
                 <v-btn icon v-on="onTooltip.on">
                   <v-badge color="red" content="0">

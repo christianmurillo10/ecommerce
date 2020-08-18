@@ -64,6 +64,8 @@ export default {
   data: () => ({
     items: [],
     keyword: "",
+    typing: null,
+    typingInterval: 1000,
     limit: 10,
     offset: 0,
   }),
@@ -79,14 +81,17 @@ export default {
 
   watch: {
     keyword(val) {
-      if (_.isEmpty(val) || val === '/') {
+      clearTimeout(this.typing);
+      if (_.isEmpty(val) || _.isNull(val) || val === "/") {
         this.items = [];
       } else {
-        this.getProductDataBySearchBar({
-          keyword: val,
-          limit: this.limit,
-          offset: this.offset,
-        });
+        this.typing = setTimeout(() => {
+          this.getProductDataBySearchBar({
+            keyword: val,
+            limit: this.limit,
+            offset: this.offset,
+          });
+        }, this.typingInterval);
       }
     },
 
