@@ -21,11 +21,33 @@
     <v-flex xs12 sm12 md12 lg12 class="pt-2">
       <v-card outlined shaped>
         <v-card-text>
-          <span class="headline font-weight-bold black--text">{{
-            `&#8369; ${
-              details.price_amount === undefined ? "0.00" : details.price_amount
-            }`
-          }}</span>
+          <div v-if="countdownDate">
+            <v-layout wrap>
+              <v-flex xs12 sm12 md12 lg12 text-end>
+                <Countdown class="countdown" :endTime="countdownDate" />
+              </v-flex>
+            </v-layout>
+          </div>
+          <div>
+            <span class="headline font-weight-bold black--text">
+              {{ `&#8369; ${priceAmount}` }}
+            </span>
+          </div>
+          <div>
+            <span
+              class="subtitle-1 line-through grey--text"
+              v-if="basePriceAmount"
+            >
+              {{ `&#8369; ${basePriceAmount}` }}
+            </span>
+            <span
+              class="subtitle-2 font-weight-bold blue--text ml-2"
+              v-if="discountValue && discountType"
+            >
+              {{ setRateTypeValue(discountValue, discountType) }}
+              OFF
+            </span>
+          </div>
         </v-card-text>
       </v-card>
     </v-flex>
@@ -73,12 +95,12 @@
             ></v-text-field>
           </v-flex>
           <v-flex xs4 sm4 md5 lg5 offset-xs1 offset-sm1 offset-md1 offset-lg1>
-            <span v-if="stockAvailable === 0" class="body-2 red--text"
-              >Out of stock</span
-            >
-            <span v-else class="body-2">{{
-              `${stockAvailable} ${details.unit} available`
-            }}</span>
+            <span v-if="stockAvailable === 0" class="body-2 red--text">
+              Out of stock
+            </span>
+            <span v-else class="body-2">
+              {{ `${stockAvailable} ${details.unit} available` }}
+            </span>
           </v-flex>
         </v-layout>
       </v-container>
@@ -122,8 +144,9 @@
 
 <script>
 import Mixins from "@/helpers/Mixins.js";
+import Countdown from "@/components/utilities/Countdown";
 import AddToCartModal from "../modals/AddToCartModal";
-import { mapGetters, mapMutations } from "vuex";
+import { mapState, mapGetters, mapActions, mapMutations } from "vuex";
 
 export default {
   props: {
@@ -133,10 +156,16 @@ export default {
 
   mixins: [Mixins],
   components: {
+    Countdown,
     AddToCartModal,
   },
 
   data: () => ({
+    countdown_date: null,
+    price_amount: null,
+    base_price_amount: null,
+    discount_type: null,
+    discount_value: null,
     stockAvailable: 0,
     formData: {
       options: [],
@@ -145,12 +174,51 @@ export default {
     valid: true,
   }),
 
+  mounted() {
+    this.getProductFlashDealHeaderDataTodayFlashDeal();
+  },
+
   computed: {
     ...mapGetters("products", ["getProductAvailableStockBySku"]),
     ...mapGetters("customerAuthentication", ["isLoggedIn"]),
+    ...mapState("productFlashDealHeaders", [
+      "productFlashDealHeaderTodayFlashDeal",
+    ]),
+
+    countdownDate() {
+      return this.countdown_date;
+    },
+
+    priceAmount() {
+      const priceAmount =
+        this.details.price_amount === undefined
+          ? "0.00"
+          : this.details.price_amount;
+      return this.price_amount ? this.price_amount : priceAmount;
+    },
+
+    basePriceAmount() {
+      return this.base_price_amount
+        ? this.base_price_amount
+        : this.details.base_price_amount;
+    },
+
+    discountType() {
+      return this.discount_type
+        ? this.discount_type
+        : this.details.discount_type;
+    },
+
+    discountValue() {
+      return this.discount_value
+        ? this.discount_value
+        : this.details.discount_value;
+    },
+
     totalPrice() {
-      this.formData.total_price =
-        this.details.price_amount * this.formData.quantity;
+      const priceAmount =
+        this.details.price_amount === undefined ? 0 : this.details.price_amount;
+      this.formData.total_price = priceAmount * this.formData.quantity;
       return this.formData.total_price.toFixed(2);
     },
   },
@@ -172,12 +240,31 @@ export default {
       this.formData.quantity = 1;
 
       // enable disable buttons
-      if (this.stockAvailable === 0) this.valid = false;
-      else this.valid = true;
+      if (this.stockAvailable === 0) {
+        this.valid = false;
+      } else {
+        this.valid = true;
+      }
+    },
+
+    productFlashDealHeaderTodayFlashDeal(val) {
+      const flashDeal = val.productFlashDealDetails.find(
+        (val) => val.product_id == this.details.id
+      );
+      if (flashDeal) {
+        this.countdown_date = val.date_to;
+        this.price_amount = flashDeal.current_price_amount;
+        this.base_price_amount = flashDeal.base_price_amount;
+        this.discount_type = flashDeal.discount_type;
+        this.discount_value = flashDeal.discount_value;
+      }
     },
   },
 
   methods: {
+    ...mapActions("productFlashDealHeaders", {
+      getProductFlashDealHeaderDataTodayFlashDeal: "getDataTodayFlashDeal",
+    }),
     ...mapMutations("customerCarts", {
       addCartData: "ADD_DATA",
     }),
@@ -195,12 +282,15 @@ export default {
     },
 
     quantityValueChecker(val) {
-      if (val < 1) this.formData.quantity = "";
-      else if (val > 10 && this.stockAvailable > 10)
+      if (val < 1) {
+        this.formData.quantity = "";
+      } else if (val > 10 && this.stockAvailable > 10) {
         this.formData.quantity = 10;
-      else if (val > this.stockAvailable)
+      } else if (val > this.stockAvailable) {
         this.formData.quantity = this.stockAvailable;
-      else this.formData.quantity = val;
+      } else {
+        this.formData.quantity = val;
+      }
     },
 
     setOptionValues(key, value) {
@@ -210,8 +300,11 @@ export default {
       this.formData.quantity = 1;
 
       // enable disable buttons
-      if (this.stockAvailable === 0) this.valid = false;
-      else this.valid = true;
+      if (this.stockAvailable === 0) {
+        this.valid = false;
+      } else {
+        this.valid = true;
+      }
     },
 
     generateSKU() {
@@ -264,7 +357,7 @@ export default {
 };
 </script>
 
-<style>
+<style lang="scss" scoped>
 .inputQuantity input[type="number"] {
   text-align: center;
   -moz-appearance: textfield;
@@ -272,5 +365,9 @@ export default {
 .inputQuantity input::-webkit-outer-spin-button,
 .inputQuantity input::-webkit-inner-spin-button {
   -webkit-appearance: none;
+}
+
+.countdown {
+  margin-top: -15px;
 }
 </style>

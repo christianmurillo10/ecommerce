@@ -87,7 +87,7 @@ export default {
   padding: 5px 10px 5px 10px;
   border-radius: 3px;
   background: #90caf9;
-  display: inline-block;
+  display: block;
 }
 
 .smalltext {
