@@ -21,7 +21,7 @@
     <v-flex xs12 sm12 md12 lg12 class="pt-2">
       <v-card outlined shaped>
         <v-card-text>
-          <div v-if="countdownDate">
+          <div v-if="is_today_deal">
             <v-layout wrap>
               <v-flex xs12 sm12 md12 lg12 text-end>
                 <Countdown class="countdown" :endTime="countdownDate" />
@@ -33,17 +33,11 @@
               {{ `&#8369; ${priceAmount}` }}
             </span>
           </div>
-          <div>
-            <span
-              class="subtitle-1 line-through grey--text"
-              v-if="basePriceAmount"
-            >
+          <div v-if="is_today_deal">
+            <span class="subtitle-1 line-through grey--text">
               {{ `&#8369; ${basePriceAmount}` }}
             </span>
-            <span
-              class="subtitle-2 font-weight-bold blue--text ml-2"
-              v-if="discountValue && discountType"
-            >
+            <span class="subtitle-2 font-weight-bold blue--text ml-2">
               {{ setRateTypeValue(discountValue, discountType) }}
               OFF
             </span>
@@ -65,8 +59,9 @@
               outlined
               color="blue"
               @click="setOptionValues(i, value)"
-              >{{ value }}</v-chip
             >
+              {{ value }}
+            </v-chip>
           </v-chip-group>
         </v-flex>
       </div>
@@ -74,33 +69,56 @@
     <v-flex xs12 sm12 md12 lg12>
       <v-container fill-height>
         <v-layout wrap row align-center>
-          <v-flex xs12 sm12 md3 lg3>
+          <v-flex xs12 sm12 md2 lg2>
             <span class="body-2 black--text">Quantity:</span>
           </v-flex>
-          <v-flex xs7 sm7 md3 lg3>
-            <v-text-field
-              v-model="formData.quantity"
-              placeholder
-              type="number"
-              class="inputQuantity"
-              append-icon="mdi-plus"
-              @click:append="increment"
-              prepend-inner-icon="mdi-minus"
-              @click:prepend-inner="decrement"
-              @keyup="quantityValueChecker($event.target.value)"
-              :rules="[rules.required, rules.lessThanOrEqualTo10]"
-              :disabled="stockAvailable === 0 ? true : false"
-              dense
-              required
-            ></v-text-field>
-          </v-flex>
-          <v-flex xs4 sm4 md5 lg5 offset-xs1 offset-sm1 offset-md1 offset-lg1>
-            <span v-if="stockAvailable === 0" class="body-2 red--text">
-              Out of stock
-            </span>
-            <span v-else class="body-2">
-              {{ `${stockAvailable} ${details.unit} available` }}
-            </span>
+          <v-flex xs12 sm12 md10 lg10>
+            <v-layout row wrap align-center>
+              <v-flex xs2 sm2 md2 lg2 text-end>
+                <v-btn
+                  outlined
+                  x-small
+                  color="blue"
+                  height="40"
+                  @click="decrement"
+                >
+                  <v-icon>mdi-minus</v-icon>
+                </v-btn>
+              </v-flex>
+              <v-flex xs3 sm3 md3 lg3>
+                <v-text-field
+                  class="product-quantity-input"
+                  v-model="formData.quantity"
+                  outlined
+                  dense
+                  type="number"
+                  hide-details
+                  @keyup="quantityValueChecker($event.target.value)"
+                  :rules="[rules.required, rules.lessThanOrEqualTo10]"
+                  :disabled="stock_available === 0 ? true : false"
+                  required
+                ></v-text-field>
+              </v-flex>
+              <v-flex xs2 sm2 md2 lg2>
+                <v-btn
+                  outlined
+                  x-small
+                  color="blue"
+                  height="40"
+                  @click="increment"
+                >
+                  <v-icon>mdi-plus</v-icon>
+                </v-btn>
+              </v-flex>
+              <v-flex xs5 sm5 md5 lg5>
+                <span v-if="stock_available === 0" class="body-2 red--text">
+                  Out of stock
+                </span>
+                <span v-else class="body-2">
+                  {{ `${stock_available} ${details.unit} available` }}
+                </span>
+              </v-flex>
+            </v-layout>
           </v-flex>
         </v-layout>
       </v-container>
@@ -161,12 +179,13 @@ export default {
   },
 
   data: () => ({
+    is_today_deal: false,
     countdown_date: null,
     price_amount: null,
     base_price_amount: null,
     discount_type: null,
     discount_value: null,
-    stockAvailable: 0,
+    stock_available: 0,
     formData: {
       options: [],
       quantity: 1,
@@ -190,10 +209,9 @@ export default {
     },
 
     priceAmount() {
-      const priceAmount =
-        this.details.price_amount === undefined
-          ? "0.00"
-          : this.details.price_amount;
+      const priceAmount = _.isUndefined(this.details.price_amount)
+        ? "0.00"
+        : this.details.price_amount;
       return this.price_amount ? this.price_amount : priceAmount;
     },
 
@@ -215,11 +233,10 @@ export default {
         : this.details.discount_value;
     },
 
-    totalPrice() {
-      const priceAmount =
-        this.details.price_amount === undefined ? 0 : this.details.price_amount;
-      this.formData.total_price = priceAmount * this.formData.quantity;
-      return this.formData.total_price.toFixed(2);
+    totalPriceAmount() {
+      this.formData.total_price_amount =
+        this.priceAmount * this.formData.quantity;
+      return this.formData.total_price_amount.toFixed(2);
     },
   },
 
@@ -236,11 +253,11 @@ export default {
       });
 
       let sku = this.generateSKU();
-      this.stockAvailable = this.getProductAvailableStockBySku(sku);
+      this.stock_available = this.getProductAvailableStockBySku(sku);
       this.formData.quantity = 1;
 
       // enable disable buttons
-      if (this.stockAvailable === 0) {
+      if (this.stock_available === 0) {
         this.valid = false;
       } else {
         this.valid = true;
@@ -252,6 +269,7 @@ export default {
         (val) => val.product_id == this.details.id
       );
       if (flashDeal) {
+        this.is_today_deal = true;
         this.countdown_date = val.date_to;
         this.price_amount = flashDeal.current_price_amount;
         this.base_price_amount = flashDeal.base_price_amount;
@@ -276,7 +294,7 @@ export default {
     increment() {
       if (
         this.formData.quantity < 10 &&
-        this.formData.quantity < this.stockAvailable
+        this.formData.quantity < this.stock_available
       )
         this.formData.quantity++;
     },
@@ -284,10 +302,10 @@ export default {
     quantityValueChecker(val) {
       if (val < 1) {
         this.formData.quantity = "";
-      } else if (val > 10 && this.stockAvailable > 10) {
+      } else if (val > 10 && this.stock_available > 10) {
         this.formData.quantity = 10;
-      } else if (val > this.stockAvailable) {
-        this.formData.quantity = this.stockAvailable;
+      } else if (val > this.stock_available) {
+        this.formData.quantity = this.stock_available;
       } else {
         this.formData.quantity = val;
       }
@@ -296,11 +314,11 @@ export default {
     setOptionValues(key, value) {
       this.formData.options[key].value = value;
       let sku = this.generateSKU();
-      this.stockAvailable = this.getProductAvailableStockBySku(sku);
+      this.stock_available = this.getProductAvailableStockBySku(sku);
       this.formData.quantity = 1;
 
       // enable disable buttons
-      if (this.stockAvailable === 0) {
+      if (this.stock_available === 0) {
         this.valid = false;
       } else {
         this.valid = true;
@@ -340,8 +358,12 @@ export default {
             name: this.details.name,
             options: this.formData.options,
             quantity: this.formData.quantity,
-            price: this.details.price_amount,
-            total_price: this.totalPrice,
+            base_price_amount: this.basePriceAmount,
+            price_amount: this.priceAmount,
+            discount_type: this.discountType,
+            discount_value: this.discountValue,
+            total_price_amount: this.totalPriceAmount,
+            is_today_deal: this.is_today_deal,
           };
           this.addCartData(obj);
           this.$refs.addToCartModal.setDialog(true, obj);
@@ -358,15 +380,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.inputQuantity input[type="number"] {
-  text-align: center;
-  -moz-appearance: textfield;
-}
-.inputQuantity input::-webkit-outer-spin-button,
-.inputQuantity input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-}
-
 .countdown {
   margin-top: -15px;
 }

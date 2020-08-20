@@ -3,7 +3,13 @@
     <v-card-title>MY CART</v-card-title>
     <v-divider></v-divider>
     <v-card-text>
-      <v-data-table :headers="headers" :items="items" item-key="index" single-expand show-expand>
+      <v-data-table
+        :headers="headers"
+        :items="items"
+        item-key="index"
+        single-expand
+        show-expand
+      >
         <template v-slot:top>
           <v-toolbar dense flat>
             <v-spacer></v-spacer>
@@ -21,20 +27,50 @@
           <v-edit-dialog>
             {{ props.item.quantity }}
             <template v-slot:input>
-              <v-text-field
-                v-model="props.item.quantity"
-                type="number"
-                class="inputQuantity"
-                append-icon="mdi-plus"
-                @click:append="increment(props.item.index)"
-                prepend-inner-icon="mdi-minus"
-                @click:prepend-inner="decrement(props.item.index)"
-                @keyup="
-                  quantityValueChecker($event.target.value, props.item.index)
-                "
-                :rules="[rules.required, rules.lessThanOrEqualTo10]"
-                required
-              ></v-text-field>
+              <v-container>
+                <v-layout wrap>
+                  <v-flex xs3 sm3 md3 lg3 text-end>
+                    <v-btn
+                      outlined
+                      x-small
+                      color="blue"
+                      height="40"
+                      @click="decrement(props.item.index)"
+                    >
+                      <v-icon>mdi-minus</v-icon>
+                    </v-btn>
+                  </v-flex>
+                  <v-flex xs6 sm6 md6 lg6>
+                    <v-text-field
+                      class="product-quantity-input"
+                      v-model="props.item.quantity"
+                      outlined
+                      dense
+                      type="number"
+                      hide-details
+                      @keyup="
+                        quantityValueChecker(
+                          $event.target.value,
+                          props.item.index
+                        )
+                      "
+                      :rules="[rules.required, rules.lessThanOrEqualTo10]"
+                      required
+                    ></v-text-field>
+                  </v-flex>
+                  <v-flex xs3 sm3 md3 lg3>
+                    <v-btn
+                      outlined
+                      x-small
+                      color="blue"
+                      height="40"
+                      @click="increment(props.item.index)"
+                    >
+                      <v-icon>mdi-plus</v-icon>
+                    </v-btn>
+                  </v-flex>
+                </v-layout>
+              </v-container>
             </template>
           </v-edit-dialog>
         </template>
@@ -48,6 +84,8 @@
             <table>
               <thead>
                 <tr>
+                  <th>Base Price</th>
+                  <th>Discount</th>
                   <th
                     class="text-left"
                     v-for="(option, i) in item.options"
@@ -59,6 +97,12 @@
               </thead>
               <tbody>
                 <tr>
+                  <td>{{ item.base_price_amount }}</td>
+                  <td>
+                    {{
+                      setRateTypeValue(item.discount_value, item.discount_type)
+                    }}
+                  </td>
                   <td v-for="(option, i) in item.options" :key="i">
                     {{ option.value }}
                   </td>
@@ -87,7 +131,12 @@ export default {
     headers: [
       { text: "Image", value: "file_path", filterable: false, sortable: false },
       { text: "Item", value: "name", filterable: false },
-      { text: "Price", value: "price", filterable: false, sortable: false },
+      {
+        text: "Price",
+        value: "price_amount",
+        filterable: false,
+        sortable: false,
+      },
       {
         text: "Quantity",
         value: "quantity",
@@ -97,7 +146,7 @@ export default {
       },
       {
         text: "Total Price",
-        value: "total_price",
+        value: "total_price_amount",
         filterable: false,
         sortable: false,
       },
@@ -161,14 +210,3 @@ export default {
   },
 };
 </script>
-
-<style>
-.inputQuantity input[type="number"] {
-  text-align: center;
-  -moz-appearance: textfield;
-}
-.inputQuantity input::-webkit-outer-spin-button,
-.inputQuantity input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-}
-</style>

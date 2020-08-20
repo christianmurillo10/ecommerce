@@ -49,7 +49,7 @@
                 <td>
                   <v-row class="font-weight-medium">{{ item.name }}</v-row>
                   <v-row>
-                    {{ `x${item.quantity} &#8369; ${item.total_price}` }}
+                    {{ `x${item.quantity} &#8369; ${item.price_amount}` }}
                   </v-row>
                 </td>
                 <td class="justify-center">
@@ -74,7 +74,7 @@
           </v-layout>
           <v-layout justify-end>
             <p class="font-weight-medium">
-              {{ `&#8369; ${getCustomerCartTotalPrice}` }}
+              {{ `&#8369; ${getCustomerCartTotalPriceAmount}` }}
             </p>
           </v-layout>
         </v-layout>
@@ -129,7 +129,7 @@ export default {
 
   computed: {
     ...mapState("customerCarts", ["customerCartList"]),
-    ...mapGetters("customerCarts", ["getCustomerCartTotalPrice"]),
+    ...mapGetters("customerCarts", ["getCustomerCartTotalPriceAmount"]),
     ...mapGetters("customerAuthentication", ["isLoggedIn"]),
   },
 

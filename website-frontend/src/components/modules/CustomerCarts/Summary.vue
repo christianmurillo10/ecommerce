@@ -22,10 +22,10 @@
             <tbody>
               <tr v-for="item in items" :key="item.index">
                 <td class="text-left">
-                  {{ `&#8369; ${item.price} x ${item.quantity}` }}
+                  {{ `&#8369; ${item.price_amount} x ${item.quantity}` }}
                 </td>
                 <td class="text-left">{{ `${item.name}` }}</td>
-                <td class="text-right">{{ `&#8369; ${item.total_price}` }}</td>
+                <td class="text-right">{{ `&#8369; ${item.total_price_amount}` }}</td>
               </tr>
             </tbody>
           </template>
@@ -41,7 +41,7 @@
               </v-flex>
               <v-flex xs6 sm6 md6 lg6>
                 <div class="subtitle-2 text-right">
-                  {{ `&#8369; ${getCustomerCartTotalPrice}` }}
+                  {{ `&#8369; ${getCustomerCartTotalPriceAmount}` }}
                 </div>
               </v-flex>
               <v-flex xs6 sm6 md6 lg6>
@@ -55,7 +55,7 @@
               </v-flex>
               <v-flex xs6 sm6 md6 lg6>
                 <div class="subtitle-2 text-right">
-                  {{ `&#8369; ${getCustomerCartTotalPrice}` }}
+                  {{ `&#8369; ${getCustomerCartTotalPriceAmount}` }}
                 </div>
               </v-flex>
             </v-layout>
@@ -87,7 +87,7 @@
               </v-flex>
               <v-flex xs6 sm6 md6 lg6>
                 <div class="subtitle-2 text-right">
-                  {{ `&#8369; ${getCustomerCartTotalPrice}` }}
+                  {{ `&#8369; ${getCustomerCartTotalPriceAmount}` }}
                 </div>
               </v-flex>
             </v-layout>
@@ -119,7 +119,7 @@ export default {
   },
 
   computed: {
-    ...mapGetters("customerCarts", ["getCustomerCartTotalPrice"]),
+    ...mapGetters("customerCarts", ["getCustomerCartTotalPriceAmount"]),
   },
 };
 </script>

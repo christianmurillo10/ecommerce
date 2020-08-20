@@ -20,51 +20,88 @@
               <v-container fluid grid-list-xs>
                 <v-layout wrap row>
                   <v-flex xs12 sm12 md12 lg12>
-                    <span class="title black--text">{{
-                      productDetails.name
-                    }}</span>
+                    <span class="title black--text">
+                      {{ productDetails.name }}
+                    </span>
                   </v-flex>
-                  <v-flex xs4 sm4 md4 lg4>
-                    <span class="body-2 black--text">Option: </span>
+                  <v-flex xs12 sm12 md12 lg12>
+                    <v-layout wrap row>
+                      <v-flex xs4 sm4 md4 lg4>
+                        <span class="body-2 black--text">Option: </span>
+                      </v-flex>
+                      <v-flex xs8 sm8 md8 lg8>
+                        <v-simple-table dense>
+                          <template v-slot:default>
+                            <tbody>
+                              <tr
+                                v-for="(option, i) in productDetails.options"
+                                :key="i"
+                              >
+                                <td>{{ option.title }} :</td>
+                                <td>{{ option.value }}</td>
+                              </tr>
+                            </tbody>
+                          </template>
+                        </v-simple-table>
+                      </v-flex>
+                    </v-layout>
                   </v-flex>
-                  <v-flex xs8 sm8 md8 lg8>
-                    <v-simple-table dense>
-                      <template v-slot:default>
-                        <tbody>
-                          <tr
-                            v-for="(option, i) in productDetails.options"
-                            :key="i"
-                          >
-                            <td>{{ option.title }} :</td>
-                            <td>{{ option.value }}</td>
-                          </tr>
-                        </tbody>
-                      </template>
-                    </v-simple-table>
+                  <v-flex xs12 sm12 md12 lg12>
+                    <v-layout wrap row>
+                      <v-flex xs4 sm4 md4 lg4>
+                        <span class="body-2 black--text">Quantity: </span>
+                      </v-flex>
+                      <v-flex xs8 sm8 md8 lg8>
+                        <span class="body-2 font-weight-bold black--text">
+                          {{ productDetails.quantity }}
+                        </span>
+                      </v-flex>
+                    </v-layout>
                   </v-flex>
-                  <v-flex xs4 sm4 md4 lg4>
-                    <span class="body-2 black--text">Quantity: </span>
+                  <v-flex xs12 sm12 md12 lg12 v-if="productDetails.is_today_deal">
+                    <v-layout wrap row>
+                      <v-flex xs4 sm4 md4 lg4>
+                        <span class="body-2 black--text">Base Price: </span>
+                      </v-flex>
+                      <v-flex xs8 sm8 md8 lg8>
+                        <span class="body-2 font-weight-bold black--text">
+                          {{ `&#8369; ${productDetails.base_price_amount}` }}
+                        </span>
+                      </v-flex>
+                      <v-flex xs4 sm4 md4 lg4>
+                        <span class="body-2 black--text">Discount: </span>
+                      </v-flex>
+                      <v-flex xs8 sm8 md8 lg8>
+                        <span class="body-2 font-weight-bold blue--text">
+                          {{ setRateTypeValue(productDetails.discount_value, productDetails.discount_type) }}
+                          OFF
+                        </span>
+                      </v-flex>
+                    </v-layout>
                   </v-flex>
-                  <v-flex xs8 sm8 md8 lg8>
-                    <span class="body-2 font-weight-bold black--text">{{
-                      productDetails.quantity
-                    }}</span>
+                  <v-flex xs12 sm12 md12 lg12>
+                    <v-layout wrap row>
+                      <v-flex xs4 sm4 md4 lg4>
+                        <span class="body-2 black--text">Price: </span>
+                      </v-flex>
+                      <v-flex xs8 sm8 md8 lg8>
+                        <span class="body-2 font-weight-bold black--text">
+                          {{ `&#8369; ${productDetails.price_amount}` }}
+                        </span>
+                      </v-flex>
+                    </v-layout>
                   </v-flex>
-                  <v-flex xs4 sm4 md4 lg4>
-                    <span class="body-2 black--text">Price: </span>
-                  </v-flex>
-                  <v-flex xs8 sm8 md8 lg8>
-                    <span class="body-2 font-weight-bold black--text">{{
-                      `&#8369; ${productDetails.price}`
-                    }}</span>
-                  </v-flex>
-                  <v-flex xs4 sm4 md4 lg4>
-                    <span class="body-2 black--text">Total Price: </span>
-                  </v-flex>
-                  <v-flex xs8 sm8 md8 lg8>
-                    <span class="body-2 font-weight-bold black--text">{{
-                      `&#8369; ${productDetails.total_price}`
-                    }}</span>
+                  <v-flex xs12 sm12 md12 lg12>
+                    <v-layout wrap row>
+                      <v-flex xs4 sm4 md4 lg4>
+                        <span class="body-2 black--text">Total Price: </span>
+                      </v-flex>
+                      <v-flex xs8 sm8 md8 lg8>
+                        <span class="body-2 font-weight-bold black--text">
+                          {{ `&#8369; ${productDetails.total_price_amount}` }}
+                        </span>
+                      </v-flex>
+                    </v-layout>
                   </v-flex>
                 </v-layout>
               </v-container>
@@ -109,7 +146,11 @@
 </template>
 
 <script>
+import Mixins from "@/helpers/Mixins.js";
+
 export default {
+  mixins: [Mixins],
+
   data: () => ({
     dialog: false,
     productDetails: {
@@ -117,8 +158,12 @@ export default {
       name: "",
       options: [],
       quantity: 0,
-      price: 0.0,
-      total_price: 0.0,
+      base_price_amount: "0.00",
+      price_amount: "0.00",
+      discount_type: null,
+      discount_value: null,
+      total_price_amount: "0.00",
+      is_today_deal: false,
     },
   }),
 
@@ -128,8 +173,12 @@ export default {
       this.productDetails.name = obj.name;
       this.productDetails.options = obj.options;
       this.productDetails.quantity = obj.quantity;
-      this.productDetails.price = obj.price;
-      this.productDetails.total_price = obj.total_price;
+      this.productDetails.base_price_amount = obj.base_price_amount;
+      this.productDetails.price_amount = obj.price_amount;
+      this.productDetails.discount_type = obj.discount_type;
+      this.productDetails.discount_value = obj.discount_value;
+      this.productDetails.total_price_amount = obj.total_price_amount;
+      this.productDetails.is_today_deal = obj.is_today_deal;
       this.dialog = value;
     },
   },

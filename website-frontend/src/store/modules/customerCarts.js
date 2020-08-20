@@ -3,12 +3,12 @@ const state = {
 };
 
 const getters = {
-  getCustomerCartTotalPrice: (state) => {
-    let totalPrice = 0;
+  getCustomerCartTotalPriceAmount: (state) => {
+    let totalPriceAmount = 0;
     state.customerCartList.forEach(element => {
-      totalPrice += parseFloat(element.total_price)
+      totalPriceAmount += parseFloat(element.total_price_amount)
     });
-    return totalPrice.toFixed(2);
+    return totalPriceAmount.toFixed(2);
   }
 };
 
@@ -27,10 +27,10 @@ const mutations = {
   },
   UPDATE_DATA(state, payload) {
     let index = state.customerCartList.map(customerCart => customerCart.index).indexOf(payload.index);
-    let total_price = parseFloat(state.customerCartList[index].price) * payload.quantity;
+    let total_price_amount = parseFloat(state.customerCartList[index].price_amount) * payload.quantity;
     Object.assign(state.customerCartList[index], {
       quantity: payload.quantity,
-      total_price: total_price.toFixed(2)
+      total_price_amount: total_price_amount.toFixed(2)
     });
     localStorage.setItem("cCarts", JSON.stringify(state.customerCartList));
   },
