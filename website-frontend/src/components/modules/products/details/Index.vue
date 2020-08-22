@@ -81,6 +81,7 @@
                   color="blue"
                   height="40"
                   @click="decrement"
+                  :disabled="stock_available === 0 ? true : false"
                 >
                   <v-icon>mdi-minus</v-icon>
                 </v-btn>
@@ -106,6 +107,7 @@
                   color="blue"
                   height="40"
                   @click="increment"
+                  :disabled="stock_available === 0 ? true : false"
                 >
                   <v-icon>mdi-plus</v-icon>
                 </v-btn>
