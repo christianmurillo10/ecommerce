@@ -61,7 +61,15 @@ module.exports = {
             message: "User successfully signed in.",
             result: {
               token: token,
-              data: data,
+              data: _.omit(data, [
+                "password",
+                "created_at",
+                "updated_at",
+                "permission_type",
+                "is_logged",
+                "is_active",
+                "is_deleted",
+              ]),
             },
           });
         } else {

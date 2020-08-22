@@ -22,9 +22,11 @@
             <v-list-tile-avatar>
               <img :src="logo" />
             </v-list-tile-avatar>
-
             <v-list-tile-content>
-              <v-list-tile-title>E-Commerce</v-list-tile-title>
+              <v-list-tile-title>Hi! {{ userInfo.username }}</v-list-tile-title>
+              <v-list-tile-sub-title>
+                {{ userInfo.email }}
+              </v-list-tile-sub-title>
             </v-list-tile-content>
           </v-list-tile>
         </v-list>
@@ -34,7 +36,11 @@
         <v-divider></v-divider>
 
         <v-list-tile v-if="responsive">
-          <v-text-field class="blue-input search-input" label="Search..." color="blue" />
+          <v-text-field
+            class="blue-input search-input"
+            label="Search..."
+            color="blue"
+          />
         </v-list-tile>
       </v-list>
 
@@ -44,11 +50,18 @@
           <v-list-group :prepend-icon="link.icon">
             <template v-slot:activator>
               <v-list-tile>
-                <v-list-tile-title class="margin-left-n10">{{ link.text }}</v-list-tile-title>
+                <v-list-tile-title class="margin-left-n10">{{
+                  link.text
+                }}</v-list-tile-title>
               </v-list-tile>
             </template>
             <!-- Child navigation -->
-            <v-list class="pt-0" dense v-for="(child, i) in link.childs" :key="i">
+            <v-list
+              class="pt-0"
+              dense
+              v-for="(child, i) in link.childs"
+              :key="i"
+            >
               <template v-if="child.submenus">
                 <v-list-group class="margin-left-n10" no-action sub-group>
                   <template v-slot:activator>
@@ -57,10 +70,17 @@
                     </v-list-tile>
                   </template>
                   <!-- Sub-child navigation -->
-                  <v-list class="pt-0" dense v-for="(subChild, i) in child.subChilds" :key="i">
+                  <v-list
+                    class="pt-0"
+                    dense
+                    v-for="(subChild, i) in child.subChilds"
+                    :key="i"
+                  >
                     <v-list-tile :to="subChild.to">
                       <v-list-tile-content>
-                        <v-list-tile-title>{{ subChild.text }}</v-list-tile-title>
+                        <v-list-tile-title>{{
+                          subChild.text
+                        }}</v-list-tile-title>
                       </v-list-tile-content>
                     </v-list-tile>
                   </v-list>
@@ -100,12 +120,12 @@ import { mapState } from "vuex";
 
 export default {
   data: () => ({
-    logo: "/img/logo.png",
+    logo: require("@/assets/images/no-image.png"),
     links: [
       {
         to: "/",
         icon: "dashboard",
-        text: "Dashboard"
+        text: "Dashboard",
       },
       {
         icon: "shopping_basket",
@@ -118,40 +138,40 @@ export default {
           // },
           {
             to: "/productBrands",
-            text: "Brands"
+            text: "Brands",
           },
           {
             to: "/productCategories",
-            text: "Categories"
+            text: "Categories",
           },
           {
             to: "/productSubCategories",
-            text: "Sub-Categories"
+            text: "Sub-Categories",
           },
           {
             to: "/productSubSubCategories",
-            text: "Sub-Sub-Categories"
+            text: "Sub-Sub-Categories",
           },
           {
             to: "/products",
-            text: "Manage"
+            text: "Manage",
           },
-        ]
+        ],
       },
       {
         to: "/productFlashDeals",
         icon: "local_offer",
-        text: "Flash Deals"
+        text: "Flash Deals",
       },
       {
         to: "/customers",
         icon: "person",
-        text: "Customers"
+        text: "Customers",
       },
       {
         to: "/employees",
         icon: "people",
-        text: "Employees"
+        text: "Employees",
       },
       {
         icon: "list_alt",
@@ -160,29 +180,29 @@ export default {
         childs: [
           {
             to: "/salesOrders/open",
-            text: "Open"
+            text: "Open",
           },
           {
             to: "/salesOrders/reviewed",
-            text: "Reviewed"
+            text: "Reviewed",
           },
           {
             to: "/salesOrders/approved",
-            text: "Approved"
+            text: "Approved",
           },
           {
             to: "/salesOrders/onProcess",
-            text: "On Process"
+            text: "On Process",
           },
           {
             to: "/salesOrders/delivered",
-            text: "Delivered"
+            text: "Delivered",
           },
           {
             to: "/salesOrders/index",
-            text: "Manage"
-          }
-        ]
+            text: "Manage",
+          },
+        ],
       },
       {
         icon: "description",
@@ -191,13 +211,13 @@ export default {
         childs: [
           {
             to: "/",
-            text: "Stock Report"
+            text: "Stock Report",
           },
           {
             to: "/",
-            text: "Sold Items Report"
-          }
-        ]
+            text: "Sold Items Report",
+          },
+        ],
       },
       {
         icon: "desktop_mac",
@@ -210,9 +230,9 @@ export default {
             subChilds: [
               {
                 to: "/frontendSliderImages",
-                text: "Slider Images"
-              }
-            ]
+                text: "Slider Images",
+              },
+            ],
           },
           {
             text: "Policy Pages",
@@ -220,35 +240,35 @@ export default {
             subChilds: [
               {
                 to: "/frontendPolicyPages/terms",
-                text: "Terms & Conditions"
+                text: "Terms & Conditions",
               },
               {
                 to: "/frontendPolicyPages/privacy",
-                text: "Privacy Policy"
+                text: "Privacy Policy",
               },
               {
                 to: "/frontendPolicyPages/support",
-                text: "Support Policy"
+                text: "Support Policy",
               },
               {
                 to: "/frontendPolicyPages/return",
-                text: "Return Policy"
+                text: "Return Policy",
               },
               {
                 to: "/frontendPolicyPages/seller",
-                text: "Seller Policy"
-              }
-            ]
+                text: "Seller Policy",
+              },
+            ],
           },
           {
             to: "/frontendUsefulLinks",
-            text: "Useful Links"
+            text: "Useful Links",
           },
           // {
           //   to: "/",
           //   text: "General Settings"
           // }
-        ]
+        ],
       },
       {
         icon: "build",
@@ -257,13 +277,13 @@ export default {
         childs: [
           {
             to: "/banks",
-            text: "Banks"
+            text: "Banks",
           },
           {
             to: "/shippingMethods",
-            text: "Shipping Methods"
-          }
-        ]
+            text: "Shipping Methods",
+          },
+        ],
       },
       {
         icon: "settings",
@@ -272,9 +292,9 @@ export default {
         childs: [
           {
             to: "/users",
-            text: "Users"
-          }
-        ]
+            text: "Users",
+          },
+        ],
       },
       // {
       //   icon: "account_tree",
@@ -288,11 +308,12 @@ export default {
       //   ]
       // }
     ],
-    responsive: true
+    responsive: true,
   }),
   computed: {
-    ...mapState("toolbar", ["primaryDrawer"])
-  }
+    ...mapState("toolbar", ["primaryDrawer"]),
+    ...mapState("userAuthentication", ["userInfo"]),
+  },
 };
 </script>
 
@@ -314,14 +335,14 @@ export default {
 }
 
 ::-webkit-scrollbar-track {
-  background: #f1f1f1; 
+  background: #f1f1f1;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #888; 
+  background: #888;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #555; 
+  background: #555;
 }
 </style>

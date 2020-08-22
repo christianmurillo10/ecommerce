@@ -3,7 +3,7 @@ import axios from "axios";
 const state = {
   isLogin: false,
   token: localStorage.getItem("token") || "",
-  userInfo: [],
+  userInfo: JSON.parse(localStorage.getItem("details")) || "",
 };
 
 const getters = {
@@ -32,6 +32,7 @@ const actions = {
             if (!result) {
               resolve(response.data);
             } else {
+              localStorage.setItem("details", JSON.stringify(result.data));
               localStorage.setItem("token", token);
               axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 
@@ -41,6 +42,7 @@ const actions = {
           })
           .catch((err) => {
             console.log(err);
+            localStorage.removeItem("details");
             localStorage.removeItem("token");
           });
       } catch (err) {
@@ -66,6 +68,7 @@ const actions = {
 
             if (status === 200) {
               commit("SET_LOGOUT");
+              localStorage.removeItem("details");
               localStorage.removeItem("token");
               delete axios.defaults.headers.common["Authorization"];
               resolve(response.data);
@@ -73,6 +76,7 @@ const actions = {
           })
           .catch((err) => {
             console.log(err);
+            localStorage.removeItem("details");
             localStorage.removeItem("token");
           });
       } catch (err) {
@@ -97,6 +101,7 @@ const actions = {
 
             if (!result) {
               commit("SET_LOGOUT");
+              localStorage.removeItem("details");
               localStorage.removeItem("token");
               delete axios.defaults.headers.common["Authorization"];
               resolve(response.data);
@@ -104,6 +109,7 @@ const actions = {
           })
           .catch((err) => {
             console.log(err);
+            localStorage.removeItem("details");
             localStorage.removeItem("token");
           });
       } catch (err) {

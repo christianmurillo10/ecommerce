@@ -1,10 +1,15 @@
 <template>
-  <v-toolbar id="core-toolbar" :clipped-left="primaryDrawer.clipped" app absolute>
+  <v-toolbar
+    id="core-toolbar"
+    :clipped-left="primaryDrawer.clipped"
+    app
+    absolute
+  >
     <v-toolbar-side-icon
       v-if="primaryDrawer.type !== 'permanent'"
       @click.stop="setDrawer(!primaryDrawer.model)"
     ></v-toolbar-side-icon>
-    <v-toolbar-title>E-Commerce</v-toolbar-title>
+    <v-img :src="avatar" max-height="40px" max-width="200px"></v-img>
     <v-spacer></v-spacer>
     <v-btn icon>
       <v-icon>apps</v-icon>
@@ -12,11 +17,6 @@
     <v-btn icon>
       <v-icon>notifications</v-icon>
     </v-btn>
-    <!-- <v-btn icon large>
-      <v-avatar size="32px" tile>
-        <img src="https://cdn.vuetifyjs.com/images/logos/logo.svg" alt="Vuetify" />
-      </v-avatar>
-    </v-btn> -->
     <v-menu offset-y transition="slide-x-reverse-transition">
       <template v-slot:activator="{ on }">
         <v-btn icon>
@@ -48,17 +48,21 @@ export default {
       {
         to: "userProfile",
         icon: "account_circle",
-        text: "Profile"
+        text: "Profile",
       },
       {
         to: "logout",
         icon: "logout",
-        text: "Logout"
-      }
-    ]
+        text: "Logout",
+      },
+    ],
   }),
   computed: {
-    ...mapState("toolbar", ["primaryDrawer"])
+    ...mapState("toolbar", ["primaryDrawer"]),
+
+    avatar() {
+      return "/img/logo.png";
+    },
   },
   methods: {
     ...mapActions("toolbar", ["setDrawer"]),
@@ -68,7 +72,7 @@ export default {
       this.setLogout().then(() => {
         this.$router.push("/login");
       });
-    }
+    },
   },
   created() {
     this.$http.interceptors.response.use(undefined, function(err) {
@@ -79,7 +83,7 @@ export default {
         throw err;
       });
     });
-  }
+  },
 };
 </script>
 
