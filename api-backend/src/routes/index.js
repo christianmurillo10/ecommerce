@@ -19,6 +19,7 @@ router.use('/productCategories', require('./productCategories'));
 router.use('/productSubCategories', require('./productSubCategories'));
 router.use('/productSubSubCategories', require('./productSubSubCategories'));
 router.use('/products', require('./products'));
+router.use('/productStores', require('./productStores'));
 router.use('/productImages', require('./productImages'));
 router.use('/productOptions', require('./productOptions'));
 router.use('/productFlashDealHeaders', require('./productFlashDealHeaders'));
