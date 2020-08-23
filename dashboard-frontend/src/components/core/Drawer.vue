@@ -132,10 +132,6 @@ export default {
         text: "Products",
         submenus: true,
         childs: [
-          // {
-          //   to: "/productBannerImages",
-          //   text: "Banners"
-          // },
           {
             to: "/productBrands",
             text: "Brands",
@@ -151,6 +147,10 @@ export default {
           {
             to: "/productSubSubCategories",
             text: "Sub-Sub-Categories",
+          },
+          {
+            to: "/productStores",
+            text: "Stores"
           },
           {
             to: "/products",
