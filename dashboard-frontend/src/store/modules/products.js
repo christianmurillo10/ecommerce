@@ -127,20 +127,17 @@ const actions = {
     return new Promise((resolve, reject) => {
       try {
         let obj = {
+          code: payload.code,
           name: payload.name,
           description: payload.description,
           unit: payload.unit,
           tags: payload.tags,
           price_amount: payload.price_amount,
-          vat_value: payload.vat_value,
-          discount_value: payload.discount_value,
           product_store_id: payload.product_store_id,
           product_brand_id: payload.product_brand_id,
           product_category_id: payload.product_category_id,
           product_sub_category_id: payload.product_sub_category_id,
           product_sub_sub_category_id: payload.product_sub_sub_category_id,
-          vat_type: payload.vat_type,
-          discount_type: payload.discount_type,
           is_featured: payload.is_featured,
           is_published: payload.is_published
         };
@@ -164,20 +161,17 @@ const actions = {
     return new Promise((resolve, reject) => {
       try {
         let obj = {
+          code: payload.code,
           name: payload.name,
           description: payload.description,
           unit: payload.unit,
           tags: payload.tags,
           price_amount: payload.price_amount,
-          vat_value: payload.vat_value,
-          discount_value: payload.discount_value,
           product_store_id: payload.product_store_id,
           product_brand_id: payload.product_brand_id,
           product_category_id: payload.product_category_id,
           product_sub_category_id: payload.product_sub_category_id,
           product_sub_sub_category_id: payload.product_sub_sub_category_id,
-          vat_type: payload.vat_type,
-          discount_type: payload.discount_type,
           is_featured: payload.is_featured,
           is_published: payload.is_published
         };
@@ -269,20 +263,17 @@ const mutations = {
   UPDATE_DATA(state, payload) {
     let index = state.productList.map(product => product.id).indexOf(payload.id);
     Object.assign(state.productList[index], {
+      code: payload.code,
       name: payload.name,
       description: payload.description,
       unit: payload.unit,
       tags: payload.tags,
       price_amount: payload.price_amount,
-      vat_value: payload.vat_value,
-      discount_value: payload.discount_value,
       product_store_id: payload.product_store_id,
       product_brand_id: payload.product_brand_id,
       product_category_id: payload.product_category_id,
       product_sub_category_id: payload.product_sub_category_id,
       product_sub_sub_category_id: payload.product_sub_sub_category_id,
-      vat_type: payload.vat_type,
-      discount_type: payload.discount_type,
       is_featured: payload.is_featured,
       is_published: payload.is_published
     });

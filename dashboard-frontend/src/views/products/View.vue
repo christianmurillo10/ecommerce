@@ -22,133 +22,172 @@
               <v-flex xs12 sm12 md6 lg6>
                 <v-list-tile>
                   <v-list-tile-action>
-                    <v-list-tile-title class="font-weight-bold">Date Created:&nbsp;</v-list-tile-title>
+                    <v-list-tile-title class="font-weight-bold">
+                      Date Created:&nbsp;
+                    </v-list-tile-title>
                   </v-list-tile-action>
                   <v-list-tile-content>
-                    <v-list-tile-title>{{ setDateTime(productDetails.created_at) }}</v-list-tile-title>
+                    <v-list-tile-title>
+                      {{ setDateTime(productDetails.created_at) }}
+                    </v-list-tile-title>
                   </v-list-tile-content>
                 </v-list-tile>
                 <v-list-tile>
                   <v-list-tile-action>
-                    <v-list-tile-title class="font-weight-bold">Date Modified:&nbsp;</v-list-tile-title>
+                    <v-list-tile-title class="font-weight-bold">
+                      Date Modified:&nbsp;
+                    </v-list-tile-title>
                   </v-list-tile-action>
                   <v-list-tile-content>
-                    <v-list-tile-title>{{ setDateTime(productDetails.updated_at) }}</v-list-tile-title>
+                    <v-list-tile-title>
+                      {{ setDateTime(productDetails.updated_at) }}
+                    </v-list-tile-title>
                   </v-list-tile-content>
                 </v-list-tile>
                 <v-list-tile>
                   <v-list-tile-action>
-                    <v-list-tile-title class="font-weight-bold">Name:&nbsp;</v-list-tile-title>
+                    <v-list-tile-title class="font-weight-bold">
+                      Code:&nbsp;
+                    </v-list-tile-title>
                   </v-list-tile-action>
                   <v-list-tile-content>
-                    <v-list-tile-title>{{ productDetails.name }}</v-list-tile-title>
+                    <v-list-tile-title>
+                      {{ productDetails.code }}
+                    </v-list-tile-title>
                   </v-list-tile-content>
                 </v-list-tile>
                 <v-list-tile>
                   <v-list-tile-action>
-                    <v-list-tile-title class="font-weight-bold">Unit:&nbsp;</v-list-tile-title>
+                    <v-list-tile-title class="font-weight-bold">
+                      Name:&nbsp;
+                    </v-list-tile-title>
                   </v-list-tile-action>
                   <v-list-tile-content>
-                    <v-list-tile-title>{{ productDetails.unit }}</v-list-tile-title>
+                    <v-list-tile-title>
+                      {{ productDetails.name }}
+                    </v-list-tile-title>
                   </v-list-tile-content>
                 </v-list-tile>
                 <v-list-tile>
                   <v-list-tile-action>
-                    <v-list-tile-title class="font-weight-bold">Stock:&nbsp;</v-list-tile-title>
+                    <v-list-tile-title class="font-weight-bold">
+                      Unit:&nbsp;
+                    </v-list-tile-title>
                   </v-list-tile-action>
                   <v-list-tile-content>
-                    <!-- <v-list-tile-title>{{ inventoryDetails.stock_available }}</v-list-tile-title> -->
-                    <v-list-tile-title>0</v-list-tile-title>
+                    <v-list-tile-title>
+                      {{ productDetails.unit }}
+                    </v-list-tile-title>
                   </v-list-tile-content>
                 </v-list-tile>
                 <v-list-tile>
                   <v-list-tile-action>
-                    <v-list-tile-title class="font-weight-bold">Price:&nbsp;</v-list-tile-title>
+                    <v-list-tile-title class="font-weight-bold">
+                      Price:&nbsp;
+                    </v-list-tile-title>
                   </v-list-tile-action>
                   <v-list-tile-content>
-                    <v-list-tile-title>{{ `&#8369 ${productDetails.price_amount}` }}</v-list-tile-title>
+                    <v-list-tile-title>
+                      {{ `&#8369; ${productDetails.price_amount}` }}
+                    </v-list-tile-title>
                   </v-list-tile-content>
                 </v-list-tile>
                 <v-list-tile>
                   <v-list-tile-action>
-                    <v-list-tile-title class="font-weight-bold">VAT:&nbsp;</v-list-tile-title>
+                    <v-list-tile-title class="font-weight-bold">
+                      Tags:&nbsp;
+                    </v-list-tile-title>
                   </v-list-tile-action>
                   <v-list-tile-content>
-                    <v-list-tile-title>{{ vat }}</v-list-tile-title>
-                  </v-list-tile-content>
-                </v-list-tile>
-                <v-list-tile>
-                  <v-list-tile-action>
-                    <v-list-tile-title class="font-weight-bold">Discount:&nbsp;</v-list-tile-title>
-                  </v-list-tile-action>
-                  <v-list-tile-content>
-                    <v-list-tile-title>{{ discount }}</v-list-tile-title>
+                    <v-list-tile-title>
+                      {{ productDetails.tags }}
+                    </v-list-tile-title>
                   </v-list-tile-content>
                 </v-list-tile>
               </v-flex>
               <v-flex xs12 sm12 md6 lg6>
                 <v-list-tile>
                   <v-list-tile-action>
-                    <v-list-tile-title class="font-weight-bold">Store:&nbsp;</v-list-tile-title>
+                    <v-list-tile-title class="font-weight-bold">
+                      Store:&nbsp;
+                    </v-list-tile-title>
                   </v-list-tile-action>
                   <v-list-tile-content>
-                    <v-list-tile-title>{{ productStoreDetails.name }}</v-list-tile-title>
+                    <v-list-tile-title>
+                      {{ productStoreDetails.name }}
+                    </v-list-tile-title>
                   </v-list-tile-content>
                 </v-list-tile>
                 <v-list-tile>
                   <v-list-tile-action>
-                    <v-list-tile-title class="font-weight-bold">Brand:&nbsp;</v-list-tile-title>
+                    <v-list-tile-title class="font-weight-bold">
+                      Brand:&nbsp;
+                    </v-list-tile-title>
                   </v-list-tile-action>
                   <v-list-tile-content>
-                    <v-list-tile-title>{{ productBrandDetails.name }}</v-list-tile-title>
+                    <v-list-tile-title>
+                      {{ productBrandDetails.name }}
+                    </v-list-tile-title>
                   </v-list-tile-content>
                 </v-list-tile>
                 <v-list-tile>
                   <v-list-tile-action>
-                    <v-list-tile-title class="font-weight-bold">Category:&nbsp;</v-list-tile-title>
+                    <v-list-tile-title class="font-weight-bold">
+                      Category:&nbsp;
+                    </v-list-tile-title>
                   </v-list-tile-action>
                   <v-list-tile-content>
-                    <v-list-tile-title>{{ productCategoryDetails.name }}</v-list-tile-title>
+                    <v-list-tile-title>
+                      {{ productCategoryDetails.name }}
+                    </v-list-tile-title>
                   </v-list-tile-content>
                 </v-list-tile>
                 <v-list-tile>
                   <v-list-tile-action>
-                    <v-list-tile-title class="font-weight-bold">Sub-Category:&nbsp;</v-list-tile-title>
+                    <v-list-tile-title class="font-weight-bold">
+                      Sub-Category:&nbsp;
+                    </v-list-tile-title>
                   </v-list-tile-action>
                   <v-list-tile-content>
-                    <v-list-tile-title>{{ productSubCategoryDetails.name }}</v-list-tile-title>
+                    <v-list-tile-title>
+                      {{ productSubCategoryDetails.name }}
+                    </v-list-tile-title>
                   </v-list-tile-content>
                 </v-list-tile>
                 <v-list-tile>
                   <v-list-tile-action>
-                    <v-list-tile-title class="font-weight-bold">Sub Sub-Category:&nbsp;</v-list-tile-title>
+                    <v-list-tile-title class="font-weight-bold">
+                      Sub Sub-Category:&nbsp;
+                    </v-list-tile-title>
                   </v-list-tile-action>
                   <v-list-tile-content>
-                    <v-list-tile-title>{{ productSubSubCategoryDetails.name }}</v-list-tile-title>
+                    <v-list-tile-title>
+                      {{ productSubSubCategoryDetails.name }}
+                    </v-list-tile-title>
                   </v-list-tile-content>
                 </v-list-tile>
                 <v-list-tile>
                   <v-list-tile-action>
-                    <v-list-tile-title class="font-weight-bold">Tags:&nbsp;</v-list-tile-title>
+                    <v-list-tile-title class="font-weight-bold">
+                      Published:&nbsp;
+                    </v-list-tile-title>
                   </v-list-tile-action>
                   <v-list-tile-content>
-                    <v-list-tile-title>{{ productDetails.tags }}</v-list-tile-title>
+                    <v-list-tile-title>
+                      {{ getYesNoStatus(productDetails.is_published) }}
+                    </v-list-tile-title>
                   </v-list-tile-content>
                 </v-list-tile>
                 <v-list-tile>
                   <v-list-tile-action>
-                    <v-list-tile-title class="font-weight-bold">Published:&nbsp;</v-list-tile-title>
+                    <v-list-tile-title class="font-weight-bold">
+                      Featured:&nbsp;
+                    </v-list-tile-title>
                   </v-list-tile-action>
                   <v-list-tile-content>
-                    <v-list-tile-title>{{ getYesNoStatus(productDetails.is_published) }}</v-list-tile-title>
-                  </v-list-tile-content>
-                </v-list-tile>
-                <v-list-tile>
-                  <v-list-tile-action>
-                    <v-list-tile-title class="font-weight-bold">Featured:&nbsp;</v-list-tile-title>
-                  </v-list-tile-action>
-                  <v-list-tile-content>
-                    <v-list-tile-title>{{ getYesNoStatus(productDetails.is_featured) }}</v-list-tile-title>
+                    <v-list-tile-title>
+                      {{ getYesNoStatus(productDetails.is_featured) }}
+                    </v-list-tile-title>
                   </v-list-tile-content>
                 </v-list-tile>
               </v-flex>
@@ -165,25 +204,40 @@
             <v-tabs-items>
               <v-tab-item value="tab-description">
                 <v-flex xs12 sm12 md12 lg12>
-                  <v-sheet
-                    class="d-flex"
-                    color="grey lighten-5"
-                  >
+                  <v-sheet class="d-flex" color="grey lighten-5">
                     <v-container>
-                      <div v-if="productDetails.description === ''" class="text-xs-center">There have been no description for this product yet.</div>
-                      <div v-else v-html="productDetails.description" style="white-space: pre-wrap;"></div>
+                      <div
+                        v-if="productDetails.description === ''"
+                        class="text-xs-center"
+                      >
+                        There have been no description for this product yet.
+                      </div>
+                      <div
+                        v-else
+                        v-html="productDetails.description"
+                        style="white-space: pre-wrap;"
+                      ></div>
                     </v-container>
                   </v-sheet>
                 </v-flex>
               </v-tab-item>
               <v-tab-item value="tab-images">
-                <ViewImages ref="viewImages" :image-details="productImageDetails" />
+                <ViewImages
+                  ref="viewImages"
+                  :image-details="productImageDetails"
+                />
               </v-tab-item>
               <v-tab-item value="tab-options">
-                <ViewOptions ref="viewOptions" :option-details="productOptionDetails" />
+                <ViewOptions
+                  ref="viewOptions"
+                  :option-details="productOptionDetails"
+                />
               </v-tab-item>
               <v-tab-item value="tab-variants">
-                <ViewVariants ref="viewVariants" :variant-details="productVariantDetails" />
+                <ViewVariants
+                  ref="viewVariants"
+                  :variant-details="productVariantDetails"
+                />
               </v-tab-item>
             </v-tabs-items>
           </v-tabs>
@@ -207,27 +261,27 @@ export default {
     Alerts,
     ViewOptions,
     ViewImages,
-    ViewVariants
+    ViewVariants,
   },
 
   data: () => ({
     tabHeaders: [
       {
         key: "description",
-        title: "Description"
+        title: "Description",
       },
       {
         key: "images",
-        title: "Images"
+        title: "Images",
       },
       {
         key: "options",
-        title: "Options"
+        title: "Options",
       },
       {
         key: "variants",
-        title: "Variants"
-      }
+        title: "Variants",
+      },
     ],
     productDetails: "",
     productStoreDetails: "",
@@ -237,46 +291,51 @@ export default {
     productSubSubCategoryDetails: "",
     productImageDetails: [],
     productOptionDetails: [],
-    productVariantDetails: []
+    productVariantDetails: [],
   }),
 
   mounted() {
-    this.getProductDataById(this.$route.params.id).then(response => {
+    this.getProductDataById(this.$route.params.id).then((response) => {
       this.productDetails = response.data.result;
-      this.productStoreDetails = response.data.result.productStores === null ? "" : response.data.result.productStores;
-      this.productBrandDetails = response.data.result.productBrands === null ? "" : response.data.result.productBrands;
-      this.productCategoryDetails = response.data.result.productCategories === null ? "" : response.data.result.productCategories;
-      this.productSubCategoryDetails = response.data.result.productSubCategories === null ? "" : response.data.result.productSubCategories;
-      this.productSubSubCategoryDetails = response.data.result.productSubSubCategories === null ? "" : response.data.result.productSubSubCategories;
-      this.productImageDetails = response.data.result.productImages === null ? [] : response.data.result.productImages;
-      this.productOptionDetails = response.data.result.productOptions === null ? [] : response.data.result.productOptions;
-      this.productVariantDetails = response.data.result.inventories === null ? [] : response.data.result.inventories;
+      this.productStoreDetails =
+        response.data.result.productStores === null
+          ? ""
+          : response.data.result.productStores;
+      this.productBrandDetails =
+        response.data.result.productBrands === null
+          ? ""
+          : response.data.result.productBrands;
+      this.productCategoryDetails =
+        response.data.result.productCategories === null
+          ? ""
+          : response.data.result.productCategories;
+      this.productSubCategoryDetails =
+        response.data.result.productSubCategories === null
+          ? ""
+          : response.data.result.productSubCategories;
+      this.productSubSubCategoryDetails =
+        response.data.result.productSubSubCategories === null
+          ? ""
+          : response.data.result.productSubSubCategories;
+      this.productImageDetails =
+        response.data.result.productImages === null
+          ? []
+          : response.data.result.productImages;
+      this.productOptionDetails =
+        response.data.result.productOptions === null
+          ? []
+          : response.data.result.productOptions;
+      this.productVariantDetails =
+        response.data.result.inventories === null
+          ? []
+          : response.data.result.inventories;
     });
   },
 
-  computed: {
-    vat() {
-      let value = 0;
-      if (this.productDetails.vat_type === 1) {
-        value = `₱ ${this.productDetails.vat_value}`;
-      } else if (this.productDetails.vat_type === 2) {
-        value = `${this.productDetails.vat_value} %`;
-      }
-      return value;
-    },
-    discount() {
-      let value = 0;
-      if (this.productDetails.discount_type === 1) {
-        value = `₱ ${this.productDetails.discount_value}`;
-      } else if (this.productDetails.discount_type === 2) {
-        value = `${this.productDetails.discount_value} %`;
-      }
-      return value;
-    }
-  },
+  computed: {},
 
   methods: {
-    ...mapActions("products", { getProductDataById: "getDataById" })
-  }
+    ...mapActions("products", { getProductDataById: "getDataById" }),
+  },
 };
 </script>

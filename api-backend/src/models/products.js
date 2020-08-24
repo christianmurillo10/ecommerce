@@ -7,6 +7,10 @@ module.exports = (sequelize, DataTypes) => {
       primaryKey: true,
       autoIncrement: true
     },
+    'code': {
+      type: DataTypes.STRING(50),
+      allowNull: false
+    },
     'name': {
       type: DataTypes.STRING(100),
       allowNull: false
@@ -27,16 +31,6 @@ module.exports = (sequelize, DataTypes) => {
     'price_amount': {
       type: DataTypes.DECIMAL(12, 2),
       allowNull: false,
-      defaultValue: '0.00'
-    },
-    'vat_value': {
-      type: DataTypes.DECIMAL(12, 2),
-      allowNull: true,
-      defaultValue: '0.00'
-    },
-    'discount_value': {
-      type: DataTypes.DECIMAL(12, 2),
-      allowNull: true,
       defaultValue: '0.00'
     },
     'user_id': {
@@ -102,18 +96,6 @@ module.exports = (sequelize, DataTypes) => {
       type: 'TIMESTAMP',
       allowNull: true,
       defaultValue: sequelize.literal('CURRENT_TIMESTAMP')
-    },
-    'vat_type': {
-      type: DataTypes.SMALLINT(1),
-      comment: '1=Amount 2=Percentage',
-      allowNull: true,
-      defaultValue: '1'
-    },
-    'discount_type': {
-      type: DataTypes.SMALLINT(1),
-      comment: '1=Amount 2=Percentage',
-      allowNull: true,
-      defaultValue: '1'
     },
     'is_featured': {
       type: DataTypes.SMALLINT(1),

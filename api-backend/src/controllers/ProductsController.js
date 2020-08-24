@@ -30,19 +30,16 @@ module.exports = {
     params.created_at = moment().utc(8).format("YYYY-MM-DD HH:mm:ss");
     params.tags = params.tags.length === 0 ? null : params.tags.toString();
     params.price_amount = params.price_amount.toLocaleString();
-    params.vat_value = params.vat_value === null ? null : params.vat_value.toLocaleString();
-    params.discount_value = params.discount_value === null ? null : params.discount_value.toLocaleString();
     params.user_id = req.user.id.toLocaleString();
     params.product_store_id = params.product_store_id.toLocaleString();
     params.product_brand_id = params.product_brand_id.toLocaleString();
     params.product_category_id = params.product_category_id.toLocaleString();
     params.product_sub_category_id = params.product_sub_category_id.toLocaleString();
     params.product_sub_sub_category_id = params.product_sub_sub_category_id.toLocaleString();
-    params.vat_type = params.vat_type === null ? null : params.vat_type.toLocaleString();
-    params.discount_type = params.discount_type === null ? null : params.discount_type.toLocaleString();
 
     try {
       // Validators
+      if (_.isEmpty(params.code)) return res.json({ status: 200, message: "Code is required.", result: false });
       if (_.isEmpty(params.name)) return res.json({ status: 200, message: "Name is required.", result: false });
       if (_.isEmpty(params.unit)) return res.json({ status: 200, message: "Unit is required.", result: false });
       if (_.isEmpty(params.price_amount)) return res.json({ status: 200, message: "Price Amount is required.", result: false });
@@ -65,13 +62,12 @@ module.exports = {
         ]
       };
       initialValues = _.pick(params, [
+        "code",
         "name",
         "description",
         "unit",
         "tags",
         "price_amount",
-        "vat_value",
-        "discount_value",
         "user_id",
         "product_store_id",
         "product_brand_id",
@@ -79,8 +75,6 @@ module.exports = {
         "product_sub_category_id",
         "product_sub_sub_category_id",
         "created_at",
-        "vat_type",
-        "discount_type",
         "is_featured",
         "is_published"
       ]);
@@ -135,21 +129,18 @@ module.exports = {
     try {
       // Pre-setting variables
       initialValues = _.pick(params, [
+        "code",
         "name",
         "description",
         "unit",
         "tags",
         "price_amount",
-        "vat_value",
-        "discount_value",
         "user_id",
         "product_store_id",
         "product_brand_id",
         "product_category_id",
         "product_sub_category_id",
         "product_sub_sub_category_id",
-        "vat_type",
-        "discount_type",
         "is_featured",
         "is_published"
       ]);
@@ -284,20 +275,17 @@ module.exports = {
       criteria = {
         attributes: [
           'id',
+          "code",
           'name',
           'unit',
           'tags',
           'price_amount',
-          'vat_value',
-          'discount_value',
           'product_store_id',
           'product_brand_id',
           'product_category_id',
           'product_sub_category_id',
           'product_sub_sub_category_id',
           'created_at',
-          'vat_type',
-          'discount_type',
           'is_featured',
           'is_published'
         ],
@@ -377,20 +365,17 @@ module.exports = {
       criteria = {
         attributes: [
           'id',
+          "code",
           'name',
           'unit',
           'tags',
           'price_amount',
-          'vat_value',
-          'discount_value',
           'product_store_id',
           'product_brand_id',
           'product_category_id',
           'product_sub_category_id',
           'product_sub_sub_category_id',
           'created_at',
-          'vat_type',
-          'discount_type',
           'is_featured',
           'is_published'
         ],
@@ -480,20 +465,17 @@ module.exports = {
       criteria = {
         attributes: [
           'id',
+          "code",
           'name',
           'unit',
           'tags',
           'price_amount',
-          'vat_value',
-          'discount_value',
           'product_store_id',
           'product_brand_id',
           'product_category_id',
           'product_sub_category_id',
           'product_sub_sub_category_id',
           'created_at',
-          'vat_type',
-          'discount_type',
           'is_featured',
           'is_published'
         ],
@@ -575,21 +557,18 @@ module.exports = {
       criteria = {
         attributes: [
           'id',
+          "code",
           'name',
           'description',
           'unit',
           'tags',
           'price_amount',
-          'vat_value',
-          'discount_value',
           'product_store_id',
           'product_brand_id',
           'product_category_id',
           'product_sub_category_id',
           'product_sub_sub_category_id',
           'created_at',
-          'vat_type',
-          'discount_type',
           'is_featured',
           'is_published'
         ],
@@ -641,6 +620,7 @@ module.exports = {
       criteria = {
         attributes: [
           'id',
+          "code",
           'name',
           'unit',
           'price_amount',
@@ -709,20 +689,17 @@ module.exports = {
       criteria = {
         attributes: [
           'id',
+          "code",
           'name',
           'unit',
           'tags',
           'price_amount',
-          'vat_value',
-          'discount_value',
           'product_store_id',
           'product_brand_id',
           'product_category_id',
           'product_sub_category_id',
           'product_sub_sub_category_id',
           'created_at',
-          'vat_type',
-          'discount_type',
           'is_featured',
           'is_published'
         ],
@@ -808,20 +785,17 @@ module.exports = {
       criteria = {
         attributes: [
           'id',
+          "code",
           'name',
           'unit',
           'tags',
           'price_amount',
-          'vat_value',
-          'discount_value',
           'product_store_id',
           'product_brand_id',
           'product_category_id',
           'product_sub_category_id',
           'product_sub_sub_category_id',
           'created_at',
-          'vat_type',
-          'discount_type',
           'is_featured',
           'is_published'
         ],
@@ -896,20 +870,17 @@ module.exports = {
       criteria = {
         attributes: [
           'id',
+          "code",
           'name',
           'unit',
           'tags',
           'price_amount',
-          'vat_value',
-          'discount_value',
           'product_store_id',
           'product_brand_id',
           'product_category_id',
           'product_sub_category_id',
           'product_sub_sub_category_id',
           'created_at',
-          'vat_type',
-          'discount_type',
           'is_featured',
           'is_published'
         ],
@@ -984,20 +955,17 @@ module.exports = {
       criteria = {
         attributes: [
           'id',
+          "code",
           'name',
           'unit',
           'tags',
           'price_amount',
-          'vat_value',
-          'discount_value',
           'product_store_id',
           'product_brand_id',
           'product_category_id',
           'product_sub_category_id',
           'product_sub_sub_category_id',
           'created_at',
-          'vat_type',
-          'discount_type',
           'is_featured',
           'is_published'
         ],
