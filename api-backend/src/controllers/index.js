@@ -17,6 +17,7 @@ const productSubSubCategories = require('./ProductSubSubCategoriesController');
 const productOptions = require('./ProductOptionsController');
 const products = require('./ProductsController');
 const productStores = require('./ProductStoresController');
+const productVariations = require('./ProductVariationsController');
 const productImages = require('./ProductImagesController');
 const productFlashDealHeaders = require('./ProductFlashDealHeadersController');
 const productFlashDealDetails = require('./ProductFlashDealDetailsController');
@@ -46,6 +47,7 @@ module.exports = {
   productOptions,
   products,
   productStores,
+  productVariations,
   productImages,
   productFlashDealHeaders,
   productFlashDealDetails,
