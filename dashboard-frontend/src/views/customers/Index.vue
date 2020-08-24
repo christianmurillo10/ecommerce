@@ -50,12 +50,6 @@
             <td class="justify-center" width="100">
               <v-tooltip left>
                 <template v-slot:activator="{ on }">
-                  <v-icon small class="mr-2" color="purple darken-2" @click="viewCarts(props.item.id)" v-on="on">shopping_cart</v-icon>
-                </template>
-                <span>Carts</span>
-              </v-tooltip>
-              <v-tooltip left>
-                <template v-slot:activator="{ on }">
                   <v-icon small class="mr-2" color="blue-grey darken-2" @click="viewCards(props.item.id)" v-on="on">credit_card</v-icon>
                 </template>
                 <span>Cards</span>
@@ -150,10 +144,6 @@ export default {
       getCustomerData: "getData",
       deleteCustomerData: "deleteData"
     }),
-
-    viewCarts(id) {
-      this.$router.push(`/customers/carts/${id}`);
-    },
 
     viewCards(id) {
       this.$router.push(`/customers/cards/${id}`);
