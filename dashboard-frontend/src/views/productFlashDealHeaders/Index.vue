@@ -39,7 +39,7 @@
               <v-switch
                 v-model="props.item.is_active"
                 color="success"
-                @change="updateStatus({ id: props.item.id, value: $event })"
+                @change="updateActiveStatus({ id: props.item.id, value: $event })"
                 hide-details
               ></v-switch>
             </td>
@@ -132,12 +132,12 @@ export default {
     ...mapActions("alerts", ["setAlert"]),
     ...mapActions("productFlashDealHeaders", {
       getProductFlashDealHeaderData: "getData",
-      updateProductFlashDealHeaderStatusData: "updateStatusData",
+      updateProductFlashDealHeaderActiveStatusData: "updateActiveStatusData",
       deleteProductFlashDealHeaderData: "deleteData"
     }),
 
-    updateStatus(obj) {
-      this.updateProductFlashDealHeaderStatusData(obj)
+    updateActiveStatus(obj) {
+      this.updateProductFlashDealHeaderActiveStatusData(obj)
         .then(response => {
           let obj = {
             alert: true,

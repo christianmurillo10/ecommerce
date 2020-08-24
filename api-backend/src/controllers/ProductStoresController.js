@@ -95,7 +95,7 @@ module.exports = {
         params.file_name = data.file_name;
       }
       // Pre-setting variables
-      initialValues = _.pick(params, ['name', 'description', 'file_name']);
+      initialValues = _.pick(params, ['name', 'description', 'file_name', 'is_active']);
 
       if (!_.isEmpty(data)) {
         let finalData = await data.update(initialValues);
@@ -218,7 +218,7 @@ module.exports = {
 
     try {
       // Pre-setting variables
-      criteria = { where: { is_active: YES, is_deleted: NO } };
+      criteria = { where: { is_deleted: NO } };
       // Execute findAll query
       data = await Model.ProductStores.findAll(criteria);
       if (!_.isEmpty(data[0])) {
@@ -290,7 +290,7 @@ module.exports = {
 
     try {
       // Pre-setting variables
-      criteria = { where: { is_active: YES, is_deleted: NO } };
+      criteria = { where: { is_deleted: NO } };
       // Execute findAll query
       count = await Model.ProductStores.count(criteria);
       res.json({

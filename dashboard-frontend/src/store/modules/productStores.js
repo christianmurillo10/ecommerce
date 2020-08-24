@@ -118,6 +118,26 @@ const actions = {
       }
     });
   },
+  updateActiveStatusData({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
+    let url = `${process.env.VUE_APP_API_BACKEND}/productStores/update/${payload.id}`;
+    let header = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
+    return new Promise((resolve, reject) => {
+      try {
+        let obj = {
+          is_active: payload.value
+        };
+
+        axios
+          .put(url, obj, header)
+          .then(response => {
+            commit("UPDATE_DATA", response.data.result);
+            resolve(response);
+          });
+      } catch (err) {
+        reject(err);
+      }
+    });
+  },
   deleteData({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
     let url = `${process.env.VUE_APP_API_BACKEND}/productStores/delete/${payload}`;
     let header = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
