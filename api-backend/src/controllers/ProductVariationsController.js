@@ -78,15 +78,13 @@ module.exports = {
     if (_.isEmpty(params))
       return res.badRequest({ err: "Empty Parameter: [params]" });
 
-    // Override variables
-    params.values = params.values.toString();
-
     try {
       // Pre-setting variables
       criteria = { where: { is_deleted: NO } };
       initialValues = _.pick(params, [
         'name'
       ]);
+      
       // Execute findByPk query
       data = await Model.ProductVariations.findByPk(req.params.id);
       if (!_.isEmpty(data)) {

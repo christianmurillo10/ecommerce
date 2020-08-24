@@ -153,6 +153,10 @@ export default {
             text: "Stores"
           },
           {
+            to: "/productVariations",
+            text: "Variations"
+          },
+          {
             to: "/products",
             text: "Manage",
           },

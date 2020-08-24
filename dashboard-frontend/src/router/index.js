@@ -18,6 +18,7 @@ import ProductSubCategories from "../views/productSubCategories/Index";
 import ProductSubSubCategories from "../views/productSubSubCategories/Index";
 import Products from "../views/products/Index";
 import ProductStores from "../views/productStores/Index";
+import ProductVariations from "../views/productVariations/Index";
 import ProductsCreate from "../views/products/Create";
 import ProductsUpdate from "../views/products/Update";
 import ProductsView from "../views/products/View";
@@ -130,6 +131,11 @@ let router = new Router({
       path: "/productStores",
       name: "productStores",
       component: ProductStores
+    },
+    {
+      path: "/productVariations",
+      name: "productVariations",
+      component: ProductVariations
     },
     {
       path: "/products/create",
