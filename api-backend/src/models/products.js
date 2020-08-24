@@ -48,6 +48,15 @@ module.exports = (sequelize, DataTypes) => {
       comment: 'refd to users.id',
       allowNull: false
     },
+    'product_store_id': {
+      type: DataTypes.INTEGER(11),
+      references: {
+        model: 'product_stores',
+        key: 'id'
+      },
+      comment: 'refd to product_stores.id',
+      allowNull: false
+    },
     'product_brand_id': {
       type: DataTypes.INTEGER(11),
       references: {
@@ -132,6 +141,10 @@ module.exports = (sequelize, DataTypes) => {
   });
   
   Products.associate = (models) => {
+    Products.belongsTo(models.ProductStores, {
+      foreignKey: 'product_store_id',
+      as: 'productStores'
+    });
     Products.belongsTo(models.ProductBrands, {
       foreignKey: 'product_brand_id',
       as: 'productBrands'

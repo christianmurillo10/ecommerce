@@ -33,6 +33,7 @@ module.exports = {
     params.vat_value = params.vat_value === null ? null : params.vat_value.toLocaleString();
     params.discount_value = params.discount_value === null ? null : params.discount_value.toLocaleString();
     params.user_id = req.user.id.toLocaleString();
+    params.product_store_id = params.product_store_id.toLocaleString();
     params.product_brand_id = params.product_brand_id.toLocaleString();
     params.product_category_id = params.product_category_id.toLocaleString();
     params.product_sub_category_id = params.product_sub_category_id.toLocaleString();
@@ -45,6 +46,7 @@ module.exports = {
       if (_.isEmpty(params.name)) return res.json({ status: 200, message: "Name is required.", result: false });
       if (_.isEmpty(params.unit)) return res.json({ status: 200, message: "Unit is required.", result: false });
       if (_.isEmpty(params.price_amount)) return res.json({ status: 200, message: "Price Amount is required.", result: false });
+      if (_.isEmpty(params.product_store_id)) return res.json({ status: 200, message: "Product Store is required.", result: false });
       if (_.isEmpty(params.product_brand_id)) return res.json({ status: 200, message: "Product Brand is required.", result: false });
       if (_.isEmpty(params.product_category_id)) return res.json({ status: 200, message: "Product Category is required.", result: false });
       if (_.isEmpty(params.product_sub_category_id)) return res.json({ status: 200, message: "Product Sub-Category is required.", result: false });
@@ -54,6 +56,7 @@ module.exports = {
       criteria = {
         where: { name: params.name },
         include: [
+          { model: Model.ProductStores, as: "productStores", attributes: ['name', 'description'] },
           { model: Model.ProductBrands, as: "productBrands", attributes: ['name', 'description'] },
           { model: Model.ProductCategories, as: "productCategories", attributes: ['name', 'description'] },
           { model: Model.ProductSubCategories, as: "productSubCategories", attributes: ['name', 'description'] },
@@ -70,6 +73,7 @@ module.exports = {
         "vat_value",
         "discount_value",
         "user_id",
+        "product_store_id",
         "product_brand_id",
         "product_category_id",
         "product_sub_category_id",
@@ -140,6 +144,7 @@ module.exports = {
         "vat_value",
         "discount_value",
         "user_id",
+        "product_store_id",
         "product_brand_id",
         "product_category_id",
         "product_sub_category_id",
@@ -288,6 +293,7 @@ module.exports = {
           'price_amount',
           'vat_value',
           'discount_value',
+          'product_store_id',
           'product_brand_id',
           'product_category_id',
           'product_sub_category_id',
@@ -381,6 +387,7 @@ module.exports = {
           'price_amount',
           'vat_value',
           'discount_value',
+          'product_store_id',
           'product_brand_id',
           'product_category_id',
           'product_sub_category_id',
@@ -484,6 +491,7 @@ module.exports = {
           'price_amount',
           'vat_value',
           'discount_value',
+          'product_store_id',
           'product_brand_id',
           'product_category_id',
           'product_sub_category_id',
@@ -580,6 +588,7 @@ module.exports = {
           'price_amount',
           'vat_value',
           'discount_value',
+          'product_store_id',
           'product_brand_id',
           'product_category_id',
           'product_sub_category_id',
@@ -593,6 +602,7 @@ module.exports = {
         ],
         where: { is_deleted: NO },
         // include: [
+        //   { model: Model.ProductStores, as: "productStores", attributes: ['name', 'description'] },
         //   { model: Model.ProductBrands, as: "productBrands", attributes: ['name', 'description'] },
         //   { model: Model.ProductCategories, as: "productCategories", attributes: ['name', 'description'] },
         //   { model: Model.ProductSubCategories, as: "productSubCategories", attributes: ['name', 'description'] },
@@ -713,6 +723,7 @@ module.exports = {
           'price_amount',
           'vat_value',
           'discount_value',
+          'product_store_id',
           'product_brand_id',
           'product_category_id',
           'product_sub_category_id',
@@ -731,6 +742,7 @@ module.exports = {
         limit,
         offset,
         include: [
+          { model: Model.ProductStores, as: "productStores", attributes: ['name', 'description'] },
           { model: Model.ProductBrands, as: "productBrands", attributes: ['name', 'description'] },
           { model: Model.ProductCategories, as: "productCategories", attributes: ['name', 'description'] },
           { model: Model.ProductSubCategories, as: "productSubCategories", attributes: ['name', 'description'] },
@@ -811,6 +823,7 @@ module.exports = {
           'price_amount',
           'vat_value',
           'discount_value',
+          'product_store_id',
           'product_brand_id',
           'product_category_id',
           'product_sub_category_id',
@@ -899,6 +912,7 @@ module.exports = {
           'price_amount',
           'vat_value',
           'discount_value',
+          'product_store_id',
           'product_brand_id',
           'product_category_id',
           'product_sub_category_id',
@@ -987,6 +1001,7 @@ module.exports = {
           'price_amount',
           'vat_value',
           'discount_value',
+          'product_store_id',
           'product_brand_id',
           'product_category_id',
           'product_sub_category_id',
@@ -1066,6 +1081,7 @@ module.exports = {
       criteria = {
         where: { is_deleted: NO },
         include: [
+          { model: Model.ProductStores, as: "productStores", attributes: ['name', 'description'] },
           { model: Model.ProductBrands, as: "productBrands", attributes: ['name', 'description'] },
           { model: Model.ProductCategories, as: "productCategories", attributes: ['name', 'description'] },
           { model: Model.ProductSubCategories, as: "productSubCategories", attributes: ['name', 'description'] },
