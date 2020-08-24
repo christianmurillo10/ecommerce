@@ -81,7 +81,6 @@ module.exports = {
         "created_at",
         "vat_type",
         "discount_type",
-        "is_today_deal",
         "is_featured",
         "is_published"
       ]);
@@ -151,7 +150,6 @@ module.exports = {
         "product_sub_sub_category_id",
         "vat_type",
         "discount_type",
-        "is_today_deal",
         "is_featured",
         "is_published"
       ]);
@@ -199,7 +197,6 @@ module.exports = {
     try {
       // Pre-setting variables
       initialValues = _.pick(params, [
-        "is_today_deal",
         "is_featured",
         "is_published"
       ]);
@@ -301,7 +298,6 @@ module.exports = {
           'created_at',
           'vat_type',
           'discount_type',
-          'is_today_deal',
           'is_featured',
           'is_published'
         ],
@@ -395,7 +391,6 @@ module.exports = {
           'created_at',
           'vat_type',
           'discount_type',
-          'is_today_deal',
           'is_featured',
           'is_published'
         ],
@@ -499,7 +494,6 @@ module.exports = {
           'created_at',
           'vat_type',
           'discount_type',
-          'is_today_deal',
           'is_featured',
           'is_published'
         ],
@@ -596,7 +590,6 @@ module.exports = {
           'created_at',
           'vat_type',
           'discount_type',
-          'is_today_deal',
           'is_featured',
           'is_published'
         ],
@@ -652,7 +645,6 @@ module.exports = {
           'unit',
           'price_amount',
           'created_at',
-          'is_today_deal',
           'is_featured',
           'is_published'
         ],
@@ -731,7 +723,6 @@ module.exports = {
           'created_at',
           'vat_type',
           'discount_type',
-          'is_today_deal',
           'is_featured',
           'is_published'
         ],
@@ -831,7 +822,6 @@ module.exports = {
           'created_at',
           'vat_type',
           'discount_type',
-          'is_today_deal',
           'is_featured',
           'is_published'
         ],
@@ -920,7 +910,6 @@ module.exports = {
           'created_at',
           'vat_type',
           'discount_type',
-          'is_today_deal',
           'is_featured',
           'is_published'
         ],
@@ -1009,7 +998,6 @@ module.exports = {
           'created_at',
           'vat_type',
           'discount_type',
-          'is_today_deal',
           'is_featured',
           'is_published'
         ],

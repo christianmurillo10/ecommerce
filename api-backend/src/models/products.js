@@ -115,11 +115,6 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: true,
       defaultValue: '1'
     },
-    'is_today_deal': {
-      type: DataTypes.SMALLINT(1),
-      allowNull: true,
-      defaultValue: '0'
-    },
     'is_featured': {
       type: DataTypes.SMALLINT(1),
       allowNull: true,

@@ -141,7 +141,6 @@ const actions = {
           product_sub_sub_category_id: payload.product_sub_sub_category_id,
           vat_type: payload.vat_type,
           discount_type: payload.discount_type,
-          is_today_deal: payload.is_today_deal,
           is_featured: payload.is_featured,
           is_published: payload.is_published
         };
@@ -179,7 +178,6 @@ const actions = {
           product_sub_sub_category_id: payload.product_sub_sub_category_id,
           vat_type: payload.vat_type,
           discount_type: payload.discount_type,
-          is_today_deal: payload.is_today_deal,
           is_featured: payload.is_featured,
           is_published: payload.is_published
         };
@@ -285,7 +283,6 @@ const mutations = {
       product_sub_sub_category_id: payload.product_sub_sub_category_id,
       vat_type: payload.vat_type,
       discount_type: payload.discount_type,
-      is_today_deal: payload.is_today_deal,
       is_featured: payload.is_featured,
       is_published: payload.is_published
     });

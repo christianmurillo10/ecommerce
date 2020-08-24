@@ -59,14 +59,6 @@
             <td class="text-xs-left">&#8369; {{ props.item.price_amount }}</td>
             <td class="text-xs-left">
               <v-switch
-                v-model="props.item.is_today_deal"
-                color="success"
-                @change="updateStatus({ id: props.item.id, fieldName: 'is_today_deal', value: $event })"
-                hide-details
-              ></v-switch>
-            </td>
-            <td class="text-xs-left">
-              <v-switch
                 v-model="props.item.is_published"
                 color="success"
                 @change="updateStatus({ id: props.item.id, fieldName: 'is_published', value: $event })"
@@ -157,7 +149,6 @@ export default {
       { text: "Unit", value: "name", sortable: false },
       { text: "Stock", value: "name", sortable: false },
       { text: "Price", value: "name", sortable: false },
-      { text: "Today's Deal", value: "name", sortable: false },
       { text: "Published", value: "name", sortable: false },
       { text: "Featured", value: "name", sortable: false },
       { text: "Actions", align: "center", value: "name", sortable: false }

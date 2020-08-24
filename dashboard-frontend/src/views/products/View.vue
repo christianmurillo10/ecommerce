@@ -85,6 +85,8 @@
                     <v-list-tile-title>{{ discount }}</v-list-tile-title>
                   </v-list-tile-content>
                 </v-list-tile>
+              </v-flex>
+              <v-flex xs12 sm12 md6 lg6>
                 <v-list-tile>
                   <v-list-tile-action>
                     <v-list-tile-title class="font-weight-bold">Store:&nbsp;</v-list-tile-title>
@@ -93,8 +95,6 @@
                     <v-list-tile-title>{{ productStoreDetails.name }}</v-list-tile-title>
                   </v-list-tile-content>
                 </v-list-tile>
-              </v-flex>
-              <v-flex xs12 sm12 md6 lg6>
                 <v-list-tile>
                   <v-list-tile-action>
                     <v-list-tile-title class="font-weight-bold">Brand:&nbsp;</v-list-tile-title>
@@ -149,14 +149,6 @@
                   </v-list-tile-action>
                   <v-list-tile-content>
                     <v-list-tile-title>{{ getYesNoStatus(productDetails.is_featured) }}</v-list-tile-title>
-                  </v-list-tile-content>
-                </v-list-tile>
-                <v-list-tile>
-                  <v-list-tile-action>
-                    <v-list-tile-title class="font-weight-bold">Today Deal:&nbsp;</v-list-tile-title>
-                  </v-list-tile-action>
-                  <v-list-tile-content>
-                    <v-list-tile-title>{{ getYesNoStatus(productDetails.is_today_deal) }}</v-list-tile-title>
                   </v-list-tile-content>
                 </v-list-tile>
               </v-flex>
