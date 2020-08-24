@@ -82,6 +82,18 @@
                     </v-flex>
                     <v-flex xs12 sm12 md6>
                       <v-autocomplete
+                        :items="getProductStoreList"
+                        item-text="name"
+                        item-value="id"
+                        v-model="formData.product_store_id"
+                        label="Store"
+                        persistent-hint
+                        :rules="[rules.required]"
+                        required
+                      ></v-autocomplete>
+                    </v-flex>
+                    <v-flex xs12 sm12 md6>
+                      <v-autocomplete
                         :items="getProductBrandList"
                         item-text="name"
                         item-value="id"
@@ -212,6 +224,7 @@ export default {
       price_amount: "",
       vat_value: "",
       discount_value: "",
+      product_store_id: "",
       product_brand_id: "",
       product_category_id: "",
       product_sub_category_id: "",
@@ -227,6 +240,7 @@ export default {
       price_amount: "",
       vat_value: "",
       discount_value: "",
+      product_store_id: "",
       product_brand_id: "",
       product_category_id: "",
       product_sub_category_id: "",
@@ -239,6 +253,7 @@ export default {
 
   computed: {
     ...mapGetters("products", ["getProductById"]),
+    ...mapGetters("productStores", ["getProductStoreList"]),
     ...mapGetters("productBrands", ["getProductBrandList"]),
     ...mapGetters("productCategories", ["getProductCategoryList"]),
     ...mapGetters("productSubCategories", ["getProductSubCategoryList"]),
@@ -246,6 +261,7 @@ export default {
   },
 
   created() {
+    this.getProductStoresData();
     this.getProductBrandsData();
     this.getProductCategoriesData();
     this.setFormType();
@@ -253,6 +269,7 @@ export default {
 
   methods: {
     ...mapActions("alerts", ["setAlert"]),
+    ...mapActions("productStores", { getProductStoresData: "getData" }),
     ...mapActions("productBrands", { getProductBrandsData: "getData" }),
     ...mapActions("productCategories", { getProductCategoriesData: "getData" }),
     ...mapActions("productSubCategories", {
@@ -309,6 +326,7 @@ export default {
         this.formData.price_amount = data.price_amount;
         this.formData.vat_value = data.vat_value;
         this.formData.discount_value = data.discount_value;
+        this.formData.product_store_id = data.product_store_id;
         this.formData.product_brand_id = data.product_brand_id;
         this.formData.product_category_id = data.product_category_id;
         this.formData.product_sub_category_id = data.product_sub_category_id;
