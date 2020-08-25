@@ -215,7 +215,7 @@ module.exports = {
             
             // 2. UPDATE
             if (salesOrderDetailsInitialUpdateValue.length > 0) {
-              // 2.1 Update sales order details and inventory
+              // 2.1 Update sales order details
               for (let i = 0; i < salesOrderDetailsInitialUpdateValue.length; i++) {
                 let detailsUpdateValue = salesOrderDetailsInitialUpdateValue[i];
                 let dataDetails = await Model.SalesOrderDetails.findByPk(detailsUpdateValue.id);

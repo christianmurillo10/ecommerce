@@ -49,7 +49,8 @@ const actions = {
     return new Promise((resolve, reject) => {
       try {
         let obj = {
-          name: payload.name
+          name: payload.name,
+          details: payload.details
         }
 
         axios
@@ -71,7 +72,8 @@ const actions = {
     return new Promise((resolve, reject) => {
       try {
         let obj = {
-          name: payload.name
+          name: payload.name,
+          details: payload.details
         }
 
         axios

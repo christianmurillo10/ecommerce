@@ -1,5 +1,5 @@
-const Model = require('../models');
-const { NO, YES } = require('../helpers/constant-helper');
+const Model = require("../models");
+const { NO, YES } = require("../helpers/constant-helper");
 
 module.exports = {
   /**
@@ -20,44 +20,65 @@ module.exports = {
       return res.badRequest({ err: "Empty Parameter: [params]" });
 
     // Override variables
-    params.created_at = moment().utc(8).format('YYYY-MM-DD HH:mm:ss');
-    params.user_id = req.user.id.toLocaleString();
+    params.created_at = moment().utc(8).format("YYYY-MM-DD HH:mm:ss");
 
     try {
       // Validators
-      if (_.isEmpty(params.name)) return res.json({ status: 200, message: "Name is required.", result: false });
+      if (_.isEmpty(params.name))
+        return res.json({
+          status: 200,
+          message: "Name is required.",
+          result: false,
+        });
 
       // Pre-setting variables
       criteria = { where: { name: params.name } };
-      initialValues = _.pick(params, [
-        'name',
-        'user_id',
-        'created_at'
-      ]);
+      initialValues = _.pick(params, ["name", "created_at"]);
       // Execute findAll query
       data = await Model.ProductVariations.findAll(criteria);
       if (_.isEmpty(data[0])) {
         await Model.ProductVariations.create(initialValues)
           .then(() => Model.ProductVariations.findOrCreate(criteria))
           .then(([finalData, created]) => {
-            res.json({
-              status: 200,
-              message: "Successfully created data.",
-              result: _.omit(finalData.get({ plain: true }), ['is_deleted'])
+            let plainData = finalData.get({ plain: true });
+
+            // 1. Set and filtering Bulk Data of Product Variant Details
+            const productVariationDetails = params.details;
+            let productVariationDetailsInitialValue = [];
+            productVariationDetails.forEach((element) => {
+              let productVariationDetailsData = {
+                code: element.code,
+                name: element.name,
+                product_variation_id: plainData.id,
+              };
+              productVariationDetailsInitialValue.push(
+                productVariationDetailsData
+              );
             });
-          })
+
+            // 2. Saving Bulk Product Variant Details
+            Model.ProductVariationDetails.bulkCreate(
+              productVariationDetailsInitialValue
+            ).then(async (response) => {
+              res.json({
+                status: 200,
+                message: "Successfully created data.",
+                result: _.omit(plainData, ["is_deleted"]),
+              });
+            });
+          });
       } else {
         res.json({
           status: 200,
           message: "Data already exist.",
-          result: false
+          result: false,
         });
       }
     } catch (err) {
       res.json({
         status: 401,
         err: err,
-        message: "Failed creating data."
+        message: "Failed creating data.",
       });
     }
   },
@@ -78,37 +99,86 @@ module.exports = {
     if (_.isEmpty(params))
       return res.badRequest({ err: "Empty Parameter: [params]" });
 
+    // Override variables
+    params.updated_at = moment().utc(8).format("YYYY-MM-DD HH:mm:ss");
+
     try {
       // Pre-setting variables
       criteria = { where: { is_deleted: NO } };
-      initialValues = _.pick(params, [
-        'name'
-      ]);
-      
+      initialValues = _.pick(params, ["name"]);
+
       // Execute findByPk query
       data = await Model.ProductVariations.findByPk(req.params.id);
       if (!_.isEmpty(data)) {
-        await data.update(initialValues)
-          .then(() => Model.ProductVariations.findByPk(data.id, criteria)
-          .then(finalData => {
-            res.json({
-              status: 200,
-              message: "Successfully updated data.",
-              result: _.omit(finalData.get({ plain: true }), ['is_deleted'])
-            });
-          }));
+        await data.update(initialValues).then(() =>
+          Model.ProductVariations.findByPk(data.id, criteria).then(
+            async (finalData) => {
+              let plainData = finalData.get({ plain: true });
+  
+              // 1. Set and filtering bulk data of product variation details
+              const productVariationDetails = params.details;
+              let productVariationDetailsInitialUpdateValue = [];
+              let productVariationDetailsInitialCreateValue = [];
+              let existingIds = [];
+              productVariationDetails.forEach(element => {
+                let productVariationDetailsData = {
+                  id: element.id,
+                  code: element.code,
+                  name: element.name,
+                  product_variation_id: plainData.id,
+                }
+  
+                if (_.isUndefined(element.id)) {
+                  productVariationDetailsInitialCreateValue.push(_.omit(productVariationDetailsData, ["id"]));
+                } else {
+                  productVariationDetailsInitialUpdateValue.push(productVariationDetailsData);
+                  existingIds.push(element.id);
+                }
+              });
+            
+              // 2. UPDATE
+              if (productVariationDetailsInitialUpdateValue.length > 0) {
+                // 2.1 Update product variation details
+                for (let i = 0; i < productVariationDetailsInitialUpdateValue.length; i++) {
+                  let detailsUpdateValue = productVariationDetailsInitialUpdateValue[i];
+                  let dataDetails = await Model.ProductVariationDetails.findByPk(detailsUpdateValue.id);
+                  if (!_.isEmpty(dataDetails)) {
+                    // 2.1.1 Update product variation details
+                    await dataDetails.update(detailsUpdateValue);
+                  }
+                }
+  
+                // 2.2 Delete product variation details
+                let criteriaDetails = { where: { id: { $notIn: existingIds }, product_variation_id: plainData.id, is_deleted: NO } };
+                await Model.ProductVariationDetails.update({ is_deleted: YES }, criteriaDetails);
+              }
+
+              // 3. CREATE
+              if (productVariationDetailsInitialCreateValue.length > 0) {
+                // 3.1 Create bulk product variation details
+                await Model.ProductVariationDetails.bulkCreate(productVariationDetailsInitialCreateValue);
+              }
+  
+              res.json({
+                status: 200,
+                message: "Successfully updated data.",
+                result: _.omit(plainData, ['is_deleted'])
+              });
+            }
+          )
+        );
       } else {
         res.json({
           status: 200,
           message: "Data doesn't exist.",
-          result: false
+          result: false,
         });
       }
     } catch (err) {
       res.json({
         status: 401,
         err: err,
-        message: "Failed updating data."
+        message: "Failed updating data.",
       });
     }
   },
@@ -131,20 +201,20 @@ module.exports = {
         res.json({
           status: 200,
           message: "Successfully deleted data.",
-          result: finalData
+          result: finalData,
         });
       } else {
         res.json({
           status: 200,
           message: "Data doesn't exist.",
-          result: false
+          result: false,
         });
       }
     } catch (err) {
       res.json({
         status: 401,
         err: err,
-        message: "Failed deleting data."
+        message: "Failed deleting data.",
       });
     }
   },
@@ -177,26 +247,26 @@ module.exports = {
       // Execute native query
       data = await Model.sequelize.query(query, {
         replacements: [`%${params.value}%`],
-        type: Model.sequelize.QueryTypes.SELECT
+        type: Model.sequelize.QueryTypes.SELECT,
       });
       if (!_.isEmpty(data)) {
         res.json({
           status: 200,
           message: "Successfully searched data.",
-          result: data
+          result: data,
         });
       } else {
         res.json({
           status: 200,
           message: "No Data Found.",
-          result: false
+          result: false,
         });
       }
     } catch (err) {
       res.json({
         status: 401,
         err: err,
-        message: "Failed to search data."
+        message: "Failed to search data.",
       });
     }
   },
@@ -220,20 +290,20 @@ module.exports = {
         res.json({
           status: 200,
           message: "Successfully find all data.",
-          result: data
+          result: data,
         });
       } else {
         res.json({
           status: 200,
           message: "No Data Found.",
-          result: false
+          result: false,
         });
       }
     } catch (err) {
       res.json({
         status: 401,
         err: err,
-        message: "Failed to find all data."
+        message: "Failed to find all data.",
       });
     }
   },
@@ -250,27 +320,38 @@ module.exports = {
 
     try {
       // Pre-setting variables
-      criteria = { where: { is_deleted: NO } };
+      criteria = {
+        where: { is_deleted: NO },
+        include: [
+          {
+            model: Model.ProductVariationDetails,
+            as: "productVariationDetails",
+            attributes: ["id", "code", "name"],
+            where: { is_deleted: NO },
+            required: false,
+          },
+        ],
+      };
       // Execute findAll query
       data = await Model.ProductVariations.findByPk(req.params.id, criteria);
       if (!_.isEmpty(data)) {
         res.json({
           status: 200,
           message: "Successfully find data.",
-          result: _.omit(data.get({ plain: true }), ['is_deleted'])
+          result: _.omit(data.get({ plain: true }), ["is_deleted"]),
         });
       } else {
         res.json({
           status: 200,
           message: "No Data Found.",
-          result: false
+          result: false,
         });
       }
     } catch (err) {
       res.json({
         status: 401,
         err: err,
-        message: "Failed to find data."
+        message: "Failed to find data.",
       });
     }
   },

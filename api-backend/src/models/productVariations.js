@@ -11,15 +11,6 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING(100),
       allowNull: false
     },
-    'user_id': {
-      type: DataTypes.INTEGER(11),
-      references: {
-        model: 'users',
-        key: 'id'
-      },
-      comment: 'refd to users.id',
-      allowNull: false
-    },
     'created_at': {
       type: 'TIMESTAMP',
       allowNull: false,
@@ -41,9 +32,9 @@ module.exports = (sequelize, DataTypes) => {
   });
 
   ProductVariations.associate = (models) => {
-    ProductVariations.belongsTo(models.Users, {
-      foreignKey: 'user_id',
-      as: 'users'
+    ProductVariations.hasMany(models.ProductVariationDetails, {
+      foreignKey: 'product_variation_id',
+      as: 'productVariationDetails'
     });
   };
 

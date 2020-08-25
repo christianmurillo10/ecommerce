@@ -6,7 +6,7 @@
       <v-card-title>
         <v-icon class="black--text">view_list</v-icon><span class="title">Product Variations</span>
         <v-spacer></v-spacer>
-        <v-dialog v-model="dialog" max-width="500px">
+        <v-dialog v-model="dialog" scrollable persistent max-width="800px">
           <template v-slot:activator="{ on: { click } }">
             <v-tooltip left>
               <template v-slot:activator="{ on }">
