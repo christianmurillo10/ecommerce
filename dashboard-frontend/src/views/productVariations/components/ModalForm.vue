@@ -9,7 +9,7 @@
       <v-card-text>
         <v-container grid-list-md>
           <v-layout wrap>
-            <v-flex xs12 sm12 md6>
+            <v-flex xs12 sm12 md12>
               <v-text-field
                 v-model="formData.name"
                 :rules="[rules.required, rules.max50Chars]"
@@ -18,51 +18,39 @@
               ></v-text-field>
             </v-flex>
             <v-flex xs12 sm12 md12>
-              <span class="title py-3">Details</span>
+              <span class="subheading font-weight-bold">Details</span>
             </v-flex>
-            <v-flex
-              xs12
-              sm12
-              md12
-              mb-2
-              v-for="(item, i) in formData.details"
-              :key="i"
-            >
-              <v-card color="grey lighten-5">
-                <v-card-text>
-                  <v-layout wrap row>
-                    <v-flex xs12 sm12 md12>
-                      <v-layout wrap row>
-                        <span class="subheading font-weight-bold py-3">
-                          Item {{ i + 1 }}
-                        </span>
-                        <v-spacer></v-spacer>
-                        <v-btn icon>
-                          <v-icon color="error" @click="deleteRow(i)">
-                            delete
-                          </v-icon>
-                        </v-btn>
-                      </v-layout>
-                    </v-flex>
-                    <v-flex xs12 sm12 md4>
-                      <v-text-field
-                        v-model="formData.details[i].code"
-                        :rules="[rules.required, rules.max50Chars]"
-                        label="Code"
-                        required
-                      ></v-text-field>
-                    </v-flex>
-                    <v-flex xs12 sm12 md8>
-                      <v-text-field
-                        v-model="formData.details[i].name"
-                        :rules="[rules.required, rules.max50Chars]"
-                        label="Name"
-                        required
-                      ></v-text-field>
-                    </v-flex>
-                  </v-layout>
-                </v-card-text>
-              </v-card>
+            <v-flex xs12 sm12 md12>
+              <table>
+                <tr v-for="(item, i) in formData.details" :key="i">
+                  <td style="width: 5%">
+                    {{ `${i + 1}.` }}
+                  </td>
+                  <td style="width: 20%">
+                    <v-text-field
+                      v-model="formData.details[i].code"
+                      :rules="[rules.required, rules.max50Chars]"
+                      label="Code"
+                      required
+                    ></v-text-field>
+                  </td>
+                  <td style="width: 70%">
+                    <v-text-field
+                      v-model="formData.details[i].name"
+                      :rules="[rules.required, rules.max50Chars]"
+                      label="Name"
+                      required
+                    ></v-text-field>
+                  </td>
+                  <td style="width: 5%">
+                    <v-btn icon>
+                      <v-icon color="error" @click="deleteRow(i)">
+                        delete
+                      </v-icon>
+                    </v-btn>
+                  </td>
+                </tr>
+              </table>
             </v-flex>
             <v-flex xs12 sm12 md12>
               <v-layout wrap row>
@@ -139,7 +127,7 @@ export default {
     ...mapActions("productVariations", {
       saveProductVariationData: "saveData",
       updateProductVariationData: "updateData",
-      getProductVariationDataById: "getDataById"
+      getProductVariationDataById: "getDataById",
     }),
 
     addRow() {
@@ -161,13 +149,13 @@ export default {
 
       // set details values
       let details = [];
-      for(let i = 0; i < data.productVariationDetails.length; i++) {
-          let obj = data.productVariationDetails[i];
-          details.push({
-            id: obj.id,
-            code: obj.code,
-            name: obj.name
-          });
+      for (let i = 0; i < data.productVariationDetails.length; i++) {
+        let obj = data.productVariationDetails[i];
+        details.push({
+          id: obj.id,
+          code: obj.code,
+          name: obj.name,
+        });
       }
 
       this.formData.id = data.id;
