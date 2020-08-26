@@ -12,8 +12,8 @@
               <v-autocomplete
                 :items="getProductVariationList"
                 item-text="name"
-                item-value="id"
-                v-model="formData.product_variation_id"
+                item-value="name"
+                v-model="formData.title"
                 label="Variation"
                 persistent-hint
                 :rules="[rules.required]"
@@ -25,11 +25,12 @@
                 v-model="formData.values"
                 :items="getFilteredProductVariationDetailList"
                 item-text="name"
-                item-value="id"
+                item-value="name"
                 label="Details"
                 multiple
                 chips
                 deletable-chips
+                :rules="[rules.required]"
                 :disabled="getFilteredProductVariationDetailList.length ? false : true"
               ></v-combobox>
             </v-flex>
@@ -58,12 +59,12 @@ export default {
   data: () => ({
     dialogConfirmation: false,
     defaultFormData: {
-      product_variation_id: "",
+      title: "",
       values: [],
     },
     formType: "new",
     formData: {
-      product_variation_id: "",
+      title: "",
       values: [],
     },
     valid: true,
@@ -75,6 +76,7 @@ export default {
 
   computed: {
     ...mapGetters("productVariations", ["getProductVariationList"]),
+    ...mapGetters("productVariants", ["getProductVariantById"]),
     ...mapGetters("productVariationDetails", [
       "getFilteredProductVariationDetailList",
     ]),
@@ -90,8 +92,10 @@ export default {
   },
 
   watch: {
-    "formData.product_variation_id": function(val) {
-      this.getProductVariationDetailsDataByProductVariationId(val);
+    "formData.title": function(val) {
+      const productVariation = this.getProductVariationList.find(element => element.name == val);
+      const productVariationId = _.isUndefined(productVariation) ? null : productVariation.id;
+      this.getProductVariationDetailsDataByProductVariationId(productVariationId);
     },
   },
 
@@ -102,9 +106,17 @@ export default {
       getProductVariationDetailsDataByProductVariationId:
         "getDataByProductVariationId",
     }),
+    ...mapActions("productVariants", {
+      saveProductVariantData: "saveData",
+      updateProductVariantData: "updateData"
+    }),
 
     editItem(id) {
-      // let data = this.getProductOptionById(id);
+      let data = this.getProductVariantById(id);
+      this.formData.id = data.id;
+      this.formData.title = data.title;
+      this.formData.values = JSON.parse(data.values);
+      this.formData.product_id = data.product_id;
       this.formType = "update";
     },
 
@@ -117,46 +129,37 @@ export default {
     },
 
     async save() {
-      console.log("ASDASD", this.formData);
-      // let productId = this.$route.params.id;
-      // // bulk delete of variants
-      // if (this.inventoryList.length > 0) {
-      //   let deleteResponse = await this.deleteAllInventoryDataByProducyId(
-      //     productId
-      //   );
-      //   if (deleteResponse.data.result)
-      //     this.getInventoryDataByProductId(productId);
-      // }
-      // // save options
-      // if (this.formType === "new") {
-      //   this.formData.product_id = productId;
-      //   this.saveProductOptionData(this.formData)
-      //     .then((response) => {
-      //       let obj = {
-      //         alert: true,
-      //         type: "success",
-      //         message: response.data.message,
-      //       };
+      let productId = this.$route.params.id;
+      // save variant
+      if (this.formType === "new") {
+        this.formData.product_id = productId;
+        this.saveProductVariantData(this.formData)
+          .then((response) => {
+            let obj = {
+              alert: true,
+              type: "success",
+              message: response.data.message,
+            };
 
-      //       if (!response.data.result) obj.type = "error";
-      //       this.setAlert(obj);
-      //     })
-      //     .catch((err) => console.log(err));
-      // } else if (this.formType === "update") {
-      //   this.updateProductOptionData(this.formData)
-      //     .then((response) => {
-      //       let obj = {
-      //         alert: true,
-      //         type: "success",
-      //         message: response.data.message,
-      //       };
+            if (!response.data.result) obj.type = "error";
+            this.setAlert(obj);
+          })
+          .catch((err) => console.log(err));
+      } else if (this.formType === "update") {
+        this.updateProductVariantData(this.formData)
+          .then((response) => {
+            let obj = {
+              alert: true,
+              type: "success",
+              message: response.data.message,
+            };
 
-      //       if (!response.data.result) obj.type = "error";
-      //       this.setAlert(obj);
-      //     })
-      //     .catch((err) => console.log(err));
-      // }
-      // this.close();
+            if (!response.data.result) obj.type = "error";
+            this.setAlert(obj);
+          })
+          .catch((err) => console.log(err));
+      }
+      this.close();
     },
   },
 };

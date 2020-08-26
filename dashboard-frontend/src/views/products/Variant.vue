@@ -42,13 +42,13 @@
           <div class="px-4">
             <v-data-table
               :headers="headers"
-              :items="productOptionList"
+              :items="productVariantList"
               class="elevation-1"
               hide-actions
             >
               <template v-slot:items="props">
                 <td class="text-xs-left">{{ props.item.title }}</td>
-                <td class="text-xs-left">{{ props.item.values }}</td>
+                <td class="text-xs-left">{{ JSON.parse(props.item.values).map(element => element.name).toString() }}</td>
                 <td class="justify-center layout px-0">
                   <v-tooltip left>
                     <template v-slot:activator="{ on }">
@@ -83,12 +83,12 @@
             </v-data-table>
           </div>
         </v-flex>
-        <v-flex xs12 sm12 md12 lg12 v-if="productOptionList.length !== 0">
+        <v-flex xs12 sm12 md12 lg12 v-if="productVariantList.length !== 0">
           <div class="pa-4">
             <span class="title">Variants</span>
           </div>
           <div class="px-4">
-            <OptionVariant />
+            <!-- <OptionVariant /> -->
           </div>
         </v-flex>
       </v-card-text>
@@ -122,14 +122,14 @@
 <script>
 import Alerts from "@/components/utilities/Alerts";
 import ModalFormVariation from "./components/modal/ModalFormVariation";
-import OptionVariant from "./components/option/OptionVariant";
+// import OptionVariant from "./components/option/OptionVariant";
 import { mapState, mapActions } from "vuex";
 
 export default {
   components: {
     Alerts,
     ModalFormVariation,
-    OptionVariant,
+    // OptionVariant,
   },
 
   data: () => ({
@@ -150,11 +150,11 @@ export default {
     this.getProductDataById(this.$route.params.id).then((response) => {
       this.productDetails = response.data.result;
     });
-    this.getProductOptionDataByProductId(this.$route.params.id);
+    this.getProductVariantDataByProductId(this.$route.params.id);
   },
 
   computed: {
-    ...mapState("productOptions", ["productOptionList"]),
+    ...mapState("productVariants", ["productVariantList"]),
     ...mapState("inventories", ["inventoryList"]),
   },
 
@@ -167,9 +167,9 @@ export default {
   methods: {
     ...mapActions("alerts", ["setAlert"]),
     ...mapActions("products", { getProductDataById: "getDataById" }),
-    ...mapActions("productOptions", {
-      getProductOptionDataByProductId: "getDataByProductId",
-      deleteProductOptionData: "deleteData",
+    ...mapActions("productVariants", {
+      getProductVariantDataByProductId: "getDataByProductId",
+      deleteProductVariantData: "deleteData",
     }),
     ...mapActions("inventories", {
       getInventoryDataByProductId: "getDataByProductId",
@@ -196,8 +196,8 @@ export default {
         if (deleteResponse.data.result)
           this.getInventoryDataByProductId(productId);
       }
-      // delete options
-      this.deleteProductOptionData(this.modalDelete.id)
+      // delete variants
+      this.deleteProductVariantData(this.modalDelete.id)
         .then((response) => {
           let obj = {
             alert: true,
