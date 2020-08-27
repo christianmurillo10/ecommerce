@@ -46,21 +46,21 @@
       </v-card>
     </v-flex>
     <v-flex xs12 sm12 md12 lg12 class="pt-2">
-      <div v-for="(option, i) in details.productOptions" :key="i">
+      <div v-for="(variant, i) in details.productVariants" :key="i">
         <v-flex xs12 sm12 md12 lg12>
-          <span class="body-2 black--text">{{ option.title }}:</span>
+          <span class="body-2 black--text">{{ variant.title }}:</span>
         </v-flex>
         <v-flex xs12 sm12 md12 lg12>
           <v-chip-group mandatory>
             <v-chip
-              v-for="(value, j) in option.values.split(',')"
+              v-for="(value, j) in JSON.parse(variant.values)"
               :key="j"
               :value="value"
               outlined
               color="blue"
-              @click="setOptionValues(i, value)"
+              @click="setVariantValues(i, value)"
             >
-              {{ value }}
+              {{ value.name }}
             </v-chip>
           </v-chip-group>
         </v-flex>
@@ -189,7 +189,7 @@ export default {
     discount_value: null,
     stock_available: 0,
     formData: {
-      options: [],
+      variants: [],
       quantity: 1,
     },
     valid: true,
@@ -245,9 +245,9 @@ export default {
   watch: {
     details(val) {
       this.resetFormData();
-      val.productOptions.forEach((element) => {
-        let valueArr = element.values.split(",");
-        this.formData.options.push({
+      val.productVariants.forEach((element) => {
+        let valueArr = JSON.parse(element.values);
+        this.formData.variants.push({
           id: element.id,
           title: element.title,
           value: valueArr[0],
@@ -313,8 +313,8 @@ export default {
       }
     },
 
-    setOptionValues(key, value) {
-      this.formData.options[key].value = value;
+    setVariantValues(key, value) {
+      this.formData.variants[key].value = value;
       let sku = this.generateSKU();
       this.stock_available = this.getProductAvailableStockBySku(sku);
       this.formData.quantity = 1;
@@ -331,22 +331,17 @@ export default {
       let acronymName,
         code = "",
         sku = "";
-      this.formData.options.forEach((element) => {
-        code += `-${element.value.toUpperCase()}`;
+      this.formData.variants.forEach((element) => {
+        code += `-${element.value.code}`;
       });
-
-      acronymName = this.details.name
-        .match(/\b(\w)/g)
-        .join("")
-        .toUpperCase();
-      sku = acronymName + code;
+      sku = this.details.code + code;
 
       return sku;
     },
 
     resetFormData() {
       this.formData = {
-        options: [],
+        variants: [],
         quantity: 1,
       };
     },
@@ -358,7 +353,7 @@ export default {
             product_id: this.details.id,
             file_path: this.details.productImages[0].file_path,
             name: this.details.name,
-            options: this.formData.options,
+            variants: this.formData.variants,
             quantity: this.formData.quantity,
             base_price_amount: this.basePriceAmount,
             price_amount: this.priceAmount,

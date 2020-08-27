@@ -64,7 +64,7 @@ const actions = {
                 if (element.productImages.length > 0) {
                   element.productImages.forEach(elementImage => {
                     elementImage.file_path = `${process.env.VUE_APP_API_BACKEND}/productImages/viewImage/${elementImage.file_name}/${elementImage.type}`;
-                  })
+                  });
                 } else {
                   element.productImages.push({ file_path: require("../../assets/images/no-image.png") });
                 }
@@ -89,7 +89,7 @@ const actions = {
                 if (element.productImages.length > 0) {
                   element.productImages.forEach(elementImage => {
                     elementImage.file_path = `${process.env.VUE_APP_API_BACKEND}/productImages/viewImage/${elementImage.file_name}/${elementImage.type}`;
-                  })
+                  });
                 } else {
                   element.productImages.push({ file_path: require("../../assets/images/no-image.png") });
                 }
@@ -114,7 +114,7 @@ const actions = {
                 if (element.productImages.length > 0) {
                   element.productImages.forEach(elementImage => {
                     elementImage.file_path = `${process.env.VUE_APP_API_BACKEND}/productImages/viewImage/${elementImage.file_name}/${elementImage.type}`;
-                  })
+                  });
                 } else {
                   element.productImages.push({ file_path: require("../../assets/images/no-image.png") });
                 }
@@ -139,7 +139,7 @@ const actions = {
                 if (element.productImages.length > 0) {
                   element.productImages.forEach(elementImage => {
                     elementImage.file_path = `${process.env.VUE_APP_API_BACKEND}/productImages/viewImage/${elementImage.file_name}/${elementImage.type}`;
-                  })
+                  });
                 } else {
                   element.productImages.push({ file_path: require("../../assets/images/no-image.png") });
                 }
@@ -164,7 +164,7 @@ const actions = {
                 if (element.productImages.length > 0) {
                   element.productImages.forEach(elementImage => {
                     elementImage.file_path = `${process.env.VUE_APP_API_BACKEND}/productImages/viewImage/${elementImage.file_name}/${elementImage.type}`;
-                  })
+                  });
                 } else {
                   element.productImages.push({ file_path: require("../../assets/images/no-image.png") });
                 }
@@ -189,7 +189,7 @@ const actions = {
                 if (element.productImages.length > 0) {
                   element.productImages.forEach(elementImage => {
                     elementImage.file_path = `${process.env.VUE_APP_API_BACKEND}/productImages/viewImage/${elementImage.file_name}/${elementImage.type}`;
-                  })
+                  });
                 } else {
                   element.productImages.push({ file_path: require("../../assets/images/no-image.png") });
                 }
@@ -219,7 +219,7 @@ const actions = {
                 if (element.productImages.length > 0) {
                   element.productImages.forEach(elementImage => {
                     elementImage.file_path = `${process.env.VUE_APP_API_BACKEND}/productImages/viewImage/${elementImage.file_name}/${elementImage.type}`;
-                  })
+                  });
                 } else {
                   element.productImages.push({ file_path: require("../../assets/images/no-image.png") });
                 }
@@ -246,13 +246,17 @@ const actions = {
           .get(url, header)
           .then(response => {
             let obj = response.data.result;
-            obj.productImages.forEach(element => {
-              if (!_.isEmpty(element)) {
-                element.file_path = `${process.env.VUE_APP_API_BACKEND}/productImages/viewImage/${element.file_name}/${element.type}`;
-              } else {
-                element.file_path = require("../../assets/images/no-image.png");
-              }
-            });
+            if (obj.productImages.length > 0) {
+              obj.productImages.forEach(element => {
+                if (!_.isEmpty(element)) {
+                  element.file_path = `${process.env.VUE_APP_API_BACKEND}/productImages/viewImage/${element.file_name}/${element.type}`;
+                } else {
+                  element.file_path = require("../../assets/images/no-image.png");
+                }
+              });
+            } else {
+              obj.productImages.push({ file_path: require("../../assets/images/no-image.png") })
+            }
             commit("SET_DATA_BY_ID", obj);
           });
       } catch (err) {

@@ -88,10 +88,10 @@
                   <th>Discount</th>
                   <th
                     class="text-left"
-                    v-for="(option, i) in item.options"
+                    v-for="(variant, i) in item.variants"
                     :key="i"
                   >
-                    {{ option.title }}
+                    {{ variant.title }}
                   </th>
                 </tr>
               </thead>
@@ -103,8 +103,8 @@
                       setRateTypeValue(item.discount_value, item.discount_type)
                     }}
                   </td>
-                  <td v-for="(option, i) in item.options" :key="i">
-                    {{ option.value }}
+                  <td v-for="(variant, i) in item.variants" :key="i">
+                    {{ variant.value.name }}
                   </td>
                 </tr>
               </tbody>

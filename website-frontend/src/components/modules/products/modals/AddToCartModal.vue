@@ -27,18 +27,18 @@
                   <v-flex xs12 sm12 md12 lg12>
                     <v-layout wrap row>
                       <v-flex xs4 sm4 md4 lg4>
-                        <span class="body-2 black--text">Option: </span>
+                        <span class="body-2 black--text">Variant: </span>
                       </v-flex>
                       <v-flex xs8 sm8 md8 lg8>
                         <v-simple-table dense>
                           <template v-slot:default>
                             <tbody>
                               <tr
-                                v-for="(option, i) in productDetails.options"
+                                v-for="(variant, i) in productDetails.variants"
                                 :key="i"
                               >
-                                <td>{{ option.title }} :</td>
-                                <td>{{ option.value }}</td>
+                                <td>{{ variant.title }} :</td>
+                                <td>{{ variant.value.name }}</td>
                               </tr>
                             </tbody>
                           </template>
@@ -156,7 +156,7 @@ export default {
     productDetails: {
       file_path: "",
       name: "",
-      options: [],
+      variants: [],
       quantity: 0,
       base_price_amount: "0.00",
       price_amount: "0.00",
@@ -171,7 +171,7 @@ export default {
     setDialog(value, obj) {
       this.productDetails.file_path = obj.file_path;
       this.productDetails.name = obj.name;
-      this.productDetails.options = obj.options;
+      this.productDetails.variants = obj.variants;
       this.productDetails.quantity = obj.quantity;
       this.productDetails.base_price_amount = obj.base_price_amount;
       this.productDetails.price_amount = obj.price_amount;
