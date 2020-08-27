@@ -192,20 +192,20 @@
                         v-model="formData.details[i].product_id"
                         :rules="[rules.required]"
                         label="Product"
-                        v-on:change="setProductOptions(i, formData.details[i].product_id, 'new')"
+                        v-on:change="setProductVariants(i, formData.details[i].product_id, 'new')"
                       ></v-autocomplete>
                     </v-flex>
                     <v-flex xs12 sm12 md3></v-flex>
                     <v-flex xs12 sm12 md12>
                       <v-layout wrap row>
-                        <v-flex xs12 sm12 md3 v-for="(options, x) in productOptions[i].data" :key="x">
+                        <v-flex xs12 sm12 md3 v-for="(variant, x) in productVariants[i].data" :key="x">
                           <v-autocomplete
-                            :items="options.values"
+                            :items="variant.values"
                             item-text="name"
                             item-value="name"
-                            v-model="formData.details[i].option_details[x]"
+                            v-model="formData.details[i].variant_details[x]"
                             :rules="[rules.required]"
-                            :label="options.title"
+                            :label="variant.title"
                           ></v-autocomplete>
                         </v-flex>
                       </v-layout>
@@ -308,7 +308,7 @@ export default {
       details: [
         {
           sku: "",
-          option_details: [],
+          variant_details: [],
           remarks: "",
           quantity: "0",
           rate_amount: "0.00",
@@ -325,7 +325,7 @@ export default {
       //   shipping_method_id: "",
       //   shipping_method_rate_id: ""
       // },
-      productOptions: [{
+      productVariants: [{
           data: []
       }],
       valid: true
@@ -346,7 +346,7 @@ export default {
       details: [
         {
           sku: "",
-          option_details: [],
+          variant_details: [],
           remarks: "",
           quantity: "0",
           rate_amount: "0.00",
@@ -364,7 +364,7 @@ export default {
       //   shipping_method_rate_id: ""
       // }
     },
-    productOptions: [{
+    productVariants: [{
         data: []
     }],
     valid: true
@@ -374,7 +374,7 @@ export default {
     ...mapGetters("customers", ["getCustomerList"]),
     // ...mapGetters("shippingMethods", ["getShippingMethodList"]),
     ...mapGetters("products", ["getProductList", "getProductNameById"]),
-    ...mapGetters("productOptions", ["getProductOptionList"]),
+    ...mapGetters("productVariants", ["getProductVariantList"]),
     formTitle() {
       return this.formType === "new" ? "Sales Order - Create" : "Sales Order - Update";
     },
@@ -394,7 +394,7 @@ export default {
     ...mapActions("alerts", ["setAlert"]),
     ...mapActions("customers", { getCustomersData: "getData" }),
     // ...mapActions("shippingMethods", { getShippingMethodData: "getData" }),
-    ...mapActions("productOptions", { getProductOptionDataByProductId: "getDataByProductId" }),
+    ...mapActions("productVariants", { getProductVariantDataByProductId: "getDataByProductId" }),
     ...mapActions("products", { getProductData: "getData" }),
     ...mapActions("inventories", { getInventoryDataBySku: "getDataBySku" }),
     ...mapActions("salesOrders", {
@@ -403,54 +403,54 @@ export default {
       getSalesOrderDataById: "getDataById"
     }),
 
-    async setProductOptions(index, productId, type) {
-      await this.getProductOptionDataByProductId(productId);
-      await this.setProductOptionIndexData(index, type);
+    async setProductVariants(index, productId, type) {
+      await this.getProductVariantDataByProductId(productId);
+      await this.setProductVariantIndexData(index, type);
       await this.computeSubTotalAmount();
     },
 
-    async setProductOptionIndexData(index, type) {
+    async setProductVariantIndexData(index, type) {
       try {
         let data = [];
 
-        this.getProductOptionList.forEach(element => {
-          let arrayValues = element.values.split(',');
+        this.getProductVariantList.forEach(element => {
+          let arrayValues = JSON.parse(element.values);
           let arrayObjValue = [];
-          arrayValues.map(value => arrayObjValue.push({ name: value }));
+          arrayValues.map(value => arrayObjValue.push({ name: value.name }));
           data.push({ id: element.id, title: element.title, values: arrayObjValue });
         });
 
-        if (this.productOptions[index]) {
-          this.productOptions[index].data = data;
+        if (this.productVariants[index]) {
+          this.productVariants[index].data = data;
         } else {
-          this.productOptions.push({ data: data });
+          this.productVariants.push({ data: data });
         }
         
-        if (type === 'new') await this.setProductOptionListDefaultDataByIndex(index);
+        if (type === 'new') await this.setProductVariantListDefaultDataByIndex(index);
       } catch (err) {
         console.log(err);
       }
     },
 
-    async setProductOptionListDefaultDataByIndex(index) {
+    async setProductVariantListDefaultDataByIndex(index) {
       try {
-        const value = this.productOptions[index];
+        const value = this.productVariants[index];
 
         if (!_.isUndefined(value)) {
-          // reset value of option_details
-          this.formData.details[index].option_details = [];
-          // set new value for option_details
+          // reset value of variant_details
+          this.formData.details[index].variant_details = [];
+          // set new value for variant_details
           for (let i=0; i < value.data.length; i++) {
             let obj = {
               id: value.data[i].id,
               title: value.data[i].title,
               name: value.data[i].values[0].name,
             }
-            this.formData.details[index].option_details[i] = obj;
+            this.formData.details[index].variant_details[i] = obj;
           }
 
           // set default value for sku
-          const sku = await this.generateSkuByIndexAndProductOptions(index, this.formData.details[index].option_details);
+          const sku = await this.generateSkuByIndexAndProductVariants(index, this.formData.details[index].variant_details);
           await this.setProductDetailsByIndexAndSku(index, sku);
           this.formData.details[index].sku = sku;
         }
@@ -471,13 +471,13 @@ export default {
       }
     },
 
-    generateSkuByIndexAndProductOptions(index, options) {
+    generateSkuByIndexAndProductVariants(index, variants) {
       return new Promise((resolve, reject) => {
         try {
           const productName = this.getProductNameById(this.formData.details[index].product_id);
           let sku = productName.match(/\b(\w)/g).join('').toUpperCase();
 
-          options.forEach(element => {
+          variants.forEach(element => {
             sku = `${sku}-${element.name.toUpperCase()}`;
           });
 
@@ -527,7 +527,7 @@ export default {
     addRow() {
       this.formData.details.push({
         sku: "",
-        option_details: [],
+        variant_details: [],
         remarks: "",
         quantity: "0",
         rate_amount: "0.00",
@@ -536,7 +536,7 @@ export default {
         product_id: "",
         claim_type: ""
       });
-      this.productOptions.push({
+      this.productVariants.push({
           data: []
       })
     },
@@ -558,7 +558,7 @@ export default {
           details.push({
             id: obj.id,
             sku: obj.sku,
-            option_details: JSON.parse(obj.option_details),
+            variant_details: JSON.parse(obj.variant_details),
             remarks: obj.remarks,
             quantity: obj.quantity.toString(),
             rate_amount: obj.rate_amount,
@@ -568,7 +568,7 @@ export default {
             claim_type: obj.claim_type
           });
 
-          await this.setProductOptions(i, obj.product_id, "update");
+          await this.setProductVariants(i, obj.product_id, "update");
       }
 
       this.formData.id = data.id;
