@@ -10,11 +10,11 @@
       ></v-text-field>
     </v-flex>
     <v-flex xs12 sm12 md12>
-      <v-data-table :headers="headers" :items="variantDetails" :search="search" class="elevation-1">
+      <v-data-table :headers="headers" :items="inventoryDetails" :search="search" class="elevation-1">
         <template v-slot:items="props">
+          <td class="text-xs-left">{{ props.item.sku }}</td>
           <td class="text-xs-left">{{ props.item.name }}</td>
           <td class="text-xs-left">&#8369; {{ props.item.price_amount }}</td>
-          <td class="text-xs-left">{{ props.item.sku }}</td>
           <td class="text-xs-left">{{ props.item.stock_available }}</td>
         </template>
         <template v-slot:no-data>
@@ -31,15 +31,15 @@
 <script>
 export default {
   props: {
-    variantDetails: Array
+    inventoryDetails: Array
   },
 
   data: () => ({
     search: '',
     headers: [
+      { text: "SKU", value: "sku" },
       { text: "Name", value: "name" },
       { text: "Price Amount", value: "" },
-      { text: "SKU", value: "sku" },
       { text: "Stock", value: "" }
     ]
   })

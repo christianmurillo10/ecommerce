@@ -1,35 +1,38 @@
 <template>
-  <v-form ref="form" @submit.prevent="save" v-model="valid" lazy-validation>
-    <v-card>
-      <v-card-title>
-        <v-icon class="black--text">{{ formIcon }}</v-icon><span class="title">{{ formTitle }}</span>
-      </v-card-title>
+  <v-card>
+    <v-card-title>
+      <v-icon class="black--text">{{ formIcon }}</v-icon>
+      <span class="title">{{ formTitle }}</span>
+    </v-card-title>
+    <v-form ref="form" @submit.prevent="save" v-model="valid" lazy-validation>
       <v-card-text>
         <v-container grid-list-md>
           <v-layout wrap>
             <v-flex xs12 sm12 md12>
-              <v-text-field
-                v-model="formData.name"
-                :rules="[rules.required, rules.max50Chars]"
-                label="Name"
-                required
-              ></v-text-field>
-            </v-flex>
-            <v-flex xs12 sm12 md12>
-              <v-text-field
-                v-model="formData.price_amount"
+              <v-autocomplete
+                :items="getProductVariationList"
+                item-text="name"
+                item-value="name"
+                v-model="formData.title"
+                label="Title"
+                persistent-hint
                 :rules="[rules.required]"
-                label="Price Amount"
                 required
-              ></v-text-field>
+              ></v-autocomplete>
             </v-flex>
             <v-flex xs12 sm12 md12>
-              <v-text-field
-                v-model="formData.sku"
-                :rules="[rules.required, rules.max50Chars]"
-                label="SKU"
-                required
-              ></v-text-field>
+              <v-combobox
+                v-model="formData.values"
+                :items="getFilteredProductVariationDetailList"
+                item-text="name"
+                item-value="name"
+                label="Values"
+                multiple
+                chips
+                deletable-chips
+                :rules="[rules.required]"
+                :disabled="getFilteredProductVariationDetailList.length ? false : true"
+              ></v-combobox>
             </v-flex>
           </v-layout>
         </v-container>
@@ -38,57 +41,82 @@
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn color="blue darken-1" flat @click="close">Cancel</v-btn>
-        <v-btn color="blue darken-1" type="submit" flat :disabled="!valid">Save</v-btn>
+        <v-btn color="blue darken-1" type="submit" flat :disabled="!valid">
+          Save
+        </v-btn>
       </v-card-actions>
-    </v-card>
-  </v-form>
+    </v-form>
+  </v-card>
 </template>
 
 <script>
 import Mixins from "@/helpers/Mixins.js";
-import { mapGetters, mapActions } from "vuex";
+import { mapState, mapGetters, mapActions } from "vuex";
 
 export default {
   mixins: [Mixins],
 
   data: () => ({
+    dialogConfirmation: false,
     defaultFormData: {
-      name: null,
-      price_amount: null,
-      sku: null
+      title: "",
+      values: [],
     },
     formType: "new",
     formData: {
-      name: null,
-      price_amount: null,
-      sku: null
+      title: "",
+      values: [],
     },
-    valid: true
+    valid: true,
   }),
 
+  created() {
+    this.getProductVariationData();
+  },
+
   computed: {
-    ...mapGetters("inventories", ["getInventoryById"]),
+    ...mapGetters("productVariations", ["getProductVariationList"]),
+    ...mapGetters("productVariants", ["getProductVariantById"]),
+    ...mapGetters("productVariationDetails", [
+      "getFilteredProductVariationDetailList",
+    ]),
+
     formTitle() {
-      return this.formType === "new" ? "Variant - Create" : "Variant - Update";
+      return this.formType === "new"
+        ? "Product Variant - Create"
+        : "Product Variant - Update";
     },
     formIcon() {
       return this.formType === "new" ? "add_box" : "edit";
-    }
+    },
+  },
+
+  watch: {
+    "formData.title": function(val) {
+      const productVariation = this.getProductVariationList.find(element => element.name == val);
+      const productVariationId = _.isUndefined(productVariation) ? null : productVariation.id;
+      this.getProductVariationDetailsDataByProductVariationId(productVariationId);
+    },
   },
 
   methods: {
     ...mapActions("alerts", ["setAlert"]),
-    ...mapActions("inventories", {
-      saveInventoryData: "saveData",
-      updateInventoryData: "updateData"
+    ...mapActions("productVariations", { getProductVariationData: "getData" }),
+    ...mapActions("productVariationDetails", {
+      getProductVariationDetailsDataByProductVariationId:
+        "getDataByProductVariationId",
+    }),
+    ...mapActions("productVariants", {
+      saveProductVariantData: "saveData",
+      updateProductVariantData: "updateData"
     }),
 
     editItem(id) {
-      let data = this.getInventoryById(id);
+      let data = this.getProductVariantById(id);
       this.formData.id = data.id;
-      this.formData.name = data.name;
-      this.formData.price_amount = data.price_amount;
-      this.formData.sku = data.sku;
+      this.formData.title = data.title;
+      this.formData.values = JSON.parse(data.values);
+      this.formData.product_id = data.product_id;
       this.formType = "update";
     },
 
@@ -100,38 +128,39 @@ export default {
       }, 300);
     },
 
-    save() {
-      if (this.$refs.form.validate()) {
-        if (this.formType === "new") {
-          this.saveInventoryData(this.formData)
-            .then(response => {
-              let obj = {
-                alert: true,
-                type: "success",
-                message: response.data.message
-              };
-              
-              if (!response.data.result) obj.type = "error"
-              this.setAlert(obj);
-            })
-            .catch(err => console.log(err));
-        } else if (this.formType === "update") {
-          this.updateInventoryData(this.formData)
-            .then(response => {
-              let obj = {
-                alert: true,
-                type: "success",
-                message: response.data.message
-              };
-              
-              if (!response.data.result) obj.type = "error"
-              this.setAlert(obj);
-            })
-            .catch(err => console.log(err));
-        }
-        this.close();
+    async save() {
+      let productId = this.$route.params.id;
+      // save variant
+      if (this.formType === "new") {
+        this.formData.product_id = productId;
+        this.saveProductVariantData(this.formData)
+          .then((response) => {
+            let obj = {
+              alert: true,
+              type: "success",
+              message: response.data.message,
+            };
+
+            if (!response.data.result) obj.type = "error";
+            this.setAlert(obj);
+          })
+          .catch((err) => console.log(err));
+      } else if (this.formType === "update") {
+        this.updateProductVariantData(this.formData)
+          .then((response) => {
+            let obj = {
+              alert: true,
+              type: "success",
+              message: response.data.message,
+            };
+
+            if (!response.data.result) obj.type = "error";
+            this.setAlert(obj);
+          })
+          .catch((err) => console.log(err));
       }
-    }
-  }
+      this.close();
+    },
+  },
 };
 </script>

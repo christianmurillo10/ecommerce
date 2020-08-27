@@ -70,15 +70,15 @@ module.exports = {
   },
 
   /**
-   * Create bulk with product options by product id
+   * Create bulk with product variants by product id
    * @param req
    * @param res
    * @returns {Promise<void>}
-   * @routes POST /inventories/createBulkWithProductOptionsByProductId
+   * @routes POST /inventories/createBulkWithProductVariantsByProductId
    */
-  createBulkWithProductOptionsByProductId: async (req, res) => {
+  createBulkWithProductVariantsByProductId: async (req, res) => {
     const params = req.body;
-    let criteriaProduct, criteriaOptions, dataProduct, dataOptions;
+    let criteriaProduct, criteriaVariants, dataProduct, dataVariants;
 
     // Validators
     if (_.isUndefined(params))
@@ -96,48 +96,59 @@ module.exports = {
       if (_.isEmpty(params.product_id)) return res.json({ status: 200, message: "Product is required.", result: false });
 
       // Pre-setting variables
-      criteriaProduct = { attributes: ['name', 'unit', 'price_amount'], where: { is_deleted: NO } };
-      criteriaOptions = { where: { product_id: params.product_id, is_deleted: NO } };
+      criteriaProduct = { attributes: ['code', 'name', 'unit', 'price_amount'], where: { is_deleted: NO } };
+      criteriaVariants = { where: { product_id: params.product_id, is_deleted: NO } };
 
       // Execute query
       dataProduct = await Model.Products.findByPk(params.product_id, criteriaProduct);
-      dataOptions = await Model.ProductOptions.findAll(criteriaOptions);
+      dataVariants = await Model.ProductVariants.findAll(criteriaVariants);
       
-      if (!_.isEmpty(dataOptions)) {
-        // Setup bulk data by product option values
-        let bulkInitialValue = await setBulkInventoryData(params, dataOptions, dataProduct);
+      if (!_.isEmpty(dataVariants)) {
+        // Setup bulk data by product variant values
+        const bulkInitialValue = await setBulkInventoryData(params, dataVariants, dataProduct);
 
-        // Bulk delete of data by product_id
-        await Model.Inventories.update({ is_deleted : YES },{ where : { product_id : params.product_id }});
-        Model.Inventories.bulkCreate(bulkInitialValue)
+        // Get existing SKU in inventory by product id
+        const criteriaInventories = { attributes: ['sku'], where: { product_id: params.product_id, is_deleted: NO }, raw: true };
+        const existingInventories = await Model.Inventories.findAll(criteriaInventories);
+
+        // Filter new bulk data and existing data
+        const filteredBulkValues = bulkInitialValue.filter(o => !existingInventories.find(o2 => o.sku === o2.sku));
+
+        // Create bulk inventories
+        Model.Inventories.bulkCreate(filteredBulkValues)
           .then(async response => {
-            // Set and filtering Bulk Data of Inventory History
-            let inventoryHistoryBulkInitialValue = [];
-            response.forEach(element => {
-              let inventoryHistoryData = {
-                quantity: element.stock_in,
-                remarks: "IN",
-                user_id: params.user_id,
-                inventory_id: element.id,
-                created_at: params.created_at
-              }
-              inventoryHistoryBulkInitialValue.push(inventoryHistoryData);
+            res.json({
+              status: 200,
+              message: "Successfully created data.",
+              result: true
             });
+            // // Set and filtering Bulk Data of Inventory History
+            // let inventoryHistoryBulkInitialValue = [];
+            // response.forEach(element => {
+            //   let inventoryHistoryData = {
+            //     quantity: element.stock_in,
+            //     remarks: "IN",
+            //     user_id: params.user_id,
+            //     inventory_id: element.id,
+            //     created_at: params.created_at
+            //   }
+            //   inventoryHistoryBulkInitialValue.push(inventoryHistoryData);
+            // });
             
-            // Saving Bulk Inventory History
-            Model.InventoryHistories.bulkCreate(inventoryHistoryBulkInitialValue)
-              .then(response => {
-                res.json({
-                  status: 200,
-                  message: "Successfully created data.",
-                  result: true
-                });
-              });
+            // // Saving Bulk Inventory History
+            // Model.InventoryHistories.bulkCreate(inventoryHistoryBulkInitialValue)
+            //   .then(response => {
+            //     res.json({
+            //       status: 200,
+            //       message: "Successfully created data.",
+            //       result: true
+            //     });
+            //   });
           });
       } else {
         res.json({
           status: 200,
-          message: "No Product Option found.",
+          message: "No Product Variant found.",
           result: false
         });
       }
@@ -236,32 +247,6 @@ module.exports = {
           result: false
         });
       }
-    } catch (err) {
-      res.json({
-        status: 401,
-        err: err,
-        message: "Failed deleting data."
-      });
-    }
-  },
-
-  /**
-   * Delete all by product id
-   * @route PUT /inventories/deleteAllByProductId/:productId
-   * @param req
-   * @param res
-   * @returns {never}
-   */
-  deleteAllByProductId: async (req, res) => {
-    try {
-      Model.Inventories.update({ is_deleted : YES },{ where : { product_id : req.params.productId }})
-      .then(response => {
-        res.json({
-          status: 200,
-          message: "Successfully deleted data.",
-          result: true
-        });
-      })
     } catch (err) {
       res.json({
         status: 401,
@@ -643,25 +628,25 @@ const setBulkInventoryData = (params, data, product) => {
 
   // 1. Set array values and multiply length
   for (let i = 0; i < data.length; i++) {
-    let value = data[i].values.split(',');
+    const value = JSON.parse(data[i].values).sort((a, b) => {return a.id - b.id});
     multiplyLength = multiplyLength * value.length;
     arrayValues.push(value);
   }
 
   // 2. Set and filtering of Bulk Data
   for (let a = 0; a < arrayValues.length; a++) {
-    let value = arrayValues[a];
-    let valueLength = value.length;
+    const value = arrayValues[a];
+    const valueLength = value.length;
     bulkData.map(response => {
       let newValue = [];
       responseName = response === '' ? product.name : response;
-      responseSku = response === '' ? product.name.match(/\b(\w)/g).join('').toUpperCase() : response;
+      responseSku = response === '' ? product.code : response;
       for (let b = 0; b < valueLength; b++) {
         let name = _.isObject(responseName) === true ? responseName.name : responseName;
         let sku = _.isObject(responseSku) === true ? responseSku.sku : responseSku;
         newValue[b] = {
-          name: `${name} ${value[b]}`,
-          sku: `${sku}-${value[b].toUpperCase()}`,
+          name: `${name} ${value[b].name}`,
+          sku: `${sku}-${value[b].code.toUpperCase()}`,
           unit: product.unit,
           price_amount: product.price_amount,
           stock_in: 0,
@@ -679,5 +664,6 @@ const setBulkInventoryData = (params, data, product) => {
   sliceStart = bulkData.length - multiplyLength;
   sliceEnd = bulkData.length;
   finalData = bulkData.slice(sliceStart, sliceEnd);
+
   return finalData;
 }

@@ -120,8 +120,8 @@ const actions = {
       }
     });
   },
-  saveBulkDataWithProductOptionsByProductId({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/inventories/createBulkWithProductOptionsByProductId`;
+  saveBulkDataWithProductVariantsByProductId({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
+    let url = `${process.env.VUE_APP_API_BACKEND}/inventories/createBulkWithProductVariantsByProductId`;
     let header = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
     return new Promise((resolve, reject) => {
       try {
@@ -183,21 +183,6 @@ const actions = {
       }
     });
   },
-  deleteAllDataByProducyId({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/inventories/deleteAllByProductId/${payload}`;
-    let header = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
-    return new Promise((resolve, reject) => {
-      try {
-        axios
-          .put(url, '', header)
-          .then(response => {
-            resolve(response);
-          });
-      } catch (err) {
-        reject(err);
-      }
-    });
-  }
 };
 
 const mutations = {

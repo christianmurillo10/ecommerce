@@ -17,7 +17,7 @@
               <span>Create</span>
             </v-tooltip>
           </template>
-          <ModalFormVariation ref="modalFormVariation" @setDialog="setDialog" />
+          <ModalFormVariant ref="modalFormVariant" @setDialog="setDialog" />
         </v-dialog>
         <v-tooltip left>
           <template v-slot:activator="{ on }">
@@ -30,16 +30,13 @@
       </v-card-title>
       <v-card-text>
         <v-flex xs12 sm12 md12 lg12>
-          <div class="px-4">
+          <div>
             <span class="subheading font-weight-bold">Name: </span>
             <span class="subheading">{{ productDetails.name }}</span>
           </div>
         </v-flex>
         <v-flex xs12 sm12 md6 lg6>
-          <div class="pa-4">
-            <span class="subheading">Variants:</span>
-          </div>
-          <div class="px-4">
+          <div class="pt-4">
             <v-data-table
               :headers="headers"
               :items="productVariantList"
@@ -48,7 +45,13 @@
             >
               <template v-slot:items="props">
                 <td class="text-xs-left">{{ props.item.title }}</td>
-                <td class="text-xs-left">{{ JSON.parse(props.item.values).map(element => element.name).toString() }}</td>
+                <td class="text-xs-left">
+                  {{
+                    JSON.parse(props.item.values)
+                      .map((element) => element.name)
+                      .toString()
+                  }}
+                </td>
                 <td class="justify-center layout px-0">
                   <v-tooltip left>
                     <template v-slot:activator="{ on }">
@@ -57,8 +60,9 @@
                         class="mr-2"
                         @click="editItem(props.item.id)"
                         v-on="on"
-                        >edit</v-icon
                       >
+                        edit
+                      </v-icon>
                     </template>
                     <span>Update</span>
                   </v-tooltip>
@@ -70,8 +74,9 @@
                         class="mr-2"
                         @click="deleteModal(props.item.id)"
                         v-on="on"
-                        >delete</v-icon
                       >
+                        delete
+                      </v-icon>
                     </template>
                     <span>Delete</span>
                   </v-tooltip>
@@ -83,12 +88,12 @@
             </v-data-table>
           </div>
         </v-flex>
-        <v-flex xs12 sm12 md12 lg12 v-if="productVariantList.length !== 0">
-          <div class="pa-4">
-            <span class="title">Variants</span>
+        <v-flex xs12 sm12 md12 lg12>
+          <div class="pt-4">
+            <span class="subheading">Inventories:</span>
           </div>
-          <div class="px-4">
-            <!-- <OptionVariant /> -->
+          <div>
+            <Inventory />
           </div>
         </v-flex>
       </v-card-text>
@@ -98,21 +103,20 @@
         <v-card-title class="title">Confirmation</v-card-title>
         <v-card-text>
           <span>Are you sure you want to delete this item?</span>
-          <div v-if="inventoryList.length > 0">
-            <br />
-            <span class="red--text font-weight-light font-italic"
-              >NOTE: Once you confirm, your variant list will be reset.</span
-            >
-          </div>
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn small outline color="error" @click="modalDelete.dialog = false"
-            >Cancel</v-btn
+          <v-btn
+            small
+            outline
+            color="error"
+            @click="modalDelete.dialog = false"
           >
-          <v-btn small outline color="success" @click="deleteItem()"
-            >Confirm</v-btn
-          >
+            Cancel
+          </v-btn>
+          <v-btn small outline color="success" @click="deleteItem()">
+            Confirm
+          </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -121,15 +125,15 @@
 
 <script>
 import Alerts from "@/components/utilities/Alerts";
-import ModalFormVariation from "./components/modal/ModalFormVariation";
-// import OptionVariant from "./components/option/OptionVariant";
+import ModalFormVariant from "./components/modal/ModalFormVariant";
+import Inventory from "./components/inventory/Index";
 import { mapState, mapActions } from "vuex";
 
 export default {
   components: {
     Alerts,
-    ModalFormVariation,
-    // OptionVariant,
+    ModalFormVariant,
+    Inventory,
   },
 
   data: () => ({
@@ -173,12 +177,11 @@ export default {
     }),
     ...mapActions("inventories", {
       getInventoryDataByProductId: "getDataByProductId",
-      deleteAllInventoryDataByProducyId: "deleteAllDataByProducyId",
     }),
 
     editItem(id) {
       this.setDialog(true);
-      this.$refs.modalFormVariation.editItem(id);
+      this.$refs.modalFormVariant.editItem(id);
     },
 
     deleteModal(id) {
@@ -186,17 +189,7 @@ export default {
       this.modalDelete.dialog = true;
     },
 
-    async deleteItem() {
-      let productId = this.$route.params.id;
-      // bulk delete of variants
-      if (this.inventoryList.length > 0) {
-        let deleteResponse = await this.deleteAllInventoryDataByProducyId(
-          productId
-        );
-        if (deleteResponse.data.result)
-          this.getInventoryDataByProductId(productId);
-      }
-      // delete variants
+    deleteItem() {
       this.deleteProductVariantData(this.modalDelete.id)
         .then((response) => {
           let obj = {
@@ -215,7 +208,7 @@ export default {
 
     close() {
       this.setDialog(false);
-      this.$refs.modalFormVariation.close();
+      this.$refs.modalFormVariant.close();
     },
 
     setDialog(value) {

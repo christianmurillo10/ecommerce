@@ -227,16 +227,16 @@
                   :image-details="productImageDetails"
                 />
               </v-tab-item>
-              <v-tab-item value="tab-options">
-                <ViewOptions
-                  ref="viewOptions"
-                  :option-details="productOptionDetails"
-                />
-              </v-tab-item>
               <v-tab-item value="tab-variants">
                 <ViewVariants
                   ref="viewVariants"
                   :variant-details="productVariantDetails"
+                />
+              </v-tab-item>
+              <v-tab-item value="tab-inventories">
+                <ViewInventories
+                  ref="viewInventoriess"
+                  :inventory-details="productInventoryDetails"
                 />
               </v-tab-item>
             </v-tabs-items>
@@ -250,18 +250,18 @@
 <script>
 import Alerts from "@/components/utilities/Alerts";
 import Mixins from "@/helpers/Mixins.js";
-import ViewOptions from "./components/view/ViewOptions";
+import ViewVariants from "./components/view/Variants";
 import ViewImages from "./components/view/ViewImages";
-import ViewVariants from "./components/view/ViewVariants";
+import ViewInventories from "./components/view/Inventories";
 import { mapState, mapActions } from "vuex";
 
 export default {
   mixins: [Mixins],
   components: {
     Alerts,
-    ViewOptions,
-    ViewImages,
     ViewVariants,
+    ViewImages,
+    ViewInventories,
   },
 
   data: () => ({
@@ -275,12 +275,12 @@ export default {
         title: "Images",
       },
       {
-        key: "options",
-        title: "Options",
-      },
-      {
         key: "variants",
         title: "Variants",
+      },
+      {
+        key: "inventories",
+        title: "Inventories",
       },
     ],
     productDetails: "",
@@ -290,8 +290,8 @@ export default {
     productSubCategoryDetails: "",
     productSubSubCategoryDetails: "",
     productImageDetails: [],
-    productOptionDetails: [],
     productVariantDetails: [],
+    productInventoryDetails: [],
   }),
 
   mounted() {
@@ -321,11 +321,11 @@ export default {
         response.data.result.productImages === null
           ? []
           : response.data.result.productImages;
-      this.productOptionDetails =
-        response.data.result.productOptions === null
-          ? []
-          : response.data.result.productOptions;
       this.productVariantDetails =
+        response.data.result.productVariants === null
+          ? []
+          : response.data.result.productVariants;
+      this.productInventoryDetails =
         response.data.result.inventories === null
           ? []
           : response.data.result.inventories;

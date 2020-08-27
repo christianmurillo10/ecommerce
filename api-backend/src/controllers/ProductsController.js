@@ -722,7 +722,7 @@ module.exports = {
             required: false 
           },
           { 
-            model: Model.ProductOptions, as: "productOptions", 
+            model: Model.ProductVariants, as: "productVariants", 
             attributes: ['id', 'title', 'values', 'product_id'], 
             where: { is_deleted: NO },
             required: false 
@@ -1049,7 +1049,7 @@ module.exports = {
             required: false 
           },
           { 
-            model: Model.ProductOptions, as: "productOptions", 
+            model: Model.ProductVariants, as: "productVariants", 
             attributes: ['id', 'title', 'values', 'product_id'], 
             where: { is_deleted: NO },
             required: false 

@@ -82,12 +82,6 @@
               </v-tooltip>
               <v-tooltip left>
                 <template v-slot:activator="{ on }">
-                  <v-icon small class="mr-2" color="purple darken-2" @click="editVariantOption(props.item.id)" v-on="on">list_alt</v-icon>
-                </template>
-                <span>Variant Options</span>
-              </v-tooltip>
-              <v-tooltip left>
-                <template v-slot:activator="{ on }">
                   <v-icon small class="mr-2" color="blue-grey darken-2" @click="editImage(props.item.id)" v-on="on">image</v-icon>
                 </template>
                 <span>Images</span>
@@ -218,10 +212,6 @@ export default {
 
     editImage(id) {
       this.$router.push(`/products/image/${id}`);
-    },
-
-    editVariantOption(id) {
-      this.$router.push(`/products/variantOption/${id}`);
     },
 
     editVariant(id) {

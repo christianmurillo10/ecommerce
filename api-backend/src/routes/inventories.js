@@ -9,10 +9,9 @@ router.route('/findBySku/:sku').get(authController.authorization, inventoriesCon
 router.route('/findAllbyProductId/:productId').get(inventoriesController.findAllbyProductId);
 router.route('/findAvailableStockByProductId/:productId').get(inventoriesController.findAvailableStockByProductId);
 router.route('/create').post(authController.authorization, inventoriesController.create);
-router.route('/createBulkWithProductOptionsByProductId').post(authController.authorization, inventoriesController.createBulkWithProductOptionsByProductId);
+router.route('/createBulkWithProductVariantsByProductId').post(authController.authorization, inventoriesController.createBulkWithProductVariantsByProductId);
 router.route('/update/:id').put(authController.authorization, inventoriesController.update);
 router.route('/delete/:id').put(authController.authorization, inventoriesController.delete);
-router.route('/deleteAllByProductId/:productId').put(authController.authorization, inventoriesController.deleteAllByProductId);
 router.route('/search/:value').get(authController.authorization, inventoriesController.search);
 
 module.exports = router;
