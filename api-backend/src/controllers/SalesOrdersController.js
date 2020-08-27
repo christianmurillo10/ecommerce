@@ -92,7 +92,7 @@ module.exports = {
             salesOrderDetails.forEach(element => {
               let salesOrderDetailsData = {
                 sku: element.sku,
-                option_details: JSON.stringify(element.option_details),
+                variant_details: JSON.stringify(element.variant_details),
                 remarks: element.remarks,
                 quantity: element.quantity,
                 rate_amount: element.rate_amount,
@@ -194,7 +194,7 @@ module.exports = {
               let salesOrderDetailsData = {
                 id: element.id,
                 sku: element.sku,
-                option_details: JSON.stringify(element.option_details),
+                variant_details: JSON.stringify(element.variant_details),
                 remarks: element.remarks,
                 quantity: element.quantity,
                 rate_amount: element.rate_amount,
@@ -635,7 +635,7 @@ module.exports = {
             attributes: [
               'id', 
               'sku', 
-              'option_details', 
+              'variant_details', 
               'remarks', 
               'quantity', 
               'rate_amount', 
