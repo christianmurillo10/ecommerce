@@ -5,7 +5,7 @@
       sm12
       md12
       lg12
-      v-if="productFlashDealHeaderTodayFlashDeal.length !== 0"
+      v-if="productFlashDealTodayFlashDeal.length !== 0"
     >
       <v-layout wrap>
         <v-container>
@@ -14,7 +14,7 @@
               <v-flex xs12 sm12 md12 lg12 text-end>
                 <Countdown
                   class="countdown"
-                  :endTime="productFlashDealHeaderTodayFlashDeal.date_to"
+                  :endTime="productFlashDealTodayFlashDeal.date_to"
                 />
               </v-flex>
               <v-flex xs12 sm12 md12 lg12>
@@ -30,7 +30,7 @@
       <swiper class="swiper" :options="swiperOption">
         <swiper-slide
           v-for="(productFlashDealDetail,
-          i) in productFlashDealHeaderTodayFlashDeal.productFlashDealDetails"
+          i) in productFlashDealTodayFlashDeal.productFlashDealDetails"
           :key="i"
         >
           <ProductCard
@@ -80,18 +80,18 @@ export default {
   }),
 
   mounted() {
-    this.getProductFlashDealHeaderDataTodayFlashDeal();
+    this.getProductFlashDealDataTodayFlashDeal();
   },
 
   computed: {
-    ...mapState("productFlashDealHeaders", [
-      "productFlashDealHeaderTodayFlashDeal",
+    ...mapState("productFlashDeals", [
+      "productFlashDealTodayFlashDeal",
     ]),
   },
 
   methods: {
-    ...mapActions("productFlashDealHeaders", {
-      getProductFlashDealHeaderDataTodayFlashDeal: "getDataTodayFlashDeal",
+    ...mapActions("productFlashDeals", {
+      getProductFlashDealDataTodayFlashDeal: "getDataTodayFlashDeal",
     }),
   },
 };

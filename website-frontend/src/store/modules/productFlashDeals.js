@@ -1,14 +1,14 @@
 import axios from "axios";
 
 const state = {
-  productFlashDealHeaderTodayFlashDeal: ""
+  productFlashDealTodayFlashDeal: ""
 };
 
 const getters = { };
 
 const actions = {
   getDataTodayFlashDeal({ dispatch, commit, state, rootState, getters, rootGetters }) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/productFlashDealHeaders/findOne/todayFlashDeal`;
+    let url = `${process.env.VUE_APP_API_BACKEND}/productFlashDeals/findOne/todayFlashDeal`;
     let header = { headers: { Authorization: `Bearer ${localStorage.getItem("cToken")}` } };
     return new Promise((resolve, reject) => {
       try {
@@ -40,9 +40,9 @@ const actions = {
 const mutations = {
   SET_DATA_TODAY_FLASH_DEAL(state, payload) {
     if (payload) {
-      state.productFlashDealHeaderTodayFlashDeal = payload;
+      state.productFlashDealTodayFlashDeal = payload;
     } else {
-      state.productFlashDealHeaderTodayFlashDeal = "";
+      state.productFlashDealTodayFlashDeal = "";
     }
   }
 };

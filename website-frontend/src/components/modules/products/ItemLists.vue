@@ -105,12 +105,12 @@ export default {
   },
 
   methods: {
-    ...mapActions("productFlashDealHeaders", {
-      getProductFlashDealHeaderDataTodayFlashDeal: "getDataTodayFlashDeal",
+    ...mapActions("productFlashDeals", {
+      getProductFlashDealDataTodayFlashDeal: "getDataTodayFlashDeal",
     }),
 
     setDefault() {
-      this.getProductFlashDealHeaderDataTodayFlashDeal();
+      this.getProductFlashDealDataTodayFlashDeal();
       this.pagination.page = _.isUndefined(this.$route.query.page)
         ? 1
         : parseInt(this.$route.query.page);

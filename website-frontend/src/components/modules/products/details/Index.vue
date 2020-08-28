@@ -196,14 +196,14 @@ export default {
   }),
 
   mounted() {
-    this.getProductFlashDealHeaderDataTodayFlashDeal();
+    this.getProductFlashDealDataTodayFlashDeal();
   },
 
   computed: {
     ...mapGetters("products", ["getProductAvailableStockBySku"]),
     ...mapGetters("customerAuthentication", ["isLoggedIn"]),
-    ...mapState("productFlashDealHeaders", [
-      "productFlashDealHeaderTodayFlashDeal",
+    ...mapState("productFlashDeals", [
+      "productFlashDealTodayFlashDeal",
     ]),
 
     countdownDate() {
@@ -266,7 +266,7 @@ export default {
       }
     },
 
-    productFlashDealHeaderTodayFlashDeal(val) {
+    productFlashDealTodayFlashDeal(val) {
       const flashDeal = val.productFlashDealDetails.find(
         (val) => val.product_id == this.details.id
       );
@@ -282,8 +282,8 @@ export default {
   },
 
   methods: {
-    ...mapActions("productFlashDealHeaders", {
-      getProductFlashDealHeaderDataTodayFlashDeal: "getDataTodayFlashDeal",
+    ...mapActions("productFlashDeals", {
+      getProductFlashDealDataTodayFlashDeal: "getDataTodayFlashDeal",
     }),
     ...mapMutations("customerCarts", {
       addCartData: "ADD_DATA",

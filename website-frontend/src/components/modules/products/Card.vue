@@ -115,8 +115,8 @@ export default {
   },
 
   computed: {
-    ...mapState("productFlashDealHeaders", [
-      "productFlashDealHeaderTodayFlashDeal",
+    ...mapState("productFlashDeals", [
+      "productFlashDealTodayFlashDeal",
     ]),
 
     priceAmount() {
@@ -137,7 +137,7 @@ export default {
   },
 
   watch: {
-    productFlashDealHeaderTodayFlashDeal(val) {
+    productFlashDealTodayFlashDeal(val) {
       if (val && this.item.type !== "flashDeal") {
         const flashDeal = val.productFlashDealDetails.find(val => val.product_id == this.item.id);
         if (flashDeal) {
