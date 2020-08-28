@@ -74,9 +74,9 @@ module.exports = {
    * @param req
    * @param res
    * @returns {Promise<void>}
-   * @routes POST /inventories/createBulkWithProductVariantsByProductId
+   * @routes POST /inventories/generateBulkWithProductVariantsByProductId
    */
-  createBulkWithProductVariantsByProductId: async (req, res) => {
+  generateBulkWithProductVariantsByProductId: async (req, res) => {
     const params = req.body;
     let criteriaProduct, criteriaVariants, dataProduct, dataVariants;
 
@@ -114,37 +114,45 @@ module.exports = {
         // Filter new bulk data and existing data
         const filteredBulkValues = bulkInitialValue.filter(o => !existingInventories.find(o2 => o.sku === o2.sku));
 
-        // Create bulk inventories
-        Model.Inventories.bulkCreate(filteredBulkValues)
-          .then(async response => {
-            res.json({
-              status: 200,
-              message: "Successfully created data.",
-              result: true
+        if (filteredBulkValues.length > 0) {
+          // Create bulk inventories
+          Model.Inventories.bulkCreate(filteredBulkValues)
+            .then(async response => {
+              res.json({
+                status: 200,
+                message: "Successfully generated data.",
+                result: true
+              });
+              // // Set and filtering Bulk Data of Inventory History
+              // let inventoryHistoryBulkInitialValue = [];
+              // response.forEach(element => {
+              //   let inventoryHistoryData = {
+              //     quantity: element.stock_in,
+              //     remarks: "IN",
+              //     user_id: params.user_id,
+              //     inventory_id: element.id,
+              //     created_at: params.created_at
+              //   }
+              //   inventoryHistoryBulkInitialValue.push(inventoryHistoryData);
+              // });
+              
+              // // Saving Bulk Inventory History
+              // Model.InventoryHistories.bulkCreate(inventoryHistoryBulkInitialValue)
+              //   .then(response => {
+              //     res.json({
+              //       status: 200,
+              //       message: "Successfully created data.",
+              //       result: true
+              //     });
+              //   });
             });
-            // // Set and filtering Bulk Data of Inventory History
-            // let inventoryHistoryBulkInitialValue = [];
-            // response.forEach(element => {
-            //   let inventoryHistoryData = {
-            //     quantity: element.stock_in,
-            //     remarks: "IN",
-            //     user_id: params.user_id,
-            //     inventory_id: element.id,
-            //     created_at: params.created_at
-            //   }
-            //   inventoryHistoryBulkInitialValue.push(inventoryHistoryData);
-            // });
-            
-            // // Saving Bulk Inventory History
-            // Model.InventoryHistories.bulkCreate(inventoryHistoryBulkInitialValue)
-            //   .then(response => {
-            //     res.json({
-            //       status: 200,
-            //       message: "Successfully created data.",
-            //       result: true
-            //     });
-            //   });
+        } else {
+          res.json({
+            status: 200,
+            message: "No data to be generated.",
+            result: false
           });
+        }
       } else {
         res.json({
           status: 200,

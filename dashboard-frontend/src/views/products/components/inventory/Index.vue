@@ -1,7 +1,7 @@
 <template>
   <v-layout wrap row>
     <v-flex xs12 sm12 md3 class="pb-2">
-      <v-btn block outline color="blue" @click="updateVariants()">Update</v-btn>
+      <v-btn block outline color="blue" @click="generateModal()">Generate</v-btn>
     </v-flex>
     <v-flex xs12 sm12 md4 offset-md5 class="pb-4">
       <v-text-field
@@ -36,6 +36,28 @@
     <v-dialog v-model="dialog" max-width="500px">
       <ModalFormInventory ref="modalFormInventory" @setDialog="setDialog" />
     </v-dialog>
+    <v-dialog v-model="dialogGenerate" persistent max-width="370">
+      <v-card>
+        <v-card-title class="title">Confirmation</v-card-title>
+        <v-card-text>
+          <span>Are you sure you want to generate new data?</span>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+            small
+            outline
+            color="error"
+            @click="dialogGenerate = false"
+          >
+            Cancel
+          </v-btn>
+          <v-btn small outline color="success" @click="generateVariants()">
+            Confirm
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-layout>
 </template>
 
@@ -51,6 +73,7 @@ export default {
   },
 
   data: () => ({
+    dialogGenerate: false,
     dialog: false,
     search: '',
     headers: [
@@ -79,13 +102,17 @@ export default {
   methods: {
     ...mapActions("alerts", ["setAlert"]),
     ...mapActions("inventories", {
-      saveBulkInventoryDataWithProductVariantsByProductId: "saveBulkDataWithProductVariantsByProductId",
+      generateBulkInventoryDataWithProductVariantsByProductId: "generateBulkDataWithProductVariantsByProductId",
       getInventoryDataByProductId: "getDataByProductId",
     }),
 
-    updateVariants() {
+    generateModal() {
+      this.dialogGenerate = true;
+    },
+
+    generateVariants() {
       let productId = this.$route.params.id;
-      this.saveBulkInventoryDataWithProductVariantsByProductId({ product_id: productId })
+      this.generateBulkInventoryDataWithProductVariantsByProductId({ product_id: productId })
         .then(response => {
           let obj = {
             alert: true,
@@ -99,6 +126,7 @@ export default {
             obj.type = "error";
           }
           this.setAlert(obj);
+          this.dialogGenerate = false;
         })
         .catch(err => console.log(err));
     },

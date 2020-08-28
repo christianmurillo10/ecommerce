@@ -251,7 +251,7 @@
 import Alerts from "@/components/utilities/Alerts";
 import Mixins from "@/helpers/Mixins.js";
 import ViewVariants from "./components/view/Variants";
-import ViewImages from "./components/view/ViewImages";
+import ViewImages from "./components/view/Images";
 import ViewInventories from "./components/view/Inventories";
 import { mapState, mapActions } from "vuex";
 
