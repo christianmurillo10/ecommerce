@@ -33,7 +33,7 @@ module.exports = {
     params.current_price_amount = params.current_price_amount.toLocaleString();
     params.user_id = req.user.id.toLocaleString();
     params.product_id = params.product_id === undefined ? null : params.product_id.toLocaleString();
-    params.header_id = params.header_id === undefined ? null : params.header_id.toLocaleString();
+    params.product_flash_deal_id = params.product_flash_deal_id === undefined ? null : params.product_flash_deal_id.toLocaleString();
     params.discount_type = params.discount_type === null ? null : params.discount_type.toLocaleString();
 
     try {
@@ -41,11 +41,11 @@ module.exports = {
       if (_.isEmpty(params.base_price_amount)) return res.json({ status: 200, message: "Base Price Amount is required.", result: false });
       if (_.isEmpty(params.current_price_amount)) return res.json({ status: 200, message: "Current Price Amount is required.", result: false });
       if (_.isEmpty(params.product_id)) return res.json({ status: 200, message: "Product is required.", result: false });
-      if (_.isEmpty(params.header_id)) return res.json({ status: 200, message: "Product Flash Deal Header is required.", result: false });
+      if (_.isEmpty(params.product_flash_deal_id)) return res.json({ status: 200, message: "Product Flash Deal is required.", result: false });
 
       // Pre-setting variables
       criteria = { 
-        where: { header_id: params.header_id, product_id: params.product_id, is_deleted: NO }, 
+        where: { product_flash_deal_id: params.product_flash_deal_id, product_id: params.product_id, is_deleted: NO }, 
         include: [
           { 
             model: Model.Products, as: 'products', 
@@ -61,7 +61,7 @@ module.exports = {
           }
         ] 
       };
-      initialValues = _.pick(params, ['discount_value', 'base_price_amount', 'current_price_amount', 'user_id', 'product_id', 'header_id', 'created_at', 'discount_type']);
+      initialValues = _.pick(params, ['discount_value', 'base_price_amount', 'current_price_amount', 'user_id', 'product_id', 'product_flash_deal_id', 'created_at', 'discount_type']);
       
       // Execute findAll query
       data = await Model.ProductFlashDealDetails.findAll(criteria);
@@ -127,7 +127,7 @@ module.exports = {
           }
         ] 
       };
-      initialValues = _.pick(params, ['discount_value', 'base_price_amount', 'current_price_amount', 'user_id', 'product_id', 'header_id', 'discount_type']);
+      initialValues = _.pick(params, ['discount_value', 'base_price_amount', 'current_price_amount', 'user_id', 'product_id', 'product_flash_deal_id', 'discount_type']);
       // Execute findByPk query
       data = await Model.ProductFlashDealDetails.findByPk(req.params.id, criteria);
       if (!_.isEmpty(data)) {
@@ -207,7 +207,7 @@ module.exports = {
 
     try {
       // Pre-setting variables
-      query = `SELECT id, base_price_amount, current_price_amount, product_id, header_id, created_at, updated_at, discount_type FROM product_flash_deal_details WHERE CONCAT(product_id) LIKE ? AND is_deleted = ${NO};`;
+      query = `SELECT id, base_price_amount, current_price_amount, product_id, product_flash_deal_id, created_at, updated_at, discount_type FROM product_flash_deal_details WHERE CONCAT(product_id) LIKE ? AND is_deleted = ${NO};`;
       // Execute native query
       data = await Model.sequelize.query(query, {
         replacements: [`%${params.value}%`],
@@ -273,20 +273,20 @@ module.exports = {
   },
 
   /**
-   * Find all by header id
-   * @route GET /productFlashDealDetails/findAllbyHeaderId/:headerId
+   * Find all by product flash deal id
+   * @route GET /productFlashDealDetails/findAllbyProductFlashDealId/:productFlashDealId
    * @param req
    * @param res
    * @returns {never}
    */
-  findAllbyHeaderId: async (req, res) => {
+  findAllbyProductFlashDealId: async (req, res) => {
     const params = req.params;
     let data, criteria;
 
     try {
       // Pre-setting variables
       criteria = { 
-        where: { header_id: params.headerId, is_deleted: NO }, 
+        where: { product_flash_deal_id: params.productFlashDealId, is_deleted: NO }, 
         include: [
           { 
             model: Model.Products, as: 'products', 

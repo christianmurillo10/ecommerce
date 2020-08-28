@@ -28,8 +28,8 @@ const actions = {
       }
     });
   },
-  getDataByHeaderId({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/productFlashDealDetails/findAllbyHeaderId/${payload}`;
+  getDataByProductFlashDealId({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
+    let url = `${process.env.VUE_APP_API_BACKEND}/productFlashDealDetails/findAllbyProductFlashDealId/${payload}`;
     let header = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
     return new Promise((resolve, reject) => {
       try {
@@ -79,7 +79,7 @@ const actions = {
           base_price_amount: payload.base_price_amount,
           current_price_amount: payload.current_price_amount,
           product_id: payload.product_id,
-          header_id: payload.header_id,
+          product_flash_deal_id: payload.product_flash_deal_id,
           discount_type: payload.discount_type
         };
 
@@ -114,7 +114,7 @@ const actions = {
           base_price_amount: payload.base_price_amount,
           current_price_amount: payload.current_price_amount,
           product_id: payload.product_id,
-          header_id: payload.header_id,
+          product_flash_deal_id: payload.product_flash_deal_id,
           discount_type: payload.discount_type
         };
 
@@ -173,7 +173,7 @@ const mutations = {
       base_price_amount: payload.base_price_amount,
       current_price_amount: payload.current_price_amount,
       product_id: payload.product_id,
-      header_id: payload.header_id,
+      product_flash_deal_id: payload.product_flash_deal_id,
       discount_type: payload.discount_type
     });
   },

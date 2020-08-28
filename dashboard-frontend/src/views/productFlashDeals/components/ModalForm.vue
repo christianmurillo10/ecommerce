@@ -117,7 +117,7 @@ export default {
   }),
 
   computed: {
-    ...mapGetters("productFlashDealHeaders", ["getProductFlashDealHeaderById"]),
+    ...mapGetters("productFlashDeals", ["getProductFlashDealById"]),
     formTitle() {
       return this.formType === "new" ? "Flash Deal - Create" : "Flash Deal - Update";
     },
@@ -128,13 +128,13 @@ export default {
 
   methods: {
     ...mapActions("alerts", ["setAlert"]),
-    ...mapActions("productFlashDealHeaders", {
-      saveProductFlashDealHeaderData: "saveData",
-      updateProductFlashDealHeaderData: "updateData"
+    ...mapActions("productFlashDeals", {
+      saveProductFlashDealData: "saveData",
+      updateProductFlashDealData: "updateData"
     }),
 
     editItem(id) {
-      let data = this.getProductFlashDealHeaderById(id);
+      let data = this.getProductFlashDealById(id);
       this.formData.id = data.id;
       this.formData.title = data.title;
       this.formData.date_from = data.date_from;
@@ -153,7 +153,7 @@ export default {
     save() {
       if (this.$refs.form.validate()) {
         if (this.formType === "new") {
-          this.saveProductFlashDealHeaderData(this.formData)
+          this.saveProductFlashDealData(this.formData)
             .then(response => {
               let obj = {
                 alert: true,
@@ -166,7 +166,7 @@ export default {
             })
             .catch(err => console.log(err));
         } else if (this.formType === "update") {
-          this.updateProductFlashDealHeaderData(this.formData)
+          this.updateProductFlashDealData(this.formData)
             .then(response => {
               let obj = {
                 alert: true,

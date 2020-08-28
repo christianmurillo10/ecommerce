@@ -172,7 +172,7 @@ export default {
     save() {
       if (this.$refs.form.validate()) {
         if (this.formType === "new") {
-          this.formData.header_id = this.$route.params.headerId;
+          this.formData.product_flash_deal_id = this.$route.params.productFlashDealId;
           this.saveProductFlashDealDetailData(this.formData)
             .then(response => {
               let obj = {

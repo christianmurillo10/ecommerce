@@ -38,7 +38,7 @@
                     <v-list-tile-title class="body-2 font-weight-bold">Title:&nbsp;</v-list-tile-title>
                   </v-list-tile-action>
                   <v-list-tile-content>
-                    <v-list-tile-title class="body-2">{{ productFlashDealHeaderDataById.title }}</v-list-tile-title>
+                    <v-list-tile-title class="body-2">{{ productFlashDealDataById.title }}</v-list-tile-title>
                   </v-list-tile-content>
                 </v-list-tile>
                 <v-list-tile>
@@ -46,7 +46,7 @@
                     <v-list-tile-title class="body-2 font-weight-bold">From Date:&nbsp;</v-list-tile-title>
                   </v-list-tile-action>
                   <v-list-tile-content>
-                    <v-list-tile-title class="body-2">{{ productFlashDealHeaderDataById.date_from }}</v-list-tile-title>
+                    <v-list-tile-title class="body-2">{{ productFlashDealDataById.date_from }}</v-list-tile-title>
                   </v-list-tile-content>
                 </v-list-tile>
                 <v-list-tile>
@@ -54,7 +54,7 @@
                     <v-list-tile-title class="body-2 font-weight-bold">To Date:&nbsp;</v-list-tile-title>
                   </v-list-tile-action>
                   <v-list-tile-content>
-                    <v-list-tile-title class="body-2">{{ productFlashDealHeaderDataById.date_to }}</v-list-tile-title>
+                    <v-list-tile-title class="body-2">{{ productFlashDealDataById.date_to }}</v-list-tile-title>
                   </v-list-tile-content>
                 </v-list-tile>
               </v-flex>
@@ -156,12 +156,12 @@ export default {
   }),
 
   mounted() {
-    this.getProductFlashDealHeaderDataById(this.$route.params.headerId)
-    this.getProductFlashDealDetailDataByHeaderId(this.$route.params.headerId);
+    this.getProductFlashDealDataById(this.$route.params.productFlashDealId)
+    this.getProductFlashDealDetailDataById(this.$route.params.productFlashDealId);
   },
 
   computed: {
-    ...mapState("productFlashDealHeaders", ["productFlashDealHeaderDataById"]),
+    ...mapState("productFlashDeals", ["productFlashDealDataById"]),
     ...mapState("productFlashDealDetails", ["productFlashDealDetailList"])
   },
 
@@ -173,11 +173,11 @@ export default {
 
   methods: {
     ...mapActions("alerts", ["setAlert"]),
-    ...mapActions("productFlashDealHeaders", {
-      getProductFlashDealHeaderDataById: "getDataById"
+    ...mapActions("productFlashDeals", {
+      getProductFlashDealDataById: "getDataById"
     }),
     ...mapActions("productFlashDealDetails", {
-      getProductFlashDealDetailDataByHeaderId: "getDataByHeaderId",
+      getProductFlashDealDetailDataById: "getDataByProductFlashDealId",
       deleteProductFlashDealDetailData: "deleteData"
     }),
 

@@ -9,7 +9,7 @@
           <v-card-text>
             <v-data-table
               :headers="headers"
-              :items="productFlashDealHeaderTodayFlashDeal.productFlashDealDetails"
+              :items="productFlashDealTodayFlashDeal.productFlashDealDetails"
               class="elevation-1"
             >
               <template v-slot:items="props">
@@ -50,11 +50,11 @@ export default {
   },
 
   computed: {
-    ...mapState("productFlashDealHeaders", ["productFlashDealHeaderTodayFlashDeal"])
+    ...mapState("productFlashDeals", ["productFlashDealTodayFlashDeal"])
   },
 
   methods: {
-    ...mapActions("productFlashDealHeaders", { getCustomerTotalCountByStatusAndIsActive: "getDataTodayFlashDeal" })
+    ...mapActions("productFlashDeals", { getCustomerTotalCountByStatusAndIsActive: "getDataTodayFlashDeal" })
   }
 };
 </script>

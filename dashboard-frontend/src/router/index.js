@@ -24,8 +24,8 @@ import ProductsUpdate from "../views/products/Update";
 import ProductsView from "../views/products/View";
 import ProductsImage from "../views/products/Image";
 import ProductsVariant from "../views/products/Variant";
-import ProductFlashDealHeaders from "../views/productFlashDealHeaders/Index";
-import ProductFlashDealDetails from "../views/productFlashDealHeaders/Details";
+import ProductFlashDeals from "../views/productFlashDeals/Index";
+import ProductFlashDealDetails from "../views/productFlashDeals/Details";
 import SalesOrdersOpen from "../views/salesOrders/Open";
 import SalesOrdersReviewed from "../views/salesOrders/Reviewed";
 import SalesOrdersApproved from "../views/salesOrders/Approved";
@@ -164,11 +164,11 @@ let router = new Router({
     },
     {
       path: "/productFlashDeals",
-      name: "productFlashDealHeaders",
-      component: ProductFlashDealHeaders
+      name: "productFlashDeals",
+      component: ProductFlashDeals
     },
     {
-      path: "/productFlashDeals/details/:headerId",
+      path: "/productFlashDeals/details/:productFlashDealId",
       name: "productFlashDealDetails",
       component: ProductFlashDealDetails
     },

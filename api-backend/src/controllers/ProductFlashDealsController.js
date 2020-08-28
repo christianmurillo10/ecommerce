@@ -14,7 +14,7 @@ module.exports = {
    * @param req
    * @param res
    * @returns {Promise<void>}
-   * @routes POST /productFlashDealHeaders/create
+   * @routes POST /productFlashDeals/create
    */
   create: async (req, res) => {
     const params = req.body;
@@ -49,11 +49,11 @@ module.exports = {
       initialValues = _.pick(params, ['title', 'date_from', 'date_to', 'user_id', 'created_at']);
       // Pre-setting variables
       // Execute findAll query
-      data = await Model.ProductFlashDealHeaders.findAll(criteria);
+      data = await Model.ProductFlashDeals.findAll(criteria);
       if (_.isEmpty(data[0])) {
-        dataFindExistingDate = await Model.ProductFlashDealHeaders.findOne(criteriaFindExistingDate);
+        dataFindExistingDate = await Model.ProductFlashDeals.findOne(criteriaFindExistingDate);
         if (_.isEmpty(dataFindExistingDate)) {
-          let finalData = await Model.ProductFlashDealHeaders.create(initialValues);
+          let finalData = await Model.ProductFlashDeals.create(initialValues);
           res.json({
             status: 200,
             message: "Successfully created data.",
@@ -84,7 +84,7 @@ module.exports = {
 
   /**
    * Update
-   * @route PUT /productFlashDealHeaders/update/:id
+   * @route PUT /productFlashDeals/update/:id
    * @param req
    * @param res
    * @returns {never}
@@ -110,9 +110,9 @@ module.exports = {
       };
       initialValues = _.pick(params, ['title', 'date_from', 'date_to', 'is_active']);
       // Execute findByPk query
-      data = await Model.ProductFlashDealHeaders.findByPk(req.params.id);
+      data = await Model.ProductFlashDeals.findByPk(req.params.id);
       if (!_.isEmpty(data)) {
-        dataFindExistingDate = await Model.ProductFlashDealHeaders.findOne(criteria);
+        dataFindExistingDate = await Model.ProductFlashDeals.findOne(criteria);
         if (_.isEmpty(dataFindExistingDate)) {
           let finalData = await data.update(initialValues);
           res.json({
@@ -145,7 +145,7 @@ module.exports = {
 
   /**
    * Delete
-   * @route PUT /productFlashDealHeaders/delete/:id
+   * @route PUT /productFlashDeals/delete/:id
    * @param req
    * @param res
    * @returns {never}
@@ -155,7 +155,7 @@ module.exports = {
 
     try {
       // Execute findByPk query
-      data = await Model.ProductFlashDealHeaders.findByPk(req.params.id);
+      data = await Model.ProductFlashDeals.findByPk(req.params.id);
       if (!_.isEmpty(data)) {
         let finalData = await data.update({ is_deleted: YES });
         res.json({
@@ -181,7 +181,7 @@ module.exports = {
 
   /**
    * Search
-   * @route POST /productFlashDealHeaders/search/:value
+   * @route POST /productFlashDeals/search/:value
    * @param req
    * @param res
    * @returns {never}
@@ -197,7 +197,7 @@ module.exports = {
 
     try {
       // Pre-setting variables
-      query = `SELECT id, title, date_from, date_to, created_at, updated_at, is_active FROM product_flash_deal_headers WHERE CONCAT(title) LIKE ? AND is_deleted = ${NO};`;
+      query = `SELECT id, title, date_from, date_to, created_at, updated_at, is_active FROM product_flash_deals WHERE CONCAT(title) LIKE ? AND is_deleted = ${NO};`;
       // Execute native query
       data = await Model.sequelize.query(query, {
         replacements: [`%${params.value}%`],
@@ -227,7 +227,7 @@ module.exports = {
 
   /**
    * Find all
-   * @route GET /productFlashDealHeaders
+   * @route GET /productFlashDeals
    * @param req
    * @param res
    * @returns {never}
@@ -239,7 +239,7 @@ module.exports = {
       // Pre-setting variables
       criteria = { where: { is_deleted: NO } };
       // Execute findAll query
-      data = await Model.ProductFlashDealHeaders.findAll(criteria);
+      data = await Model.ProductFlashDeals.findAll(criteria);
       if (!_.isEmpty(data[0])) {
         res.json({
           status: 200,
@@ -264,7 +264,7 @@ module.exports = {
 
   /**
    * Find all
-   * @route GET /productFlashDealHeaders/findOne/todayFlashDeal
+   * @route GET /productFlashDeals/findOne/todayFlashDeal
    * @param req
    * @param res
    * @returns {never}
@@ -316,7 +316,7 @@ module.exports = {
         ]
       };
       // Execute findAll query
-      data = await Model.ProductFlashDealHeaders.findOne(criteria);
+      data = await Model.ProductFlashDeals.findOne(criteria);
       if (!_.isEmpty(data)) {
         res.json({
           status: 200,
@@ -341,7 +341,7 @@ module.exports = {
 
   /**
    * Find by id
-   * @route GET /productFlashDealHeaders/:id
+   * @route GET /productFlashDeals/:id
    * @param req
    * @param res
    * @returns {never}
@@ -351,7 +351,7 @@ module.exports = {
 
     try {
       // Execute findAll query
-      data = await Model.ProductFlashDealHeaders.findByPk(req.params.id);
+      data = await Model.ProductFlashDeals.findByPk(req.params.id);
       if (!_.isEmpty(data)) {
         res.json({
           status: 200,

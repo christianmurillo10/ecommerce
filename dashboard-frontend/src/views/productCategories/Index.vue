@@ -123,12 +123,12 @@ export default {
     ...mapActions("alerts", ["setAlert"]),
     ...mapActions("productCategories", {
       getProductCategoryData: "getData",
-      updateProductFlashDealHeaderFeaturedData: "updateFeaturedData",
+      updateProductCategoryFeaturedData: "updateFeaturedData",
       deleteProductCategoryData: "deleteData"
     }),
 
     updateStatus(obj) {
-      this.updateProductFlashDealHeaderFeaturedData(obj)
+      this.updateProductCategoryFeaturedData(obj)
         .then(response => {
           let obj = {
             alert: true,

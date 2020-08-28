@@ -1,6 +1,6 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
-  const ProductFlashDealHeaders = sequelize.define('ProductFlashDealHeaders', {
+  const ProductFlashDeals = sequelize.define('ProductFlashDeals', {
     'id': {
       type: DataTypes.INTEGER(11),
       allowNull: false,
@@ -51,20 +51,20 @@ module.exports = (sequelize, DataTypes) => {
       defaultValue: '0'
     }
   }, {
-    tableName: "product_flash_deal_headers",
+    tableName: "product_flash_deals",
     timestamps: false
   });
   
-  ProductFlashDealHeaders.associate = (models) => {
-    ProductFlashDealHeaders.belongsTo(models.Users, {
+  ProductFlashDeals.associate = (models) => {
+    ProductFlashDeals.belongsTo(models.Users, {
       foreignKey: 'user_id',
       as: 'users'
     });
-    ProductFlashDealHeaders.hasMany(models.ProductFlashDealDetails, {
-      foreignKey: 'header_id',
+    ProductFlashDeals.hasMany(models.ProductFlashDealDetails, {
+      foreignKey: 'product_flash_deal_id',
       as: 'productFlashDealDetails'
     });
   };
 
-  return ProductFlashDealHeaders;
+  return ProductFlashDeals;
 };

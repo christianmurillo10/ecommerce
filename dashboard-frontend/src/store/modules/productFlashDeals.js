@@ -1,26 +1,26 @@
 import axios from "axios";
 
 const state = {
-  productFlashDealHeaderList: [],
-  productFlashDealHeaderDataById: "",
-  productFlashDealHeaderTodayFlashDeal: ""
+  productFlashDealList: [],
+  productFlashDealDataById: "",
+  productFlashDealTodayFlashDeal: ""
 };
 
 const getters = {
-  getProductFlashDealHeaderById: (state) => (id) => {
-    return state.productFlashDealHeaderList.find(productFlashDealHeader => productFlashDealHeader.id === id);
+  getProductFlashDealById: (state) => (id) => {
+    return state.productFlashDealList.find(productFlashDeal => productFlashDeal.id === id);
   },
-  getProductFlashDealHeaderTitleById: (state) => (id) => {
-    return state.productFlashDealHeaderList.find(productFlashDealHeader => productFlashDealHeader.id === id).title;
+  getProductFlashDealTitleById: (state) => (id) => {
+    return state.productFlashDealList.find(productFlashDeal => productFlashDeal.id === id).title;
   },
-  getProductFlashDealHeaderList: (state) => {
-    return state.productFlashDealHeaderList;
+  getProductFlashDealList: (state) => {
+    return state.productFlashDealList;
   }
 };
 
 const actions = {
   getData({ dispatch, commit, state, rootState, getters, rootGetters }) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/productFlashDealHeaders/`;
+    let url = `${process.env.VUE_APP_API_BACKEND}/productFlashDeals/`;
     let header = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
     return new Promise((resolve, reject) => {
       try {
@@ -34,7 +34,7 @@ const actions = {
     });
   },
   getDataTodayFlashDeal({ dispatch, commit, state, rootState, getters, rootGetters }) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/productFlashDealHeaders/findOne/todayFlashDeal`;
+    let url = `${process.env.VUE_APP_API_BACKEND}/productFlashDeals/findOne/todayFlashDeal`;
     let header = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
     return new Promise((resolve, reject) => {
       try {
@@ -62,7 +62,7 @@ const actions = {
     });
   },
   getDataById({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/productFlashDealHeaders/${payload}`;
+    let url = `${process.env.VUE_APP_API_BACKEND}/productFlashDeals/${payload}`;
     let header = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
     return new Promise((resolve, reject) => {
       try {
@@ -78,7 +78,7 @@ const actions = {
     });
   },
   saveData({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/productFlashDealHeaders/create`;
+    let url = `${process.env.VUE_APP_API_BACKEND}/productFlashDeals/create`;
     let header = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
     return new Promise((resolve, reject) => {
       try {
@@ -102,7 +102,7 @@ const actions = {
     });
   },
   updateData({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/productFlashDealHeaders/update/${payload.id}`;
+    let url = `${process.env.VUE_APP_API_BACKEND}/productFlashDeals/update/${payload.id}`;
     let header = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
     return new Promise((resolve, reject) => {
       try {
@@ -127,7 +127,7 @@ const actions = {
     });
   },
   updateActiveStatusData({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/productFlashDealHeaders/update/${payload.id}`;
+    let url = `${process.env.VUE_APP_API_BACKEND}/productFlashDeals/update/${payload.id}`;
     let header = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
     return new Promise((resolve, reject) => {
       try {
@@ -147,7 +147,7 @@ const actions = {
     });
   },
   deleteData({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/productFlashDealHeaders/delete/${payload}`;
+    let url = `${process.env.VUE_APP_API_BACKEND}/productFlashDeals/delete/${payload}`;
     let header = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
     return new Promise((resolve, reject) => {
       try {
@@ -167,31 +167,31 @@ const actions = {
 const mutations = {
   SET_DATA(state, payload) {
     if (payload) {
-      state.productFlashDealHeaderList = payload;
+      state.productFlashDealList = payload;
     } else {
-      state.productFlashDealHeaderList = [];
+      state.productFlashDealList = [];
     }
   },
   SET_DATA_TODAY_FLASH_DEAL(state, payload) {
     if (payload) {
-      state.productFlashDealHeaderTodayFlashDeal = payload;
+      state.productFlashDealTodayFlashDeal = payload;
     } else {
-      state.productFlashDealHeaderTodayFlashDeal = "";
+      state.productFlashDealTodayFlashDeal = "";
     }
   },
   SET_DATA_BY_ID(state, payload) {
     if (payload) {
-      state.productFlashDealHeaderDataById = payload;
+      state.productFlashDealDataById = payload;
     } else {
-      state.productFlashDealHeaderDataById = "";
+      state.productFlashDealDataById = "";
     }
   },
   ADD_DATA(state, payload) {
-    state.productFlashDealHeaderList.push(payload);
+    state.productFlashDealList.push(payload);
   },
   UPDATE_DATA(state, payload) {
-    let index = state.productFlashDealHeaderList.map(productFlashDealHeader => productFlashDealHeader.id).indexOf(payload.id);
-    Object.assign(state.productFlashDealHeaderList[index], {
+    let index = state.productFlashDealList.map(productFlashDeal => productFlashDeal.id).indexOf(payload.id);
+    Object.assign(state.productFlashDealList[index], {
       title: payload.title,
       date_from: payload.date_from,
       date_to: payload.date_to,
@@ -199,8 +199,8 @@ const mutations = {
     });
   },
   DELETE_DATA(state, payload) {
-    let index = state.productFlashDealHeaderList.map(productFlashDealHeader => productFlashDealHeader.id).indexOf(payload);
-    state.productFlashDealHeaderList.splice(index, 1);
+    let index = state.productFlashDealList.map(productFlashDeal => productFlashDeal.id).indexOf(payload);
+    state.productFlashDealList.splice(index, 1);
   }
 };
 

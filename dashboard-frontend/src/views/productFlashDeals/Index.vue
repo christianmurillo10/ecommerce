@@ -30,7 +30,7 @@
         </v-flex>
       </v-card-title>
       <v-card-text>
-        <v-data-table :headers="headers" :items="productFlashDealHeaderList" :search="search" class="elevation-1">
+        <v-data-table :headers="headers" :items="productFlashDealList" :search="search" class="elevation-1">
           <template v-slot:items="props">
             <td class="text-xs-left">{{ props.item.title }}</td>
             <td class="text-xs-left">{{ props.item.date_from }}</td>
@@ -115,11 +115,11 @@ export default {
   }),
 
   mounted() {
-    this.getProductFlashDealHeaderData();
+    this.getProductFlashDealData();
   },
 
   computed: {
-    ...mapState("productFlashDealHeaders", ["productFlashDealHeaderList"])
+    ...mapState("productFlashDeals", ["productFlashDealList"])
   },
 
   watch: {
@@ -130,14 +130,14 @@ export default {
 
   methods: {
     ...mapActions("alerts", ["setAlert"]),
-    ...mapActions("productFlashDealHeaders", {
-      getProductFlashDealHeaderData: "getData",
-      updateProductFlashDealHeaderActiveStatusData: "updateActiveStatusData",
-      deleteProductFlashDealHeaderData: "deleteData"
+    ...mapActions("productFlashDeals", {
+      getProductFlashDealData: "getData",
+      updateProductFlashDealActiveStatusData: "updateActiveStatusData",
+      deleteProductFlashDealData: "deleteData"
     }),
 
     updateActiveStatus(obj) {
-      this.updateProductFlashDealHeaderActiveStatusData(obj)
+      this.updateProductFlashDealActiveStatusData(obj)
         .then(response => {
           let obj = {
             alert: true,
@@ -166,7 +166,7 @@ export default {
     },
 
     deleteItem() {
-      this.deleteProductFlashDealHeaderData(this.modalDelete.id)
+      this.deleteProductFlashDealData(this.modalDelete.id)
         .then(response => {
           let obj = {
             alert: true,

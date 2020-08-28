@@ -23,7 +23,7 @@ router.use('/productVariants', require('./productVariants'));
 router.use('/productVariationDetails', require('./productVariationDetails'));
 router.use('/productVariations', require('./productVariations'));
 router.use('/productImages', require('./productImages'));
-router.use('/productFlashDealHeaders', require('./productFlashDealHeaders'));
+router.use('/productFlashDeals', require('./productFlashDeals'));
 router.use('/productFlashDealDetails', require('./productFlashDealDetails'));
 router.use('/salesOrderDetails', require('./salesOrderDetails'));
 router.use('/salesOrders', require('./salesOrders'));
