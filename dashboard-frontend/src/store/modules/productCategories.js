@@ -30,8 +30,17 @@ const actions = {
 
             if (obj) {
               obj.forEach(element => {
-                element.icon_file_path = `${process.env.VUE_APP_API_BACKEND}/productCategories/viewImage/${element.icon_file_name}`;
-                element.banner_file_path = `${process.env.VUE_APP_API_BACKEND}/productCategories/viewImage/${element.banner_file_name}`;
+                if (!_.isNull(element.icon_file_name)) {
+                  element.icon_file_path = `${process.env.VUE_APP_API_BACKEND}/productCategories/viewImage/${element.icon_file_name}`;
+                } else {
+                  element.icon_file_path = require("../../assets/images/no-image.png");
+                }
+
+                if (!_.isNull(element.banner_file_name)) {
+                  element.banner_file_path = `${process.env.VUE_APP_API_BACKEND}/productCategories/viewImage/${element.banner_file_name}`;
+                } else {
+                  element.banner_file_path = require("../../assets/images/no-image.png");
+                }
               });
             }
 
@@ -178,8 +187,8 @@ const mutations = {
   },
   ADD_DATA(state, payload) {
     let obj = payload;
-    obj.icon_file_path = `${process.env.VUE_APP_API_BACKEND}/productCategories/viewImage/${payload.icon_file_name}`;
-    obj.banner_file_path = `${process.env.VUE_APP_API_BACKEND}/productCategories/viewImage/${payload.banner_file_name}`;
+    obj.icon_file_path = _.isNull(payload.icon_file_name) ? require("../../assets/images/no-image.png") : `${process.env.VUE_APP_API_BACKEND}/productCategories/viewImage/${payload.icon_file_name}`;
+    obj.banner_file_path = _.isNull(payload.banner_file_name) ? require("../../assets/images/no-image.png") : `${process.env.VUE_APP_API_BACKEND}/productCategories/viewImage/${payload.banner_file_name}`;
     state.productCategoryList.push(obj);
   },
   UPDATE_DATA(state, payload) {
@@ -189,8 +198,8 @@ const mutations = {
       description: payload.description,
       icon_file_name: payload.icon_file_name,
       banner_file_name: payload.banner_file_name,
-      icon_file_path: `${process.env.VUE_APP_API_BACKEND}/productCategories/viewImage/${payload.icon_file_name}`,
-      banner_file_path: `${process.env.VUE_APP_API_BACKEND}/productCategories/viewImage/${payload.banner_file_name}`
+      icon_file_path: _.isNull(payload.icon_file_name) ? require("../../assets/images/no-image.png") : `${process.env.VUE_APP_API_BACKEND}/productCategories/viewImage/${payload.icon_file_name}`,
+      banner_file_path: _.isNull(payload.banner_file_name) ? require("../../assets/images/no-image.png") : `${process.env.VUE_APP_API_BACKEND}/productCategories/viewImage/${payload.banner_file_name}`
     });
   },
   DELETE_DATA(state, payload) {

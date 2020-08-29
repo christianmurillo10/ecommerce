@@ -39,6 +39,8 @@ module.exports = {
       let extension = path.extname(params.file_name);
       let fileName = `${params.email}${extension}`;
       params.file_name = fileName;
+    } else {
+      params.file_name = null;
     }
 
     try {
@@ -190,15 +192,20 @@ module.exports = {
     if (_.isEmpty(params))
       return res.badRequest({ err: "Empty Parameter: [params]" });
 
-    // Override variables
-    if (!_.isUndefined(req.file)) {
-      let extension = path.extname(params.file_name);
-      let fileName = `${params.email}${extension}`;
-      params.file_name = fileName;
-    }
-    if (params.status === CUSTOMER_STATUS_APPROVED.toLocaleString()) params.customer_no = await generateCustomerNo();
-
     try {
+      // Execute findByPk query
+      data = await Model.Customers.findByPk(req.params.id);
+
+      // Override variables
+      if (!_.isUndefined(req.file)) {
+        let extension = path.extname(params.file_name);
+        let fileName = `${params.email}${extension}`;
+        params.file_name = fileName;
+      } else {
+        params.file_name = data.file_name;
+      }
+      if (params.status === CUSTOMER_STATUS_APPROVED.toLocaleString()) params.customer_no = await generateCustomerNo();
+      
       // Pre-setting variables
       initialValues = _.pick(params, [
         'customer_no', 
@@ -215,8 +222,7 @@ module.exports = {
         'gender_type', 
         'status'
       ]);
-      // Execute findByPk query
-      data = await Model.Customers.findByPk(req.params.id);
+
       if (!_.isEmpty(data)) {
         let finalData = await data.update(initialValues);
         // For Upload Images

@@ -37,12 +37,14 @@
         >
           <!-- With Data -->
           <template v-slot:items="props">
-            <td class="text-xs-left pt-1">
-              <img
+            <td class="text-xs-left py-1">
+              <v-img
                 :src="props.item.productImages[0].file_path"
+                lazy-src="@/assets/images/no-image.png"
                 height="80"
                 width="120"
-              />
+                contain
+              ></v-img>
             </td>
             <td class="text-xs-left">
               <router-link v-bind:to="'/products/view/' + props.item.id">

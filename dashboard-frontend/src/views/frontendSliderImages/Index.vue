@@ -32,12 +32,14 @@
       <v-card-text>
         <v-data-table :headers="headers" :items="frontendSliderImageList" :search="search" class="elevation-1">
           <template v-slot:items="props">
-            <td class="text-xs-left pt-1">
-              <img
+            <td class="text-xs-left py-1">
+              <v-img
                 :src="props.item.file_path"
+                lazy-src="@/assets/images/no-image.png"
                 height="80"
                 width="120"
-              />
+                contain
+              ></v-img>
             </td>
             <td class="text-xs-left">{{ props.item.order }}</td>
             <td class="text-xs-left">{{ props.item.url }}</td>

@@ -1045,7 +1045,71 @@ module.exports = {
           { 
             model: Model.ProductImages, as: "productImages", 
             attributes: ['file_name', 'order', 'type', 'product_id'],
-            where: { type: PRODUCT_IMAGES_TYPE_MAIN, is_deleted: NO },
+            where: { is_deleted: NO },
+            required: false 
+          },
+          { 
+            model: Model.ProductVariants, as: "productVariants", 
+            attributes: ['id', 'title', 'values', 'product_id'], 
+            where: { is_deleted: NO },
+            required: false 
+          },
+          { 
+            model: Model.Inventories, as: "inventories", 
+            attributes: ['name', 'price_amount', 'sku', 'stock_available', 'product_id'], 
+            where: { is_deleted: NO },
+            required: false 
+          },
+        ]
+      };
+      // Execute findAll query
+      data = await Model.Products.findByPk(req.params.id, criteria);
+      if (!_.isEmpty(data)) {
+        res.json({
+          status: 200,
+          message: "Successfully find data.",
+          result: _.omit(data.get({ plain: true }), ["is_deleted"])
+        });
+      } else {
+        res.json({
+          status: 200,
+          message: "No Data Found.",
+          result: false
+        });
+      }
+    } catch (err) {
+      res.json({
+        status: 401,
+        err: err,
+        message: "Failed to find data."
+      });
+    }
+  },
+
+  /**
+   * Find by id
+   * @route GET /products/findByIdWithImageType/:id/:imageType
+   * @param req
+   * @param res
+   * @returns {never}
+   */
+  findByIdWithImageType: async (req, res) => {
+    let data;
+
+    try {
+      // Pre-setting variables
+      criteria = {
+        where: { is_deleted: NO },
+        include: [
+          { model: Model.ProductStores, as: "productStores", attributes: ['name', 'description'] },
+          { model: Model.ProductBrands, as: "productBrands", attributes: ['name', 'description'] },
+          { model: Model.ProductCategories, as: "productCategories", attributes: ['name', 'description'] },
+          { model: Model.ProductSubCategories, as: "productSubCategories", attributes: ['name', 'description'] },
+          { model: Model.ProductSubSubCategories, as: "productSubSubCategories", attributes: ['name', 'description'] },
+          { 
+            model: Model.ProductImages, as: "productImages", 
+            attributes: ['file_name', 'order', 'type', 'product_id'],
+            where: { type: req.params.imageType, is_deleted: NO },
             required: false 
           },
           { 

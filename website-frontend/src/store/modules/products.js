@@ -240,8 +240,8 @@ const actions = {
       }
     });
   },
-  getDataById({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/products/${payload}`;
+  getDataByIdWithImageType({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
+    let url = `${process.env.VUE_APP_API_BACKEND}/products/findByIdWithImageType/${payload.id}/${payload.image_type}`;
     let header = { headers: { Authorization: `Bearer ${localStorage.getItem("cToken")}` } };
     return new Promise((resolve, reject) => {
       try {

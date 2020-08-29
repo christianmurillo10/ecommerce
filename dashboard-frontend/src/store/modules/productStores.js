@@ -30,7 +30,11 @@ const actions = {
 
             if (obj) {
               obj.forEach(element => {
-                element.file_path = `${process.env.VUE_APP_API_BACKEND}/productStores/viewImage/${element.file_name}`;
+                if (!_.isNull(element.file_name)) {
+                  element.file_path = `${process.env.VUE_APP_API_BACKEND}/productStores/viewImage/${element.file_name}`;
+                } else {
+                  element.file_path = require("../../assets/images/no-image.png");
+                }
               });
             }
 
@@ -173,7 +177,7 @@ const mutations = {
   },
   ADD_DATA(state, payload) {
     let obj = payload;
-    obj.file_path = `${process.env.VUE_APP_API_BACKEND}/productStores/viewImage/${payload.file_name}`;
+    obj.file_path = _.isNull(payload.file_name) ? require("../../assets/images/no-image.png") : `${process.env.VUE_APP_API_BACKEND}/productStores/viewImage/${payload.file_name}`;
     state.productStoreList.push(obj);
   },
   UPDATE_DATA(state, payload) {
@@ -182,7 +186,7 @@ const mutations = {
       name: payload.name,
       description: payload.description,
       file_name: payload.file_name,
-      file_path: `${process.env.VUE_APP_API_BACKEND}/productStores/viewImage/${payload.file_name}`
+      file_path: _.isNull(payload.file_name) ? require("../../assets/images/no-image.png") : `${process.env.VUE_APP_API_BACKEND}/productStores/viewImage/${payload.file_name}`
     });
   },
   DELETE_DATA(state, payload) {

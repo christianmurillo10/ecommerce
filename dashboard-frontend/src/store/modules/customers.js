@@ -30,16 +30,14 @@ const actions = {
             let obj = response.data.result
             if (obj) {
               obj.forEach(element => {
-                // set fullname lastname first
-                let firstname = element.firstname ? element.firstname.charAt(0).toUpperCase() + element.firstname.slice(1) : "";
-                let middlename = element.middlename ? `${element.middlename.charAt(0).toUpperCase()}.` : "";
-                let lastname = element.lastname ? `${element.lastname.toUpperCase()},` : "";
-                element.name = `${lastname} ${firstname} ${middlename}`;
-
-                if (!_.isEmpty(obj.file_name) && !_.isNull(obj.file_name)) element.file_path = `${process.env.VUE_APP_API_BACKEND}/customers/viewImage/${element.file_name}`;
-                else element.file_path = require("../../assets/images/no-image.png");
+                if (!_.isNull(element.file_name)) {
+                  element.file_path = `${process.env.VUE_APP_API_BACKEND}/customers/viewImage/${element.file_name}`;
+                } else {
+                  element.file_path = require("../../assets/images/no-image.png");
+                }
               });
             }
+
             commit("SET_DATA", obj);
             resolve(response);
           });
@@ -193,31 +191,27 @@ const mutations = {
   },
   ADD_DATA(state, payload) {
     let obj = payload;
-    if (!_.isEmpty(obj.file_name) && !_.isNull(obj.file_name)) obj.file_path = `${process.env.VUE_APP_API_BACKEND}/customers/viewImage/${obj.file_name}`;
-    else obj.file_path = require("../../assets/images/no-image.png");
+    obj.file_path = _.isNull(payload.file_name) ? require("../../assets/images/no-image.png") : `${process.env.VUE_APP_API_BACKEND}/customers/viewImage/${payload.file_name}`;
     state.customerList.push(obj);
   },
   UPDATE_DATA(state, payload) {
-    let obj = payload;
-    let index = state.customerList.map(customer => customer.id).indexOf(obj.id);
-    if (!_.isEmpty(obj.file_name) && !_.isNull(obj.file_name)) obj.file_path = `${process.env.VUE_APP_API_BACKEND}/customers/viewImage/${obj.file_name}`;
-    else obj.file_path = require("../../assets/images/no-image.png");
+    let index = state.customerList.map(customer => customer.id).indexOf(payload.id);
 
     Object.assign(state.customerList[index], {
-      customer_no: obj.customer_no,
-      firstname: obj.firstname,
-      middlename: obj.middlename,
-      lastname: obj.lastname,
-      email: obj.email,
-      password: obj.password,
-      primary_address: obj.primary_address,
-      secondary_address: obj.secondary_address,
-      contact_no: obj.contact_no,
-      file_name: obj.file_name,
-      date_approved: obj.date_approved,
-      gender_type: obj.gender_type,
-      status: obj.status,
-      file_path: obj.file_path
+      customer_no: payload.customer_no,
+      firstname: payload.firstname,
+      middlename: payload.middlename,
+      lastname: payload.lastname,
+      email: payload.email,
+      password: payload.password,
+      primary_address: payload.primary_address,
+      secondary_address: payload.secondary_address,
+      contact_no: payload.contact_no,
+      file_name: payload.file_name,
+      date_approved: payload.date_approved,
+      gender_type: payload.gender_type,
+      status: payload.status,
+      file_path: _.isNull(payload.file_name) ? require("../../assets/images/no-image.png") : `${process.env.VUE_APP_API_BACKEND}/customers/viewImage/${payload.file_name}`
     });
   },
   DELETE_DATA(state, payload) {

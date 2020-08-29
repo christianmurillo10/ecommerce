@@ -25,17 +25,23 @@ module.exports = {
     params.created_at = moment().utc(8).format('YYYY-MM-DD HH:mm:ss');
 
     let date = moment(params.created_at).format('YYYY-MM-DD');
+
     // icon
-    if (!_.isEmpty(params.icon_file_name)) {
+    if (!_.isUndefined(req.files['icon-image'])) {
       let iconExtension = path.extname(params.icon_file_name);
       let iconFileName = `icon-${params.name}-${date}${iconExtension}`;
       params.icon_file_name = iconFileName;
+    } else {
+      params.icon_file_name = null;
     }
+
     // banner
-    if (!_.isEmpty(params.banner_file_name)) {
+    if (!_.isUndefined(req.files['banner-image'])) {
       let bannerExtension = path.extname(params.banner_file_name);
       let bannerFileName = `banner-${params.name}-${date}${bannerExtension}`;
       params.banner_file_name = bannerFileName;
+    } else {
+      params.banner_file_name = null;
     }
 
     try {
@@ -94,24 +100,24 @@ module.exports = {
       // Execute findByPk query
       data = await Model.ProductCategories.findByPk(req.params.id);
       // Override variables
-      if (!_.isUndefined(req.file)) {
-        let date = moment(params.created_at).format('YYYY-MM-DD');
-        // icon
-        if (!_.isEmpty(params.icon_file_name)) {
-          let iconExtension = path.extname(params.icon_file_name);
-          let iconFileName = `icon-${params.name}-${date}${iconExtension}`;
-          params.icon_file_name = iconFileName;
-        }
-        // banner
-        if (!_.isEmpty(params.banner_file_name)) {
-          let bannerExtension = path.extname(params.banner_file_name);
-          let bannerFileName = `banner-${params.name}-${date}${bannerExtension}`;
-          params.banner_file_name = bannerFileName;
-        }
+      let date = moment(params.created_at).format('YYYY-MM-DD');
+      // icon
+      if (!_.isUndefined(req.files['icon-image'])) {
+        let iconExtension = path.extname(params.icon_file_name);
+        let iconFileName = `icon-${params.name}-${date}${iconExtension}`;
+        params.icon_file_name = iconFileName;
       } else {
         params.icon_file_name = data.icon_file_name;
+      }
+      // banner
+      if (!_.isUndefined(req.files['banner-image'])) {
+        let bannerExtension = path.extname(params.banner_file_name);
+        let bannerFileName = `banner-${params.name}-${date}${bannerExtension}`;
+        params.banner_file_name = bannerFileName;
+      } else {
         params.banner_file_name = data.banner_file_name;
       }
+
       // Pre-setting variables
       initialValues = _.pick(params, ['name', 'description', 'icon_file_name', 'banner_file_name', 'is_featured']);
 
@@ -437,13 +443,13 @@ module.exports = {
  */
 const uploadImage = (data, files) => {
   try {
-    if (files['icon-image'].length) {
+    if (!_.isUndefined(files['icon-image'])) {
       fs.writeFile('images/productCategories/' + data.icon_file_name, files['icon-image'][0].buffer, function (err) {
         if (err) throw err;
       })
     }
 
-    if (files['banner-image'].length) {
+    if (!_.isUndefined(files['banner-image'])) {
       fs.writeFile('images/productCategories/' + data.banner_file_name, files['banner-image'][0].buffer, function (err) {
         if (err) throw err;
       })

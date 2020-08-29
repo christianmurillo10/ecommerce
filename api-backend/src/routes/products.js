@@ -13,6 +13,7 @@ router.route('/search/:keyword/:limit/:offset').get(productsController.search);
 router.route('/searchWithRelatedCategories/:keyword/:limit/:offset').get(productsController.searchWithRelatedCategories);
 router.route('/searchBySubCategoryIdWithRelatedCategories/:subCategoryId/:keyword/:limit/:offset').get(productsController.searchBySubCategoryIdWithRelatedCategories);
 router.route('/:id').get(productsController.findById);
+router.route('/findByIdWithImageType/:id/:imageType').get(productsController.findByIdWithImageType);
 router.route('/').get(productsController.findAll);
 router.route('/featured/:value').get(productsController.findAllByIsFeatured);
 

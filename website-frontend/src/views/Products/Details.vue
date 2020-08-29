@@ -64,7 +64,7 @@ export default {
   data: () => ({}),
 
   mounted() {
-    this.getProductDataById(this.$route.params.id);
+    this.getProductDataByIdWithImageType({ id: this.$route.params.id, image_type: 2 });
   },
 
   computed: {
@@ -73,13 +73,13 @@ export default {
 
   watch: {
     "$route.params.id": function(val) {
-      this.getProductDataById(val);
+      this.getProductDataByIdWithImageType({ id: val, image_type: 2 });
     },
   },
 
   methods: {
     ...mapActions("products", {
-      getProductDataById: "getDataById",
+      getProductDataByIdWithImageType: "getDataByIdWithImageType",
     }),
   },
 };

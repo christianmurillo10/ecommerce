@@ -26,13 +26,17 @@ module.exports = {
     params.order = params.order.toLocaleString();
     params.user_id = req.user.id.toLocaleString();
 
-    let extension = path.extname(params.file_name);
-    let fileName = `Frontend-Slider-${params.order}${extension}`;
-    params.file_name = fileName;
+    if (!_.isUndefined(req.file)) {
+      let extension = path.extname(params.file_name);
+      let fileName = `Frontend-Slider-${params.order}${extension}`;
+      params.file_name = fileName;
+    } else {
+      params.file_name = null;
+    }
 
     try {
       // Validators
-      if (_.isEmpty(params.file_name)) return res.json({ status: 200, message: "File Name is required.", result: false });
+      if (_.isEmpty(params.file_name)) return res.json({ status: 200, message: "Image is required.", result: false });
       if (_.isEmpty(params.order)) return res.json({ status: 200, message: "Order required.", result: false });
 
       // Pre-setting variables
@@ -84,10 +88,19 @@ module.exports = {
       return res.badRequest({ err: "Empty Parameter: [params]" });
 
     try {
-      // Pre-setting variables
-      initialValues = _.pick(params, ['url', 'order']);
       // Execute findByPk query
       data = await Model.FrontendSliderImages.findByPk(req.params.id);
+      // Override variables
+      if (!_.isUndefined(req.file)) {
+        let extension = path.extname(params.file_name);
+        let fileName = `Frontend-Slider-${params.order}${extension}`;
+        params.file_name = fileName;
+      } else {
+        params.file_name = data.file_name;
+      }
+      // Pre-setting variables
+      initialValues = _.pick(params, ['url', 'order']);
+
       if (!_.isEmpty(data)) {
         let finalData = await data.update(initialValues);
         // For Upload Images

@@ -24,7 +24,7 @@
             </v-flex>
             <v-flex xs12 sm12 md12>
               <v-layout wrap justify-center>
-                <img :src="formData.icon_file_path" height="32" width="32" />
+                <v-img :src="formData.icon_file_path" lazy-src="@/assets/images/no-image.png" height="32" width="32" contain></v-img>
               </v-layout>
             </v-flex>
             <v-flex xs12 sm12 md12>
@@ -41,7 +41,7 @@
             </v-flex>
             <v-flex xs12 sm12 md12>
               <v-layout wrap justify-center>
-                <img :src="formData.banner_file_path" height="200" width="860" />
+                <v-img :src="formData.banner_file_path" lazy-src="@/assets/images/no-image.png" height="100" width="620" contain></v-img>
               </v-layout>
             </v-flex>
             <v-flex xs12 sm12 md12>
@@ -177,8 +177,8 @@ export default {
       this.formData.id = data.id;
       this.formData.name = data.name;
       this.formData.description = data.description;
-      this.formData.icon_file_path = `${process.env.VUE_APP_API_BACKEND}/productCategories/viewImage/${data.icon_file_name}`;
-      this.formData.banner_file_path = `${process.env.VUE_APP_API_BACKEND}/productCategories/viewImage/${data.banner_file_name}`;
+      this.formData.icon_file_path = _.isNull(data.icon_file_name) ? require("@/assets/images/no-image.png") : `${process.env.VUE_APP_API_BACKEND}/productCategories/viewImage/${data.icon_file_name}`;
+      this.formData.banner_file_path = _.isNull(data.banner_file_name) ? require("@/assets/images/no-image.png") : `${process.env.VUE_APP_API_BACKEND}/productCategories/viewImage/${data.banner_file_name}`;
       this.formType = "update";
     },
 

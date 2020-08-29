@@ -49,14 +49,16 @@
                       class="elevation-1"
                     >
                       <template v-slot:items="props">
-                        <td class="text-xs-left pt-1">
-                          <img
+                        <td class="text-xs-left py-1">
+                          <v-img
                             :src="props.item.file_path"
+                            lazy-src="@/assets/images/no-image.png"
                             height="80"
                             width="120"
                             class="product-image"
-                            @click="viewImage({ filePath: props.item.file_path, heigth: '300', width: '290' })"
-                          />
+                            @click="viewImage({ filePath: props.item.file_path, heigth: '600', width: '590' })"
+                            contain
+                          ></v-img>
                         </td>
                         <td class="text-xs-left">{{ props.item.order }}</td>
                         <td class="text-xs-center">
@@ -96,14 +98,16 @@
                       class="elevation-1"
                     >
                       <template v-slot:items="props">
-                        <td class="text-xs-left pt-1">
-                          <img
+                        <td class="text-xs-left py-1">
+                          <v-img
                             :src="props.item.file_path"
+                            lazy-src="@/assets/images/no-image.png"
                             height="80"
                             width="120"
                             class="product-image"
-                            @click="viewImage({ filePath: props.item.file_path, heigth: '300', width: '290' })"
-                          />
+                            @click="viewImage({ filePath: props.item.file_path, heigth: '600', width: '590' })"
+                            contain
+                          ></v-img>
                         </td>
                         <td class="text-xs-left">{{ props.item.order }}</td>
                         <td class="text-xs-center">
@@ -141,14 +145,16 @@
                       class="elevation-1"
                     >
                       <template v-slot:items="props">
-                        <td class="text-xs-left pt-1">
-                          <img
+                        <td class="text-xs-left py-1">
+                          <v-img
                             :src="props.item.file_path"
+                            lazy-src="@/assets/images/no-image.png"
                             height="80"
                             width="120"
                             class="product-image"
-                            @click="viewImage({ filePath: props.item.file_path, heigth: '300', width: '290' })"
-                          />
+                            @click="viewImage({ filePath: props.item.file_path, heigth: '600', width: '590' })"
+                            contain
+                          ></v-img>
                         </td>
                         <td class="text-xs-left">{{ props.item.order }}</td>
                         <td class="text-xs-center">
@@ -186,14 +192,16 @@
                       class="elevation-1"
                     >
                       <template v-slot:items="props">
-                        <td class="text-xs-left pt-1">
-                          <img
+                        <td class="text-xs-left py-1">
+                          <v-img
                             :src="props.item.file_path"
+                            lazy-src="@/assets/images/no-image.png"
                             height="80"
                             width="120"
                             class="product-image"
-                            @click="viewImage({ filePath: props.item.file_path, heigth: '300', width: '290' })"
-                          />
+                            @click="viewImage({ filePath: props.item.file_path, heigth: '600', width: '590' })"
+                            contain
+                          ></v-img>
                         </td>
                         <td class="text-xs-left">{{ props.item.order }}</td>
                         <td class="text-xs-center">
@@ -220,13 +228,14 @@
               </v-flex>
             </v-flex>
             <v-dialog v-model="modalImage.dialog" :max-height="modalImage.height" :max-width="modalImage.width">
-              <img
+              <v-img
                 :src="modalImage.filePath"
+                lazy-src="@/assets/images/no-image.png"
                 :height="modalImage.height"
                 :width="modalImage.width"
-                contain
                 class="product-modal-image"
-              />
+                contain
+              ></v-img>
             </v-dialog>
           </v-layout>
         </v-container>

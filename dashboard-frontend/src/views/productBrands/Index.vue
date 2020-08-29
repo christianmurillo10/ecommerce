@@ -31,7 +31,7 @@
       <v-card-text>
         <v-data-table :headers="headers" :items="productBrandList" :search="search" class="elevation-1">
           <template v-slot:items="props">
-            <td class="text-xs-left pt-1"><img :src="props.item.file_path" height="80" width="120" /></td>
+            <td class="text-xs-left py-1"><v-img :src="props.item.file_path" lazy-src="@/assets/images/no-image.png" height="80" width="120" contain></v-img></td>
             <td class="text-xs-left">{{ props.item.name }}</td>
             <td class="text-xs-left">{{ props.item.description }}</td>
             <td class="text-xs-center">

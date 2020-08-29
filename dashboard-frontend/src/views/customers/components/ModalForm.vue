@@ -10,7 +10,7 @@
             <v-flex xs12 sm12 md3>
               <v-flex xs12 sm12 md12>
                 <v-layout wrap justify-center>
-                  <img :src="formData.file_path" height="180" width="180" />
+                  <v-img :src="formData.file_path" lazy-src="@/assets/images/no-image.png" height="180" width="180" contain></v-img>
                 </v-layout>
               </v-flex>
               <v-flex xs12 sm12 md12>
@@ -87,8 +87,9 @@
                 <v-flex xs12 sm12 md4>
                   <v-text-field
                     v-model="formData.contact_no"
-                    :rules="[rules.max100Chars]"
+                    :rules="[rules.required, rules.max100Chars]"
                     label="Contact No."
+                    required
                   ></v-text-field>
                 </v-flex>
                 <v-flex xs12 sm12 md4>
@@ -225,16 +226,16 @@ export default {
 
       this.formData.id = data.id;
       this.formData.firstname = data.firstname;
-      this.formData.middlename = data.middlename;
+      this.formData.middlename = data.middlename === null ? "" : data.middlename;
       this.formData.lastname = data.lastname;
       this.formData.email = data.email;
       this.formData.primary_address = data.primary_address;
-      this.formData.secondary_address = data.secondary_address;
+      this.formData.secondary_address = data.secondary_address === null ? "" : data.secondary_address;
       this.formData.contact_no = data.contact_no;
       this.formData.file_name = data.file_name;
       this.formData.gender_type = data.gender_type;
       this.formData.status = data.status;
-      this.formData.file_path = filePath;
+      this.formData.file_path = _.isNull(data.file_name) ? require("@/assets/images/no-image.png") : `${process.env.VUE_APP_API_BACKEND}/customers/viewImage/${data.file_name}`;
       this.formType = "update";
     },
 

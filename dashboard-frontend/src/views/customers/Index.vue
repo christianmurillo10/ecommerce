@@ -34,11 +34,13 @@
         <v-data-table :headers="headers" :items="customerList" :search="search" class="elevation-1">
           <template v-slot:items="props">
             <td class="text-xs-left pt-1">
-              <img
+              <v-img
                 :src="props.item.file_path"
+                lazy-src="@/assets/images/no-image.png"
                 height="90"
                 width="90"
-              />
+                contain
+              ></v-img>
             </td>
             <td class="text-xs-left">{{ props.item.customer_no }}</td>
             <td class="text-xs-left">{{ setFullnameLastnameFirst(props.item.firstname, props.item.middlename, props.item.lastname) }}</td>

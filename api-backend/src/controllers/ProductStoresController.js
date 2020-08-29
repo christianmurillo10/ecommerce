@@ -25,14 +25,18 @@ module.exports = {
     params.created_at = moment().utc(8).format('YYYY-MM-DD HH:mm:ss');
 
     let date = moment(params.created_at).format('YYYY-MM-DD');
-    let extension = path.extname(params.file_name);
-    let fileName = `${params.name}-${date}${extension}`;
-    params.file_name = fileName;
+
+    if (!_.isUndefined(req.file)) {
+      let extension = path.extname(params.file_name);
+      let fileName = `${params.name}-${date}${extension}`;
+      params.file_name = fileName;
+    } else {
+      params.file_name = null;
+    }
 
     try {
       // Validators
       if (_.isEmpty(params.name)) return res.json({ status: 200, message: "Name required.", result: false });
-      if (_.isEmpty(params.file_name)) return res.json({ status: 200, message: "File Name is required.", result: false });
 
       // Pre-setting variables
       criteria = { where: { name: params.name, is_deleted: NO } };

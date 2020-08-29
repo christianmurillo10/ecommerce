@@ -36,15 +36,19 @@ module.exports = {
     params.product_id = params.product_id.toLocaleString();
     params.type = params.type.toLocaleString();
 
-    let date = moment(params.created_at).format('YYYY-MM-DD');
-    let extension = path.extname(params.file_name);
-    let productName = await ProductsController.getNameById(params.product_id);
-    let fileName = `${productName}-${params.type}-${params.order}-${date}${extension}`;
-    params.file_name = fileName;
+    if (!_.isUndefined(req.file)) {
+      let date = moment(params.created_at).format('YYYY-MM-DD');
+      let extension = path.extname(params.file_name);
+      let productName = await ProductsController.getNameById(params.product_id);
+      let fileName = `${productName}-${params.type}-${params.order}-${date}${extension}`;
+      params.file_name = fileName;
+    } else {
+      params.file_name = null;
+    }
 
     try {
       // Validators
-      if (_.isEmpty(params.file_name)) return res.json({ status: 200, message: "File Name is required.", result: false });
+      if (_.isEmpty(params.file_name)) return res.json({ status: 200, message: "Image is required.", result: false });
       if (_.isEmpty(params.order)) return res.json({ status: 200, message: "Order required.", result: false });
       if (_.isEmpty(params.product_id)) return res.json({ status: 200, message: "Product is required.", result: false });
       if (_.isEmpty(params.type)) return res.json({ status: 200, message: "Type required.", result: false });

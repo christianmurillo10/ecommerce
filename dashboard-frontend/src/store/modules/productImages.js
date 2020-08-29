@@ -38,20 +38,6 @@ const getters = {
 };
 
 const actions = {
-  // getData({ dispatch, commit, state, rootState, getters, rootGetters }) {
-  //   let url = `${process.env.VUE_APP_API_BACKEND}/productImages/`;
-  //   let header = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
-  //   return new Promise((resolve, reject) => {
-  //     try {
-  //       axios.get(url, header)
-  //         .then(response => {
-  //           commit("SET_DATA", response.data.result);
-  //         });
-  //     } catch (err) {
-  //       reject(err);
-  //     }
-  //   });
-  // },
   getDataById({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
     let url = `${process.env.VUE_APP_API_BACKEND}/productImages/${payload}`;
     let header = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
@@ -67,30 +53,6 @@ const actions = {
       }
     });
   },
-  // getDataByProductId({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
-  //   let url = `${process.env.VUE_APP_API_BACKEND}/productImages/findAllbyProductId/${payload}`;
-  //   let header = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
-  //   return new Promise((resolve, reject) => {
-  //     try {
-  //       axios
-  //         .get(url, header)
-  //         .then(response => {
-  //           let obj = response.data.result
-
-  //           if (obj) {
-  //             obj.forEach(element => {
-  //               element.file_path = `${process.env.VUE_APP_API_BACKEND}/productImages/viewImage/${element.file_name}/${element.type}`;
-  //             });
-  //           }
-
-  //           commit("SET_DATA", obj);
-  //           resolve(response);
-  //         });
-  //     } catch (err) {
-  //       reject(err);
-  //     }
-  //   });
-  // },
   getDataByProductIdAndType({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
     let url = `${process.env.VUE_APP_API_BACKEND}/productImages/findAllbyProductIdAndType/${payload.productId}/${payload.type}`;
     let header = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
@@ -106,7 +68,11 @@ const actions = {
 
             if (obj.data) {
               obj.data.forEach(element => {
-                element.file_path = `${process.env.VUE_APP_API_BACKEND}/productImages/viewImage/${element.file_name}/${element.type}`;
+                if (!_.isNull(element.file_name)) {
+                  element.file_path = `${process.env.VUE_APP_API_BACKEND}/productImages/viewImage/${element.file_name}/${element.type}`;
+                } else {
+                  element.file_path = require("../../assets/images/no-image.png");
+                }
               });
             }
             commit("SET_DATA", obj);
@@ -219,7 +185,7 @@ const mutations = {
   },
   ADD_DATA(state, payload) {
     let obj = payload;
-    obj.file_path = `${process.env.VUE_APP_API_BACKEND}/productImages/viewImage/${payload.file_name}/${payload.type}`;
+    obj.file_path = _.isNull(payload.file_name) ? require("../../assets/images/no-image.png") : `${process.env.VUE_APP_API_BACKEND}/productImages/viewImage/${payload.file_name}/${payload.type}`;
 
     switch(parseInt(payload.type)) {
       case imageType.main:
@@ -243,7 +209,7 @@ const mutations = {
       order: payload.order,
       product_id: payload.product_id,
       type: payload.type,
-      file_path: `${process.env.VUE_APP_API_BACKEND}/productImages/viewImage/${payload.file_name}/${payload.type}`
+      file_path: _.isNull(payload.file_name) ? require("../../assets/images/no-image.png") : `${process.env.VUE_APP_API_BACKEND}/productImages/viewImage/${payload.file_name}/${payload.type}`
     }
     
     switch(parseInt(payload.type)) {

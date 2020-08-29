@@ -102,6 +102,7 @@ const actions = {
                 element.file_path = `${process.env.VUE_APP_API_BACKEND}/productImages/viewImage/${element.file_name}/${element.type}`;
               });
             }
+
             resolve(obj);
           });
       } catch (err) {

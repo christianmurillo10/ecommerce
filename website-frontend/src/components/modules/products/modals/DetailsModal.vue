@@ -59,13 +59,13 @@ export default {
 
   methods: {
     ...mapActions("products", {
-      getProductDataById: "getDataById",
+      getProductDataByIdWithImageType: "getDataByIdWithImageType",
     }),
 
     setDialog(value, id) {
       this.dialog = value;
       if (value) {
-        this.getProductDataById(id);
+        this.getProductDataByIdWithImageType({ id: id, image_type: 2 });
       }
     },
   },

@@ -13,12 +13,14 @@
               class="elevation-1"
             >
               <template v-slot:items="props">
-                <td class="text-xs-left pt-1">
-                  <img
+                <td class="text-xs-left py-1">
+                  <v-img
                     :src="props.item.products.productImages[0].file_path"
+                    lazy-src="@/assets/images/no-image.png"
                     height="80"
                     width="120"
-                  />
+                    contain
+                  ></v-img>
                 </td>
                 <td>{{ props.item.products.name }}</td>
                 <td>{{ props.item.current_price_amount }}</td>

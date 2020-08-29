@@ -9,7 +9,7 @@
           <v-layout wrap>
             <v-flex xs12 sm12 md12>
               <v-layout wrap justify-center>
-                <img :src="formData.file_path" height="80" width="120" />
+                <v-img :src="formData.file_path" lazy-src="@/assets/images/no-image.png" height="80" width="120" contain></v-img>
               </v-layout>
             </v-flex>
             <v-flex xs12 sm12 md12>
@@ -140,7 +140,7 @@ export default {
       this.formData.order = data.order;
       this.formData.type = data.type;
       this.formData.product_id = data.product_id;
-      this.formData.file_path = `${process.env.VUE_APP_API_BACKEND}/productImage/viewImage/${data.file_name}/${data.type}`;
+      this.formData.file_path = _.isNull(data.file_name) ? require("@/assets/images/no-image.png") : `${process.env.VUE_APP_API_BACKEND}/productImages/viewImage/${data.file_name}/${data.type}`;
       this.formType = "update";
     },
 

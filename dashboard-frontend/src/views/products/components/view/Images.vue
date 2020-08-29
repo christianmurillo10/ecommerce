@@ -13,13 +13,15 @@
                 <v-list-tile v-if="header.id === details.type" :key="key">
                   <v-list-tile-content class="align-start">{{ details.order }}</v-list-tile-content>
                   <v-list-tile-content>
-                    <img
+                    <v-img
                       :src="details.file_path"
+                      lazy-src="@/assets/images/no-image.png"
                       height="80"
                       width="120"
                       class="product-image"
-                      @click="viewImage({ filePath: details.file_path, heigth: '300', width: '290' })"
-                    />
+                      @click="viewImage({ filePath: details.file_path, heigth: '600', width: '590' })"
+                      contain
+                    ></v-img>
                   </v-list-tile-content>
                 </v-list-tile>
               </template>
@@ -27,13 +29,15 @@
           </v-card>
         </v-flex>
         <v-dialog v-model="modalImage.dialog" :max-height="modalImage.height" :max-width="modalImage.width">
-          <img
+          <v-img
             :src="modalImage.filePath"
+            lazy-src="@/assets/images/no-image.png"
             :height="modalImage.height"
             :width="modalImage.width"
-            contain
             class="product-modal-image"
-          />
+            @click="viewImage({ filePath: details.file_path, heigth: '600', width: '590' })"
+            contain
+          ></v-img>
         </v-dialog>
       </v-layout>
     </v-flex>
