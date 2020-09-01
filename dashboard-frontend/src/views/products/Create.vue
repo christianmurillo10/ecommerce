@@ -22,7 +22,7 @@
 
 <script>
 import Alerts from "@/components/utilities/Alerts";
-import Form from "./components/form/Form";
+import Form from "@/components/modules/Products/form/Form";
 import { mapState, mapActions } from "vuex";
 
 export default {

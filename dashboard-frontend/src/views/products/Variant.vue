@@ -125,8 +125,8 @@
 
 <script>
 import Alerts from "@/components/utilities/Alerts";
-import ModalFormVariant from "./components/modal/ModalFormVariant";
-import Inventory from "./components/inventory/Index";
+import ModalFormVariant from "@/components/modules/Products/modal/ModalFormVariant";
+import Inventory from "@/components/modules/Products/inventory/Index";
 import { mapState, mapActions } from "vuex";
 
 export default {

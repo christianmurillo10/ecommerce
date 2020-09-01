@@ -250,9 +250,9 @@
 <script>
 import Alerts from "@/components/utilities/Alerts";
 import Mixins from "@/helpers/Mixins.js";
-import ViewVariants from "./components/view/Variants";
-import ViewImages from "./components/view/Images";
-import ViewInventories from "./components/view/Inventories";
+import ViewVariants from "@/components/modules/Products/view/Variants";
+import ViewImages from "@/components/modules/Products/view/Images";
+import ViewInventories from "@/components/modules/Products/view/Inventories";
 import { mapState, mapActions } from "vuex";
 
 export default {

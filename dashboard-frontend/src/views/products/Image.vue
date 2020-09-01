@@ -257,7 +257,7 @@
 
 <script>
 import Alerts from "@/components/utilities/Alerts";
-import ModalFormImage from "./components/modal/ModalFormImage";
+import ModalFormImage from "@/components/modules/Products/modal/ModalFormImage";
 import { mapState, mapActions } from "vuex";
 
 export default {

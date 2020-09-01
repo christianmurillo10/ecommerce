@@ -121,7 +121,7 @@
 <script>
 import Alerts from "@/components/utilities/Alerts";
 import Mixins from "@/helpers/Mixins.js";
-import ModalFormCards from "./components/ModalFormCards";
+import ModalFormCards from "@/components/modules/Customers/ModalFormCards";
 import { mapState, mapActions } from "vuex";
 
 export default {

@@ -93,8 +93,8 @@
 <script>
 import Alerts from "@/components/utilities/Alerts";
 import Loading from "@/components/utilities/Loading";
-import ModalFormOpen from "./components/ModalFormOpen";
-import ModalFormStatus from "./components/ModalFormStatus";
+import ModalFormOpen from "@/components/modules/SalesOrders/ModalFormOpen";
+import ModalFormStatus from "@/components/modules/SalesOrders/ModalFormStatus";
 import Mixins from "@/helpers/Mixins.js";
 import { STATUS_REVIEWED, STATUS_OPEN } from "@/helpers/Constant.js";
 import { mapState, mapActions } from "vuex";

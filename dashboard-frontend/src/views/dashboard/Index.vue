@@ -19,10 +19,10 @@
 
 <script>
 import { mapState, mapActions } from "vuex";
-import ProductParameters from "./components/productParameters"
-import CountMonitoring from "./components/countMonitoring"
-import FeaturedProducts from "./components/featuredProducts"
-import TodayFlashDeals from "./components/todayFlashDeals"
+import ProductParameters from "@/components/modules/Dashboard/productParameters"
+import CountMonitoring from "@/components/modules/Dashboard/countMonitoring"
+import FeaturedProducts from "@/components/modules/Dashboard/featuredProducts"
+import TodayFlashDeals from "@/components/modules/Dashboard/todayFlashDeals"
 
 
 export default {

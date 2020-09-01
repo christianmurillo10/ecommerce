@@ -130,7 +130,7 @@
 <script>
 import Alerts from "@/components/utilities/Alerts";
 import Mixins from "@/helpers/Mixins.js";
-import ModalFormDetails from "./components/ModalFormDetails";
+import ModalFormDetails from "@/components/modules/ProductFlashDeals/ModalFormDetails";
 import { mapState, mapActions } from "vuex";
 
 export default {

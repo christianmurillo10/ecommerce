@@ -79,7 +79,7 @@
 
 <script>
 import Alerts from "@/components/utilities/Alerts";
-import ModalForm from "./components/ModalForm";
+import ModalForm from "@/components/modules/Employees/ModalForm";
 import Mixins from "@/helpers/Mixins.js";
 import { mapState, mapActions } from "vuex";
 

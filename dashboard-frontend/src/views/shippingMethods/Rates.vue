@@ -114,7 +114,7 @@
 <script>
 import Alerts from "@/components/utilities/Alerts";
 import Mixins from "@/helpers/Mixins.js";
-import ModalFormRates from "./components/ModalFormRates";
+import ModalFormRates from "@/components/modules/ShippingMethods/ModalFormRates";
 import { mapState, mapActions } from "vuex";
 
 export default {
