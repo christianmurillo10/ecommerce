@@ -118,33 +118,25 @@ module.exports = {
           // Create bulk inventories
           Model.Inventories.bulkCreate(filteredBulkValues)
             .then(async response => {
-              res.json({
-                status: 200,
-                message: "Successfully generated data.",
-                result: true
+              let inventoryHistoryBulkInitialValue = [];
+              response.forEach(element => {
+                let inventoryHistoryData = {
+                  user_id: params.user_id,
+                  inventory_id: element.id,
+                  created_at: params.created_at
+                }
+                inventoryHistoryBulkInitialValue.push(inventoryHistoryData);
               });
-              // // Set and filtering Bulk Data of Inventory History
-              // let inventoryHistoryBulkInitialValue = [];
-              // response.forEach(element => {
-              //   let inventoryHistoryData = {
-              //     quantity: element.stock_in,
-              //     remarks: "IN",
-              //     user_id: params.user_id,
-              //     inventory_id: element.id,
-              //     created_at: params.created_at
-              //   }
-              //   inventoryHistoryBulkInitialValue.push(inventoryHistoryData);
-              // });
               
-              // // Saving Bulk Inventory History
-              // Model.InventoryHistories.bulkCreate(inventoryHistoryBulkInitialValue)
-              //   .then(response => {
-              //     res.json({
-              //       status: 200,
-              //       message: "Successfully created data.",
-              //       result: true
-              //     });
-              //   });
+              // Saving Bulk Inventory History
+              Model.InventoryHistories.bulkCreate(inventoryHistoryBulkInitialValue)
+                .then(response => {
+                  res.json({
+                    status: 200,
+                    message: "Successfully created data.",
+                    result: true
+                  });
+                });
             });
         } else {
           res.json({

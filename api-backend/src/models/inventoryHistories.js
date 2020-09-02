@@ -7,15 +7,25 @@ module.exports = (sequelize, DataTypes) => {
       primaryKey: true,
       autoIncrement: true
     },
-    'quantity': {
+    'quantity_in': {
       type: DataTypes.INTEGER(12),
       allowNull: false,
       defaultValue: '0'
     },
-    'remarks': {
-      type: DataTypes.STRING(100),
+    'quantity_out': {
+      type: DataTypes.INTEGER(12),
       allowNull: false,
-      comment: 'IN,OUT,RESERVED,RETURNED',
+      defaultValue: '0'
+    },
+    'quantity_reserved': {
+      type: DataTypes.INTEGER(12),
+      allowNull: false,
+      defaultValue: '0'
+    },
+    'quantity_returned': {
+      type: DataTypes.INTEGER(12),
+      allowNull: false,
+      defaultValue: '0'
     },
     'user_id': {
       type: DataTypes.INTEGER(11),
