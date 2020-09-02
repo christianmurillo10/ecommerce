@@ -57,7 +57,6 @@
               </router-link>
             </td>
             <td class="text-xs-left">{{ props.item.unit }}</td>
-            <td class="text-xs-left">{{ props.item.inventories === null ? 0 : props.item.inventories.stock_available }}</td>
             <td class="text-xs-left">&#8369; {{ props.item.price_amount }}</td>
             <td class="text-xs-left">
               <v-switch
@@ -149,7 +148,6 @@ export default {
       { text: "Image", value: "name", sortable: false },
       { text: "Name", value: "name", sortable: false },
       { text: "Unit", value: "name", sortable: false },
-      { text: "Stock", value: "name", sortable: false },
       { text: "Price", value: "name", sortable: false },
       { text: "Published", value: "name", sortable: false },
       { text: "Featured", value: "name", sortable: false },
