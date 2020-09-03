@@ -15,27 +15,27 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING(100),
       allowNull: false
     },
-    'stock_in': {
+    'quantity_in': {
       type: DataTypes.INTEGER(12),
       allowNull: false,
       defaultValue: '0'
     },
-    'stock_out': {
+    'quantity_out': {
       type: DataTypes.INTEGER(12),
       allowNull: true,
       defaultValue: '0'
     },
-    'stock_reserved': {
+    'quantity_reserved': {
       type: DataTypes.INTEGER(12),
       allowNull: true,
       defaultValue: '0'
     },
-    'stock_returned': {
+    'quantity_returned': {
       type: DataTypes.INTEGER(12),
       allowNull: true,
       defaultValue: '0'
     },
-    'stock_available': {
+    'quantity_available': {
       type: DataTypes.INTEGER(12),
       allowNull: false,
       defaultValue: '0'

@@ -21,22 +21,22 @@ module.exports = {
 
     // Override variables
     params.created_at = moment().utc(8).format('YYYY-MM-DD HH:mm:ss');
-    params.stock_in = params.stock_in.toLocaleString();
-    params.stock_available = params.stock_in;
+    params.quantity_in = params.quantity_in.toLocaleString();
+    params.quantity_available = params.quantity_in;
     params.user_id = req.user.id.toLocaleString();
     params.product_id = params.product_id.toLocaleString();
 
     try {
       // Validators
-      if (_.isEmpty(params.stock_in)) return res.json({ status: 200, message: "Stock In is required.", result: false });
-      if (_.isEmpty(params.stock_available)) return res.json({ status: 200, message: "Stock Available is required.", result: false });
+      if (_.isEmpty(params.quantity_in)) return res.json({ status: 200, message: "Quantity In is required.", result: false });
+      if (_.isEmpty(params.quantity_available)) return res.json({ status: 200, message: "Quantity Available is required.", result: false });
       if (_.isEmpty(params.product_id)) return res.json({ status: 200, message: "Product is required.", result: false });
 
       // Pre-setting variables
       criteria = { where: { product_id: params.product_id, is_deleted: NO }, include: [{ model: Model.Products, as: 'products' }, { model: Model.Users, as: 'users' }] };
       initialValues = _.pick(params, [
-        'stock_in',
-        'stock_available',
+        'quantity_in',
+        'quantity_available',
         'user_id',
         'product_id',
         'created_at'
@@ -183,11 +183,11 @@ module.exports = {
       initialValues = _.pick(params, [
         'name',
         'sku',
-        'stock_in',
-        'stock_out',
-        'stock_reserved',
-        'stock_returned',
-        'stock_available',
+        'quantity_in',
+        'quantity_out',
+        'quantity_reserved',
+        'quantity_returned',
+        'quantity_available',
         'unit',
         'price_amount',
         'product_id'
@@ -276,16 +276,16 @@ module.exports = {
       // Pre-setting variables
       query = `SELECT 
                 id, 
-                stock_in, 
-                stock_out, 
-                stock_reserved, 
-                stock_returned, 
-                stock_available, 
+                quantity_in, 
+                quantity_out, 
+                quantity_reserved, 
+                quantity_returned, 
+                quantity_available, 
                 product_id, 
                 created_at, 
                 updated_at 
               FROM inventories 
-              WHERE CONCAT(stock_in, stock_out, stock_reserved, stock_returned, stock_available) LIKE ? AND is_deleted = ${NO};`;
+              WHERE CONCAT(quantity_in, quantity_out, quantity_reserved, quantity_returned, quantity_available) LIKE ? AND is_deleted = ${NO};`;
       // Execute native query
       data = await Model.sequelize.query(query, {
         replacements: [`%${params.value}%`],
@@ -389,19 +389,19 @@ module.exports = {
   },
 
   /**
-   * Find available stock by product id
-   * @route GET /inventories/findAvailableStockByProductId/:productId
+   * Find available quantity by product id
+  * @route GET /inventories/findAvailableQuantityByProductId/:productId
    * @param req
    * @param res
    * @returns {never}
    */
-  findAvailableStockByProductId: async (req, res) => {
+  findAvailableQuantityByProductId: async (req, res) => {
     const params = req.params;
     let data, criteria;
 
     try {
       // Pre-setting variables
-      criteria = { attributes: ['stock_available'], where: { product_id: params.productId, is_deleted: NO }, order: [ [ 'created_at', 'DESC' ]] };
+      criteria = { attributes: ['quantity_available'], where: { product_id: params.productId, is_deleted: NO }, order: [ [ 'created_at', 'DESC' ]] };
       // Execute findAll query
       data = await Model.Inventories.findOne(criteria);
       if (!_.isEmpty(data)) {
@@ -439,7 +439,7 @@ module.exports = {
 
     try {
       // Pre-setting variables
-      criteria = { attributes: ['sku', 'stock_available', 'unit', 'price_amount', 'product_id'], where: { sku: params.sku, is_deleted: NO }, order: [ [ 'created_at', 'DESC' ]] };
+      criteria = { attributes: ['sku', 'quantity_available', 'unit', 'price_amount', 'product_id'], where: { sku: params.sku, is_deleted: NO }, order: [ [ 'created_at', 'DESC' ]] };
       // Execute findAll query
       data = await Model.Inventories.findOne(criteria);
       if (!_.isEmpty(data)) {
@@ -506,9 +506,9 @@ module.exports = {
    */
 
   /**
-   * Update Stock Reserved and Available
+   * Update Quantity Reserved and Available
    */
-  updateStockReservedAndAvailable: async (obj) => {
+  updateQuantityReservedAndAvailable: async (obj) => {
     return new Promise(async (resolve, reject) => {
       try {
         let initialValues, data, criteria;
@@ -518,32 +518,32 @@ module.exports = {
         data = await Model.Inventories.findOne(criteria);
         if (!_.isEmpty(data)) {
           const updatedAt = moment().utc(8).format('YYYY-MM-DD HH:mm:ss');
-          let computedQuantity, newStockReserved, newStockAvailable;
+          let computedQuantity, newQuantityReserved, newQuantityAvailable;
           switch(obj.type) {
             case 'INSERT':
-              newStockReserved = parseInt(data.stock_reserved) + parseInt(obj.new_quantity);
-              newStockAvailable = parseInt(data.stock_available) - parseInt(obj.new_quantity);
-              initialValues = { stock_reserved: newStockReserved, stock_available: newStockAvailable, updated_at: updatedAt };
+              newQuantityReserved = parseInt(data.quantity_reserved) + parseInt(obj.new_quantity);
+              newQuantityAvailable = parseInt(data.quantity_available) - parseInt(obj.new_quantity);
+              initialValues = { quantity_reserved: newQuantityReserved, quantity_available: newQuantityAvailable, updated_at: updatedAt };
               break;
             case 'UPDATE':
               if (obj.old_quantity > obj.new_quantity) {
                 // old_quantity - new_quantity
                 computedQuantity = parseInt(obj.old_quantity) - parseInt(obj.new_quantity);
-                newStockReserved = parseInt(data.stock_reserved) - computedQuantity;
-                newStockAvailable = parseInt(data.stock_available) + computedQuantity;
-                initialValues = { stock_reserved: newStockReserved, stock_available: newStockAvailable, updated_at: updatedAt };
+                newQuantityReserved = parseInt(data.quantity_reserved) - computedQuantity;
+                newQuantityAvailable = parseInt(data.quantity_available) + computedQuantity;
+                initialValues = { quantity_reserved: newQuantityReserved, quantity_available: newQuantityAvailable, updated_at: updatedAt };
               } else if (obj.old_quantity < obj.new_quantity) {
                 // new_quantity - old_quantity
                 computedQuantity = parseInt(obj.new_quantity) - parseInt(obj.old_quantity);
-                newStockReserved = parseInt(data.stock_reserved) + computedQuantity;
-                newStockAvailable = parseInt(data.stock_available) - computedQuantity;
-                initialValues = { stock_reserved: newStockReserved, stock_available: newStockAvailable, updated_at: updatedAt };
+                newQuantityReserved = parseInt(data.quantity_reserved) + computedQuantity;
+                newQuantityAvailable = parseInt(data.quantity_available) - computedQuantity;
+                initialValues = { quantity_reserved: newQuantityReserved, quantity_available: newQuantityAvailable, updated_at: updatedAt };
               }
               break;
             case 'DELETE':
-              newStockReserved = parseInt(data.stock_reserved) - parseInt(obj.old_quantity);
-              newStockAvailable = parseInt(data.stock_available) + parseInt(obj.old_quantity);
-              initialValues = { stock_reserved: newStockReserved, stock_available: newStockAvailable, updated_at: updatedAt };
+              newQuantityReserved = parseInt(data.quantity_reserved) - parseInt(obj.old_quantity);
+              newQuantityAvailable = parseInt(data.quantity_available) + parseInt(obj.old_quantity);
+              initialValues = { quantity_reserved: newQuantityReserved, quantity_available: newQuantityAvailable, updated_at: updatedAt };
               break;
           }
           data.update(initialValues)
@@ -572,9 +572,9 @@ module.exports = {
   },
 
   /**
-   * Update Stock Out and Reserved
+   * Update Quatity Out and Reserved
    */
-  updateStockOutAndReserved: async (obj) => {
+  updateQuantityOutAndReserved: async (obj) => {
     return new Promise(async (resolve, reject) => {
       try {
         let initialValues, data, criteria;
@@ -584,10 +584,10 @@ module.exports = {
         data = await Model.Inventories.findOne(criteria);
         if (!_.isEmpty(data)) {
           const updatedAt = moment().utc(8).format('YYYY-MM-DD HH:mm:ss');
-          let newStockOut, newStockReserved;
-          newStockOut = parseInt(data.stock_out) + parseInt(obj.new_quantity);
-          newStockReserved = parseInt(data.stock_reserved) - parseInt(obj.new_quantity);
-          initialValues = { stock_out: newStockOut, stock_reserved: newStockReserved, updated_at: updatedAt };
+          let newQuantityOut, newQuantityReserved;
+          newQuantityOut = parseInt(data.quantity_out) + parseInt(obj.new_quantity);
+          newQuantityReserved = parseInt(data.quantity_reserved) - parseInt(obj.new_quantity);
+          initialValues = { quantity_out: newQuantityOut, quantity_reserved: newQuantityReserved, updated_at: updatedAt };
 
           data.update(initialValues)
             .then(response => {
@@ -649,8 +649,8 @@ const setBulkInventoryData = (params, data, product) => {
           sku: `${sku}-${value[b].code.toUpperCase()}`,
           unit: product.unit,
           price_amount: product.price_amount,
-          stock_in: 0,
-          stock_available: 0,
+          quantity_in: 0,
+          quantity_available: 0,
           user_id: params.user_id,
           product_id: params.product_id,
           created_at: params.created_at,

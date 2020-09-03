@@ -21,8 +21,8 @@ const state = {
 };
 
 const getters = {
-  getProductAvailableStockBySku: (state) => (sku) => {
-    return state.productDataById.inventories.find(inventory => inventory.sku === sku).stock_available;
+  getProductAvailableQuantityBySku: (state) => (sku) => {
+    return state.productDataById.inventories.find(inventory => inventory.sku === sku).quantity_available;
   },
 };
 

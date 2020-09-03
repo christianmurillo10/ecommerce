@@ -311,7 +311,7 @@ module.exports = {
           .then(async finalData => {
             let plainData = finalData.get({ plain: true });
             let status = plainData.status;
-            const enableDeleteInventoryStockByStatus = [SO_STATUS_ON_PROCESS, SO_STATUS_APPROVED];
+            const enableDeleteInventoryQuantityByStatus = [SO_STATUS_ON_PROCESS, SO_STATUS_APPROVED];
 
             // Update inventory
             switch(status) {
@@ -322,7 +322,7 @@ module.exports = {
                 
                 for (let i = 0; i < dataDeliveredDetails.length; i++) {
                   let details = dataDeliveredDetails[i];
-                  await InventoriesController.updateStockOutAndReserved({
+                  await InventoriesController.updateQuantityOutAndReserved({
                     sku: details.sku,
                     new_quantity: details.quantity,
                     product_id: details.product_id
@@ -339,7 +339,7 @@ module.exports = {
 
                 for (let i = 0; i < dataApprovedDetails.length; i++) {
                   let details = dataApprovedDetails[i];
-                  await InventoriesController.updateStockReservedAndAvailable({
+                  await InventoriesController.updateQuantityReservedAndAvailable({
                     sku: details.sku,
                     old_quantity: 0,
                     new_quantity: details.quantity,
@@ -352,11 +352,11 @@ module.exports = {
                 let criteriaCancelledDetails = { attributes: ['id', 'sku', 'quantity', 'product_id'], where: { sales_order_id: plainData.id, is_deleted: NO } };
                 await Model.SalesOrderDetails.update({ status: SO_DETAILS_STATUS_CANCELLED }, criteriaCancelledDetails);
 
-                if (enableDeleteInventoryStockByStatus.includes(oldStatus)) {
+                if (enableDeleteInventoryQuantityByStatus.includes(oldStatus)) {
                   let dataCancelledDetails = await Model.SalesOrderDetails.findAll(criteriaCancelledDetails);
                   for (let i = 0; i < dataCancelledDetails.length; i++) {
                     let details = dataCancelledDetails[i];
-                    await InventoriesController.updateStockReservedAndAvailable({
+                    await InventoriesController.updateQuantityReservedAndAvailable({
                       sku: details.sku,
                       old_quantity: details.quantity,
                       new_quantity: 0,
@@ -370,11 +370,11 @@ module.exports = {
                 let criteriaFailedDetails = { attributes: ['id', 'sku', 'quantity', 'product_id'], where: { sales_order_id: plainData.id, is_deleted: NO } };
                 await Model.SalesOrderDetails.update({ status: SO_DETAILS_STATUS_FAILED }, criteriaFailedDetails);
 
-                if (enableDeleteInventoryStockByStatus.includes(oldStatus)) {
+                if (enableDeleteInventoryQuantityByStatus.includes(oldStatus)) {
                   let dataFailedDetails = await Model.SalesOrderDetails.findAll(criteriaFailedDetails);
                   for (let i = 0; i < dataFailedDetails.length; i++) {
                     let details = dataFailedDetails[i];
-                    await InventoriesController.updateStockReservedAndAvailable({
+                    await InventoriesController.updateQuantityReservedAndAvailable({
                       sku: details.sku,
                       old_quantity: details.quantity,
                       new_quantity: 0,

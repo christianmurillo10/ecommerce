@@ -7,7 +7,7 @@ router.route('/').get(authController.authorization, inventoriesController.findAl
 router.route('/:id').get(authController.authorization, inventoriesController.findById);
 router.route('/findBySku/:sku').get(authController.authorization, inventoriesController.findBySku);
 router.route('/findAllbyProductId/:productId').get(inventoriesController.findAllbyProductId);
-router.route('/findAvailableStockByProductId/:productId').get(inventoriesController.findAvailableStockByProductId);
+router.route('/findAvailableQuantityByProductId/:productId').get(inventoriesController.findAvailableQuantityByProductId);
 router.route('/create').post(authController.authorization, inventoriesController.create);
 router.route('/generateBulkWithProductVariantsByProductId').post(authController.authorization, inventoriesController.generateBulkWithProductVariantsByProductId);
 router.route('/update/:id').put(authController.authorization, inventoriesController.update);

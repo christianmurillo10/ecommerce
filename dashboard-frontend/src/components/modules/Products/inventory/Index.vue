@@ -18,7 +18,7 @@
           <td class="text-xs-left">{{ props.item.sku }}</td>
           <td class="text-xs-left">{{ props.item.name }}</td>
           <td class="text-xs-left">&#8369; {{ props.item.price_amount }}</td>
-          <td class="text-xs-left">{{ props.item.stock_available }}</td>
+          <td class="text-xs-left">{{ props.item.quantity_available }}</td>
           <td class="justify-center layout px-0">
             <v-tooltip left>
               <template v-slot:activator="{ on }">
@@ -80,7 +80,7 @@ export default {
       { text: "SKU", value: "sku" },
       { text: "Name", value: "name" },
       { text: "Price Amount", value: "" },
-      { text: "Stock", value: "" },
+      { text: "Quantity", value: "" },
       { text: "Actions", align: "center", value: "name", sortable: false }
     ]
   }),

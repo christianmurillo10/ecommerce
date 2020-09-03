@@ -44,8 +44,8 @@ const actions = {
       }
     });
   },
-  getAvailableStockDataByProductId({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/inventories/findAvailableStockByProductId/${payload}`;
+  getAvailableQuantityDataByProductId({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
+    let url = `${process.env.VUE_APP_API_BACKEND}/inventories/findAvailableQuantityByProductId/${payload}`;
     let header = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
     return new Promise((resolve, reject) => {
       try {
@@ -97,11 +97,11 @@ const actions = {
         let obj = {
           name: payload.name,
           sku: payload.sku,
-          stock_in: payload.stock_in,
-          stock_out: payload.stock_out,
-          stock_reserved: payload.stock_reserved,
-          stock_returned: payload.stock_returned,
-          stock_available: payload.stock_available,
+          quantity_in: payload.quantity_in,
+          quantity_out: payload.quantity_out,
+          quantity_reserved: payload.quantity_reserved,
+          quantity_returned: payload.quantity_returned,
+          quantity_available: payload.quantity_available,
           unit: payload.unit,
           price_amount: payload.price_amount,
           product_id: payload.product_id
@@ -147,11 +147,11 @@ const actions = {
         let obj = {
           name: payload.name,
           sku: payload.sku,
-          stock_in: payload.stock,
-          stock_out: payload.stock_out,
-          stock_reserved: payload.stock_reserved,
-          stock_returned: payload.stock_returned,
-          stock_available: payload.stock,
+          quantity_in: payload.quantity,
+          quantity_out: payload.quantity_out,
+          quantity_reserved: payload.quantity_reserved,
+          quantity_returned: payload.quantity_returned,
+          quantity_available: payload.quantity,
           unit: payload.unit,
           price_amount: payload.price_amount
         };
@@ -201,11 +201,11 @@ const mutations = {
     Object.assign(state.inventoryList[index], {
       name: payload.name,
       sku: payload.sku,
-      stock_in: payload.stock_in,
-      stock_out: payload.stock_out,
-      stock_reserved: payload.stock_reserved,
-      stock_returned: payload.stock_returned,
-      stock_available: payload.stock_available,
+      quantity_in: payload.quantity_in,
+      quantity_out: payload.quantity_out,
+      quantity_reserved: payload.quantity_reserved,
+      quantity_returned: payload.quantity_returned,
+      quantity_available: payload.quantity_available,
       unit: payload.unit,
       price_amount: payload.price_amount,
       product_id: payload.product_id

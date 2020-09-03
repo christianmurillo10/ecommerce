@@ -81,7 +81,7 @@
                   color="blue"
                   height="40"
                   @click="decrement"
-                  :disabled="stock_available === 0 ? true : false"
+                  :disabled="quantity_available === 0 ? true : false"
                 >
                   <v-icon>mdi-minus</v-icon>
                 </v-btn>
@@ -96,7 +96,7 @@
                   hide-details
                   @keyup="quantityValueChecker($event.target.value)"
                   :rules="[rules.required, rules.lessThanOrEqualTo10]"
-                  :disabled="stock_available === 0 ? true : false"
+                  :disabled="quantity_available === 0 ? true : false"
                   required
                 ></v-text-field>
               </v-flex>
@@ -107,17 +107,17 @@
                   color="blue"
                   height="40"
                   @click="increment"
-                  :disabled="stock_available === 0 ? true : false"
+                  :disabled="quantity_available === 0 ? true : false"
                 >
                   <v-icon>mdi-plus</v-icon>
                 </v-btn>
               </v-flex>
               <v-flex xs5 sm5 md5 lg5>
-                <span v-if="stock_available === 0" class="body-2 red--text">
+                <span v-if="quantity_available === 0" class="body-2 red--text">
                   Out of stock
                 </span>
                 <span v-else class="body-2">
-                  {{ `${stock_available} ${details.unit} available` }}
+                  {{ `${quantity_available} ${details.unit} available` }}
                 </span>
               </v-flex>
             </v-layout>
@@ -187,7 +187,7 @@ export default {
     base_price_amount: null,
     discount_type: null,
     discount_value: null,
-    stock_available: 0,
+    quantity_available: 0,
     formData: {
       variants: [],
       quantity: 1,
@@ -200,7 +200,7 @@ export default {
   },
 
   computed: {
-    ...mapGetters("products", ["getProductAvailableStockBySku"]),
+    ...mapGetters("products", ["getProductAvailableQuantityBySku"]),
     ...mapGetters("customerAuthentication", ["isLoggedIn"]),
     ...mapState("productFlashDeals", [
       "productFlashDealTodayFlashDeal",
@@ -255,11 +255,11 @@ export default {
       });
 
       let sku = this.generateSKU();
-      this.stock_available = this.getProductAvailableStockBySku(sku);
+      this.quantity_available = this.getProductAvailableQuantityBySku(sku);
       this.formData.quantity = 1;
 
       // enable disable buttons
-      if (this.stock_available === 0) {
+      if (this.quantity_available === 0) {
         this.valid = false;
       } else {
         this.valid = true;
@@ -296,7 +296,7 @@ export default {
     increment() {
       if (
         this.formData.quantity < 10 &&
-        this.formData.quantity < this.stock_available
+        this.formData.quantity < this.quantity_available
       )
         this.formData.quantity++;
     },
@@ -304,10 +304,10 @@ export default {
     quantityValueChecker(val) {
       if (val < 1) {
         this.formData.quantity = "";
-      } else if (val > 10 && this.stock_available > 10) {
+      } else if (val > 10 && this.quantity_available > 10) {
         this.formData.quantity = 10;
-      } else if (val > this.stock_available) {
-        this.formData.quantity = this.stock_available;
+      } else if (val > this.quantity_available) {
+        this.formData.quantity = this.quantity_available;
       } else {
         this.formData.quantity = val;
       }
@@ -316,11 +316,11 @@ export default {
     setVariantValues(key, value) {
       this.formData.variants[key].value = value;
       let sku = this.generateSKU();
-      this.stock_available = this.getProductAvailableStockBySku(sku);
+      this.quantity_available = this.getProductAvailableQuantityBySku(sku);
       this.formData.quantity = 1;
 
       // enable disable buttons
-      if (this.stock_available === 0) {
+      if (this.quantity_available === 0) {
         this.valid = false;
       } else {
         this.valid = true;

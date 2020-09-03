@@ -304,7 +304,7 @@ module.exports = {
           },
           { 
             model: Model.Inventories, as: "inventories", 
-            attributes: ['stock_available', 'price_amount', 'product_id'], 
+            attributes: ['quantity_available', 'price_amount', 'product_id'], 
             where: { is_deleted: NO },
             required: false 
           },
@@ -394,7 +394,7 @@ module.exports = {
           },
           { 
             model: Model.Inventories, as: "inventories", 
-            attributes: ['stock_available', 'price_amount', 'product_id'], 
+            attributes: ['quantity_available', 'price_amount', 'product_id'], 
             where: { is_deleted: NO },
             required: false 
           },
@@ -494,7 +494,7 @@ module.exports = {
           },
           { 
             model: Model.Inventories, as: "inventories", 
-            attributes: ['stock_available', 'price_amount', 'product_id'], 
+            attributes: ['quantity_available', 'price_amount', 'product_id'], 
             where: { is_deleted: NO },
             required: false 
           },
@@ -641,7 +641,7 @@ module.exports = {
           },
           { 
             model: Model.Inventories, as: "inventories", 
-            attributes: ['stock_available', 'product_id'], 
+            attributes: ['quantity_available', 'product_id'], 
             where: { is_deleted: NO },
             required: false 
           },
@@ -729,7 +729,7 @@ module.exports = {
           },
           { 
             model: Model.Inventories, as: "inventories", 
-            attributes: ['stock_available', 'product_id'], 
+            attributes: ['quantity_available', 'product_id'], 
             where: { is_deleted: NO },
             required: false 
           },
@@ -814,7 +814,7 @@ module.exports = {
           },
           { 
             model: Model.Inventories, as: "inventories", 
-            attributes: ['stock_available', 'price_amount', 'product_id'], 
+            attributes: ['quantity_available', 'price_amount', 'product_id'], 
             where: { is_deleted: NO },
             required: false 
           },
@@ -899,7 +899,7 @@ module.exports = {
           },
           { 
             model: Model.Inventories, as: "inventories", 
-            attributes: ['stock_available', 'price_amount', 'product_id'], 
+            attributes: ['quantity_available', 'price_amount', 'product_id'], 
             where: { is_deleted: NO },
             required: false 
           },
@@ -984,7 +984,7 @@ module.exports = {
           },
           { 
             model: Model.Inventories, as: "inventories", 
-            attributes: ['stock_available', 'price_amount', 'product_id'], 
+            attributes: ['quantity_available', 'price_amount', 'product_id'], 
             where: { is_deleted: NO },
             required: false 
           },
@@ -1056,7 +1056,7 @@ module.exports = {
           },
           { 
             model: Model.Inventories, as: "inventories", 
-            attributes: ['name', 'price_amount', 'sku', 'stock_available', 'product_id'], 
+            attributes: ['name', 'price_amount', 'sku', 'quantity_available', 'product_id'], 
             where: { is_deleted: NO },
             required: false 
           },
@@ -1120,7 +1120,7 @@ module.exports = {
           },
           { 
             model: Model.Inventories, as: "inventories", 
-            attributes: ['name', 'price_amount', 'sku', 'stock_available', 'product_id'], 
+            attributes: ['name', 'price_amount', 'sku', 'quantity_available', 'product_id'], 
             where: { is_deleted: NO },
             required: false 
           },

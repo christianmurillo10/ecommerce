@@ -459,7 +459,7 @@ export default {
       try {
         const response = await this.getInventoryDataBySku(sku);
         let productDetails = response.data.result;
-        this.formData.details[index].quantity = _.isUndefined(productDetails.stock_available) ? "0" : productDetails.stock_available.toString();
+        this.formData.details[index].quantity = _.isUndefined(productDetails.quantity_available) ? "0" : productDetails.quantity_available.toString();
         this.formData.details[index].rate_amount = _.isUndefined(productDetails.price_amount) ? "0.00" : productDetails.price_amount;
         await this.computeProductAmountByIndex(index);
       } catch (err) {
