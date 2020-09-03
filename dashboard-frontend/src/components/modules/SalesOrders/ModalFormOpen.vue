@@ -202,10 +202,11 @@
                           <v-autocomplete
                             :items="variant.values"
                             item-text="name"
-                            item-value="name"
+                            return-object
                             v-model="formData.details[i].variant_details[x]"
                             :rules="[rules.required]"
                             :label="variant.title"
+                            v-on:change="setProductVariantListDataByIndex(i)"
                           ></v-autocomplete>
                         </v-flex>
                       </v-layout>
@@ -369,7 +370,7 @@ export default {
   computed: {
     ...mapGetters("customers", ["getCustomerList"]),
     // ...mapGetters("shippingMethods", ["getShippingMethodList"]),
-    ...mapGetters("products", ["getProductList", "getProductNameById"]),
+    ...mapGetters("products", ["getProductList", "getProductCodeById"]),
     ...mapGetters("productVariants", ["getProductVariantList"]),
     formTitle() {
       return this.formType === "new" ? "Sales Order - Create" : "Sales Order - Update";
@@ -383,6 +384,12 @@ export default {
     this.getCustomersData();
     // this.getShippingMethodData();
     this.getProductData();
+  },
+
+  watch: {
+    getCustomerList(val) {
+      val.map(element => element.name = this.setFullnameLastnameFirst(element.firstname, element.middlename, element.lastname));
+    }
   },
 
   methods: {
@@ -412,7 +419,7 @@ export default {
         this.getProductVariantList.forEach(element => {
           let arrayValues = JSON.parse(element.values);
           let arrayObjValue = [];
-          arrayValues.map(value => arrayObjValue.push({ name: value.name }));
+          arrayValues.map(value => arrayObjValue.push({ code: value.code, name: value.name }));
           data.push({ id: element.id, title: element.title, values: arrayObjValue });
         });
 
@@ -422,7 +429,9 @@ export default {
           this.productVariants.push({ data: data });
         }
         
-        if (type === 'new') await this.setProductVariantListDefaultDataByIndex(index);
+        if (type === 'new') {
+          await this.setProductVariantListDefaultDataByIndex(index);
+        }
       } catch (err) {
         console.log(err);
       }
@@ -440,7 +449,34 @@ export default {
             let obj = {
               id: value.data[i].id,
               title: value.data[i].title,
+              code: value.data[i].values[0].code,
               name: value.data[i].values[0].name,
+            }
+            this.formData.details[index].variant_details[i] = obj;
+          }
+
+          // set default value for sku
+          const sku = await this.generateSkuByIndexAndProductVariants(index, this.formData.details[index].variant_details);
+          await this.setProductDetailsByIndexAndSku(index, sku);
+          this.formData.details[index].sku = sku;
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    },
+
+    async setProductVariantListDataByIndex(index) {
+      try {
+        const value = this.productVariants[index];
+
+        if (!_.isUndefined(value)) {
+          // set new value for variant_details
+          for (let i=0; i < value.data.length; i++) {
+            let obj = {
+              id: value.data[i].id,
+              title: value.data[i].title,
+              code: this.formData.details[index].variant_details[i].code,
+              name: this.formData.details[index].variant_details[i].name,
             }
             this.formData.details[index].variant_details[i] = obj;
           }
@@ -470,11 +506,11 @@ export default {
     generateSkuByIndexAndProductVariants(index, variants) {
       return new Promise((resolve, reject) => {
         try {
-          const productName = this.getProductNameById(this.formData.details[index].product_id);
-          let sku = productName.match(/\b(\w)/g).join('').toUpperCase();
+          const productCode = this.getProductCodeById(this.formData.details[index].product_id);
+          let sku = productCode;
 
           variants.forEach(element => {
-            sku = `${sku}-${element.name.toUpperCase()}`;
+            sku = `${sku}-${element.code}`;
           });
 
           resolve(sku);
