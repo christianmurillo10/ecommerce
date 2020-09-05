@@ -276,6 +276,7 @@ module.exports = {
 
     // Override variables
     params.updated_at = moment().utc(8).format('YYYY-MM-DD HH:mm:ss');
+    params.user_id = req.user.id.toLocaleString();
     switch(params.status) {
       case SO_STATUS_DELIVERED:
         params.date_delivered = params.date;
@@ -325,7 +326,8 @@ module.exports = {
                   await InventoriesController.updateQuantityOutAndReserved({
                     sku: details.sku,
                     new_quantity: details.quantity,
-                    product_id: details.product_id
+                    product_id: details.product_id,
+                    user_id: params.user_id
                   });
                 }
                 break;
@@ -344,6 +346,7 @@ module.exports = {
                     old_quantity: 0,
                     new_quantity: details.quantity,
                     product_id: details.product_id,
+                    user_id: params.user_id,
                     type: 'INSERT'
                   });
                 }
@@ -361,6 +364,7 @@ module.exports = {
                       old_quantity: details.quantity,
                       new_quantity: 0,
                       product_id: details.product_id,
+                      user_id: params.user_id,
                       type: 'DELETE'
                     });
                   }
@@ -379,6 +383,7 @@ module.exports = {
                       old_quantity: details.quantity,
                       new_quantity: 0,
                       product_id: details.product_id,
+                      user_id: params.user_id,
                       type: 'DELETE'
                     });
                   }

@@ -27,6 +27,11 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       defaultValue: '0'
     },
+    'quantity_available': {
+      type: DataTypes.INTEGER(12),
+      allowNull: false,
+      defaultValue: '0'
+    },
     'user_id': {
       type: DataTypes.INTEGER(11),
       references: {

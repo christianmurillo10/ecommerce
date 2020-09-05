@@ -118,25 +118,30 @@ module.exports = {
           // Create bulk inventories
           Model.Inventories.bulkCreate(filteredBulkValues)
             .then(async response => {
-              let inventoryHistoryBulkInitialValue = [];
-              response.forEach(element => {
-                let inventoryHistoryData = {
-                  user_id: params.user_id,
-                  inventory_id: element.id,
-                  created_at: params.created_at
-                }
-                inventoryHistoryBulkInitialValue.push(inventoryHistoryData);
+              res.json({
+                status: 200,
+                message: "Successfully created data.",
+                result: true
               });
+              // let inventoryHistoryBulkInitialValue = [];
+              // response.forEach(element => {
+              //   let inventoryHistoryData = {
+              //     user_id: params.user_id,
+              //     inventory_id: element.id,
+              //     created_at: params.created_at
+              //   }
+              //   inventoryHistoryBulkInitialValue.push(inventoryHistoryData);
+              // });
               
-              // Saving Bulk Inventory History
-              Model.InventoryHistories.bulkCreate(inventoryHistoryBulkInitialValue)
-                .then(response => {
-                  res.json({
-                    status: 200,
-                    message: "Successfully created data.",
-                    result: true
-                  });
-                });
+              // // Saving Bulk Inventory History
+              // Model.InventoryHistories.bulkCreate(inventoryHistoryBulkInitialValue)
+              //   .then(response => {
+              //     res.json({
+              //       status: 200,
+              //       message: "Successfully created data.",
+              //       result: true
+              //     });
+              //   });
             });
         } else {
           res.json({
@@ -511,7 +516,7 @@ module.exports = {
   updateQuantityReservedAndAvailable: async (obj) => {
     return new Promise(async (resolve, reject) => {
       try {
-        let initialValues, data, criteria;
+        let initialValues, inventoryHistoryInitialValue, data, criteria;
         // Pre-setting variables
         criteria = { where: { sku: obj.sku, product_id: obj.product_id, is_deleted: NO } };
         // Execute findByPk query
@@ -524,6 +529,7 @@ module.exports = {
               newQuantityReserved = parseInt(data.quantity_reserved) + parseInt(obj.new_quantity);
               newQuantityAvailable = parseInt(data.quantity_available) - parseInt(obj.new_quantity);
               initialValues = { quantity_reserved: newQuantityReserved, quantity_available: newQuantityAvailable, updated_at: updatedAt };
+              inventoryHistoryInitialValue = { quantity_reserved: obj.new_quantity, quantity_available: -obj.new_quantity };
               break;
             case 'UPDATE':
               if (obj.old_quantity > obj.new_quantity) {
@@ -532,27 +538,38 @@ module.exports = {
                 newQuantityReserved = parseInt(data.quantity_reserved) - computedQuantity;
                 newQuantityAvailable = parseInt(data.quantity_available) + computedQuantity;
                 initialValues = { quantity_reserved: newQuantityReserved, quantity_available: newQuantityAvailable, updated_at: updatedAt };
+                inventoryHistoryInitialValue = { quantity_reserved: -computedQuantity, quantity_available: computedQuantity };
               } else if (obj.old_quantity < obj.new_quantity) {
                 // new_quantity - old_quantity
                 computedQuantity = parseInt(obj.new_quantity) - parseInt(obj.old_quantity);
                 newQuantityReserved = parseInt(data.quantity_reserved) + computedQuantity;
                 newQuantityAvailable = parseInt(data.quantity_available) - computedQuantity;
                 initialValues = { quantity_reserved: newQuantityReserved, quantity_available: newQuantityAvailable, updated_at: updatedAt };
+                inventoryHistoryInitialValue = { quantity_reserved: computedQuantity, quantity_available: -computedQuantity };
               }
               break;
             case 'DELETE':
               newQuantityReserved = parseInt(data.quantity_reserved) - parseInt(obj.old_quantity);
               newQuantityAvailable = parseInt(data.quantity_available) + parseInt(obj.old_quantity);
               initialValues = { quantity_reserved: newQuantityReserved, quantity_available: newQuantityAvailable, updated_at: updatedAt };
+              inventoryHistoryInitialValue = { quantity_reserved: -obj.old_quantity, quantity_available: obj.old_quantity };
               break;
           }
           data.update(initialValues)
             .then(response => {
-              resolve({
-                status: 200,
-                message: "Successfully update data.",
-                result: true
-              });
+              inventoryHistoryInitialValue.user_id = obj.user_id;
+              inventoryHistoryInitialValue.inventory_id = data.id;
+              inventoryHistoryInitialValue.created_at = moment().utc(8).format('YYYY-MM-DD HH:mm:ss');
+              
+              // Saving Inventory History
+              Model.InventoryHistories.create(inventoryHistoryInitialValue)
+                .then(response => {
+                  resolve({
+                    status: 200,
+                    message: "Successfully update data.",
+                    result: true
+                  });
+                });
             });
         } else {
           resolve({
@@ -577,7 +594,7 @@ module.exports = {
   updateQuantityOutAndReserved: async (obj) => {
     return new Promise(async (resolve, reject) => {
       try {
-        let initialValues, data, criteria;
+        let initialValues, inventoryHistoryInitialValue, data, criteria;
         // Pre-setting variables
         criteria = { where: { sku: obj.sku, product_id: obj.product_id, is_deleted: NO } };
         // Execute findByPk query
@@ -588,14 +605,23 @@ module.exports = {
           newQuantityOut = parseInt(data.quantity_out) + parseInt(obj.new_quantity);
           newQuantityReserved = parseInt(data.quantity_reserved) - parseInt(obj.new_quantity);
           initialValues = { quantity_out: newQuantityOut, quantity_reserved: newQuantityReserved, updated_at: updatedAt };
+          inventoryHistoryInitialValue = { quantity_out: obj.new_quantity, quantity_reserved: -obj.new_quantity };
 
           data.update(initialValues)
             .then(response => {
-              resolve({
-                status: 200,
-                message: "Successfully update data.",
-                result: true
-              });
+              inventoryHistoryInitialValue.user_id = obj.user_id;
+              inventoryHistoryInitialValue.inventory_id = data.id;
+              inventoryHistoryInitialValue.created_at = moment().utc(8).format('YYYY-MM-DD HH:mm:ss');
+              
+              // Saving Inventory History
+              Model.InventoryHistories.create(inventoryHistoryInitialValue)
+                .then(response => {
+                  resolve({
+                    status: 200,
+                    message: "Successfully update data.",
+                    result: true
+                  });
+                });
             });
         } else {
           resolve({

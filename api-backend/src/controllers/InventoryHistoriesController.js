@@ -62,6 +62,7 @@ module.exports = {
                 quantity_out, 
                 quantity_reserved, 
                 quantity_returned, 
+                quantity_available, 
                 inventory_id, 
                 created_at, 
                 updated_at 
@@ -223,6 +224,7 @@ module.exports = {
     params.quantity_out = params.quantity_out.toLocaleString();
     params.quantity_reserved = params.quantity_reserved.toLocaleString();
     params.quantity_returned = params.quantity_returned.toLocaleString();
+    params.quantity_available = params.quantity_available.toLocaleString();
     params.user_id = params.user_id.toLocaleString();
     params.inventory_id = params.inventory_id.toLocaleString();
 
