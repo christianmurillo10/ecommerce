@@ -24,6 +24,7 @@
             <td class="text-xs-left">{{ setFullnameLastnameFirst(props.item.customers.firstname, props.item.customers.middlename, props.item.customers.lastname) }}</td>
             <td class="text-xs-left">{{ props.item.total_amount }}</td>
             <td class="text-xs-left">{{ props.item.date_ordered }}</td>
+            <td class="text-xs-left">{{ getSalesOrderStatus(props.item.status) }}</td>
             <td class="text-xs-center">
               <v-tooltip left>
                 <template v-slot:activator="{ on }">
@@ -66,6 +67,7 @@ export default {
       { text: "Customer", value: "" },
       { text: "Total Amount", value: "" },
       { text: "Date Ordered", value: "" },
+      { text: "Status", value: "" },
       { text: "Actions", align: "center", value: "", sortable: false }
     ]
   }),

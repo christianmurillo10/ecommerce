@@ -50,7 +50,7 @@
             </v-flex>
             <v-flex xs12 sm12 md6 lg6 class="text-xs-right">
               <h1>INVOICE</h1>
-              <img :src="logo" height="100px" width="100px" />
+              <img :src="logo" height="80px" width="220px" />
             </v-flex>
           </v-layout>
         </v-flex>
