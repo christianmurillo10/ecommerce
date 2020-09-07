@@ -78,6 +78,7 @@ const actions = {
           discount_value: payload.discount_value,
           base_price_amount: payload.base_price_amount,
           current_price_amount: payload.current_price_amount,
+          quantity: payload.quantity,
           product_id: payload.product_id,
           product_flash_deal_id: payload.product_flash_deal_id,
           discount_type: payload.discount_type
@@ -113,6 +114,7 @@ const actions = {
           discount_value: payload.discount_value,
           base_price_amount: payload.base_price_amount,
           current_price_amount: payload.current_price_amount,
+          quantity: payload.quantity,
           product_id: payload.product_id,
           product_flash_deal_id: payload.product_flash_deal_id,
           discount_type: payload.discount_type
@@ -172,6 +174,7 @@ const mutations = {
       discount_value: payload.discount_value,
       base_price_amount: payload.base_price_amount,
       current_price_amount: payload.current_price_amount,
+      quantity: payload.quantity,
       product_id: payload.product_id,
       product_flash_deal_id: payload.product_flash_deal_id,
       discount_type: payload.discount_type

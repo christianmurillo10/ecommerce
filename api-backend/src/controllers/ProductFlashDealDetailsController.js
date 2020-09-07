@@ -31,6 +31,8 @@ module.exports = {
     params.discount_value = params.discount_value === null ? null : params.discount_value.toLocaleString();
     params.base_price_amount = params.base_price_amount.toLocaleString();
     params.current_price_amount = params.current_price_amount.toLocaleString();
+    params.quantity = params.quantity.toLocaleString();
+    params.quantity_available = params.quantity.toLocaleString();
     params.user_id = req.user.id.toLocaleString();
     params.product_id = params.product_id === undefined ? null : params.product_id.toLocaleString();
     params.product_flash_deal_id = params.product_flash_deal_id === undefined ? null : params.product_flash_deal_id.toLocaleString();
@@ -40,6 +42,7 @@ module.exports = {
       // Validators
       if (_.isEmpty(params.base_price_amount)) return res.json({ status: 200, message: "Base Price Amount is required.", result: false });
       if (_.isEmpty(params.current_price_amount)) return res.json({ status: 200, message: "Current Price Amount is required.", result: false });
+      if (_.isEmpty(params.quantity)) return res.json({ status: 200, message: "Quantity is required.", result: false });
       if (_.isEmpty(params.product_id)) return res.json({ status: 200, message: "Product is required.", result: false });
       if (_.isEmpty(params.product_flash_deal_id)) return res.json({ status: 200, message: "Product Flash Deal is required.", result: false });
 
@@ -61,7 +64,18 @@ module.exports = {
           }
         ] 
       };
-      initialValues = _.pick(params, ['discount_value', 'base_price_amount', 'current_price_amount', 'user_id', 'product_id', 'product_flash_deal_id', 'created_at', 'discount_type']);
+      initialValues = _.pick(params, [
+        'discount_value', 
+        'base_price_amount', 
+        'current_price_amount', 
+        'quantity',
+        'quantity_available',
+        'user_id', 
+        'product_id', 
+        'product_flash_deal_id', 
+        'created_at', 
+        'discount_type'
+      ]);
       
       // Execute findAll query
       data = await Model.ProductFlashDealDetails.findAll(criteria);
@@ -109,6 +123,11 @@ module.exports = {
     if (_.isEmpty(params))
       return res.badRequest({ err: "Empty Parameter: [params]" });
 
+    // Override variables
+    params.updated_at = moment().utc(8).format('YYYY-MM-DD HH:mm:ss');
+    params.quantity = params.quantity.toLocaleString();
+    params.quantity_available = params.quantity.toLocaleString();
+
     try {
       // Pre-setting variables
       criteria = { 
@@ -127,7 +146,18 @@ module.exports = {
           }
         ] 
       };
-      initialValues = _.pick(params, ['discount_value', 'base_price_amount', 'current_price_amount', 'user_id', 'product_id', 'product_flash_deal_id', 'discount_type']);
+      initialValues = _.pick(params, [
+        'discount_value', 
+        'base_price_amount', 
+        'current_price_amount', 
+        'quantity',
+        'quantity_available',
+        'user_id', 
+        'product_id', 
+        'product_flash_deal_id',
+        'updated_at', 
+        'discount_type'
+      ]);
       // Execute findByPk query
       data = await Model.ProductFlashDealDetails.findByPk(req.params.id, criteria);
       if (!_.isEmpty(data)) {

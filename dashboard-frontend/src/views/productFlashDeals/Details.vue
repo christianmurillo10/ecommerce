@@ -88,6 +88,7 @@
               <td class="text-xs-left">&#8369; {{ props.item.base_price_amount }}</td>
               <td class="text-xs-left">{{ setRateTypeValue(props.item.discount_value, props.item.discount_type) }}</td>
               <td class="text-xs-left">&#8369; {{ props.item.current_price_amount }}</td>
+              <td class="text-xs-left">{{ props.item.quantity }}</td>
               <td class="justify-center">
                 <v-tooltip left>
                   <template v-slot:activator="{ on }">
@@ -153,6 +154,7 @@ export default {
       { text: "Base Price Amount", value: "" },
       { text: "Discount", value: "" },
       { text: "Current Price Amount", value: "" },
+      { text: "Quantity", value: "" },
       { text: "Actions", align: "left", value: "", sortable: false }
     ]
   }),

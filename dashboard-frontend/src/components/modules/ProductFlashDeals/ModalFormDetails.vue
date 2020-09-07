@@ -56,6 +56,15 @@
                 required
               ></v-text-field>
             </v-flex>
+            <v-flex xs12 sm12 md12>
+              <v-text-field
+                v-model="formData.quantity"
+                :rules="[rules.required]"
+                label="Quantity"
+                type="number"
+                required
+              ></v-text-field>
+            </v-flex>
           </v-layout>
         </v-container>
       </v-card-text>
@@ -83,6 +92,7 @@ export default {
       discount_value: "",
       base_price_amount: "0.00",
       current_price_amount: "0.00",
+      quantity: null,
       product_id: "",
       discount_type: ""
     },
@@ -91,6 +101,7 @@ export default {
       discount_value: "",
       base_price_amount: "0.00",
       current_price_amount: "0.00",
+      quantity: null,
       product_id: "",
       discount_type: ""
     },
@@ -152,6 +163,7 @@ export default {
       this.formData.discount_value = data.discount_value;
       this.formData.base_price_amount = data.base_price_amount;
       this.formData.current_price_amount = data.current_price_amount;
+      this.formData.quantity = data.quantity;
       this.formData.product_id = data.product_id;
       this.formData.discount_type = data.discount_type;
       this.formType = "update";
