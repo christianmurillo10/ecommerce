@@ -120,6 +120,26 @@ const actions = {
       }
     });
   },
+  addStockData({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
+    let url = `${process.env.VUE_APP_API_BACKEND}/inventories/addStock/${payload.id}`;
+    let header = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
+    return new Promise((resolve, reject) => {
+      try {
+        let obj = {
+          quantity: payload.quantity
+        };
+
+        axios
+          .put(url, obj, header)
+          .then(response => {
+            commit("UPDATE_DATA", response.data.result);
+            resolve(response);
+          });
+      } catch (err) {
+        reject(err);
+      }
+    });
+  },
   generateBulkDataWithProductVariantsByProductId({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
     let url = `${process.env.VUE_APP_API_BACKEND}/inventories/generateBulkWithProductVariantsByProductId`;
     let header = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };

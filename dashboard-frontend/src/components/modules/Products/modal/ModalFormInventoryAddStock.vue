@@ -10,25 +10,9 @@
           <v-layout wrap>
             <v-flex xs12 sm12 md12>
               <v-text-field
-                v-model="formData.sku"
-                :rules="[rules.required, rules.max50Chars]"
-                label="SKU"
-                required
-              ></v-text-field>
-            </v-flex>
-            <v-flex xs12 sm12 md12>
-              <v-text-field
-                v-model="formData.name"
-                :rules="[rules.required, rules.max50Chars]"
-                label="Name"
-                required
-              ></v-text-field>
-            </v-flex>
-            <v-flex xs12 sm12 md12>
-              <v-text-field
-                v-model="formData.price_amount"
+                v-model="formData.quantity"
                 :rules="[rules.required]"
-                label="Price Amount"
+                label="Quantity"
                 type="number"
                 required
               ></v-text-field>
@@ -57,14 +41,10 @@ export default {
 
   data: () => ({
     defaultFormData: {
-      sku: "",
-      name: "",
-      price_amount: null,
+      quantity: null
     },
     formData: {
-      sku: "",
-      name: "",
-      price_amount: null,
+      quantity: null
     },
     valid: true,
   }),
@@ -72,25 +52,23 @@ export default {
   computed: {
     ...mapGetters("inventories", ["getInventoryById"]),
     formTitle() {
-      return "Inventory - Update";
+      return "Inventory - Add Stock";
     },
     formIcon() {
-      return "edit";
+      return "add_box";
     },
   },
 
   methods: {
     ...mapActions("alerts", ["setAlert"]),
     ...mapActions("inventories", {
-      updateInventoryData: "updateData",
+      addStockInventoryData: "addStockData",
     }),
 
     editItem(id) {
       let data = this.getInventoryById(id);
       this.formData.id = data.id;
-      this.formData.sku = data.sku;
-      this.formData.name = data.name;
-      this.formData.price_amount = data.price_amount;
+      this.formData.quantity = 1;
     },
 
     close() {
@@ -102,7 +80,7 @@ export default {
 
     save() {
       if (this.$refs.form.validate()) {
-        this.updateInventoryData(this.formData)
+        this.addStockInventoryData(this.formData)
           .then((response) => {
             let obj = {
               alert: true,

@@ -26,6 +26,12 @@
               </template>
               <span>Update</span>
             </v-tooltip>
+            <v-tooltip left>
+              <template v-slot:activator="{ on }">
+                <v-icon small class="mr-2" color="green darken-2" @click="addStock(props.item.id)" v-on="on">add_box</v-icon>
+              </template>
+              <span>Add Stock</span>
+            </v-tooltip>
           </td>
         </template>
         <template v-slot:no-results>
@@ -35,6 +41,9 @@
     </v-flex>
     <v-dialog v-model="dialog" max-width="500px">
       <ModalFormInventory ref="modalFormInventory" @setDialog="setDialog" />
+    </v-dialog>
+    <v-dialog v-model="dialogAddStock" max-width="500px">
+      <ModalFormInventoryAddStock ref="modalFormInventoryAddStock" @setDialog="setDialogAddStock" />
     </v-dialog>
     <v-dialog v-model="dialogGenerate" persistent max-width="370">
       <v-card>
@@ -64,17 +73,20 @@
 <script>
 import Alerts from "@/components/utilities/Alerts";
 import ModalFormInventory from "../modal/ModalFormInventory";
+import ModalFormInventoryAddStock from "../modal/ModalFormInventoryAddStock";
 import { mapState, mapActions } from "vuex";
 
 export default {
   components: {
     Alerts,
-    ModalFormInventory
+    ModalFormInventory,
+    ModalFormInventoryAddStock
   },
 
   data: () => ({
     dialogGenerate: false,
     dialog: false,
+    dialogAddStock: false,
     search: '',
     headers: [
       { text: "SKU", value: "sku" },
@@ -96,6 +108,9 @@ export default {
   watch: {
     dialog(val) {
       val || this.close();
+    },
+    dialogAddStock(val) {
+      val || this.closeAddStock();
     }
   },
 
@@ -131,6 +146,11 @@ export default {
         .catch(err => console.log(err));
     },
 
+    addStock(id) {
+      this.setDialogAddStock(true);
+      this.$refs.modalFormInventoryAddStock.editItem(id);
+    },
+
     editItem(id) {
       this.setDialog(true);
       this.$refs.modalFormInventory.editItem(id);
@@ -141,8 +161,17 @@ export default {
       this.$refs.modalFormInventory.close();
     },
 
+    closeAddStock() {
+      this.setDialogAddStock(false);
+      this.$refs.modalFormInventoryAddStock.close();
+    },
+
     setDialog(value) {
       this.dialog = value;
+    },
+
+    setDialogAddStock(value) {
+      this.dialogAddStock = value;
     }
   }
 };

@@ -70,6 +70,75 @@ module.exports = {
   },
 
   /**
+   * Add Stock
+   * @route PUT /inventories/addStock/:id
+   * @param req
+   * @param res
+   * @returns {never}
+   */
+  addStock: async (req, res) => {
+    const params = req.body;
+    let initialValues, inventoryHistoryInitialValue, data, criteria;
+
+    if (_.isUndefined(params))
+      return res.badRequest({ err: "Invalid Parameter: [params]" });
+    if (_.isEmpty(params))
+      return res.badRequest({ err: "Empty Parameter: [params]" });
+
+    // Override variables
+    params.updated_at = moment().utc(8).format('YYYY-MM-DD HH:mm:ss');
+    params.quantity = params.quantity.toLocaleString();
+    params.user_id = req.user.id.toLocaleString();
+
+    try {
+      // Validators
+      if (_.isEmpty(params.quantity)) return res.json({ status: 200, message: "Quantity is required.", result: false });
+
+      // Pre-setting variables
+      criteria = { where: { is_deleted: NO } };
+      // Execute findByPk query
+      data = await Model.Inventories.findByPk(req.params.id);
+      if (!_.isEmpty(data)) {
+        let newQuantityIn, newQuantityAvailable;
+        newQuantityIn = parseInt(data.quantity_in) + parseInt(params.quantity);
+        newQuantityAvailable = parseInt(data.quantity_available) + parseInt(params.quantity);
+        initialValues = { quantity_in: newQuantityIn, quantity_available: newQuantityAvailable, updated_at: params.updated_at };
+        inventoryHistoryInitialValue = { quantity_in: params.quantity, quantity_available: params.quantity };
+
+        data.update(initialValues)
+          .then(() => Model.Inventories.findByPk(data.id, criteria)
+            .then(finalData => {
+            inventoryHistoryInitialValue.user_id = params.user_id;
+            inventoryHistoryInitialValue.inventory_id = data.id;
+            inventoryHistoryInitialValue.created_at = moment().utc(8).format('YYYY-MM-DD HH:mm:ss');
+            
+            // Saving Inventory History
+            Model.InventoryHistories.create(inventoryHistoryInitialValue)
+              .then(response => {
+                res.json({
+                  status: 200,
+                  message: "Successfully update data.",
+                  result: _.omit(finalData.get({ plain: true }), ['is_deleted'])
+                });
+              });
+          }));
+      } else {
+        res.json({
+          status: 200,
+          message: "Data doesn't exist.",
+          result: false
+        });
+      }
+    } catch (err) {
+      res.json({
+        status: 401,
+        err: err,
+        message: "Failed updating data."
+      });
+    }
+  },
+
+  /**
    * Create bulk with product variants by product id
    * @param req
    * @param res
@@ -123,25 +192,6 @@ module.exports = {
                 message: "Successfully created data.",
                 result: true
               });
-              // let inventoryHistoryBulkInitialValue = [];
-              // response.forEach(element => {
-              //   let inventoryHistoryData = {
-              //     user_id: params.user_id,
-              //     inventory_id: element.id,
-              //     created_at: params.created_at
-              //   }
-              //   inventoryHistoryBulkInitialValue.push(inventoryHistoryData);
-              // });
-              
-              // // Saving Bulk Inventory History
-              // Model.InventoryHistories.bulkCreate(inventoryHistoryBulkInitialValue)
-              //   .then(response => {
-              //     res.json({
-              //       status: 200,
-              //       message: "Successfully created data.",
-              //       result: true
-              //     });
-              //   });
             });
         } else {
           res.json({
