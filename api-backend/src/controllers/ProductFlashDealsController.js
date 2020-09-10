@@ -288,7 +288,7 @@ module.exports = {
           { 
             model: Model.ProductFlashDealDetails, 
             as: "productFlashDealDetails", 
-            attributes: [ 'id', 'discount_value', 'base_price_amount', 'current_price_amount', 'product_id', 'discount_type'],
+            attributes: [ 'id', 'discount_percentage', 'discount_amount', 'base_price_amount', 'current_price_amount', 'product_id', 'discount_type'],
             where: { is_deleted: NO },
             order: [ ['id', 'ASC'] ],
             include: [

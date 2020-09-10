@@ -6,7 +6,7 @@
       <v-card-title>
         <v-icon class="black--text">view_list</v-icon><span class="title">Flash Deal Details</span>
         <v-spacer></v-spacer>
-        <v-dialog v-model="dialog" max-width="500px">
+        <v-dialog v-model="dialog" scrollable persistent max-width="500px">
           <template v-slot:activator="{ on: { click } }">
             <v-tooltip left>
               <template v-slot:activator="{ on }">
@@ -86,7 +86,7 @@
               </td>
               <td class="text-xs-left">{{ props.item.products.name }}</td>
               <td class="text-xs-left">&#8369; {{ props.item.base_price_amount }}</td>
-              <td class="text-xs-left">{{ setRateTypeValue(props.item.discount_value, props.item.discount_type) }}</td>
+              <td class="text-xs-left">&#8369; {{ props.item.discount_amount }}</td>
               <td class="text-xs-left">&#8369; {{ props.item.current_price_amount }}</td>
               <td class="text-xs-left">{{ props.item.quantity }}</td>
               <td class="justify-center">

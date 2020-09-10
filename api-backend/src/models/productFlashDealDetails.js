@@ -7,7 +7,12 @@ module.exports = (sequelize, DataTypes) => {
       primaryKey: true,
       autoIncrement: true
     },
-    'discount_value': {
+    'discount_percentage': {
+      type: DataTypes.DECIMAL(12, 2),
+      allowNull: true,
+      defaultValue: '0.00'
+    },
+    'discount_amount': {
       type: DataTypes.DECIMAL(12, 2),
       allowNull: true,
       defaultValue: '0.00'

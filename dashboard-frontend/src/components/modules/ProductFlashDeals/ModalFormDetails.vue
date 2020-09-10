@@ -28,25 +28,33 @@
                 required
               ></v-text-field>
             </v-flex>
-            <v-flex xs12 sm12 md8>
-              <v-text-field
-                v-model="formData.discount_value"
-                label="Discount Value"
-                type="number"
-                :disabled="formData.product_id === '' ? true : false"
-                v-on:input="computeCurrentPriceAmount()"
-              ></v-text-field>
-            </v-flex>
-            <v-flex xs12 sm12 md4>
+            <v-flex xs12 sm12 md12>
               <v-autocomplete
                 :items="rateTypeList"
                 item-text="name"
                 item-value="id"
                 v-model="formData.discount_type"
-                label="Type"
+                label="Discount Type"
                 :disabled="formData.product_id === '' ? true : false"
                 v-on:change="computeCurrentPriceAmount()"
               ></v-autocomplete>
+            </v-flex>
+            <v-flex xs12 sm12 md6 v-if="formData.discount_type === 2">
+              <v-text-field
+                v-model="formData.discount_percentage"
+                label="Discount Percentage"
+                type="number"
+                v-on:input="computeCurrentPriceAmount()"
+              ></v-text-field>
+            </v-flex>
+            <v-flex xs12 sm12 md6 v-if="formData.discount_type">
+              <v-text-field
+                v-model="formData.discount_amount"
+                label="Discount Amount"
+                type="number"
+                :readonly="formData.discount_type === 2 ? true : false"
+                v-on:input="computeCurrentPriceAmount()"
+              ></v-text-field>
             </v-flex>
             <v-flex xs12 sm12 md12>
               <v-text-field
@@ -89,7 +97,8 @@ export default {
 
   data: () => ({
     defaultFormData: {
-      discount_value: "",
+      discount_percentage: "",
+      discount_amount: "",
       base_price_amount: "0.00",
       current_price_amount: "0.00",
       quantity: null,
@@ -98,7 +107,8 @@ export default {
     },
     formType: "new",
     formData: {
-      discount_value: "",
+      discount_percentage: "",
+      discount_amount: "",
       base_price_amount: "0.00",
       current_price_amount: "0.00",
       quantity: null,
@@ -145,22 +155,28 @@ export default {
     computeDiscountAmount() {
       let discountAmount = 0;
       if (this.formData.discount_type !== null) {
-        if (this.formData.discount_type === 2) discountAmount = this.formData.base_price_amount * this.formData.discount_value / 100;
-        else discountAmount = this.formData.discount_value;
+        if (this.formData.discount_type === 2) {
+          discountAmount = (this.formData.base_price_amount * this.formData.discount_percentage / 100).toFixed(2);
+        } else {
+          this.formData.discount_percentage = null;
+          discountAmount = this.formData.discount_amount;
+        }
       }
-      return discountAmount;
+
+      this.formData.discount_amount = discountAmount;
     },
 
-    computeCurrentPriceAmount() {
-      let discountAmount = this.computeDiscountAmount();
-      let currentPriceAmount = this.formData.base_price_amount - discountAmount;
+    async computeCurrentPriceAmount() {
+      await this.computeDiscountAmount();
+      let currentPriceAmount = this.formData.base_price_amount - this.formData.discount_amount;
       this.formData.current_price_amount = currentPriceAmount.toFixed(2);
     },
 
     editItem(id) {
       let data = this.getProductFlashDealDetailById(id);
       this.formData.id = data.id;
-      this.formData.discount_value = data.discount_value;
+      this.formData.discount_percentage = data.discount_percentage;
+      this.formData.discount_amount = data.discount_amount;
       this.formData.base_price_amount = data.base_price_amount;
       this.formData.current_price_amount = data.current_price_amount;
       this.formData.quantity = data.quantity;

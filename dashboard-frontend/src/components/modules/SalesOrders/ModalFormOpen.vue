@@ -195,7 +195,16 @@
                         v-on:change="setProductVariants(i, formData.details[i].product_id, 'new')"
                       ></v-autocomplete>
                     </v-flex>
-                    <v-flex xs12 sm12 md3></v-flex>
+                    <v-flex xs12 sm12 md3 v-if="formData.details[i].product_id">
+                      <v-autocomplete
+                        :items="yesOrNoList"
+                        item-text="name"
+                        item-value="id"
+                        v-model="formData.details[i].is_flash_deal"
+                        label="Flash Deal?"
+                        v-on:change="computeProductByIndex(i)"
+                      ></v-autocomplete>
+                    </v-flex>
                     <v-flex xs12 sm12 md12>
                       <v-layout wrap row>
                         <v-flex xs12 sm12 md3 v-for="(variant, x) in productVariants[i].data" :key="x">
@@ -214,13 +223,43 @@
                     <v-flex xs12 sm12 md6>
                       <v-layout wrap row>
                         <v-flex xs12 sm12 md6>
+                          <v-autocomplete
+                            :items="rateTypeList"
+                            item-text="name"
+                            item-value="id"
+                            v-model="formData.details[i].discount_type"
+                            label="Discount Type"
+                            :disabled="formData.details[i].product_id === '' ? true : false"
+                            :readonly="formData.details[i].is_flash_deal === 1 ? true : false"
+                            v-on:change="computeProductByIndex(i)"
+                          ></v-autocomplete>
+                        </v-flex>
+                        <v-flex xs12 sm12 md6 v-if="formData.details[i].discount_type === 2">
+                          <v-text-field
+                            v-model="formData.details[i].discount_percentage"
+                            label="Discount Percentage"
+                            type="number"
+                            :readonly="formData.details[i].is_flash_deal === 1 ? true : false"
+                            v-on:input="computeProductByIndex(i)"
+                          ></v-text-field>
+                        </v-flex>
+                        <v-flex xs12 sm12 md6 v-if="formData.details[i].discount_type">
+                          <v-text-field
+                            v-model="formData.details[i].discount_amount"
+                            label="Discount Amount"
+                            type="number"
+                            :readonly="formData.details[i].discount_type === 2 || formData.details[i].is_flash_deal === 1 ? true : false"
+                            v-on:input="computeProductByIndex(i)"
+                          ></v-text-field>
+                        </v-flex>
+                        <v-flex xs12 sm12 md6>
                           <v-text-field
                             v-model="formData.details[i].quantity"
                             :rules="[rules.required, rules.max50Chars]"
                             label="Quantity"
                             type="number"
                             required
-                            v-on:input="computeProductAmountByIndex(i)"
+                            v-on:input="computeProductByIndex(i)"
                           ></v-text-field>
                         </v-flex>
                         <v-flex xs12 sm12 md6>
@@ -234,10 +273,10 @@
                         </v-flex>
                         <v-flex xs12 sm12 md6>
                           <v-text-field
-                            v-model="formData.details[i].discount_amount"
-                            label="Discount Amount"
+                            v-model="formData.details[i].total_discount_amount"
+                            label="Total Discount Amount"
                             type="number"
-                            v-on:input="computeProductAmountByIndex(i)"
+                            readonly
                           ></v-text-field>
                         </v-flex>
                         <v-flex xs12 sm12 md6>
@@ -309,10 +348,14 @@ export default {
           remarks: "",
           quantity: "0",
           rate_amount: "0.00",
-          discount_amount: "0.00",
+          discount_percentage: null,
+          discount_amount: "0.00" ,
+          total_discount_amount: "0.00",
           amount: "0.00",
           product_id: "",
-          claim_type: ""
+          discount_type: null,
+          claim_type: "",
+          is_flash_deal: 0
         }
       ],
       // shippingDetails: {
@@ -347,10 +390,14 @@ export default {
           remarks: "",
           quantity: "0",
           rate_amount: "0.00",
+          discount_percentage: null,
           discount_amount: "0.00",
+          total_discount_amount: "0.00",
           amount: "0.00",
           product_id: "",
-          claim_type: ""
+          discount_type: null,
+          claim_type: "",
+          is_flash_deal: 0
         }
       ],
       // shippingDetails: {
@@ -371,6 +418,7 @@ export default {
     ...mapGetters("customers", ["getCustomerList"]),
     // ...mapGetters("shippingMethods", ["getShippingMethodList"]),
     ...mapGetters("products", ["getProductList", "getProductCodeById"]),
+    ...mapGetters("productFlashDeals", ["getProductFlashDealTodayFlashDeal"]),
     ...mapGetters("productVariants", ["getProductVariantList"]),
     formTitle() {
       return this.formType === "new" ? "Sales Order - Create" : "Sales Order - Update";
@@ -384,6 +432,7 @@ export default {
     this.getCustomersData();
     // this.getShippingMethodData();
     this.getProductData();
+    this.getProductFlashDealDataTodayFlashDeal();
   },
 
   watch: {
@@ -397,8 +446,9 @@ export default {
     ...mapActions("alerts", ["setAlert"]),
     ...mapActions("customers", { getCustomersData: "getData" }),
     // ...mapActions("shippingMethods", { getShippingMethodData: "getData" }),
-    ...mapActions("productVariants", { getProductVariantDataByProductId: "getDataByProductId" }),
     ...mapActions("products", { getProductData: "getData" }),
+    ...mapActions("productFlashDeals", { getProductFlashDealDataTodayFlashDeal: "getDataTodayFlashDeal" }),
+    ...mapActions("productVariants", { getProductVariantDataByProductId: "getDataByProductId" }),
     ...mapActions("inventories", { getInventoryDataBySku: "getDataBySku" }),
     ...mapActions("salesOrders", {
       saveSalesOrderData: "saveData",
@@ -494,13 +544,48 @@ export default {
     async setProductDetailsByIndexAndSku(index, sku) {
       try {
         const response = await this.getInventoryDataBySku(sku);
-        let productDetails = response.data.result;
+        const productDetails = await this.getProductDetails(sku);
         this.formData.details[index].quantity = _.isUndefined(productDetails.quantity_available) ? "0" : productDetails.quantity_available.toString();
         this.formData.details[index].rate_amount = _.isUndefined(productDetails.price_amount) ? "0.00" : productDetails.price_amount;
-        await this.computeProductAmountByIndex(index);
+        this.formData.details[index].discount_type = _.isUndefined(productDetails.discount_type) ? "" : productDetails.discount_type;
+        this.formData.details[index].discount_percentage = _.isUndefined(productDetails.discount_percentage) ? "0.00" : productDetails.discount_percentage;
+        this.formData.details[index].discount_amount = _.isUndefined(productDetails.discount_amount) ? "0.00" : productDetails.discount_amount;
+        this.formData.details[index].is_flash_deal = _.isUndefined(productDetails.is_flash_deal) ? 0 : productDetails.is_flash_deal;
+        await this.computeProductByIndex(index);
       } catch (err) {
         console.log(err);
       }
+    },
+
+    getProductDetails(sku) {
+      return new Promise(async (resolve, reject) => {
+        try {
+          const response = await this.getInventoryDataBySku(sku);
+          const productDetails = response.data.result;
+          const productTodayFlashDealDetails = this.getProductFlashDealTodayFlashDeal.productFlashDealDetails;
+          const productFlashDealDetails = productTodayFlashDealDetails.find(details => details.product_id === productDetails.product_id);
+          let obj = {
+            quantity_available: productDetails.quantity_available,
+            price_amount: productDetails.price_amount
+          }
+
+          if (!_.isUndefined(productFlashDealDetails)) {
+            obj.is_flash_deal = 1;
+            obj.discount_type = productFlashDealDetails.discount_type;
+            obj.discount_amount = productFlashDealDetails.discount_amount;
+            obj.discount_percentage = productFlashDealDetails.discount_type === 2 ? obj.discount_percentage = productFlashDealDetails.discount_percentage : null;
+          } else {
+            obj.discount_type = null;
+            obj.discount_percentage = null;
+            obj.discount_amount = "0.00";
+            obj.is_flash_deal = 0;
+          }
+      
+          resolve(obj);
+        } catch (err) {
+          reject(err);
+        }
+      });
     },
 
     generateSkuByIndexAndProductVariants(index, variants) {
@@ -520,12 +605,34 @@ export default {
       });
     },
 
+    async computeProductByIndex(index) {
+      await this.computeProductDiscountAmountByPercentageIndex(index);
+      await this.computeProductTotalDiscountAmountByIndex(index);
+      await this.computeProductAmountByIndex(index);
+      await this.computeSubTotalAmount();
+      await this.computeTotalDiscountAmountAmount();
+      await this.computeTotalAmount();
+    },
+
+    computeProductDiscountAmountByPercentageIndex(index) {
+      if (this.formData.details[index].discount_type === 2) {
+        const discountAmount = (this.formData.details[index].rate_amount * this.formData.details[index].discount_percentage) / 100;
+        this.formData.details[index].discount_amount = discountAmount.toFixed(2);
+      }
+    },
+
+    computeProductTotalDiscountAmountByIndex(index) {
+      if (_.isNull(this.formData.details[index].discount_type)) {
+        this.formData.details[index].total_discount_amount = "0.00";
+      } else {
+        const totalDiscountAmount = this.formData.details[index].discount_amount * this.formData.details[index].quantity;
+        this.formData.details[index].total_discount_amount = totalDiscountAmount.toFixed(2);
+      }
+    },
+
     computeProductAmountByIndex(index) {
-      const amount = (this.formData.details[index].rate_amount * this.formData.details[index].quantity) - this.formData.details[index].discount_amount;
+      const amount = (this.formData.details[index].rate_amount * this.formData.details[index].quantity) - this.formData.details[index].total_discount_amount;
       this.formData.details[index].amount = amount.toFixed(2);
-      this.computeSubTotalAmount();;
-      this.computeTotalDiscountAmountAmount();
-      this.computeTotalAmount();
     },
 
     computeSubTotalAmount() {
@@ -563,10 +670,14 @@ export default {
         remarks: "",
         quantity: "0",
         rate_amount: "0.00",
+        discount_percentage: null,
         discount_amount: "0.00",
+        total_discount_amount: "0.00",
         amount: "0.00",
         product_id: "",
-        claim_type: ""
+        discount_type: null,
+        claim_type: "",
+        is_flash_deal: 0
       });
       this.productVariants.push({
           data: []
@@ -594,10 +705,14 @@ export default {
             remarks: obj.remarks,
             quantity: obj.quantity.toString(),
             rate_amount: obj.rate_amount,
+            discount_percentage: obj.discount_percentage,
             discount_amount: obj.discount_amount,
+            total_discount_amount: obj.total_discount_amount,
             amount: obj.amount,
             product_id: obj.product_id,
-            claim_type: obj.claim_type
+            discount_type: obj.discount_type,
+            claim_type: obj.claim_type,
+            is_flash_deal: obj.is_flash_deal
           });
 
           await this.setProductVariants(i, obj.product_id, "update");

@@ -75,7 +75,8 @@ const actions = {
     return new Promise((resolve, reject) => {
       try {
         let obj = {
-          discount_value: payload.discount_value,
+          discount_percentage: payload.discount_percentage,
+          discount_amount: payload.discount_amount,
           base_price_amount: payload.base_price_amount,
           current_price_amount: payload.current_price_amount,
           quantity: payload.quantity,
@@ -111,8 +112,8 @@ const actions = {
     return new Promise((resolve, reject) => {
       try {
         let obj = {
-          discount_value: payload.discount_value,
-          base_price_amount: payload.base_price_amount,
+          discount_percentage: payload.discount_percentage,
+          discount_amount: payload.discount_amount,
           current_price_amount: payload.current_price_amount,
           quantity: payload.quantity,
           product_id: payload.product_id,
@@ -171,8 +172,8 @@ const mutations = {
   UPDATE_DATA(state, payload) {
     let index = state.productFlashDealDetailList.map(productFlashDealDetail => productFlashDealDetail.id).indexOf(payload.id);
     Object.assign(state.productFlashDealDetailList[index], {
-      discount_value: payload.discount_value,
-      base_price_amount: payload.base_price_amount,
+      discount_percentage: payload.discount_percentage,
+      discount_amount: payload.discount_amount,
       current_price_amount: payload.current_price_amount,
       quantity: payload.quantity,
       product_id: payload.product_id,

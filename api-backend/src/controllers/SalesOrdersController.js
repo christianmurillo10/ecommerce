@@ -96,11 +96,15 @@ module.exports = {
                 remarks: element.remarks,
                 quantity: element.quantity,
                 rate_amount: element.rate_amount,
+                discount_percentage: element.discount_percentage,
                 discount_amount: element.discount_amount,
+                total_discount_amount: element.total_discount_amount,
                 amount: element.amount,
                 product_id: element.product_id,
                 sales_order_id: plainData.id,
+                discount_type: element.discount_type,
                 claim_type: element.claim_type,
+                is_flash_deal: element.is_flash_deal,
               }
               salesOrderDetailsInitialValue.push(salesOrderDetailsData);
             });
@@ -198,11 +202,15 @@ module.exports = {
                 remarks: element.remarks,
                 quantity: element.quantity,
                 rate_amount: element.rate_amount,
+                discount_percentage: element.discount_percentage,
                 discount_amount: element.discount_amount,
+                total_discount_amount: element.total_discount_amount,
                 amount: element.amount,
                 product_id: element.product_id,
                 sales_order_id: plainData.id,
+                discount_type: element.discount_type,
                 claim_type: element.claim_type,
+                is_flash_deal: element.is_flash_deal,
               }
 
               if (_.isUndefined(element.id)) {
@@ -644,12 +652,16 @@ module.exports = {
               'remarks', 
               'quantity', 
               'rate_amount', 
+              'discount_percentage', 
               'discount_amount', 
+              'total_discount_amount', 
               'amount',
               'product_id',
               'date',
+              'discount_type',
               'claim_type',
-              'status'
+              'status',
+              'is_flash_deal'
             ], 
             where: { is_deleted: NO },
             include: [

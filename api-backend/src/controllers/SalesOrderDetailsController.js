@@ -51,12 +51,16 @@ module.exports = {
         'remarks', 
         'quantity', 
         'rate_amount', 
+        'discount_percentage', 
         'discount_amount', 
+        'total_discount_amount',
         'amount', 
         'product_id', 
         'sales_order_id', 
         'created_at', 
-        'claim_type'
+        'discount_type', 
+        'claim_type', 
+        'is_flash_deal'
       ]);
       // Execute findAll query
       data = await Model.SalesOrderDetails.findAll(criteria);
@@ -110,15 +114,19 @@ module.exports = {
         'variant_details',
         'remarks', 
         'quantity', 
-        'rate_amount', 
+        'rate_amount',
+        'discount_percentage', 
         'discount_amount', 
+        'total_discount_amount',
         'amount', 
         'product_id', 
         'sales_order_id', 
         'date', 
         'updated_at', 
+        'discount_type', 
         'claim_type', 
-        'status'
+        'status', 
+        'is_flash_deal'
       ]);
       // Execute findByPk query
       data = await Model.SalesOrderDetails.findByPk(req.params.id, criteria);

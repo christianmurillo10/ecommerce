@@ -28,7 +28,8 @@ module.exports = {
 
     // Override variables
     params.created_at = moment().utc(8).format('YYYY-MM-DD HH:mm:ss');
-    params.discount_value = params.discount_value === null ? null : params.discount_value.toLocaleString();
+    params.discount_percentage = params.discount_percentage === null ? null : params.discount_percentage.toLocaleString();
+    params.discount_amount = params.discount_amount === null ? null : params.discount_amount.toLocaleString();
     params.base_price_amount = params.base_price_amount.toLocaleString();
     params.current_price_amount = params.current_price_amount.toLocaleString();
     params.quantity = params.quantity.toLocaleString();
@@ -65,7 +66,8 @@ module.exports = {
         ] 
       };
       initialValues = _.pick(params, [
-        'discount_value', 
+        'discount_percentage', 
+        'discount_amount', 
         'base_price_amount', 
         'current_price_amount', 
         'quantity',
@@ -98,7 +100,6 @@ module.exports = {
         });
       }
     } catch (err) {
-      console.log("ERRRRR", err)
       res.json({
         status: 401,
         err: err,
@@ -147,7 +148,8 @@ module.exports = {
         ] 
       };
       initialValues = _.pick(params, [
-        'discount_value', 
+        'discount_percentage', 
+        'discount_amount', 
         'base_price_amount', 
         'current_price_amount', 
         'quantity',

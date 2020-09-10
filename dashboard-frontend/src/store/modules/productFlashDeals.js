@@ -15,6 +15,9 @@ const getters = {
   },
   getProductFlashDealList: (state) => {
     return state.productFlashDealList;
+  },
+  getProductFlashDealTodayFlashDeal: (state) => {
+    return state.productFlashDealTodayFlashDeal;
   }
 };
 
