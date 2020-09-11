@@ -102,6 +102,7 @@
               <th class="text-xs-center">QUANTITY</th>
               <th class="text-xs-center">PRICE</th>
               <th class="text-xs-center">DISCOUNT</th>
+              <th class="text-xs-center">TOTAL DISCOUNT</th>
               <th class="text-xs-center">AMOUNT</th>
             </tr>
 
@@ -110,6 +111,7 @@
               <td class="text-xs-center">{{ details.quantity }}</td>
               <td class="text-xs-right">{{ details.rate_amount }}</td>
               <td class="text-xs-right">{{ details.discount_amount }}</td>
+              <td class="text-xs-right">{{ details.total_discount_amount }}</td>
               <td class="text-xs-right">{{ details.amount }}</td>
             </tr>
           </table>

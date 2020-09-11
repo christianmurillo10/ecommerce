@@ -563,7 +563,7 @@ module.exports = {
   /**
    * Update Quantity Reserved and Available
    */
-  updateQuantityReservedAndAvailable: async (obj) => {
+  updateQuantityReservedAndAvailable: (obj) => {
     return new Promise(async (resolve, reject) => {
       try {
         let initialValues, inventoryHistoryInitialValue, data, criteria;
@@ -641,7 +641,7 @@ module.exports = {
   /**
    * Update Quatity Out and Reserved
    */
-  updateQuantityOutAndReserved: async (obj) => {
+  updateQuantityOutAndReserved: (obj) => {
     return new Promise(async (resolve, reject) => {
       try {
         let initialValues, inventoryHistoryInitialValue, data, criteria;
