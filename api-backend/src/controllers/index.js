@@ -23,6 +23,7 @@ const productImages = require('./ProductImagesController');
 const productFlashDeals = require('./ProductFlashDealsController');
 const productFlashDealDetails = require('./ProductFlashDealDetailsController');
 const salesOrderDetails = require('./SalesOrderDetailsController');
+const salesOrderReturns = require('./SalesOrderReturnsController');
 const salesOrders = require('./SalesOrdersController');
 const salesOrderShippingDetails = require('./SalesOrderShippingDetailsController');
 const shippingMethods = require('./ShippingMethodsController');
@@ -54,6 +55,7 @@ module.exports = {
   productFlashDeals,
   productFlashDealDetails,
   salesOrderDetails,
+  salesOrderReturns,
   salesOrders,
   salesOrderShippingDetails,
   shippingMethods,
