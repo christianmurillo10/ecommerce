@@ -58,6 +58,15 @@ module.exports = (sequelize, DataTypes) => {
       comment: 'refd to products.id',
       allowNull: false
     },
+    'product_flash_deal_detail_id': {
+      type: DataTypes.INTEGER(11),
+      references: {
+        model: 'product_flash_deal_details',
+        key: 'id'
+      },
+      comment: 'refd to product_flash_deal_details.id',
+      allowNull: true
+    },
     'sales_order_id': {
       type: DataTypes.INTEGER(11),
       references: {
@@ -120,6 +129,10 @@ module.exports = (sequelize, DataTypes) => {
     SalesOrderDetails.belongsTo(models.Products, {
       foreignKey: 'product_id',
       as: 'products'
+    });
+    SalesOrderDetails.belongsTo(models.ProductFlashDealDetails, {
+      foreignKey: 'product_flash_deal_detail_id',
+      as: 'productFlashDealDetails'
     });
     SalesOrderDetails.belongsTo(models.SalesOrders, {
       foreignKey: 'sales_order_id',

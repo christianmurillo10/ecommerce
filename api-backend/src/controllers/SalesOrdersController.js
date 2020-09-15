@@ -1,5 +1,6 @@
 const Model = require('../models');
 const InventoriesController = require("./InventoriesController");
+const ProductFlashDealDetailsController = require("./ProductFlashDealDetailsController");
 const {
   NO,
   YES,
@@ -101,6 +102,7 @@ module.exports = {
                 total_discount_amount: element.total_discount_amount,
                 amount: element.amount,
                 product_id: element.product_id,
+                product_flash_deal_detail_id: element.product_flash_deal_detail_id,
                 sales_order_id: plainData.id,
                 discount_type: element.discount_type,
                 claim_type: element.claim_type,
@@ -207,6 +209,7 @@ module.exports = {
                 total_discount_amount: element.total_discount_amount,
                 amount: element.amount,
                 product_id: element.product_id,
+                product_flash_deal_detail_id: element.product_flash_deal_detail_id,
                 sales_order_id: plainData.id,
                 discount_type: element.discount_type,
                 claim_type: element.claim_type,
@@ -322,10 +325,10 @@ module.exports = {
             let status = plainData.status;
             const enableDeleteInventoryQuantityByStatus = [SO_STATUS_ON_PROCESS, SO_STATUS_APPROVED];
 
-            // Update inventory
+            // Update inventory and product flash deal
             switch(status) {
               case SO_STATUS_DELIVERED:
-                let criteriaDeliveredDetails = { attributes: ['id', 'sku', 'quantity', 'product_id'], where: { sales_order_id: plainData.id, status: SO_DETAILS_STATUS_ON_GOING, is_deleted: NO } };
+                let criteriaDeliveredDetails = { attributes: ['id', 'sku', 'quantity', 'product_id', 'product_flash_deal_detail_id'], where: { sales_order_id: plainData.id, status: SO_DETAILS_STATUS_ON_GOING, is_deleted: NO } };
                 let dataDeliveredDetails = await Model.SalesOrderDetails.findAll(criteriaDeliveredDetails);
                 await Model.SalesOrderDetails.update({ status: SO_DETAILS_STATUS_CLAIMED }, criteriaDeliveredDetails);
                 
@@ -344,7 +347,7 @@ module.exports = {
                 await Model.SalesOrderDetails.update({ status: SO_DETAILS_STATUS_ON_GOING}, criteriaOnProcessDetails);
                 break;
               case SO_STATUS_APPROVED:
-                let criteriaAprovedDetails = { attributes: ['id', 'sku', 'quantity', 'product_id'], where: { sales_order_id: plainData.id, is_deleted: NO }, raw: true };
+                let criteriaAprovedDetails = { attributes: ['id', 'sku', 'quantity', 'product_id', 'product_flash_deal_detail_id'], where: { sales_order_id: plainData.id, is_deleted: NO }, raw: true };
                 let dataApprovedDetails = await Model.SalesOrderDetails.findAll(criteriaAprovedDetails);
 
                 for (let i = 0; i < dataApprovedDetails.length; i++) {
@@ -357,10 +360,16 @@ module.exports = {
                     user_id: params.user_id,
                     type: 'INSERT'
                   });
+                  await ProductFlashDealDetailsController.updateQuantitySoldAndAvailable({
+                    id: details.product_flash_deal_detail_id,
+                    old_quantity: 0,
+                    new_quantity: details.quantity,
+                    type: 'INSERT'
+                  });
                 }
                 break;
               case SO_STATUS_CANCELLED:
-                let criteriaCancelledDetails = { attributes: ['id', 'sku', 'quantity', 'product_id'], where: { sales_order_id: plainData.id, is_deleted: NO } };
+                let criteriaCancelledDetails = { attributes: ['id', 'sku', 'quantity', 'product_id', 'product_flash_deal_detail_id'], where: { sales_order_id: plainData.id, is_deleted: NO } };
                 await Model.SalesOrderDetails.update({ status: SO_DETAILS_STATUS_CANCELLED }, criteriaCancelledDetails);
 
                 if (enableDeleteInventoryQuantityByStatus.includes(oldStatus)) {
@@ -375,11 +384,17 @@ module.exports = {
                       user_id: params.user_id,
                       type: 'DELETE'
                     });
+                    await ProductFlashDealDetailsController.updateQuantitySoldAndAvailable({
+                      id: details.product_flash_deal_detail_id,
+                      old_quantity: details.quantity,
+                      new_quantity: 0,
+                      type: 'DELETE'
+                    });
                   }
                 }
                 break;
               case SO_STATUS_FAILED:
-                let criteriaFailedDetails = { attributes: ['id', 'sku', 'quantity', 'product_id'], where: { sales_order_id: plainData.id, is_deleted: NO } };
+                let criteriaFailedDetails = { attributes: ['id', 'sku', 'quantity', 'product_id', 'product_flash_deal_detail_id'], where: { sales_order_id: plainData.id, is_deleted: NO } };
                 await Model.SalesOrderDetails.update({ status: SO_DETAILS_STATUS_FAILED }, criteriaFailedDetails);
 
                 if (enableDeleteInventoryQuantityByStatus.includes(oldStatus)) {
@@ -392,6 +407,12 @@ module.exports = {
                       new_quantity: 0,
                       product_id: details.product_id,
                       user_id: params.user_id,
+                      type: 'DELETE'
+                    });
+                    await ProductFlashDealDetailsController.updateQuantitySoldAndAvailable({
+                      id: details.product_flash_deal_detail_id,
+                      old_quantity: details.quantity,
+                      new_quantity: 0,
                       type: 'DELETE'
                     });
                   }

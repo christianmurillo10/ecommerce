@@ -392,4 +392,72 @@ module.exports = {
       });
     }
   },
+
+  /**
+   * Public Functions
+   */
+
+  /**
+   * Update Quantity Sold and Available
+   */
+  updateQuantitySoldAndAvailable: (obj) => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        let initialValues, data;
+        // Execute findByPk query
+        data = await Model.ProductFlashDealDetails.findByPk(obj.id);
+        if (!_.isEmpty(data)) {
+          const updatedAt = moment().utc(8).format('YYYY-MM-DD HH:mm:ss');
+          let computedQuantity, newQuantitySold, newQuantityAvailable;
+          switch(obj.type) {
+            case 'INSERT':
+              newQuantitySold = parseInt(data.quantity_sold) + parseInt(obj.new_quantity);
+              newQuantityAvailable = parseInt(data.quantity_available) - parseInt(obj.new_quantity);
+              initialValues = { quantity_sold: newQuantitySold, quantity_available: newQuantityAvailable, updated_at: updatedAt };
+              break;
+            case 'UPDATE':
+              if (obj.old_quantity > obj.new_quantity) {
+                // old_quantity - new_quantity
+                computedQuantity = parseInt(obj.old_quantity) - parseInt(obj.new_quantity);
+                newQuantitySold = parseInt(data.quantity_sold) - computedQuantity;
+                newQuantityAvailable = parseInt(data.quantity_available) + computedQuantity;
+                initialValues = { quantity_sold: newQuantitySold, quantity_available: newQuantityAvailable, updated_at: updatedAt };
+              } else if (obj.old_quantity < obj.new_quantity) {
+                // new_quantity - old_quantity
+                computedQuantity = parseInt(obj.new_quantity) - parseInt(obj.old_quantity);
+                newQuantitySold = parseInt(data.quantity_sold) + computedQuantity;
+                newQuantityAvailable = parseInt(data.quantity_available) - computedQuantity;
+                initialValues = { quantity_sold: newQuantitySold, quantity_available: newQuantityAvailable, updated_at: updatedAt };
+              }
+              break;
+            case 'DELETE':
+              newQuantitySold = parseInt(data.quantity_sold) - parseInt(obj.old_quantity);
+              newQuantityAvailable = parseInt(data.quantity_available) + parseInt(obj.old_quantity);
+              initialValues = { quantity_sold: newQuantitySold, quantity_available: newQuantityAvailable, updated_at: updatedAt };
+              break;
+          }
+          data.update(initialValues)
+            .then(response => {
+              resolve({
+                status: 200,
+                message: "Successfully update data.",
+                result: true
+              });
+            });
+        } else {
+          resolve({
+            status: 200,
+            message: "Data doesn't exist.",
+            result: false
+          });
+        }
+      } catch (err) {
+        resolve({
+          status: 401,
+          err: err,
+          message: "Failed to find data."
+        });
+      }
+    });
+  },
 };

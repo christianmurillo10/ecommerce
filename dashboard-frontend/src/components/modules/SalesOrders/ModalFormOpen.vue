@@ -353,6 +353,7 @@ export default {
           total_discount_amount: "0.00",
           amount: "0.00",
           product_id: "",
+          product_flash_deal_detail_id: null,
           discount_type: null,
           claim_type: "",
           is_flash_deal: 0
@@ -395,6 +396,7 @@ export default {
           total_discount_amount: "0.00",
           amount: "0.00",
           product_id: "",
+          product_flash_deal_detail_id: null,
           discount_type: null,
           claim_type: "",
           is_flash_deal: 0
@@ -547,6 +549,7 @@ export default {
         const productDetails = await this.getProductDetails(sku);
         this.formData.details[index].quantity = _.isUndefined(productDetails.quantity_available) ? "0" : productDetails.quantity_available.toString();
         this.formData.details[index].rate_amount = _.isUndefined(productDetails.price_amount) ? "0.00" : productDetails.price_amount;
+        this.formData.details[index].product_flash_deal_detail_id = _.isUndefined(productDetails.product_flash_deal_detail_id) ? null : productDetails.product_flash_deal_detail_id;
         this.formData.details[index].discount_type = _.isUndefined(productDetails.discount_type) ? "" : productDetails.discount_type;
         this.formData.details[index].discount_percentage = _.isUndefined(productDetails.discount_percentage) ? "0.00" : productDetails.discount_percentage;
         this.formData.details[index].discount_amount = _.isUndefined(productDetails.discount_amount) ? "0.00" : productDetails.discount_amount;
@@ -571,11 +574,13 @@ export default {
 
           if (!_.isUndefined(productFlashDealDetails)) {
             obj.is_flash_deal = 1;
+            obj.product_flash_deal_detail_id = productFlashDealDetails.id;
             obj.discount_type = productFlashDealDetails.discount_type;
             obj.discount_amount = productFlashDealDetails.discount_amount;
             obj.discount_percentage = productFlashDealDetails.discount_type === 2 ? obj.discount_percentage = productFlashDealDetails.discount_percentage : null;
           } else {
             obj.discount_type = null;
+            obj.product_flash_deal_detail_id = null;
             obj.discount_percentage = null;
             obj.discount_amount = "0.00";
             obj.is_flash_deal = 0;
@@ -675,6 +680,7 @@ export default {
         total_discount_amount: "0.00",
         amount: "0.00",
         product_id: "",
+        product_flash_deal_detail_id: null,
         discount_type: null,
         claim_type: "",
         is_flash_deal: 0
@@ -710,6 +716,7 @@ export default {
             total_discount_amount: obj.total_discount_amount,
             amount: obj.amount,
             product_id: obj.product_id,
+            product_flash_deal_detail_id: obj.product_flash_deal_detail_id,
             discount_type: obj.discount_type,
             claim_type: obj.claim_type,
             is_flash_deal: obj.is_flash_deal

@@ -569,7 +569,7 @@ module.exports = {
         let initialValues, inventoryHistoryInitialValue, data, criteria;
         // Pre-setting variables
         criteria = { where: { sku: obj.sku, product_id: obj.product_id, is_deleted: NO } };
-        // Execute findByPk query
+        // Execute findOne query
         data = await Model.Inventories.findOne(criteria);
         if (!_.isEmpty(data)) {
           const updatedAt = moment().utc(8).format('YYYY-MM-DD HH:mm:ss');
@@ -647,7 +647,7 @@ module.exports = {
         let initialValues, inventoryHistoryInitialValue, data, criteria;
         // Pre-setting variables
         criteria = { where: { sku: obj.sku, product_id: obj.product_id, is_deleted: NO } };
-        // Execute findByPk query
+        // Execute findOne query
         data = await Model.Inventories.findOne(criteria);
         if (!_.isEmpty(data)) {
           const updatedAt = moment().utc(8).format('YYYY-MM-DD HH:mm:ss');
