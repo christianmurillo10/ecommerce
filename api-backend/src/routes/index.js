@@ -26,7 +26,6 @@ router.use('/productImages', require('./productImages'));
 router.use('/productFlashDeals', require('./productFlashDeals'));
 router.use('/productFlashDealDetails', require('./productFlashDealDetails'));
 router.use('/salesOrderDetails', require('./salesOrderDetails'));
-router.use('/salesOrderReturns', require('./salesOrderReturns'));
 router.use('/salesOrders', require('./salesOrders'));
 router.use('/shippingMethods', require('./shippingMethods'));
 router.use('/shippingMethodRates', require('./shippingMethodRates'));
