@@ -270,7 +270,92 @@ module.exports = {
   },
 
   /**
-   * Update
+   * Update Return
+   * @route PUT /salesOrders/updateReturn/:id
+   * @param req
+   * @param res
+   * @returns {never}
+   */
+  updateReturn: async (req, res) => {
+    const params = req.body;
+    let criteria, initialValues, data;
+
+    if (_.isUndefined(params))
+      return res.badRequest({ err: "Invalid Parameter: [params]" });
+    if (_.isEmpty(params))
+      return res.badRequest({ err: "Empty Parameter: [params]" });
+
+    // Override variables
+    params.updated_at = moment().utc(8).format('YYYY-MM-DD HH:mm:ss');
+    params.is_with_return = YES;
+
+    try {
+      // Pre-setting variables
+      criteria = { include: [{ model: Model.Customers, as: 'customers', attributes: ['customer_no', 'firstname', 'middlename', 'lastname'] }] };
+      initialValues = _.pick(params, [
+        'updated_at',
+        'is_with_return'
+      ]);
+      // Execute findByPk query
+      data = await Model.SalesOrders.findByPk(req.params.id, criteria);
+      if (!_.isEmpty(data)) {
+        await data.update(initialValues)
+          .then(() => Model.SalesOrders.findByPk(data.id, criteria)
+          .then(async finalData => {
+            let plainData = finalData.get({ plain: true });
+
+            // 1. Set and filtering Bulk Data of Sales Order Details
+            const salesOrderDetails = params.details;
+            let salesOrderDetailsInitialUpdateValue = [];
+            salesOrderDetails.forEach(element => {
+              let salesOrderDetailsData = {
+                id: element.id,
+                return_remarks: element.return_remarks,
+                quantity_returned: element.quantity_returned,
+                updated_at: params.updated_at,
+                is_with_return: parseInt(element.quantity_returned) === 0 ? NO : YES
+              }
+
+              salesOrderDetailsInitialUpdateValue.push(salesOrderDetailsData);
+            });
+            
+            // 2. UPDATE
+            if (salesOrderDetailsInitialUpdateValue.length > 0) {
+              // 2.1 Update sales order details
+              for (let i = 0; i < salesOrderDetailsInitialUpdateValue.length; i++) {
+                let detailsUpdateValue = salesOrderDetailsInitialUpdateValue[i];
+                let dataDetails = await Model.SalesOrderDetails.findByPk(detailsUpdateValue.id);
+                if (!_.isEmpty(dataDetails)) {
+                  // 2.1.1 Update sales order details
+                  await dataDetails.update(detailsUpdateValue);
+                }
+              }
+            }
+
+            res.json({
+              status: 200,
+              message: "Successfully updated data.",
+              result: _.omit(plainData, ['is_deleted'])
+            });
+          }));
+      } else {
+        res.json({
+          status: 200,
+          message: "Data doesn't exist.",
+          result: false
+        });
+      }
+    } catch (err) {
+      res.json({
+        status: 401,
+        err: err,
+        message: "Failed updating data."
+      });
+    }
+  },
+
+  /**
+   * Update Status
    * @route PUT /salesOrders/updateStatus/:id
    * @param req
    * @param res
@@ -671,7 +756,9 @@ module.exports = {
               'sku', 
               'variant_details', 
               'remarks', 
+              'return_remarks', 
               'quantity', 
+              'quantity_returned', 
               'rate_amount', 
               'discount_percentage', 
               'discount_amount', 

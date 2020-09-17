@@ -37,6 +37,12 @@
                 </template>
                 <span>Update Status</span>
               </v-tooltip>
+              <v-tooltip left>
+                <template v-slot:activator="{ on }">
+                  <v-icon small class="mr-2" color="orange" @click="editReturn(props.item.id)" v-on="on">replay</v-icon>
+                </template>
+                <span>Return</span>
+              </v-tooltip>
             </td>
           </template>
           <template v-slot:no-data>
@@ -51,6 +57,9 @@
     <v-dialog v-model="dialogStatus" max-width="500px">
       <ModalFormStatus ref="modalFormStatus" @setDialogStatus="setDialogStatus" />
     </v-dialog>
+    <v-dialog v-model="dialogReturn" scrollable persistent max-width="999px">
+      <ModalFormReturn ref="modalFormReturn" @setDialogReturn="setDialogReturn" />
+    </v-dialog>
   </v-container>
 </template>
 
@@ -58,6 +67,7 @@
 import Alerts from "@/components/utilities/Alerts";
 import Loading from "@/components/utilities/Loading";
 import ModalFormStatus from "@/components/modules/SalesOrders/ModalFormStatus";
+import ModalFormReturn from "@/components/modules/SalesOrders/ModalFormReturn";
 import Mixins from "@/helpers/Mixins.js";
 import { STATUS_DELIVERED, STATUS_CLOSED } from "@/helpers/Constant.js";
 import { mapState, mapActions } from "vuex";
@@ -67,11 +77,13 @@ export default {
   components: {
     Alerts,
     Loading,
-    ModalFormStatus
+    ModalFormStatus,
+    ModalFormReturn
   },
 
   data: () => ({
     dialogStatus: false,
+    dialogReturn: false,
     search: '',
     headers: [
       { text: "Order No.", value: "order_no" },
@@ -93,6 +105,9 @@ export default {
   watch: {
     dialogStatus(val) {
       val || this.closeStatus();
+    },
+    dialogReturn(val) {
+      val || this.closeReturn();
     }
   },
 
@@ -111,13 +126,27 @@ export default {
       this.$refs.modalFormStatus.editStatus(id, STATUS_CLOSED);
     },
 
+    editReturn(id) {
+      this.setDialogReturn(true);
+      this.$refs.modalFormReturn.editReturn(id);
+    },
+
     closeStatus() {
       this.setDialogStatus(false);
       this.$refs.modalFormStatus.close();
     },
 
+    closeReturn() {
+      this.setDialogStatus(false);
+      this.$refs.modalFormReturn.close();
+    },
+
     setDialogStatus(value) {
       this.dialogStatus = value;
+    },
+
+    setDialogReturn(value) {
+      this.dialogReturn = value;
     }
   }
 };

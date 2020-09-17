@@ -19,9 +19,18 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.TEXT,
       allowNull: true
     },
+    'return_remarks': {
+      type: DataTypes.TEXT,
+      allowNull: true
+    },
     'quantity': {
       type: DataTypes.INTEGER(12),
       allowNull: false,
+      defaultValue: '0'
+    },
+    'quantity_returned': {
+      type: DataTypes.INTEGER(12),
+      allowNull: true,
       defaultValue: '0'
     },
     'rate_amount': {
@@ -113,6 +122,11 @@ module.exports = (sequelize, DataTypes) => {
     'is_flash_deal': {
       type: DataTypes.SMALLINT(1),
       allowNull: false,
+      defaultValue: '0'
+    },
+    'is_with_return': {
+      type: DataTypes.SMALLINT(1),
+      allowNull: true,
       defaultValue: '0'
     },
     'is_deleted': {
