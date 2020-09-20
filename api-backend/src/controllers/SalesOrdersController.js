@@ -285,11 +285,28 @@ module.exports = {
     if (_.isEmpty(params))
       return res.badRequest({ err: "Empty Parameter: [params]" });
 
-    // Override variables
-    params.updated_at = moment().utc(8).format('YYYY-MM-DD HH:mm:ss');
-    params.is_with_return = YES;
-
     try {
+      // 1. Set and filtering Bulk Data of Sales Order Details
+      const salesOrderDetails = params.details;
+      let salesOrderDetailsInitialUpdateValue = [];
+      
+      salesOrderDetails.forEach(element => {
+        let salesOrderDetailsData = {
+          id: element.id,
+          return_remarks: element.return_remarks,
+          quantity_returned: element.quantity_returned,
+          updated_at: params.updated_at,
+          is_with_return: parseInt(element.quantity_returned) === 0 ? NO : YES
+        }
+  
+        salesOrderDetailsInitialUpdateValue.push(salesOrderDetailsData);
+      });
+      
+      // Override variables
+      params.updated_at = moment().utc(8).format('YYYY-MM-DD HH:mm:ss');
+      params.user_id = req.user.id.toLocaleString();
+      params.is_with_return = salesOrderDetailsInitialUpdateValue.some(element => element.quantity_returned > 0) ? YES : NO;
+
       // Pre-setting variables
       criteria = { include: [{ model: Model.Customers, as: 'customers', attributes: ['customer_no', 'firstname', 'middlename', 'lastname'] }] };
       initialValues = _.pick(params, [
@@ -303,21 +320,6 @@ module.exports = {
           .then(() => Model.SalesOrders.findByPk(data.id, criteria)
           .then(async finalData => {
             let plainData = finalData.get({ plain: true });
-
-            // 1. Set and filtering Bulk Data of Sales Order Details
-            const salesOrderDetails = params.details;
-            let salesOrderDetailsInitialUpdateValue = [];
-            salesOrderDetails.forEach(element => {
-              let salesOrderDetailsData = {
-                id: element.id,
-                return_remarks: element.return_remarks,
-                quantity_returned: element.quantity_returned,
-                updated_at: params.updated_at,
-                is_with_return: parseInt(element.quantity_returned) === 0 ? NO : YES
-              }
-
-              salesOrderDetailsInitialUpdateValue.push(salesOrderDetailsData);
-            });
             
             // 2. UPDATE
             if (salesOrderDetailsInitialUpdateValue.length > 0) {
@@ -325,8 +327,29 @@ module.exports = {
               for (let i = 0; i < salesOrderDetailsInitialUpdateValue.length; i++) {
                 let detailsUpdateValue = salesOrderDetailsInitialUpdateValue[i];
                 let dataDetails = await Model.SalesOrderDetails.findByPk(detailsUpdateValue.id);
-                if (!_.isEmpty(dataDetails)) {
-                  // 2.1.1 Update sales order details
+                if (!_.isEmpty(dataDetails) && parseInt(dataDetails.quantity_returned) !== parseInt(detailsUpdateValue.quantity_returned)) {
+                  // 2.1.1 Update inventory
+                  if (dataDetails.quantity_returned === 0) {
+                    await InventoriesController.updateQuantityReturnedAndOut({
+                      sku: dataDetails.sku,
+                      old_quantity: 0,
+                      new_quantity: detailsUpdateValue.quantity_returned,
+                      product_id: dataDetails.product_id,
+                      user_id: params.user_id,
+                      type: 'INSERT'
+                    });
+                  } else {
+                    await InventoriesController.updateQuantityReturnedAndOut({
+                      sku: dataDetails.sku,
+                      old_quantity: dataDetails.quantity_returned,
+                      new_quantity: detailsUpdateValue.quantity_returned,
+                      product_id: dataDetails.product_id,
+                      user_id: params.user_id,
+                      type: 'UPDATE'
+                    });
+                  }
+
+                  // 2.1.2 Update sales order details
                   await dataDetails.update(detailsUpdateValue);
                 }
               }
