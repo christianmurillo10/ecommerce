@@ -10,6 +10,7 @@ const frontendSliderImages = require('./FrontendSliderImagesController');
 const frontendUsefulLinks = require('./FrontendUsefulLinksController');
 const inventories = require('./InventoriesController');
 const inventoryHistories = require('./InventoryHistoriesController');
+const payments = require('./PaymentsController');
 const productBrands = require('./ProductBrandsController');
 const productCategories = require('./ProductCategoriesController');
 const productSubCategories = require('./ProductSubCategoriesController');
@@ -41,6 +42,7 @@ module.exports = {
   frontendUsefulLinks,
   inventories,
   inventoryHistories,
+  payments,
   productBrands,
   productCategories,
   productSubCategories,

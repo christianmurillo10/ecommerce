@@ -13,6 +13,7 @@ router.use('/frontendSliderImages', require('./frontendSliderImages'));
 router.use('/frontendUsefulLinks', require('./frontendUsefulLinks'));
 router.use('/inventories', require('./inventories'));
 router.use('/inventoryHistories', require('./inventoryHistories'));
+router.use('/payments', require('./payments'));
 router.use('/productBrands', require('./productBrands'));
 router.use('/productCategories', require('./productCategories'));
 router.use('/productSubCategories', require('./productSubCategories'));
