@@ -96,7 +96,7 @@
           </v-layout>
         </v-flex>
         <v-flex xs12 sm12 md12 lg12>
-          <table id="details">
+          <table class="custom-table">
             <tr>
               <th class="text-xs-center" style="width: 30%">ITEM</th>
               <th class="text-xs-center">QUANTITY</th>
@@ -249,21 +249,5 @@ export default {
 </script>
 
 <style lang="css" scoped>
-#details {
-  border-collapse: collapse;
-  width: 100%;
-}
-
-#details td, #details th {
-  border: 1px solid #ddd;
-  padding: 5px;
-}
-
-#details tr:nth-child(even){background-color: #f2f2f2;}
-
-#details tr:hover {background-color: #ddd; color: #000;}
-
-#details th {
-  text-align: left;
-}
+@import "../../assets/css/table.css";
 </style>

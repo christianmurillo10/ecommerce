@@ -46,6 +46,7 @@ module.exports = {
     params.shipping_fee_amount = params.shipping_fee_amount === null ? null : params.shipping_fee_amount.toLocaleString();
     params.total_discount_amount = params.total_discount_amount === null ? null : params.total_discount_amount.toLocaleString();
     params.total_amount = params.total_amount === null ? null : params.total_amount.toLocaleString();
+    params.total_balance_amount = params.total_amount;
     params.customer_id = params.customer_id === undefined ? null : params.customer_id.toLocaleString();
     params.payment_method_type = params.payment_method_type === undefined ? null : params.payment_method_type.toLocaleString();
     params.is_with_vat = params.is_with_vat === undefined ? null : params.is_with_vat.toLocaleString();
@@ -72,6 +73,7 @@ module.exports = {
         'shipping_fee_amount', 
         'total_discount_amount', 
         'total_amount', 
+        'total_balance_amount', 
         'customer_id', 
         'date_ordered', 
         'created_at',
@@ -155,6 +157,7 @@ module.exports = {
 
     // Override variables
     params.updated_at = moment().utc(8).format('YYYY-MM-DD HH:mm:ss');
+    params.total_balance_amount = params.total_amount;
 
     try {
       // Pre-setting variables
@@ -853,6 +856,54 @@ module.exports = {
         message: "Failed to count all data."
       });
     }
+  },
+
+  /**
+   * Public Functions
+   */
+
+  /**
+   * Update Total Amount Balance and Paid Status
+   */
+  updateTotalAmountBalanceAndPaidStatus: async (obj) => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        let initialValues, data, criteria;
+        // Pre-setting variables
+        criteria = { where: { id: obj.sales_order_id, is_fully_paid: NO, is_deleted: NO } };
+        // Execute findOne query
+        data = await Model.SalesOrders.findOne(criteria);
+        if (!_.isEmpty(data)) {
+          const updatedAt = moment().utc(8).format('YYYY-MM-DD HH:mm:ss');
+          const computedTotalBalanceAmount = parseFloat(data.total_balance_amount) - parseFloat(obj.amount);
+          const totalBalanceAmount = computedTotalBalanceAmount > 0 ? computedTotalBalanceAmount : 0;
+          const isFullyPaid = computedTotalBalanceAmount > 0 ? NO : YES;
+
+          initialValues = { total_balance_amount: totalBalanceAmount, updated_at: updatedAt, is_paid: YES, is_fully_paid: isFullyPaid };
+
+          data.update(initialValues)
+            .then(response => {
+              resolve({
+                status: 200,
+                message: "Successfully update data.",
+                result: true
+              });
+            });
+        } else {
+          resolve({
+            status: 200,
+            message: "Data doesn't exist.",
+            result: false
+          });
+        }
+      } catch (err) {
+        resolve({
+          status: 401,
+          err: err,
+          message: "Failed to find data."
+        });
+      }
+    });
   },
 };
 

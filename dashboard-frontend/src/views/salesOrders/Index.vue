@@ -50,7 +50,6 @@
 import Alerts from "@/components/utilities/Alerts";
 import Loading from "@/components/utilities/Loading";
 import Mixins from "@/helpers/Mixins.js";
-import { STATUS_DELIVERED, STATUS_CLOSED } from "@/helpers/Constant.js";
 import { mapState, mapActions } from "vuex";
 
 export default {

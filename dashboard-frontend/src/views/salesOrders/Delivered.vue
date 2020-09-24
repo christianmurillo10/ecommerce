@@ -69,7 +69,7 @@ import Loading from "@/components/utilities/Loading";
 import ModalFormStatus from "@/components/modules/SalesOrders/ModalFormStatus";
 import ModalFormReturn from "@/components/modules/SalesOrders/ModalFormReturn";
 import Mixins from "@/helpers/Mixins.js";
-import { STATUS_DELIVERED, STATUS_CLOSED } from "@/helpers/Constant.js";
+import { SALES_ORDER_STATUS_DELIVERED, SALES_ORDER_STATUS_CLOSED } from "@/helpers/Constant.js";
 import { mapState, mapActions } from "vuex";
 
 export default {
@@ -95,7 +95,7 @@ export default {
   }),
 
   mounted() {
-    this.getSalesOrderDataByStatus(STATUS_DELIVERED);
+    this.getSalesOrderDataByStatus(SALES_ORDER_STATUS_DELIVERED);
   },
 
   computed: {
@@ -123,7 +123,7 @@ export default {
 
     editStatus(id) {
       this.setDialogStatus(true);
-      this.$refs.modalFormStatus.editStatus(id, STATUS_CLOSED);
+      this.$refs.modalFormStatus.editStatus(id, SALES_ORDER_STATUS_CLOSED);
     },
 
     editReturn(id) {

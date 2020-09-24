@@ -12,6 +12,7 @@ import Employees from "../views/employees/Index";
 import FrontendPolicyPages from "../views/frontendPolicyPages/Index";
 import FrontendSliderImages from "../views/frontendSliderImages/Index";
 import FrontendUsefulLinks from "../views/frontendUsefulLinks/Index";
+import Payments from "../views/payments/Index";
 import ProductBrands from "../views/productBrands/Index";
 import ProductCategories from "../views/productCategories/Index";
 import ProductSubCategories from "../views/productSubCategories/Index";
@@ -101,6 +102,11 @@ let router = new Router({
       path: "/frontendUsefulLinks",
       name: "frontendUsefulLinks",
       component: FrontendUsefulLinks
+    },
+    {
+      path: "/payments",
+      name: "payments",
+      component: Payments
     },
     {
       path: "/productBrands",

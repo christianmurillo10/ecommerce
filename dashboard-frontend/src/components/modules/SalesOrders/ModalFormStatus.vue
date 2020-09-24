@@ -2,7 +2,8 @@
   <v-form ref="form" @submit.prevent="save" v-model="valid" lazy-validation>
     <v-card>
       <v-card-title>
-        <v-icon class="black--text">{{ formIcon }}</v-icon><span class="title">{{ formTitle }}</span>
+        <v-icon class="black--text">{{ formIcon }}</v-icon>
+        <span class="title">{{ formTitle }}</span>
       </v-card-title>
       <v-card-text>
         <v-container grid-list-md>
@@ -51,8 +52,15 @@
                 </template>
                 <v-date-picker v-model="formData.date" no-title scrollable>
                   <v-spacer></v-spacer>
-                  <v-btn flat color="primary" @click="date.model = false">Cancel</v-btn>
-                  <v-btn flat color="primary" @click="$refs.date.save(formData.date)">OK</v-btn>
+                  <v-btn flat color="primary" @click="date.model = false"
+                    >Cancel</v-btn
+                  >
+                  <v-btn
+                    flat
+                    color="primary"
+                    @click="$refs.date.save(formData.date)"
+                    >OK</v-btn
+                  >
                 </v-date-picker>
               </v-menu>
             </v-flex>
@@ -63,7 +71,9 @@
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn color="blue darken-1" flat @click="close">Cancel</v-btn>
-        <v-btn color="blue darken-1" type="submit" flat :disabled="!valid">Save</v-btn>
+        <v-btn color="blue darken-1" type="submit" flat :disabled="!valid">
+          Save
+        </v-btn>
       </v-card-actions>
     </v-card>
   </v-form>
@@ -72,14 +82,14 @@
 <script>
 import Mixins from "@/helpers/Mixins.js";
 import {
-    STATUS_CLOSED,
-    STATUS_DELIVERED,
-    STATUS_ON_PROCESS,
-    STATUS_APPROVED,
-    STATUS_REVIEWED,
-    STATUS_OPEN,
-    STATUS_CANCELLED,
-    STATUS_FAILED
+  SALES_ORDER_STATUS_CLOSED,
+  SALES_ORDER_STATUS_DELIVERED,
+  SALES_ORDER_STATUS_ON_PROCESS,
+  SALES_ORDER_STATUS_APPROVED,
+  SALES_ORDER_STATUS_REVIEWED,
+  SALES_ORDER_STATUS_OPEN,
+  SALES_ORDER_STATUS_CANCELLED,
+  SALES_ORDER_STATUS_FAILED,
 } from "@/helpers/Constant.js";
 import { mapGetters, mapActions, mapMutations } from "vuex";
 
@@ -91,21 +101,21 @@ export default {
     date: {
       display: false,
       label: "",
-      model: false
+      model: false,
     },
     employee: {
       display: false,
-      label: ""
+      label: "",
     },
     defaultFormData: {
       status: "",
       employee_id: "",
-      date: new Date().toISOString().substr(0, 10)
+      date: new Date().toISOString().substr(0, 10),
     },
     formData: {
       status: "",
       employee_id: "",
-      date: new Date().toISOString().substr(0, 10)
+      date: new Date().toISOString().substr(0, 10),
     },
     valid: true,
   }),
@@ -130,7 +140,7 @@ export default {
     ...mapActions("alerts", ["setAlert"]),
     ...mapActions("employees", { getEmployeeData: "getData" }),
     ...mapActions("salesOrders", {
-      updateSalesOrderStatusData: "updateStatusData"
+      updateSalesOrderStatusData: "updateStatusData",
     }),
 
     setDateDetails() {
@@ -141,24 +151,24 @@ export default {
       this.employee.label = "";
 
       switch (status) {
-        case STATUS_DELIVERED:
+        case SALES_ORDER_STATUS_DELIVERED:
           this.date.display = true;
           this.date.label = "Date Delivered";
           break;
-        case STATUS_ON_PROCESS:
+        case SALES_ORDER_STATUS_ON_PROCESS:
           this.date.display = true;
           this.date.label = "Date Delivery";
           break;
-        case STATUS_APPROVED:
+        case SALES_ORDER_STATUS_APPROVED:
           this.date.display = true;
           this.date.label = "Date Approved";
           this.employee.display = true;
           this.employee.label = "Approved By";
           break;
-        case STATUS_REVIEWED:
+        case SALES_ORDER_STATUS_REVIEWED:
           this.employee.display = true;
           this.employee.label = "Reviewed By";
-        break;
+          break;
       }
     },
 
@@ -166,24 +176,26 @@ export default {
       let filteredStatus = [];
 
       switch (status) {
-        case STATUS_CLOSED:
-          filteredStatus = [STATUS_CLOSED];
+        case SALES_ORDER_STATUS_CLOSED:
+          filteredStatus = [SALES_ORDER_STATUS_CLOSED];
           break;
-        case STATUS_DELIVERED:
-          filteredStatus = [STATUS_DELIVERED, STATUS_FAILED];
+        case SALES_ORDER_STATUS_DELIVERED:
+          filteredStatus = [SALES_ORDER_STATUS_DELIVERED, SALES_ORDER_STATUS_FAILED];
           break;
-        case STATUS_ON_PROCESS:
-          filteredStatus = [STATUS_ON_PROCESS, STATUS_CANCELLED, STATUS_FAILED];
+        case SALES_ORDER_STATUS_ON_PROCESS:
+          filteredStatus = [SALES_ORDER_STATUS_ON_PROCESS, SALES_ORDER_STATUS_CANCELLED, SALES_ORDER_STATUS_FAILED];
           break;
-        case STATUS_APPROVED:
-          filteredStatus = [STATUS_APPROVED, STATUS_CANCELLED, STATUS_FAILED];
+        case SALES_ORDER_STATUS_APPROVED:
+          filteredStatus = [SALES_ORDER_STATUS_APPROVED, SALES_ORDER_STATUS_CANCELLED, SALES_ORDER_STATUS_FAILED];
           break;
-        case STATUS_REVIEWED:
-          filteredStatus = [STATUS_REVIEWED, STATUS_CANCELLED, STATUS_FAILED];
-        break;
+        case SALES_ORDER_STATUS_REVIEWED:
+          filteredStatus = [SALES_ORDER_STATUS_REVIEWED, SALES_ORDER_STATUS_CANCELLED, SALES_ORDER_STATUS_FAILED];
+          break;
       }
 
-      this.statusList = this.salesOrderStatusList.filter((item) => filteredStatus.includes(item.id));
+      this.statusList = this.salesOrderStatusList.filter((item) =>
+        filteredStatus.includes(item.id)
+      );
     },
 
     editStatus(id, defaultStatus) {

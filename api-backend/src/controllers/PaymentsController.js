@@ -1,4 +1,5 @@
 const Model = require('../models');
+const SalesOrdersController = require("./SalesOrdersController");
 const { NO, YES } = require('../helpers/constant-helper');
 
 module.exports = {
@@ -22,14 +23,14 @@ module.exports = {
     // Override variables
     params.created_at = moment().utc(8).format('YYYY-MM-DD HH:mm:ss');
     params.reference_no = await generateReferenceNo();
-    params.vat_amount = params.vat_amount === undefined ? null : params.vat_amount.toLocaleString();
-    params.amount = params.amount === null ? null : params.amount.toLocaleString();
-    params.customer_id = params.customer_id === undefined ? null : params.customer_id.toLocaleString();
-    params.sales_order_id = params.sales_order_id === undefined ? null : params.sales_order_id.toLocaleString();
-    params.bank_id = params.bank_id === undefined ? null : params.bank_id.toLocaleString();
-    params.customer_credit_debit_card_id = params.customer_credit_debit_card_id === undefined ? null : params.customer_credit_debit_card_id.toLocaleString();
-    params.payment_method_type = params.payment_method_type === undefined ? null : params.payment_method_type.toLocaleString();
-    params.is_with_vat = params.is_with_vat === undefined ? null : params.is_with_vat.toLocaleString();
+    params.vat_amount = params.vat_amount ? params.vat_amount.toLocaleString() : null;
+    params.amount = params.amount ? params.amount.toLocaleString() : null;
+    params.customer_id = params.customer_id ? params.customer_id.toLocaleString() : null;
+    params.sales_order_id = params.sales_order_id ? params.sales_order_id.toLocaleString() : null;
+    params.bank_id = params.bank_id ? params.bank_id.toLocaleString() : null;
+    params.customer_credit_debit_card_id = params.customer_credit_debit_card_id ? params.customer_credit_debit_card_id.toLocaleString() : null;
+    params.payment_method_type = params.payment_method_type ? params.payment_method_type.toLocaleString() : null;
+    params.is_with_vat = params.is_with_vat ? params.is_with_vat.toLocaleString() : null;
 
     try {
       // Validators
@@ -64,6 +65,13 @@ module.exports = {
           .then(() => Model.Payments.findOrCreate(criteria))
           .then(async ([finalData, created]) => {
             let plainData = finalData.get({ plain: true });
+
+            // Update sales order total balance amount and paid status
+            await SalesOrdersController.updateTotalAmountBalanceAndPaidStatus({
+              sales_order_id: params.sales_order_id,
+              amount: params.amount,
+            });
+
             res.json({
               status: 200,
               message: "Successfully created data.",

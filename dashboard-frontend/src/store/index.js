@@ -16,6 +16,7 @@ import employees from './modules/employees'
 import frontendPolicyPages from './modules/frontendPolicyPages'
 import frontendSliderImages from './modules/frontendSliderImages'
 import frontendUsefulLinks from './modules/frontendUsefulLinks'
+import payments from './modules/payments'
 import productBrands from './modules/productBrands'
 import productCategories from './modules/productCategories'
 import productSubCategories from './modules/productSubCategories'
@@ -55,6 +56,7 @@ export default new Vuex.Store({
     frontendPolicyPages,
     frontendSliderImages,
     frontendUsefulLinks,
+    payments,
     productBrands,
     productCategories,
     productSubCategories,

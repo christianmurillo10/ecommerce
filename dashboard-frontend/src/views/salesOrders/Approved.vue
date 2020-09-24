@@ -59,7 +59,7 @@ import Alerts from "@/components/utilities/Alerts";
 import Loading from "@/components/utilities/Loading";
 import ModalFormStatus from "@/components/modules/SalesOrders/ModalFormStatus";
 import Mixins from "@/helpers/Mixins.js";
-import { STATUS_APPROVED, STATUS_ON_PROCESS } from "@/helpers/Constant.js";
+import { SALES_ORDER_STATUS_APPROVED, SALES_ORDER_STATUS_ON_PROCESS } from "@/helpers/Constant.js";
 import { mapState, mapActions } from "vuex";
 
 export default {
@@ -83,7 +83,7 @@ export default {
   }),
 
   mounted() {
-    this.getSalesOrderDataByStatus(STATUS_APPROVED);
+    this.getSalesOrderDataByStatus(SALES_ORDER_STATUS_APPROVED);
   },
 
   computed: {
@@ -108,7 +108,7 @@ export default {
 
     editStatus(id) {
       this.setDialogStatus(true);
-      this.$refs.modalFormStatus.editStatus(id, STATUS_ON_PROCESS);
+      this.$refs.modalFormStatus.editStatus(id, SALES_ORDER_STATUS_ON_PROCESS);
     },
 
     closeStatus() {

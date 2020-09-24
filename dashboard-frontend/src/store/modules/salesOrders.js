@@ -2,6 +2,7 @@ import axios from "axios";
 
 const state = {
   salesOrderList: [],
+  salesOrderByCustomerList: [],
   salesOrderByStatusList: [],
   salesOrderTotalCount: 0
 };
@@ -15,6 +16,9 @@ const getters = {
   },
   getSalesOrderList: (state) => {
     return state.salesOrderList;
+  },
+  getSalesOrderByCustomerList: (state) => {
+    return state.salesOrderByCustomerList;
   }
 };
 
@@ -27,6 +31,20 @@ const actions = {
         axios.get(url, header)
           .then(response => {
             commit("SET_DATA", response.data.result);
+          });
+      } catch (err) {
+        reject(err);
+      }
+    });
+  },
+  getDataByCustomerId({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
+    let url = `${process.env.VUE_APP_API_BACKEND}/salesOrders/findAllbyCustomerId/${payload}`;
+    let header = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
+    return new Promise((resolve, reject) => {
+      try {
+        axios.get(url, header)
+          .then(response => {
+            commit("SET_DATA_BY_CUSTOMER_ID", response.data.result);
           });
       } catch (err) {
         reject(err);
@@ -204,6 +222,13 @@ const mutations = {
       state.salesOrderList = payload;
     } else {
       state.salesOrderList = [];
+    }
+  },
+  SET_DATA_BY_CUSTOMER_ID(state, payload) {
+    if (payload) {
+      state.salesOrderByCustomerList = payload;
+    } else {
+      state.salesOrderByCustomerList = [];
     }
   },
   SET_DATA_BY_STATUS(state, payload) {

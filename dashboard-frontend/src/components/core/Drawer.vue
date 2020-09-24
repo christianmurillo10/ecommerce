@@ -209,6 +209,11 @@ export default {
         ],
       },
       {
+        to: "/payments",
+        icon: "payment",
+        text: "Payments",
+      },
+      {
         icon: "description",
         text: "Reports",
         submenus: true,

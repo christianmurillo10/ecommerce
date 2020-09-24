@@ -1,13 +1,12 @@
 <template>
   <v-container fluid>
     <Alerts />
-    <Loading />
     <v-divider></v-divider>
     <v-card>
       <v-card-title>
-        <v-icon class="black--text">view_list</v-icon><span class="title">Sales Orders - Open</span>
+        <v-icon class="black--text">view_list</v-icon><span class="title">Payments</span>
         <v-spacer></v-spacer>
-        <v-dialog v-model="dialog" scrollable persistent max-width="999px">
+        <v-dialog v-model="dialog" scrollable persistent max-width="850px">
           <template v-slot:activator="{ on: { click } }">
             <v-tooltip left>
               <template v-slot:activator="{ on }">
@@ -18,7 +17,7 @@
               <span>Create</span>
             </v-tooltip>
           </template>
-          <ModalFormOpen ref="modalFormOpen" @setDialog="setDialog" />
+          <ModalForm ref="modalForm" @setDialog="setDialog" />
         </v-dialog>
         <v-flex xs12 sm12 md4 offset-md8>
           <v-text-field
@@ -31,25 +30,14 @@
         </v-flex>
       </v-card-title>
       <v-card-text>
-        <v-data-table :headers="headers" :items="salesOrderByStatusList" :search="search" class="elevation-1">
+        <v-data-table :headers="headers" :items="paymentList" :search="search" class="elevation-1">
           <template v-slot:items="props">
-            <td class="text-xs-left">{{ props.item.order_no }}</td>
-            <td class="text-xs-left">{{ setFullnameLastnameFirst(props.item.customers.firstname, props.item.customers.middlename, props.item.customers.lastname) }}</td>
-            <td class="text-xs-left">{{ props.item.total_amount }}</td>
-            <td class="text-xs-left">{{ props.item.date_ordered }}</td>
+            <td class="text-xs-left">{{ props.item.date }}</td>
+            <td class="text-xs-left">{{ props.item.reference_no }}</td>
+            <td class="text-xs-left">{{ props.item.customer_id }}</td>
+            <td class="text-xs-left">{{ props.item.sales_order_id }}</td>
+            <td class="text-xs-left">{{ props.item.amount }}</td>
             <td class="text-xs-center">
-              <v-tooltip left>
-                <template v-slot:activator="{ on }">
-                  <v-icon small class="mr-2" color="purple darken-2" @click="viewInvoice(props.item.id)" v-on="on">list_alt</v-icon>
-                </template>
-                <span>Invoice</span>
-              </v-tooltip>
-              <v-tooltip left>
-                <template v-slot:activator="{ on }">
-                  <v-icon small class="mr-2" color="blue-grey darken-2" @click="editStatus(props.item.id)" v-on="on">assignment</v-icon>
-                </template>
-                <span>Update Status</span>
-              </v-tooltip>
               <v-tooltip left>
                 <template v-slot:activator="{ on }">
                   <v-icon small class="mr-2" @click="editItem(props.item.id)" v-on="on">edit</v-icon>
@@ -73,9 +61,6 @@
         </v-data-table>
       </v-card-text>
     </v-card>
-    <v-dialog v-model="dialogStatus" max-width="500px">
-      <ModalFormStatus ref="modalFormStatus" @setDialogStatus="setDialogStatus" />
-    </v-dialog>
     <v-dialog v-model="modalDelete.dialog" persistent max-width="300">
       <v-card>
         <v-card-title class="title">Confirmation</v-card-title>
@@ -92,75 +77,58 @@
 
 <script>
 import Alerts from "@/components/utilities/Alerts";
-import Loading from "@/components/utilities/Loading";
-import ModalFormOpen from "@/components/modules/SalesOrders/ModalFormOpen";
-import ModalFormStatus from "@/components/modules/SalesOrders/ModalFormStatus";
+import ModalForm from "@/components/modules/Payments/ModalForm";
 import Mixins from "@/helpers/Mixins.js";
-import { SALES_ORDER_STATUS_REVIEWED, SALES_ORDER_STATUS_OPEN } from "@/helpers/Constant.js";
 import { mapState, mapActions } from "vuex";
 
 export default {
   mixins: [Mixins],
   components: {
     Alerts,
-    Loading,
-    ModalFormOpen,
-    ModalFormStatus
+    ModalForm
   },
 
   data: () => ({
     dialog: false,
-    dialogStatus: false,
     modalDelete: {
       dialog: false,
       id: null
     },
     search: '',
     headers: [
-      { text: "Order No.", value: "order_no" },
+      { text: "Reference No.", value: "reference_no" },
+      { text: "Date", value: "" },
       { text: "Customer", value: "" },
-      { text: "Total Amount", value: "" },
-      { text: "Date Ordered", value: "" },
+      { text: "Sales Order", value: "" },
+      { text: "Amount", value: "" },
       { text: "Actions", align: "center", value: "", sortable: false }
     ]
   }),
 
   mounted() {
-    this.getSalesOrderDataByStatus(SALES_ORDER_STATUS_OPEN);
+    this.getPaymentData();
   },
 
   computed: {
-    ...mapState("salesOrders", ["salesOrderByStatusList"])
+    ...mapState("payments", ["paymentList"])
   },
 
   watch: {
     dialog(val) {
       val || this.close();
-    },
-    dialogStatus(val) {
-      val || this.closeStatus();
     }
   },
 
   methods: {
     ...mapActions("alerts", ["setAlert"]),
-    ...mapActions("salesOrders", {
-      getSalesOrderDataByStatus: "getDataByStatus",
-      deleteSalesOrderData: "deleteData"
+    ...mapActions("payments", {
+      getPaymentData: "getData",
+      deletePaymentData: "deleteData"
     }),
-
-    viewInvoice(id) {
-      this.$router.push(`/salesOrders/invoice/${id}`);
-    },
-
-    editStatus(id) {
-      this.setDialogStatus(true);
-      this.$refs.modalFormStatus.editStatus(id, SALES_ORDER_STATUS_REVIEWED);
-    },
 
     editItem(id) {
       this.setDialog(true);
-      this.$refs.modalFormOpen.editItem(id);
+      this.$refs.modalForm.editItem(id);
     },
 
     deleteModal(id) {
@@ -169,7 +137,7 @@ export default {
     },
 
     deleteItem() {
-      this.deleteSalesOrderData(this.modalDelete.id)
+      this.deletePaymentData(this.modalDelete.id)
         .then(response => {
           let obj = {
             alert: true,
@@ -187,20 +155,11 @@ export default {
 
     close() {
       this.setDialog(false);
-      this.$refs.modalFormOpen.close();
-    },
-
-    closeStatus() {
-      this.setDialogStatus(false);
-      this.$refs.modalFormStatus.close();
+      this.$refs.modalForm.close();
     },
 
     setDialog(value) {
       this.dialog = value;
-    },
-
-    setDialogStatus(value) {
-      this.dialogStatus = value;
     }
   }
 };
