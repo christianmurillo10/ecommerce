@@ -2,6 +2,7 @@ const auth = require('./AuthController');
 const roles = require('./RolesController');
 const users = require('./UsersController');
 const banks = require('./BanksController');
+const customerBalance = require('./CustomerBalanceController');
 const customerCreditDebitCards = require('./CustomerCreditDebitCardsController');
 const customers = require('./CustomersController');
 const employees = require('./EmployeesController');
@@ -34,6 +35,7 @@ module.exports = {
   roles,
   users,
   banks,
+  customerBalance,
   customerCreditDebitCards,
   customers,
   employees,
