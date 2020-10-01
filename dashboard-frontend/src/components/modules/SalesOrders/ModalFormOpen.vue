@@ -566,7 +566,7 @@ export default {
           const response = await this.getInventoryDataBySku(sku);
           const productDetails = response.data.result;
           const productTodayFlashDealDetails = this.getProductFlashDealTodayFlashDeal.productFlashDealDetails;
-          const productFlashDealDetails = productTodayFlashDealDetails.find(details => details.product_id === productDetails.product_id);
+          const productFlashDealDetails = _.isUndefined(productTodayFlashDealDetails) ? undefined : productTodayFlashDealDetails.find(details => details.product_id === productDetails.product_id);
           let obj = {
             quantity_available: productDetails.quantity_available,
             price_amount: productDetails.price_amount

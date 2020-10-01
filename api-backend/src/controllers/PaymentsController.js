@@ -1,5 +1,6 @@
 const Model = require('../models');
 const SalesOrdersController = require("./SalesOrdersController");
+const CustomerBalanceController = require("./CustomerBalanceController");
 const { NO, YES } = require('../helpers/constant-helper');
 
 module.exports = {
@@ -68,6 +69,13 @@ module.exports = {
 
             // Update sales order total balance amount and paid status
             await SalesOrdersController.updateTotalAmountBalanceAndPaidStatus({
+              sales_order_id: params.sales_order_id,
+              amount: params.amount,
+            });
+
+            // Insert customer balance
+            await CustomerBalanceController.insertCreditBalanceOverpaymentAndAmount({
+              customer_id: params.customer_id,
               sales_order_id: params.sales_order_id,
               amount: params.amount,
             });

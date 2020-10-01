@@ -151,4 +151,98 @@ module.exports = {
       });
     }
   },
+
+  /**
+   * Insert Debit, Balance and Amount
+   */
+  insertDebitBalanceAndAmount: (obj) => {
+    return new Promise((resolve, reject) => {
+      try {
+        let initialValues;
+        const createdAt = moment().utc(8).format('YYYY-MM-DD HH:mm:ss');
+        initialValues = { 
+          debit: obj.amount, 
+          balance: obj.amount, 
+          amount: obj.amount, 
+          customer_id: obj.customer_id, 
+          sales_order_id: obj.sales_order_id, 
+          created_at: createdAt 
+        };
+
+        Model.CustomerBalance.create(initialValues)
+          .then(response => {
+            resolve({
+              status: 200,
+              message: "Successfully created data.",
+              result: true
+            });
+          });
+      } catch (err) {
+        resolve({
+          status: 401,
+          err: err,
+          message: "Failed to find data."
+        });
+      }
+    });
+  },
+
+  /**
+   * Insert Credit, Balance, Overpayment and Amount
+   */
+  insertCreditBalanceOverpaymentAndAmount: (obj) => {
+    return new Promise( async (resolve, reject) => {
+      try {
+        let initialValues, data, criteria;
+        // Pre-setting variables
+        criteria = { 
+          where: { customer_id: obj.customer_id, sales_order_id: obj.sales_order_id, is_deleted: NO }, 
+          order: [ [ 'id', 'DESC' ]] 
+        };
+        // Execute findOne query
+        data = await Model.CustomerBalance.findOne(criteria);
+        if (!_.isEmpty(data)) {
+          const plainData = data.get({ plain: true });
+
+          // Set and compute initial values
+          const createdAt = moment().utc(8).format('YYYY-MM-DD HH:mm:ss');
+          const computedBalance = parseFloat(plainData.balance) - parseFloat(obj.amount);
+          const balance = parseFloat(computedBalance) > 0 ? parseFloat(computedBalance) : 0;
+          const overpayment = parseFloat(computedBalance) < 0 ? Math.abs(parseFloat(computedBalance)) : 0;
+          const credit = parseFloat(computedBalance) <= 0 ? parseFloat(plainData.balance) : parseFloat(plainData.balance) - parseFloat(computedBalance);
+  
+          initialValues = { 
+            credit: credit, 
+            balance: balance, 
+            overpayment: overpayment, 
+            amount: obj.amount, 
+            customer_id: obj.customer_id, 
+            sales_order_id: obj.sales_order_id, 
+            created_at: createdAt 
+          };
+  
+          Model.CustomerBalance.create(initialValues)
+            .then(response => {
+              resolve({
+                status: 200,
+                message: "Successfully created data.",
+                result: true
+              });
+            });
+        } else {
+          resolve({
+            status: 200,
+            message: "Data doesn't exist.",
+            result: false
+          });
+        }
+      } catch (err) {
+        resolve({
+          status: 401,
+          err: err,
+          message: "Failed to find data."
+        });
+      }
+    });
+  },
 };

@@ -1,6 +1,7 @@
 const Model = require('../models');
 const InventoriesController = require("./InventoriesController");
 const ProductFlashDealDetailsController = require("./ProductFlashDealDetailsController");
+const CustomerBalanceController = require("./CustomerBalanceController");
 const {
   NO,
   YES,
@@ -461,6 +462,12 @@ module.exports = {
                 let criteriaAprovedDetails = { attributes: ['id', 'sku', 'quantity', 'product_id', 'product_flash_deal_detail_id'], where: { sales_order_id: plainData.id, is_deleted: NO }, raw: true };
                 let dataApprovedDetails = await Model.SalesOrderDetails.findAll(criteriaAprovedDetails);
 
+                await CustomerBalanceController.insertDebitBalanceAndAmount({
+                  amount: plainData.total_amount, 
+                  customer_id: plainData.customer_id, 
+                  sales_order_id: plainData.id, 
+                });
+                
                 for (let i = 0; i < dataApprovedDetails.length; i++) {
                   let details = dataApprovedDetails[i];
                   await InventoriesController.updateQuantityReservedAndAvailable({
