@@ -71,12 +71,14 @@ module.exports = {
             await SalesOrdersController.updateTotalAmountBalanceAndPaidStatus({
               sales_order_id: params.sales_order_id,
               amount: params.amount,
+              type: "INSERT",
             });
 
             // Insert customer balance
             await CustomerBalanceController.insertCreditBalanceOverpaymentAndAmount({
               customer_id: params.customer_id,
               sales_order_id: params.sales_order_id,
+              payment_id: plainData.id,
               amount: params.amount,
             });
 
@@ -184,7 +186,22 @@ module.exports = {
       // Execute findByPk query
       data = await Model.Payments.findByPk(req.params.id);
       if (!_.isEmpty(data)) {
+        // Update sales order total balance amount and paid status
+        await SalesOrdersController.updateTotalAmountBalanceAndPaidStatus({
+          sales_order_id: data.sales_order_id,
+          amount: data.amount,
+          type: "DELETE",
+        });
+
+        await CustomerBalanceController.insertDebitBalanceAndAmount({
+          remarks: `DELETE PAYMENT FOR ${data.reference_no}`,
+          amount: data.amount, 
+          customer_id: data.customer_id, 
+          sales_order_id: data.sales_order_id, 
+        });
+
         let finalData = await data.update({ is_deleted: YES });
+        
         res.json({
           status: 200,
           message: "Successfully deleted data.",

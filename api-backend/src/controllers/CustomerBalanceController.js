@@ -161,6 +161,7 @@ module.exports = {
         let initialValues;
         const createdAt = moment().utc(8).format('YYYY-MM-DD HH:mm:ss');
         initialValues = { 
+          remarks: obj.remarks ? obj.remarks : null,
           debit: obj.amount, 
           balance: obj.amount, 
           amount: obj.amount, 
@@ -212,12 +213,14 @@ module.exports = {
           const credit = parseFloat(computedBalance) <= 0 ? parseFloat(plainData.balance) : parseFloat(plainData.balance) - parseFloat(computedBalance);
   
           initialValues = { 
+            remarks: obj.remarks ? obj.remarks : null,
             credit: credit, 
             balance: balance, 
             overpayment: overpayment, 
             amount: obj.amount, 
             customer_id: obj.customer_id, 
             sales_order_id: obj.sales_order_id, 
+            payment_id: obj.payment_id,
             created_at: createdAt 
           };
   

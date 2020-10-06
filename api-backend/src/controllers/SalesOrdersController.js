@@ -875,19 +875,28 @@ module.exports = {
   updateTotalAmountBalanceAndPaidStatus: async (obj) => {
     return new Promise(async (resolve, reject) => {
       try {
-        let initialValues, data, criteria;
+        let initialValues, data, criteria, computedTotalBalanceAmount, totalBalanceAmount;
         // Pre-setting variables
-        criteria = { where: { id: obj.sales_order_id, is_fully_paid: NO, is_deleted: NO } };
+        criteria = { where: { id: obj.sales_order_id, is_deleted: NO } };
         // Execute findOne query
         data = await Model.SalesOrders.findOne(criteria);
         if (!_.isEmpty(data)) {
+          switch(obj.type) {
+            case 'INSERT':
+              computedTotalBalanceAmount = parseFloat(data.total_balance_amount) - parseFloat(obj.amount);
+              totalBalanceAmount = computedTotalBalanceAmount > 0 ? computedTotalBalanceAmount : 0;
+              break;
+            case 'DELETE':
+              computedTotalBalanceAmount = parseFloat(data.total_balance_amount) + parseFloat(obj.amount);
+              totalBalanceAmount = computedTotalBalanceAmount;
+              break;
+          }
+
           const updatedAt = moment().utc(8).format('YYYY-MM-DD HH:mm:ss');
-          const computedTotalBalanceAmount = parseFloat(data.total_balance_amount) - parseFloat(obj.amount);
-          const totalBalanceAmount = computedTotalBalanceAmount > 0 ? computedTotalBalanceAmount : 0;
+          const isPaid = parseFloat(data.total_amount) === totalBalanceAmount ? NO : YES;
           const isFullyPaid = computedTotalBalanceAmount > 0 ? NO : YES;
 
-          initialValues = { total_balance_amount: totalBalanceAmount, updated_at: updatedAt, is_paid: YES, is_fully_paid: isFullyPaid };
-
+          initialValues = { total_balance_amount: totalBalanceAmount, updated_at: updatedAt, is_paid: isPaid, is_fully_paid: isFullyPaid };
           data.update(initialValues)
             .then(response => {
               resolve({
