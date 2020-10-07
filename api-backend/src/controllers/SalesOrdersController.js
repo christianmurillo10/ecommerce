@@ -772,7 +772,7 @@ module.exports = {
    * @returns {never}
    */
   findById: async (req, res) => {
-    let data;
+    let data, criteria;
 
     try {
       // Pre-setting variables

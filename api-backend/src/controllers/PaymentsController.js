@@ -43,7 +43,13 @@ module.exports = {
       if (_.isEmpty(params.payment_method_type)) return res.json({ status: 200, message: "Payment Method is required.", result: false });
 
       // Pre-setting variables
-      criteria = { where: { reference_no: params.reference_no } };
+      criteria = { 
+        where: { reference_no: params.reference_no },
+        include: [
+          { model: Model.Customers, as: 'customers', attributes: ['customer_no', 'firstname', 'middlename', 'lastname'] },
+          { model: Model.SalesOrders, as: 'salesOrders', attributes: ['order_no'] }
+        ]
+      };
       initialValues = _.pick(params, [
         'reference_no', 
         'or_no', 
@@ -125,7 +131,13 @@ module.exports = {
 
     try {
       // Pre-setting variables
-      criteria = { where: { is_deleted: NO } };
+      criteria = { 
+        where: { is_deleted: NO },
+        include: [
+          { model: Model.Customers, as: 'customers', attributes: ['customer_no', 'firstname', 'middlename', 'lastname'] },
+          { model: Model.SalesOrders, as: 'salesOrders', attributes: ['order_no'] }
+        ]
+      };
       initialValues = _.pick(params, [ 
         'or_no', 
         'remarks', 
@@ -281,7 +293,13 @@ module.exports = {
 
     try {
       // Pre-setting variables
-      criteria = { where: { is_deleted: NO } };
+      criteria = { 
+        where: { is_deleted: NO },
+        include: [
+          { model: Model.Customers, as: 'customers', attributes: ['customer_no', 'firstname', 'middlename', 'lastname'] },
+          { model: Model.SalesOrders, as: 'salesOrders', attributes: ['order_no'] }
+        ]
+      };
       // Execute findAll query
       data = await Model.Payments.findAll(criteria);
       if (!_.isEmpty(data[0])) {
@@ -314,9 +332,16 @@ module.exports = {
    * @returns {never}
    */
   findById: async (req, res) => {
-    let data;
+    let data, criteria;
 
     try {
+      criteria = {
+        where: { is_deleted: NO },
+        include: [
+          { model: Model.Customers, as: 'customers', attributes: ['customer_no', 'firstname', 'middlename', 'lastname'] },
+          { model: Model.SalesOrders, as: 'salesOrders', attributes: ['order_no'] }
+        ]
+      };
       // Execute findAll query
       data = await Model.Payments.findByPk(req.params.id);
       if (!_.isEmpty(data)) {

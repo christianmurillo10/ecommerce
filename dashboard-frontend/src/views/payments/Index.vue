@@ -34,8 +34,8 @@
           <template v-slot:items="props">
             <td class="text-xs-left">{{ props.item.date }}</td>
             <td class="text-xs-left">{{ props.item.reference_no }}</td>
-            <td class="text-xs-left">{{ props.item.customer_id }}</td>
-            <td class="text-xs-left">{{ props.item.sales_order_id }}</td>
+            <td class="text-xs-left">{{ setFullnameLastnameFirst(props.item.customers.firstname, props.item.customers.middlename, props.item.customers.lastname) }}</td>
+            <td class="text-xs-left">{{ props.item.salesOrders.order_no }}</td>
             <td class="text-xs-left">{{ props.item.amount }}</td>
             <td class="text-xs-center">
               <v-tooltip left>
@@ -102,8 +102,8 @@ export default {
     },
     search: '',
     headers: [
-      { text: "Reference No.", value: "reference_no" },
       { text: "Date", value: "" },
+      { text: "Reference No.", value: "reference_no" },
       { text: "Customer", value: "" },
       { text: "Sales Order", value: "" },
       { text: "Amount", value: "" },
