@@ -1,7 +1,8 @@
 import axios from "axios";
 
 const state = {
-  inventoryList: []
+  inventoryList: [],
+  inventoryAllTotalQuantityList: []
 };
 
 const getters = {
@@ -10,6 +11,9 @@ const getters = {
   },
   getInventoryList: (state) => {
     return state.inventoryList;
+  },
+  getInventoryAllTotalQuantityList: (state) => {
+    return state.inventoryAllTotalQuantityList;
   }
 };
 
@@ -22,6 +26,20 @@ const actions = {
         axios.get(url, header)
           .then(response => {
             commit("SET_DATA", response.data.result);
+          });
+      } catch (err) {
+        reject(err);
+      }
+    });
+  },
+  getAllTotalQuantityData({ dispatch, commit, state, rootState, getters, rootGetters }) {
+    let url = `${process.env.VUE_APP_API_BACKEND}/inventories/findAllTotalQuantity`;
+    let header = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
+    return new Promise((resolve, reject) => {
+      try {
+        axios.get(url, header)
+          .then(response => {
+            commit("SET_DATA_ALL_TOTAL_QUANTITY", response.data.result);
           });
       } catch (err) {
         reject(err);
@@ -211,6 +229,13 @@ const mutations = {
       state.inventoryList = payload;
     } else {
       state.inventoryList = [];
+    }
+  },
+  SET_DATA_ALL_TOTAL_QUANTITY(state, payload) {
+    if (payload) {
+      state.inventoryAllTotalQuantityList = payload;
+    } else {
+      state.inventoryAllTotalQuantityList = [];
     }
   },
   ADD_DATA(state, payload) {

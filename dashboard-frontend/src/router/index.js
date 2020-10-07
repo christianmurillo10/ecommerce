@@ -27,6 +27,7 @@ import ProductsImage from "../views/products/Image";
 import ProductsVariant from "../views/products/Variant";
 import ProductFlashDeals from "../views/productFlashDeals/Index";
 import ProductFlashDealDetails from "../views/productFlashDeals/Details";
+import InventoryStockReports from "../views/inventories/StockReports";
 import SalesOrdersOpen from "../views/salesOrders/Open";
 import SalesOrdersReviewed from "../views/salesOrders/Reviewed";
 import SalesOrdersApproved from "../views/salesOrders/Approved";
@@ -177,6 +178,11 @@ let router = new Router({
       path: "/productFlashDeals/details/:productFlashDealId",
       name: "productFlashDealDetails",
       component: ProductFlashDealDetails
+    },
+    {
+      path: "/reports/stocks",
+      name: "inventoryStockReports",
+      component: InventoryStockReports
     },
     {
       path: "/salesOrders/open",

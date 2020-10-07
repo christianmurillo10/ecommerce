@@ -219,8 +219,8 @@ export default {
         submenus: true,
         childs: [
           {
-            to: "/",
-            text: "Stock Report",
+            to: "/reports/stocks",
+            text: "Stocks",
           },
           {
             to: "/",
