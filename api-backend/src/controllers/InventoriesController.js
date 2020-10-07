@@ -406,6 +406,55 @@ module.exports = {
   },
 
   /**
+   * Find all total quantity
+   * @route GET /inventories/findAllTotalQuantity
+   * @param req
+   * @param res
+   * @returns {never}
+   */
+  findAllTotalQuantity: async (req, res) => {
+    let data, criteria;
+
+    try {
+      // Pre-setting variables
+      criteria = { 
+        attributes: [
+          [Model.sequelize.fn('sum', Model.sequelize.col('quantity_in')), 'total_quantity_in'],
+          [Model.sequelize.fn('sum', Model.sequelize.col('quantity_out')), 'total_quantity_out'],
+          [Model.sequelize.fn('sum', Model.sequelize.col('quantity_reserved')), 'total_quantity_reserved'],
+          [Model.sequelize.fn('sum', Model.sequelize.col('quantity_returned')), 'total_quantity_returned'],
+          [Model.sequelize.fn('sum', Model.sequelize.col('quantity_available')), 'total_quantity_available'],
+          'product_id'
+        ], 
+        where: { is_deleted: NO }, 
+        group: ['product_id'],
+        include: [{ model: Model.Products, as: 'products', attributes: ['code', 'name', 'is_published'] }] 
+      };
+      // Execute findAll query
+      data = await Model.Inventories.findAll(criteria);
+      if (!_.isEmpty(data[0])) {
+        res.json({
+          status: 200,
+          message: "Successfully find all data.",
+          result: data
+        });
+      } else {
+        res.json({
+          status: 200,
+          message: "No Data Found.",
+          result: false
+        });
+      }
+    } catch (err) {
+      res.json({
+        status: 401,
+        err: err,
+        message: "Failed to find all data."
+      });
+    }
+  },
+
+  /**
    * Find all by product id
    * @route GET /inventories/findAllbyProductId/:productId
    * @param req
