@@ -40,9 +40,9 @@
             <td class="text-xs-center">
               <v-tooltip left>
                 <template v-slot:activator="{ on }">
-                  <v-icon small class="mr-2" @click="editItem(props.item.id)" v-on="on">edit</v-icon>
+                  <v-icon small class="mr-2" @click="viewItem(props.item.id)" v-on="on">pageview</v-icon>
                 </template>
-                <span>Update</span>
+                <span>View</span>
               </v-tooltip>
               <v-tooltip left>
                 <template v-slot:activator="{ on }">
@@ -61,6 +61,9 @@
         </v-data-table>
       </v-card-text>
     </v-card>
+    <v-dialog v-model="dialogView" scrollable persistent max-width="850px">
+      <ModalView ref="modalView" @setDialog="setDialogView" />
+    </v-dialog>
     <v-dialog v-model="modalDelete.dialog" persistent max-width="300">
       <v-card>
         <v-card-title class="title">Confirmation</v-card-title>
@@ -78,6 +81,7 @@
 <script>
 import Alerts from "@/components/utilities/Alerts";
 import ModalForm from "@/components/modules/Payments/ModalForm";
+import ModalView from "@/components/modules/Payments/ModalView";
 import Mixins from "@/helpers/Mixins.js";
 import { mapState, mapActions } from "vuex";
 
@@ -85,11 +89,13 @@ export default {
   mixins: [Mixins],
   components: {
     Alerts,
-    ModalForm
+    ModalForm,
+    ModalView
   },
 
   data: () => ({
     dialog: false,
+    dialogView: false,
     modalDelete: {
       dialog: false,
       id: null
@@ -116,6 +122,9 @@ export default {
   watch: {
     dialog(val) {
       val || this.close();
+    },
+    dialogView(val) {
+      val || this.closeView();
     }
   },
 
@@ -126,9 +135,9 @@ export default {
       deletePaymentData: "deleteData"
     }),
 
-    editItem(id) {
-      this.setDialog(true);
-      this.$refs.modalForm.editItem(id);
+    viewItem(id) {
+      this.setDialogView(true);
+      this.$refs.modalView.viewItem(id);
     },
 
     deleteModal(id) {
@@ -158,8 +167,17 @@ export default {
       this.$refs.modalForm.close();
     },
 
+    closeView() {
+      this.setDialogView(false);
+      this.$refs.modalView.close();
+    },
+
     setDialog(value) {
       this.dialog = value;
+    },
+
+    setDialogView(value) {
+      this.dialogView = value;
     }
   }
 };
