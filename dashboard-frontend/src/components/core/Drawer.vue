@@ -222,10 +222,6 @@ export default {
             to: "/reports/stocks",
             text: "Stocks",
           },
-          {
-            to: "/",
-            text: "Sold Items Report",
-          },
         ],
       },
       {
