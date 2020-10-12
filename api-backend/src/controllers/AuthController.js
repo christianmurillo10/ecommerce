@@ -1,4 +1,5 @@
 const Model = require("../models");
+const { ErrorHandler, handleSuccess } = require("../helpers/response-helper");
 const jwt = require("../helpers/jwt-helper");
 const bcrypt = require("../helpers/bcrypt-helper");
 const {
@@ -14,11 +15,10 @@ module.exports = {
    * Login
    * @routes POST /users/login
    */
-  login: async (req, res) => {
+  login: async (req, res, next) => {
     let ip = req.headers["x-forwarded-for"] || req.ip;
     let params = req.body;
-    let statusCode = 200,
-      errors = [],
+    let errors = [],
       criteria,
       data,
       token;
@@ -26,24 +26,21 @@ module.exports = {
     try {
       // Validators
       if (_.isEmpty(params)) {
-        statusCode = 400;
         errors.push("Please check your input.");
-        throw new Error("Bad Request");
+        throw new ErrorHandler(400, errors);
       }
       if (_.isEmpty(params.username)) errors.push("Username is required.");
       if (_.isEmpty(params.password)) errors.push("Password is required.");
       if (errors.length > 0) {
-        statusCode = 400;
-        throw new Error("Bad Request");
+        throw new ErrorHandler(400, errors);
       }
 
       // Validate Account
       criteria = { where: { username: params.username } };
       user = await Model.Users.findAll(criteria);
       if (_.isEmpty(user[0])) {
-        statusCode = 400;
         errors.push("Invalid Username.");
-        throw new Error("Bad Request");
+        throw new ErrorHandler(400, errors);
       }
 
       // Validate Password
@@ -53,9 +50,8 @@ module.exports = {
         userInfo.password
       );
       if (!passwordCompare) {
-        statusCode = 400;
         errors.push("Invalid Password.");
-        throw new Error("Bad Request");
+        throw new ErrorHandler(400, errors);
       }
 
       // Update login status
@@ -69,7 +65,8 @@ module.exports = {
         ip
       );
 
-      res.status(statusCode).send({
+      handleSuccess(res, {
+        statusCode: 200,
         message: "User successfully signed in.",
         result: {
           token: token,
@@ -85,10 +82,7 @@ module.exports = {
         },
       });
     } catch (err) {
-      res.status(statusCode).send({
-        message: err.message.toString(),
-        errors: errors,
-      });
+      next(err);
     }
   },
 
@@ -96,32 +90,28 @@ module.exports = {
    * Logout
    * @routes POST /users/logout
    */
-  logout: async (req, res) => {
+  logout: async (req, res, next) => {
     let ip = req.headers["x-forwarded-for"] || req.ip;
     let params = req.body;
-    let statusCode = 200,
-      errors = [],
+    let errors = [],
       token = params.token;
 
     try {
       // Validators
       if (_.isEmpty(params)) {
-        statusCode = 400;
         errors.push("Please check your input.");
-        throw new Error("Bad Request");
+        throw new ErrorHandler(400, errors);
       }
 
       if (_.isEmpty(token)) {
-        statusCode = 400;
         errors.push("Token is required.");
-        throw new Error("Bad Request");
+        throw new ErrorHandler(400, errors);
       }
 
       let tokenData = await jwt.verifyToken(token);
       if (_.isNull(tokenData)) {
-        statusCode = 400;
         errors.push("Invalid Token.");
-        throw new Error("Bad Request");
+        throw new ErrorHandler(400, errors);
       }
 
       let user = await Model.Users.findByPk(tokenData.id);
@@ -133,15 +123,13 @@ module.exports = {
         ip
       );
 
-      res.status(statusCode).send({
+      handleSuccess(res, {
+        statusCode: 200,
         message: "Successfully signed out.",
         result: [],
       });
     } catch (err) {
-      res.status(statusCode).send({
-        message: err.message.toString(),
-        errors: errors,
-      });
+      next(err);
     }
   },
 
@@ -149,11 +137,10 @@ module.exports = {
    * Customer Login
    * @routes POST /customers/login
    */
-  customerLogin: async (req, res) => {
+  customerLogin: async (req, res, next) => {
     let ip = req.headers["x-forwarded-for"] || req.ip;
     let params = req.body;
-    let statusCode = 200,
-      errors = [],
+    let errors = [],
       criteria,
       data,
       token;
@@ -161,24 +148,21 @@ module.exports = {
     try {
       // Validators
       if (_.isEmpty(params)) {
-        statusCode = 400;
         errors.push("Please check your input.");
-        throw new Error("Bad Request");
+        throw new ErrorHandler(400, errors);
       }
       if (_.isEmpty(params.email)) errors.push("Email is required.");
       if (_.isEmpty(params.password)) errors.push("Password is required.");
       if (errors.length > 0) {
-        statusCode = 400;
-        throw new Error("Bad Request");
+        throw new ErrorHandler(400, errors);
       }
 
       // Validate Account
       criteria = { where: { email: params.email, is_deleted: NO } };
       customer = await Model.Customers.findAll(criteria);
       if (_.isEmpty(customer[0])) {
-        statusCode = 400;
         errors.push("Invalid Email.");
-        throw new Error("Bad Request");
+        throw new ErrorHandler(400, errors);
       }
 
       // Validate Password
@@ -188,9 +172,8 @@ module.exports = {
         customerInfo.password
       );
       if (!passwordCompare) {
-        statusCode = 400;
         errors.push("Invalid Password.");
-        throw new Error("Bad Request");
+        throw new ErrorHandler(400, errors);
       }
 
       if (
@@ -208,7 +191,8 @@ module.exports = {
           ip
         );
 
-        res.status(statusCode).send({
+        handleSuccess(res, {
+          statusCode: 200,
           message: "Customer successfully signed in.",
           result: {
             token: token,
@@ -224,21 +208,16 @@ module.exports = {
           },
         });
       } else if (customerInfo.is_active === NO) {
-        statusCode = 500;
         errors.push(
           "Your account is inactive, please contact administration to activate your account."
         );
-        throw new Error("Something Went Wrong");
+        throw new ErrorHandler(500, errors);
       } else {
-        statusCode = 500;
         errors.push("Your account is not yet activated.");
-        throw new Error("Something Went Wrong");
+        throw new ErrorHandler(500, errors);
       }
     } catch (err) {
-      res.status(statusCode).send({
-        message: err.message.toString(),
-        errors: errors,
-      });
+      next(err);
     }
   },
 
@@ -246,32 +225,28 @@ module.exports = {
    * Customer Logout
    * @routes POST /customers/logout
    */
-  customerlogout: async (req, res) => {
+  customerlogout: async (req, res, next) => {
     let ip = req.headers["x-forwarded-for"] || req.ip;
     let params = req.body;
-    let statusCode = 200,
-      errors = [],
+    let errors = [],
       token = params.token;
 
     try {
       // Validators
       if (_.isEmpty(params)) {
-        statusCode = 400;
         errors.push("Please check your input.");
-        throw new Error("Bad Request");
+        throw new ErrorHandler(400, errors);
       }
 
       if (_.isEmpty(token)) {
-        statusCode = 400;
         errors.push("Token is required.");
-        throw new Error("Bad Request");
+        throw new ErrorHandler(400, errors);
       }
 
       let tokenData = await jwt.verifyToken(token);
       if (_.isNull(tokenData)) {
-        statusCode = 400;
         errors.push("Invalid Token.");
-        throw new Error("Bad Request");
+        throw new ErrorHandler(400, errors);
       }
 
       let customer = await Model.Customers.findByPk(tokenData.id);
@@ -283,15 +258,13 @@ module.exports = {
         ip
       );
 
-      res.status(statusCode).send({
+      handleSuccess(res, {
+        statusCode: 200,
         message: "Successfully signed out.",
         result: [],
       });
     } catch (err) {
-      res.status(statusCode).send({
-        message: err.message.toString(),
-        errors: errors,
-      });
+      next(err);
     }
   },
 
@@ -299,42 +272,36 @@ module.exports = {
    * Validate Token
    * @routes POST /authorizations/validateToken
    */
-  validateToken: async (req, res) => {
+  validateToken: async (req, res, next) => {
     let params = req.body;
-    let statusCode = 200,
-      errors = [],
+    let errors = [],
       token = params.token;
 
     try {
       // Validators
       if (_.isEmpty(params)) {
-        statusCode = 400;
         errors.push("Please check your input.");
-        throw new Error("Bad Request");
+        throw new ErrorHandler(400, errors);
       }
 
       if (_.isEmpty(token)) {
-        statusCode = 400;
         errors.push("Token is required.");
-        throw new Error("Bad Request");
+        throw new ErrorHandler(400, errors);
       }
 
       let tokenData = await jwt.verifyToken(token);
       if (_.isNull(tokenData)) {
-        statusCode = 400;
         errors.push("Invalid Token.");
-        throw new Error("Bad Request");
+        throw new ErrorHandler(400, errors);
       }
-      
-      res.status(statusCode).send({
+
+      handleSuccess(res, {
+        statusCode: 200,
         message: "Token Exist.",
         result: [],
       });
     } catch (err) {
-      res.status(statusCode).send({
-        message: err.message.toString(),
-        errors: errors,
-      });
+      next(err);
     }
   },
 
@@ -342,10 +309,7 @@ module.exports = {
     if (req.user) {
       next();
     } else {
-      return res.status(401).json({
-        message: "Unauthorized",
-        errors: [],
-      });
+      throw new ErrorHandler(401, []);
     }
   },
 };
