@@ -26,7 +26,7 @@ module.exports = {
     try {
       // Validators
       if (_.isEmpty(params)) {
-        errors.push("Please check your input.");
+        errors.push("Invalid Parameter.");
         throw new ErrorHandler(400, errors);
       }
       if (_.isEmpty(params.username)) errors.push("Username is required.");
@@ -99,7 +99,7 @@ module.exports = {
     try {
       // Validators
       if (_.isEmpty(params)) {
-        errors.push("Please check your input.");
+        errors.push("Invalid Parameter.");
         throw new ErrorHandler(400, errors);
       }
 
@@ -148,7 +148,7 @@ module.exports = {
     try {
       // Validators
       if (_.isEmpty(params)) {
-        errors.push("Please check your input.");
+        errors.push("Invalid Parameter.");
         throw new ErrorHandler(400, errors);
       }
       if (_.isEmpty(params.email)) errors.push("Email is required.");
@@ -234,7 +234,7 @@ module.exports = {
     try {
       // Validators
       if (_.isEmpty(params)) {
-        errors.push("Please check your input.");
+        errors.push("Invalid Parameter.");
         throw new ErrorHandler(400, errors);
       }
 
@@ -280,7 +280,7 @@ module.exports = {
     try {
       // Validators
       if (_.isEmpty(params)) {
-        errors.push("Please check your input.");
+        errors.push("Invalid Parameter.");
         throw new ErrorHandler(400, errors);
       }
 
