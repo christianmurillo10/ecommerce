@@ -1,154 +1,186 @@
-const Model = require('../models');
-const { NO, YES } = require('../helpers/constant-helper');
+const Model = require("../models");
+const { ErrorHandler, handleSuccess } = require("../helpers/response-helper");
+const { NO, YES } = require("../helpers/constant-helper");
 
 module.exports = {
   /**
    * Find all
    * @route GET /customerBalance
-   * @param req
-   * @param res
-   * @returns {never}
    */
-  findAll: async (req, res) => {
-    let data, criteria;
+  findAll: async (req, res, next) => {
+    let errors = [],
+      data,
+      criteria;
 
     try {
-      // Pre-setting variables
-      criteria = { where: { is_deleted: NO }, include: [{ model: Model.Customers, as: 'customers' }, { model: Model.SalesOrders, as: 'salesOrders' }, { model: Model.Payments, as: 'payments' }] };
-      // Execute findAll query
+      // Validate Data
+      criteria = {
+        where: { is_deleted: NO },
+        include: [
+          {
+            model: Model.Customers,
+            as: "customers",
+            attributes: ["customer_no", "firstname", "middlename", "lastname"],
+          },
+          {
+            model: Model.SalesOrders,
+            as: "salesOrders",
+            attributes: ["order_no"],
+          },
+          {
+            model: Model.Payments,
+            as: "payments",
+            attributes: ["reference_no"],
+          },
+        ],
+      };
       data = await Model.CustomerBalance.findAll(criteria);
-      if (!_.isEmpty(data[0])) {
-        res.json({
-          status: 200,
-          message: "Successfully find all data.",
-          result: data
-        });
-      } else {
-        res.json({
-          status: 200,
-          message: "No Data Found.",
-          result: false
-        });
+      if (_.isEmpty(data[0])) {
+        errors.push("No data found.");
+        throw new ErrorHandler(500, errors);
       }
-    } catch (err) {
-      res.json({
-        status: 401,
-        err: err,
-        message: "Failed to find all data."
+
+      handleSuccess(res, {
+        statusCode: 200,
+        message: "Successfully find all data.",
+        result: data,
       });
+    } catch (err) {
+      next(err);
     }
   },
 
   /**
    * Find all by customer id
    * @route GET /customerBalance/findAllbyCustomerId/:customerId
-   * @param req
-   * @param res
-   * @returns {never}
    */
-  findAllbyCustomerId: async (req, res) => {
+  findAllbyCustomerId: async (req, res, next) => {
     const params = req.params;
-    let data, criteria;
+    let errors = [],
+      data,
+      criteria;
 
     try {
-      // Pre-setting variables
-      criteria = { where: { customer_id: params.customerId, is_deleted: NO }, include: [{ model: Model.SalesOrders, as: 'salesOrders' }, { model: Model.Payments, as: 'payments' }] };
-      // Execute findAll query
+      // Validate Data
+      criteria = {
+        where: { customer_id: params.customerId, is_deleted: NO },
+        include: [
+          {
+            model: Model.SalesOrders,
+            as: "salesOrders",
+            attributes: ["order_no"],
+          },
+          {
+            model: Model.Payments,
+            as: "payments",
+            attributes: ["reference_no"],
+          },
+        ],
+      };
       data = await Model.CustomerBalance.findAll(criteria);
-      if (!_.isEmpty(data[0])) {
-        res.json({
-          status: 200,
-          message: "Successfully find all data.",
-          result: data
-        });
-      } else {
-        res.json({
-          status: 200,
-          message: "No Data Found.",
-          result: false
-        });
+      if (_.isEmpty(data[0])) {
+        errors.push("No data found.");
+        throw new ErrorHandler(500, errors);
       }
-    } catch (err) {
-      res.json({
-        status: 401,
-        err: err,
-        message: "Failed to find all data."
+
+      handleSuccess(res, {
+        statusCode: 200,
+        message: "Successfully find all data.",
+        result: data,
       });
+    } catch (err) {
+      next(err);
     }
   },
 
   /**
    * Find all by sales order id
    * @route GET /customerBalance/findAllbySalesOrderId/:salesOrderId
-   * @param req
-   * @param res
-   * @returns {never}
    */
-  findAllbySalesOrderId: async (req, res) => {
+  findAllbySalesOrderId: async (req, res, next) => {
     const params = req.params;
-    let data, criteria;
+    let errors = [],
+      data,
+      criteria;
 
     try {
-      // Pre-setting variables
-      criteria = { where: { sales_order_id: params.salesOrderId, is_deleted: NO }, include: [{ model: Model.Customers, as: 'customers' }, { model: Model.Payments, as: 'payments' }] };
-      // Execute findAll query
+      // Validate Data
+      criteria = {
+        where: { sales_order_id: params.salesOrderId, is_deleted: NO },
+        include: [
+          {
+            model: Model.Customers,
+            as: "customers",
+            attributes: ["customer_no", "firstname", "middlename", "lastname"],
+          },
+          {
+            model: Model.Payments,
+            as: "payments",
+            attributes: ["reference_no"],
+          },
+        ],
+      };
       data = await Model.CustomerBalance.findAll(criteria);
-      if (!_.isEmpty(data[0])) {
-        res.json({
-          status: 200,
-          message: "Successfully find all data.",
-          result: data
-        });
-      } else {
-        res.json({
-          status: 200,
-          message: "No Data Found.",
-          result: false
-        });
+      if (_.isEmpty(data[0])) {
+        errors.push("No data found.");
+        throw new ErrorHandler(500, errors);
       }
-    } catch (err) {
-      res.json({
-        status: 401,
-        err: err,
-        message: "Failed to find all data."
+
+      handleSuccess(res, {
+        statusCode: 200,
+        message: "Successfully find all data.",
+        result: data,
       });
+    } catch (err) {
+      next(err);
     }
   },
 
   /**
    * Find by id
    * @route GET /customerBalance/:id
-   * @param req
-   * @param res
-   * @returns {never}
    */
-  findById: async (req, res) => {
-    let data, criteria;
+  findById: async (req, res, next) => {
+    let errors = [],
+      data,
+      criteria;
 
     try {
-      // Pre-setting variables
-      criteria = { where: { is_deleted: NO }, include: [{ model: Model.Customers, as: 'customers' }, { model: Model.SalesOrders, as: 'salesOrders' }, { model: Model.Payments, as: 'payments' }] };
+      // Validate Data
+      criteria = {
+        where: { is_deleted: NO },
+        include: [
+          {
+            model: Model.Customers,
+            as: "customers",
+            attributes: ["customer_no", "firstname", "middlename", "lastname"],
+          },
+          {
+            model: Model.SalesOrders,
+            as: "salesOrders",
+            attributes: ["order_no"],
+          },
+          {
+            model: Model.Payments,
+            as: "payments",
+            attributes: ["reference_no"],
+          },
+        ],
+      };
       // Execute findAll query
       data = await Model.CustomerBalance.findByPk(req.params.id, criteria);
-      if (!_.isEmpty(data)) {
-        res.json({
-          status: 200,
-          message: "Successfully find data.",
-          result: _.omit(data.get({ plain: true }), ['is_deleted'])
-        });
-      } else {
-        res.json({
-          status: 200,
-          message: "No Data Found.",
-          result: false
-        });
+      if (_.isEmpty(data)) {
+        errors.push("No data found.");
+        throw new ErrorHandler(500, errors);
       }
-    } catch (err) {
-      res.json({
-        status: 401,
-        err: err,
-        message: "Failed to find data."
+
+      handleSuccess(res, {
+        statusCode: 200,
+        message: "Successfully find data.",
+        result: _.omit(data.get({ plain: true }), ["is_deleted"]),
       });
+    } catch (err) {
+      next(err);
     }
   },
 
@@ -159,30 +191,29 @@ module.exports = {
     return new Promise((resolve, reject) => {
       try {
         let initialValues;
-        const createdAt = moment().utc(8).format('YYYY-MM-DD HH:mm:ss');
-        initialValues = { 
+        const createdAt = moment().utc(8).format("YYYY-MM-DD HH:mm:ss");
+        initialValues = {
           remarks: obj.remarks ? obj.remarks : null,
-          debit: obj.amount, 
-          balance: obj.amount, 
-          amount: obj.amount, 
-          customer_id: obj.customer_id, 
-          sales_order_id: obj.sales_order_id, 
-          created_at: createdAt 
+          debit: obj.amount,
+          balance: obj.amount,
+          amount: obj.amount,
+          customer_id: obj.customer_id,
+          sales_order_id: obj.sales_order_id,
+          created_at: createdAt,
         };
 
-        Model.CustomerBalance.create(initialValues)
-          .then(response => {
-            resolve({
-              status: 200,
-              message: "Successfully created data.",
-              result: true
-            });
+        Model.CustomerBalance.create(initialValues).then((response) => {
+          resolve({
+            status: 200,
+            message: "Successfully created data.",
+            result: true,
           });
+        });
       } catch (err) {
         resolve({
           status: 401,
           err: err,
-          message: "Failed to find data."
+          message: "Failed to find data.",
         });
       }
     });
@@ -192,13 +223,17 @@ module.exports = {
    * Insert Credit, Balance, Overpayment and Amount
    */
   insertCreditBalanceOverpaymentAndAmount: (obj) => {
-    return new Promise( async (resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       try {
         let initialValues, data, criteria;
         // Pre-setting variables
-        criteria = { 
-          where: { customer_id: obj.customer_id, sales_order_id: obj.sales_order_id, is_deleted: NO }, 
-          order: [ [ 'id', 'DESC' ]] 
+        criteria = {
+          where: {
+            customer_id: obj.customer_id,
+            sales_order_id: obj.sales_order_id,
+            is_deleted: NO,
+          },
+          order: [["id", "DESC"]],
         };
         // Execute findOne query
         data = await Model.CustomerBalance.findOne(criteria);
@@ -206,44 +241,51 @@ module.exports = {
           const plainData = data.get({ plain: true });
 
           // Set and compute initial values
-          const createdAt = moment().utc(8).format('YYYY-MM-DD HH:mm:ss');
-          const computedBalance = parseFloat(plainData.balance) - parseFloat(obj.amount);
-          const balance = parseFloat(computedBalance) > 0 ? parseFloat(computedBalance) : 0;
-          const overpayment = parseFloat(computedBalance) < 0 ? Math.abs(parseFloat(computedBalance)) : 0;
-          const credit = parseFloat(computedBalance) <= 0 ? parseFloat(plainData.balance) : parseFloat(plainData.balance) - parseFloat(computedBalance);
-  
-          initialValues = { 
+          const createdAt = moment().utc(8).format("YYYY-MM-DD HH:mm:ss");
+          const computedBalance =
+            parseFloat(plainData.balance) - parseFloat(obj.amount);
+          const balance =
+            parseFloat(computedBalance) > 0 ? parseFloat(computedBalance) : 0;
+          const overpayment =
+            parseFloat(computedBalance) < 0
+              ? Math.abs(parseFloat(computedBalance))
+              : 0;
+          const credit =
+            parseFloat(computedBalance) <= 0
+              ? parseFloat(plainData.balance)
+              : parseFloat(plainData.balance) - parseFloat(computedBalance);
+
+          initialValues = {
             remarks: obj.remarks ? obj.remarks : null,
-            credit: credit, 
-            balance: balance, 
-            overpayment: overpayment, 
-            amount: obj.amount, 
-            customer_id: obj.customer_id, 
-            sales_order_id: obj.sales_order_id, 
+            credit: credit,
+            balance: balance,
+            overpayment: overpayment,
+            amount: obj.amount,
+            customer_id: obj.customer_id,
+            sales_order_id: obj.sales_order_id,
             payment_id: obj.payment_id,
-            created_at: createdAt 
+            created_at: createdAt,
           };
-  
-          Model.CustomerBalance.create(initialValues)
-            .then(response => {
-              resolve({
-                status: 200,
-                message: "Successfully created data.",
-                result: true
-              });
+
+          Model.CustomerBalance.create(initialValues).then((response) => {
+            resolve({
+              status: 200,
+              message: "Successfully created data.",
+              result: true,
             });
+          });
         } else {
           resolve({
             status: 200,
             message: "Data doesn't exist.",
-            result: false
+            result: false,
           });
         }
       } catch (err) {
         resolve({
           status: 401,
           err: err,
-          message: "Failed to find data."
+          message: "Failed to find data.",
         });
       }
     });
