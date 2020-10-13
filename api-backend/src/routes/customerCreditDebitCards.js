@@ -8,7 +8,6 @@ router.route('/findAllbyCustomerId/:customerId').get(authController.authorizatio
 router.route('/create').post(authController.authorization, customerCreditDebitCardsController.create);
 router.route('/update/:id').put(authController.authorization, customerCreditDebitCardsController.update);
 router.route('/delete/:id').put(authController.authorization, customerCreditDebitCardsController.delete);
-router.route('/search/:value').get(authController.authorization, customerCreditDebitCardsController.search);
 router.route('/:id').get(authController.authorization, customerCreditDebitCardsController.findById);
 
 module.exports = router;

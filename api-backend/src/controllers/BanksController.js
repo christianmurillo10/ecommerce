@@ -15,6 +15,9 @@ module.exports = {
       data;
 
     try {
+      // Override Variables
+      params.created_at = moment().utc(8).format("YYYY-MM-DD HH:mm:ss");
+
       // Validators
       if (_.isEmpty(params)) {
         errors.push("Invalid Parameter.");
@@ -34,8 +37,7 @@ module.exports = {
         throw new ErrorHandler(500, errors);
       }
 
-      // Override Variables
-      params.created_at = moment().utc(8).format("YYYY-MM-DD HH:mm:ss");
+      // Pre-setting variables
       initialValues = _.pick(params, [
         "code",
         "name",
@@ -65,6 +67,9 @@ module.exports = {
       data;
 
     try {
+      // Override Variables
+      params.updated_at = moment().utc(8).format("YYYY-MM-DD HH:mm:ss");
+
       // Validators
       if (_.isEmpty(params)) {
         errors.push("Invalid Parameter.");
@@ -78,8 +83,7 @@ module.exports = {
         throw new ErrorHandler(500, errors);
       }
 
-      // Override Variables
-      params.updated_at = moment().utc(8).format("YYYY-MM-DD HH:mm:ss");
+      // Pre-setting variables
       initialValues = _.pick(params, [
         "code",
         "name",
