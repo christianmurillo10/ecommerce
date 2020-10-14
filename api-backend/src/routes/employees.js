@@ -10,6 +10,5 @@ router.route('/:id').get(authController.authorization, employeesController.findB
 router.route('/create').post(authController.authorization, employeesController.create);
 router.route('/update/:id').put(authController.authorization, employeesController.update);
 router.route('/delete/:id').put(authController.authorization, employeesController.delete);
-router.route('/search/:value').get(authController.authorization, employeesController.search);
 
 module.exports = router;
