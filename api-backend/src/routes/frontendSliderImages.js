@@ -12,6 +12,5 @@ router.route('/viewImage/:fileName').get(frontendSliderImagesController.viewImag
 router.route('/create').post(authController.authorization, upload.single('image'), frontendSliderImagesController.create);
 router.route('/update/:id').put(authController.authorization, upload.single('image'), frontendSliderImagesController.update);
 router.route('/delete/:id').put(authController.authorization, frontendSliderImagesController.delete);
-router.route('/search/:value').get(authController.authorization, frontendSliderImagesController.search);
 
 module.exports = router;
