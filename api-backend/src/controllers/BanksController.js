@@ -15,14 +15,15 @@ module.exports = {
       data;
 
     try {
-      // Override Variables
-      params.created_at = moment().utc(8).format("YYYY-MM-DD HH:mm:ss");
-
       // Validators
       if (_.isEmpty(params)) {
         errors.push("Invalid Parameter.");
         throw new ErrorHandler(400, errors);
       }
+
+      // Override Variables
+      params.created_at = moment().utc(8).format("YYYY-MM-DD HH:mm:ss");
+
       if (_.isEmpty(params.code)) errors.push("Code is required.");
       if (_.isEmpty(params.name)) errors.push("Name is required.");
       if (errors.length > 0) {
@@ -67,14 +68,14 @@ module.exports = {
       data;
 
     try {
-      // Override Variables
-      params.updated_at = moment().utc(8).format("YYYY-MM-DD HH:mm:ss");
-
       // Validators
       if (_.isEmpty(params)) {
         errors.push("Invalid Parameter.");
         throw new ErrorHandler(400, errors);
       }
+      
+      // Override Variables
+      params.updated_at = moment().utc(8).format("YYYY-MM-DD HH:mm:ss");
 
       // Validate Data
       data = await Model.Banks.findByPk(req.params.id);

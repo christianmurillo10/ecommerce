@@ -15,6 +15,12 @@ module.exports = {
       data;
 
     try {
+      // Validators
+      if (_.isEmpty(params)) {
+        errors.push("Invalid Parameter.");
+        throw new ErrorHandler(400, errors);
+      }
+      
       // Override variables
       params.created_at = moment().utc(8).format("YYYY-MM-DD HH:mm:ss");
       params.bank_id = params.bank_id ? params.bank_id.toLocaleString() : null;
@@ -23,11 +29,6 @@ module.exports = {
         : null;
       params.type = params.type ? params.type.toLocaleString() : null;
 
-      // Validators
-      if (_.isEmpty(params)) {
-        errors.push("Invalid Parameter.");
-        throw new ErrorHandler(400, errors);
-      }
       if (_.isEmpty(params.card_no)) errors.push("Card No. is required.");
       if (_.isEmpty(params.security_code))
         errors.push("Security Code is required.");
@@ -95,14 +96,14 @@ module.exports = {
       data;
 
     try {
-      // Override variables
-      params.updated_at = moment().utc(8).format("YYYY-MM-DD HH:mm:ss");
-
       // Validators
       if (_.isEmpty(params)) {
         errors.push("Invalid Parameter.");
         throw new ErrorHandler(400, errors);
       }
+      
+      // Override variables
+      params.updated_at = moment().utc(8).format("YYYY-MM-DD HH:mm:ss");
 
       // Validate Data
       criteria = {

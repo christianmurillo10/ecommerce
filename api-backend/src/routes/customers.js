@@ -20,6 +20,5 @@ router.route('/create').post(authController.authorization, upload.single('image'
 router.route('/update/:id').put(authController.authorization, upload.single('image'), customersController.update);
 router.route('/delete/:id').put(authController.authorization, customersController.delete);
 router.route('/changePassword/:id').put(authController.authorization, customersController.changePassword);
-router.route('/search/:value').get(authController.authorization, customersController.search);
 
 module.exports = router;
