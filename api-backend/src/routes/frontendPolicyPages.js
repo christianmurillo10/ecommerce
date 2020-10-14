@@ -12,7 +12,6 @@ router.route('/').get(authController.authorization, frontendPolicyPages.findAll)
 router.route('/create').post(authController.authorization, frontendPolicyPages.create);
 router.route('/update/:id').put(authController.authorization, frontendPolicyPages.update);
 router.route('/delete/:id').put(authController.authorization, frontendPolicyPages.delete);
-router.route('/search/:value').get(authController.authorization, frontendPolicyPages.search);
 router.route('/:id').get(authController.authorization, frontendPolicyPages.findById);
 
 module.exports = router;
