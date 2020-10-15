@@ -1,607 +1,487 @@
-const Model = require('../models');
-const { NO, YES } = require('../helpers/constant-helper');
+const Model = require("../models");
+const { ErrorHandler, handleSuccess } = require("../helpers/response-helper");
+const { NO, YES } = require("../helpers/constant-helper");
 
 module.exports = {
   /**
-   * Create
-   * @param req
-   * @param res
-   * @returns {Promise<void>}
-   * @routes POST /inventories/create
+   * Create bulk with product variants by product id
+   * @routes POST /inventories/generateBulkWithProductVariantsByProductId
    */
-  create: async (req, res) => {
+  generateBulkWithProductVariantsByProductId: async (req, res, next) => {
     const params = req.body;
-    let criteria, initialValues, data;
-
-    // Validators
-    if (_.isUndefined(params))
-      return res.badRequest({ err: "Invalid Parameter: [params]" });
-    if (_.isEmpty(params))
-      return res.badRequest({ err: "Empty Parameter: [params]" });
-
-    // Override variables
-    params.created_at = moment().utc(8).format('YYYY-MM-DD HH:mm:ss');
-    params.quantity_in = params.quantity_in.toLocaleString();
-    params.quantity_available = params.quantity_in;
-    params.user_id = req.user.id.toLocaleString();
-    params.product_id = params.product_id.toLocaleString();
+    let errors = [],
+      criteriaProduct,
+      criteriaVariants,
+      dataVariants,
+      dataProduct;
 
     try {
       // Validators
-      if (_.isEmpty(params.quantity_in)) return res.json({ status: 200, message: "Quantity In is required.", result: false });
-      if (_.isEmpty(params.quantity_available)) return res.json({ status: 200, message: "Quantity Available is required.", result: false });
-      if (_.isEmpty(params.product_id)) return res.json({ status: 200, message: "Product is required.", result: false });
-
-      // Pre-setting variables
-      criteria = { where: { product_id: params.product_id, is_deleted: NO }, include: [{ model: Model.Products, as: 'products' }, { model: Model.Users, as: 'users' }] };
-      initialValues = _.pick(params, [
-        'quantity_in',
-        'quantity_available',
-        'user_id',
-        'product_id',
-        'created_at'
-      ]);
-      // Execute findAll query
-      data = await Model.Inventories.findAll(criteria);
-      if (_.isEmpty(data[0])) {
-        await Model.Inventories.create(initialValues)
-          .then(() => Model.Inventories.findOrCreate(criteria))
-          .then(([finalData, created]) => {
-            res.json({
-              status: 200,
-              message: "Successfully created data.",
-              result: _.omit(finalData.get({ plain: true }), ['is_deleted'])
-            });
-          })
-      } else {
-        res.json({
-          status: 200,
-          message: "Data already exist.",
-          result: false
-        });
+      if (_.isEmpty(params)) {
+        errors.push("Invalid Parameter.");
+        throw new ErrorHandler(400, errors);
       }
+
+      // Override variables
+      params.created_at = moment().utc(8).format("YYYY-MM-DD HH:mm:ss");
+      params.user_id = req.user.id.toLocaleString();
+      params.product_id = params.product_id.toLocaleString();
+
+      if (_.isEmpty(params.product_id)) {
+        errors.push("Product is required.");
+        throw new ErrorHandler(400, errors);
+      }
+
+      // Validate Data
+      // Get Product Data
+      criteriaProduct = {
+        attributes: ["code", "name", "unit", "price_amount"],
+        where: { is_deleted: NO },
+      };
+      dataProduct = await Model.Products.findByPk(
+        params.product_id,
+        criteriaProduct
+      );
+      if (_.isEmpty(dataProduct)) {
+        errors.push("Data doesn't exist.");
+        throw new ErrorHandler(500, errors);
+      }
+
+      // Get Variants Data by product id
+      criteriaVariants = {
+        where: { product_id: params.product_id, is_deleted: NO },
+      };
+      dataVariants = await Model.ProductVariants.findAll(criteriaVariants);
+      if (_.isEmpty(dataVariants)) {
+        errors.push("No Product Variant found.");
+        throw new ErrorHandler(500, errors);
+      }
+
+      // Setup bulk data by product variant values
+      const bulkInitialValue = await setBulkInventoryData(
+        params,
+        dataVariants,
+        dataProduct
+      );
+
+      // Get existing SKU in inventory by product id
+      const criteriaInventories = {
+        attributes: ["sku"],
+        where: { product_id: params.product_id, is_deleted: NO },
+        raw: true,
+      };
+      const existingInventories = await Model.Inventories.findAll(
+        criteriaInventories
+      );
+
+      // Filter new bulk data and existing data
+      const filteredBulkValues = bulkInitialValue.filter(
+        (o) => !existingInventories.find((o2) => o.sku === o2.sku)
+      );
+
+      if (filteredBulkValues.length < 1) {
+        errors.push("No data to be generated.");
+        throw new ErrorHandler(500, errors);
+      }
+
+      // Create bulk inventories
+      Model.Inventories.bulkCreate(filteredBulkValues).then(
+        async (response) => {
+          handleSuccess(res, {
+            statusCode: 201,
+            message: "Successfully created data.",
+            result: [],
+          });
+        }
+      );
     } catch (err) {
-      res.json({
-        status: 401,
-        err: err,
-        message: "Failed creating data."
-      });
+      next(err);
     }
   },
 
   /**
    * Add Stock
    * @route PUT /inventories/addStock/:id
-   * @param req
-   * @param res
-   * @returns {never}
    */
-  addStock: async (req, res) => {
+  addStock: async (req, res, next) => {
     const params = req.body;
-    let initialValues, inventoryHistoryInitialValue, data, criteria;
-
-    if (_.isUndefined(params))
-      return res.badRequest({ err: "Invalid Parameter: [params]" });
-    if (_.isEmpty(params))
-      return res.badRequest({ err: "Empty Parameter: [params]" });
-
-    // Override variables
-    params.updated_at = moment().utc(8).format('YYYY-MM-DD HH:mm:ss');
-    params.quantity = params.quantity.toLocaleString();
-    params.user_id = req.user.id.toLocaleString();
+    let errors = [],
+      initialValues,
+      inventoryHistoryInitialValue,
+      data,
+      criteria;
 
     try {
       // Validators
-      if (_.isEmpty(params.quantity)) return res.json({ status: 200, message: "Quantity is required.", result: false });
+      if (_.isEmpty(params)) {
+        errors.push("Invalid Parameter.");
+        throw new ErrorHandler(400, errors);
+      }
 
-      // Pre-setting variables
+      // Override variables
+      params.updated_at = moment().utc(8).format("YYYY-MM-DD HH:mm:ss");
+      params.quantity = params.quantity.toLocaleString();
+      params.user_id = req.user.id.toLocaleString();
+
+      if (_.isEmpty(params.quantity)) {
+        errors.push("Quantity is required.");
+        throw new ErrorHandler(400, errors);
+      }
+
+      // Validate Data
       criteria = { where: { is_deleted: NO } };
-      // Execute findByPk query
       data = await Model.Inventories.findByPk(req.params.id);
-      if (!_.isEmpty(data)) {
-        let newQuantityIn, newQuantityAvailable;
-        newQuantityIn = parseInt(data.quantity_in) + parseInt(params.quantity);
-        newQuantityAvailable = parseInt(data.quantity_available) + parseInt(params.quantity);
-        initialValues = { quantity_in: newQuantityIn, quantity_available: newQuantityAvailable, updated_at: params.updated_at };
-        inventoryHistoryInitialValue = { quantity_in: params.quantity, quantity_available: params.quantity };
-
-        data.update(initialValues)
-          .then(() => Model.Inventories.findByPk(data.id, criteria)
-            .then(finalData => {
-            inventoryHistoryInitialValue.user_id = params.user_id;
-            inventoryHistoryInitialValue.inventory_id = data.id;
-            inventoryHistoryInitialValue.created_at = moment().utc(8).format('YYYY-MM-DD HH:mm:ss');
-            
-            // Saving Inventory History
-            Model.InventoryHistories.create(inventoryHistoryInitialValue)
-              .then(response => {
-                res.json({
-                  status: 200,
-                  message: "Successfully update data.",
-                  result: _.omit(finalData.get({ plain: true }), ['is_deleted'])
-                });
-              });
-          }));
-      } else {
-        res.json({
-          status: 200,
-          message: "Data doesn't exist.",
-          result: false
-        });
+      if (_.isEmpty(data)) {
+        errors.push("Data doesn't exist.");
+        throw new ErrorHandler(500, errors);
       }
-    } catch (err) {
-      res.json({
-        status: 401,
-        err: err,
-        message: "Failed updating data."
-      });
-    }
-  },
 
-  /**
-   * Create bulk with product variants by product id
-   * @param req
-   * @param res
-   * @returns {Promise<void>}
-   * @routes POST /inventories/generateBulkWithProductVariantsByProductId
-   */
-  generateBulkWithProductVariantsByProductId: async (req, res) => {
-    const params = req.body;
-    let criteriaProduct, criteriaVariants, dataProduct, dataVariants;
+      let newQuantityIn, newQuantityAvailable;
+      newQuantityIn = parseInt(data.quantity_in) + parseInt(params.quantity);
+      newQuantityAvailable =
+        parseInt(data.quantity_available) + parseInt(params.quantity);
+      initialValues = {
+        quantity_in: newQuantityIn,
+        quantity_available: newQuantityAvailable,
+        updated_at: params.updated_at,
+      };
+      inventoryHistoryInitialValue = {
+        quantity_in: params.quantity,
+        quantity_available: params.quantity,
+      };
 
-    // Validators
-    if (_.isUndefined(params))
-      return res.badRequest({ err: "Invalid Parameter: [params]" });
-    if (_.isEmpty(params))
-      return res.badRequest({ err: "Empty Parameter: [params]" });
+      data.update(initialValues).then(() =>
+        Model.Inventories.findByPk(data.id, criteria).then((finalData) => {
+          inventoryHistoryInitialValue.user_id = params.user_id;
+          inventoryHistoryInitialValue.inventory_id = data.id;
+          inventoryHistoryInitialValue.created_at = moment()
+            .utc(8)
+            .format("YYYY-MM-DD HH:mm:ss");
 
-    // Override variables
-    params.created_at = moment().utc(8).format('YYYY-MM-DD HH:mm:ss');
-    params.user_id = req.user.id.toLocaleString();
-    params.product_id = params.product_id.toLocaleString();
-
-    try {
-      // // Validators
-      if (_.isEmpty(params.product_id)) return res.json({ status: 200, message: "Product is required.", result: false });
-
-      // Pre-setting variables
-      criteriaProduct = { attributes: ['code', 'name', 'unit', 'price_amount'], where: { is_deleted: NO } };
-      criteriaVariants = { where: { product_id: params.product_id, is_deleted: NO } };
-
-      // Execute query
-      dataProduct = await Model.Products.findByPk(params.product_id, criteriaProduct);
-      dataVariants = await Model.ProductVariants.findAll(criteriaVariants);
-      
-      if (!_.isEmpty(dataVariants)) {
-        // Setup bulk data by product variant values
-        const bulkInitialValue = await setBulkInventoryData(params, dataVariants, dataProduct);
-
-        // Get existing SKU in inventory by product id
-        const criteriaInventories = { attributes: ['sku'], where: { product_id: params.product_id, is_deleted: NO }, raw: true };
-        const existingInventories = await Model.Inventories.findAll(criteriaInventories);
-
-        // Filter new bulk data and existing data
-        const filteredBulkValues = bulkInitialValue.filter(o => !existingInventories.find(o2 => o.sku === o2.sku));
-
-        if (filteredBulkValues.length > 0) {
-          // Create bulk inventories
-          Model.Inventories.bulkCreate(filteredBulkValues)
-            .then(async response => {
-              res.json({
-                status: 200,
-                message: "Successfully created data.",
-                result: true
+          // Saving Inventory History
+          Model.InventoryHistories.create(inventoryHistoryInitialValue).then(
+            (response) => {
+              handleSuccess(res, {
+                statusCode: 200,
+                message: "Successfully update data.",
+                result: _.omit(finalData.get({ plain: true }), ["is_deleted"]),
               });
-            });
-        } else {
-          res.json({
-            status: 200,
-            message: "No data to be generated.",
-            result: false
-          });
-        }
-      } else {
-        res.json({
-          status: 200,
-          message: "No Product Variant found.",
-          result: false
-        });
-      }
+            }
+          );
+        })
+      );
     } catch (err) {
-      res.json({
-        status: 401,
-        err: err,
-        message: "Failed creating data."
-      });
+      next(err);
     }
   },
 
   /**
    * Update
    * @route PUT /inventories/update/:id
-   * @param req
-   * @param res
-   * @returns {never}
    */
-  update: async (req, res) => {
+  update: async (req, res, next) => {
     const params = req.body;
-    let initialValues, data, criteria;
-
-    if (_.isUndefined(params))
-      return res.badRequest({ err: "Invalid Parameter: [params]" });
-    if (_.isEmpty(params))
-      return res.badRequest({ err: "Empty Parameter: [params]" });
+    let errors = [],
+      initialValues,
+      data,
+      criteria;
 
     try {
+      // Validators
+      if (_.isEmpty(params)) {
+        errors.push("Invalid Parameter.");
+        throw new ErrorHandler(400, errors);
+      }
+
+      // Override Variables
+      params.updated_at = moment().utc(8).format("YYYY-MM-DD HH:mm:ss");
+
+      // Validate Data
+      data = await Model.Inventories.findByPk(req.params.id);
+      if (_.isEmpty(data)) {
+        errors.push("Data doesn't exist.");
+        throw new ErrorHandler(500, errors);
+      }
+
       // Pre-setting variables
       criteria = { where: { is_deleted: NO } };
-      initialValues = _.pick(params, [
-        'name',
-        'sku',
-        'quantity_in',
-        'quantity_out',
-        'quantity_reserved',
-        'quantity_returned',
-        'quantity_available',
-        'unit',
-        'price_amount',
-        'product_id'
-      ]);
-      // Execute findByPk query
-      data = await Model.Inventories.findByPk(req.params.id);
-      if (!_.isEmpty(data)) {
-        await data.update(initialValues)
-          .then(() => Model.Inventories.findByPk(data.id, criteria)
-            .then(finalData => {
-              res.json({
-                status: 200,
-                message: "Successfully updated data.",
-                result: _.omit(finalData.get({ plain: true }), ['is_deleted'])
-              });
-            }));
-      } else {
-        res.json({
-          status: 200,
-          message: "Data doesn't exist.",
-          result: false
-        });
-      }
+      initialValues = _.pick(params, ["name", "sku", "unit", "updated_at"]);
+
+      data.update(initialValues).then(() =>
+        Model.Inventories.findByPk(data.id, criteria).then((finalData) => {
+          handleSuccess(res, {
+            statusCode: 200,
+            message: "Successfully updated data.",
+            result: _.omit(finalData.get({ plain: true }), ["is_deleted"]),
+          });
+        })
+      );
     } catch (err) {
-      res.json({
-        status: 401,
-        err: err,
-        message: "Failed updating data."
-      });
+      next(err);
     }
   },
 
   /**
    * Delete
    * @route PUT /inventories/delete/:id
-   * @param req
-   * @param res
-   * @returns {never}
    */
-  delete: async (req, res) => {
-    let data;
+  delete: async (req, res, next) => {
+    let errors = [],
+      data;
 
     try {
-      // Execute findByPk query
+      // Validate Data
       data = await Model.Inventories.findByPk(req.params.id);
-      if (!_.isEmpty(data)) {
-        let finalData = await data.update({ is_deleted: YES });
-        res.json({
-          status: 200,
-          message: "Successfully deleted data.",
-          result: finalData
-        });
-      } else {
-        res.json({
-          status: 200,
-          message: "Data doesn't exist.",
-          result: false
-        });
+      if (_.isEmpty(data)) {
+        errors.push("Data doesn't exist.");
+        throw new ErrorHandler(500, errors);
       }
+      let finalData = await data.update({ is_deleted: YES });
+
+      handleSuccess(res, {
+        statusCode: 200,
+        message: "Successfully deleted data.",
+        result: finalData,
+      });
     } catch (err) {
-      res.json({
-        status: 401,
-        err: err,
-        message: "Failed deleting data."
-      });
-    }
-  },
-
-  /**
-   * Search
-   * @route POST /inventories/search/:value
-   * @param req
-   * @param res
-   * @returns {never}
-   */
-  search: async (req, res) => {
-    const params = req.params;
-    let query, data;
-
-    if (_.isUndefined(params))
-      return res.badRequest({ err: "Invalid Parameter: [params]" });
-    if (_.isEmpty(params))
-      return res.badRequest({ err: "Empty Parameter: [params]" });
-
-    try {
-      // Pre-setting variables
-      query = `SELECT 
-                id, 
-                quantity_in, 
-                quantity_out, 
-                quantity_reserved, 
-                quantity_returned, 
-                quantity_available, 
-                product_id, 
-                created_at, 
-                updated_at 
-              FROM inventories 
-              WHERE CONCAT(quantity_in, quantity_out, quantity_reserved, quantity_returned, quantity_available) LIKE ? AND is_deleted = ${NO};`;
-      // Execute native query
-      data = await Model.sequelize.query(query, {
-        replacements: [`%${params.value}%`],
-        type: Model.sequelize.QueryTypes.SELECT
-      });
-      if (!_.isEmpty(data)) {
-        res.json({
-          status: 200,
-          message: "Successfully searched data.",
-          result: data
-        });
-      } else {
-        res.json({
-          status: 200,
-          message: "No Data Found.",
-          result: false
-        });
-      }
-    } catch (err) {
-      res.json({
-        status: 401,
-        err: err,
-        message: "Failed to search data."
-      });
+      next(err);
     }
   },
 
   /**
    * Find all
    * @route GET /inventories
-   * @param req
-   * @param res
-   * @returns {never}
    */
-  findAll: async (req, res) => {
-    let data, criteria;
+  findAll: async (req, res, next) => {
+    let errors = [],
+      data,
+      criteria;
 
     try {
-      // Pre-setting variables
-      criteria = { where: { is_deleted: NO }, include: [{ model: Model.Products, as: 'products' }, { model: Model.Users, as: 'users' }] };
+      // Validate Data
+      criteria = {
+        where: { is_deleted: NO },
+        include: [
+          { model: Model.Products, as: "products" },
+          { model: Model.Users, as: "users" },
+        ],
+      };
       // Execute findAll query
       data = await Model.Inventories.findAll(criteria);
-      if (!_.isEmpty(data[0])) {
-        res.json({
-          status: 200,
-          message: "Successfully find all data.",
-          result: data
-        });
-      } else {
-        res.json({
-          status: 200,
-          message: "No Data Found.",
-          result: false
-        });
+      if (_.isEmpty(data[0])) {
+        errors.push("No data found.");
+        throw new ErrorHandler(500, errors);
       }
-    } catch (err) {
-      res.json({
-        status: 401,
-        err: err,
-        message: "Failed to find all data."
+
+      handleSuccess(res, {
+        statusCode: 200,
+        message: "Successfully find all data.",
+        result: data,
       });
+    } catch (err) {
+      next(err);
     }
   },
 
   /**
    * Find all total quantity
    * @route GET /inventories/findAllTotalQuantity
-   * @param req
-   * @param res
-   * @returns {never}
    */
-  findAllTotalQuantity: async (req, res) => {
-    let data, criteria;
+  findAllTotalQuantity: async (req, res, next) => {
+    let errors = [],
+      data,
+      criteria;
 
     try {
-      // Pre-setting variables
-      criteria = { 
+      // Validate Data
+      criteria = {
         attributes: [
-          [Model.sequelize.fn('sum', Model.sequelize.col('quantity_in')), 'total_quantity_in'],
-          [Model.sequelize.fn('sum', Model.sequelize.col('quantity_out')), 'total_quantity_out'],
-          [Model.sequelize.fn('sum', Model.sequelize.col('quantity_reserved')), 'total_quantity_reserved'],
-          [Model.sequelize.fn('sum', Model.sequelize.col('quantity_returned')), 'total_quantity_returned'],
-          [Model.sequelize.fn('sum', Model.sequelize.col('quantity_available')), 'total_quantity_available'],
-          'product_id'
-        ], 
-        where: { is_deleted: NO }, 
-        group: ['product_id'],
-        include: [{ model: Model.Products, as: 'products', attributes: ['code', 'name', 'is_published'] }] 
+          [
+            Model.sequelize.fn("sum", Model.sequelize.col("quantity_in")),
+            "total_quantity_in",
+          ],
+          [
+            Model.sequelize.fn("sum", Model.sequelize.col("quantity_out")),
+            "total_quantity_out",
+          ],
+          [
+            Model.sequelize.fn("sum", Model.sequelize.col("quantity_reserved")),
+            "total_quantity_reserved",
+          ],
+          [
+            Model.sequelize.fn("sum", Model.sequelize.col("quantity_returned")),
+            "total_quantity_returned",
+          ],
+          [
+            Model.sequelize.fn(
+              "sum",
+              Model.sequelize.col("quantity_available")
+            ),
+            "total_quantity_available",
+          ],
+          "product_id",
+        ],
+        where: { is_deleted: NO },
+        group: ["product_id"],
+        include: [
+          {
+            model: Model.Products,
+            as: "products",
+            attributes: ["code", "name", "is_published"],
+          },
+        ],
       };
-      // Execute findAll query
       data = await Model.Inventories.findAll(criteria);
-      if (!_.isEmpty(data[0])) {
-        res.json({
-          status: 200,
-          message: "Successfully find all data.",
-          result: data
-        });
-      } else {
-        res.json({
-          status: 200,
-          message: "No Data Found.",
-          result: false
-        });
+      if (_.isEmpty(data[0])) {
+        errors.push("No data found.");
+        throw new ErrorHandler(500, errors);
       }
-    } catch (err) {
-      res.json({
-        status: 401,
-        err: err,
-        message: "Failed to find all data."
+
+      handleSuccess(res, {
+        statusCode: 200,
+        message: "Successfully find all data.",
+        result: data,
       });
+    } catch (err) {
+      next(err);
     }
   },
 
   /**
    * Find all by product id
    * @route GET /inventories/findAllbyProductId/:productId
-   * @param req
-   * @param res
-   * @returns {never}
    */
-  findAllbyProductId: async (req, res) => {
+  findAllbyProductId: async (req, res, next) => {
     const params = req.params;
-    let data, criteria;
+    let errors = [],
+      data,
+      criteria;
 
     try {
-      // Pre-setting variables
-      criteria = { where: { product_id: params.productId, is_deleted: NO }, order: [ [ 'created_at', 'ASC' ]] };
-      // Execute findAll query
+      // Validate Data
+      criteria = {
+        where: { product_id: params.productId, is_deleted: NO },
+        order: [["created_at", "ASC"]],
+      };
       data = await Model.Inventories.findAll(criteria);
-      if (!_.isEmpty(data[0])) {
-        res.json({
-          status: 200,
-          message: "Successfully find all data.",
-          result: data
-        });
-      } else {
-        res.json({
-          status: 200,
-          message: "No Data Found.",
-          result: false
-        });
+      if (_.isEmpty(data[0])) {
+        errors.push("No data found.");
+        throw new ErrorHandler(500, errors);
       }
-    } catch (err) {
-      res.json({
-        status: 401,
-        err: err,
-        message: "Failed to find all data."
+
+      handleSuccess(res, {
+        statusCode: 200,
+        message: "Successfully find all data.",
+        result: data,
       });
+    } catch (err) {
+      next(err);
     }
   },
 
   /**
    * Find available quantity by product id
-  * @route GET /inventories/findAvailableQuantityByProductId/:productId
-   * @param req
-   * @param res
-   * @returns {never}
+   * @route GET /inventories/findAvailableQuantityByProductId/:productId
    */
-  findAvailableQuantityByProductId: async (req, res) => {
+  findAvailableQuantityByProductId: async (req, res, next) => {
     const params = req.params;
-    let data, criteria;
+    let errors = [],
+      data,
+      criteria;
 
     try {
-      // Pre-setting variables
-      criteria = { attributes: ['quantity_available'], where: { product_id: params.productId, is_deleted: NO }, order: [ [ 'created_at', 'DESC' ]] };
-      // Execute findAll query
+      // Validate Data
+      criteria = {
+        attributes: ["quantity_available"],
+        where: { product_id: params.productId, is_deleted: NO },
+        order: [["created_at", "DESC"]],
+      };
       data = await Model.Inventories.findOne(criteria);
-      if (!_.isEmpty(data)) {
-        res.json({
-          status: 200,
-          message: "Successfully find all data.",
-          result: data.get({ plain: true })
-        });
-      } else {
-        res.json({
-          status: 200,
-          message: "No Data Found.",
-          result: false
-        });
+      if (_.isEmpty(data)) {
+        errors.push("No data found.");
+        throw new ErrorHandler(500, errors);
       }
-    } catch (err) {
-      res.json({
-        status: 401,
-        err: err,
-        message: "Failed to find all data."
+
+      handleSuccess(res, {
+        statusCode: 200,
+        message: "Successfully find all data.",
+        result: data.get({ plain: true }),
       });
+    } catch (err) {
+      next(err);
     }
   },
 
   /**
    * Find by sku
    * @route GET /inventories/findBySku/:sku
-   * @param req
-   * @param res
-   * @returns {never}
    */
-  findBySku: async (req, res) => {
+  findBySku: async (req, res, next) => {
     const params = req.params;
-    let data, criteria;
+    let errors = [],
+      data,
+      criteria;
 
     try {
-      // Pre-setting variables
-      criteria = { attributes: ['sku', 'quantity_available', 'unit', 'price_amount', 'product_id'], where: { sku: params.sku, is_deleted: NO }, order: [ [ 'created_at', 'DESC' ]] };
-      // Execute findAll query
+      // Validate Data
+      criteria = {
+        attributes: [
+          "sku",
+          "quantity_available",
+          "unit",
+          "price_amount",
+          "product_id",
+        ],
+        where: { sku: params.sku, is_deleted: NO },
+        order: [["created_at", "DESC"]],
+      };
       data = await Model.Inventories.findOne(criteria);
-      if (!_.isEmpty(data)) {
-        res.json({
-          status: 200,
-          message: "Successfully find data.",
-          result: data.get({ plain: true })
-        });
-      } else {
-        res.json({
-          status: 200,
-          message: "No Data Found.",
-          result: false
-        });
+      if (_.isEmpty(data)) {
+        errors.push("No data found.");
+        throw new ErrorHandler(500, errors);
       }
-    } catch (err) {
-      res.json({
-        status: 401,
-        err: err,
-        message: "Failed to find data."
+
+      handleSuccess(res, {
+        statusCode: 200,
+        message: "Successfully find data.",
+        result: data.get({ plain: true }),
       });
+    } catch (err) {
+      next(err);
     }
   },
 
   /**
    * Find by id
    * @route GET /inventories/:id
-   * @param req
-   * @param res
-   * @returns {never}
    */
-  findById: async (req, res) => {
-    let data, criteria;
+  findById: async (req, res, next) => {
+    let errors = [],
+      data,
+      criteria;
 
     try {
-      // Pre-setting variables
-      criteria = { where: { is_deleted: NO }, include: [{ model: Model.Products, as: 'products' }, { model: Model.Users, as: 'users' }] };
-      // Execute findAll query
+      // Validate Data
+      criteria = {
+        where: { is_deleted: NO },
+        include: [
+          { model: Model.Products, as: "products" },
+          { model: Model.Users, as: "users" },
+        ],
+      };
       data = await Model.Inventories.findByPk(req.params.id, criteria);
-      if (!_.isEmpty(data)) {
-        res.json({
-          status: 200,
-          message: "Successfully find data.",
-          result: _.omit(data.get({ plain: true }), ['is_deleted'])
-        });
-      } else {
-        res.json({
-          status: 200,
-          message: "No Data Found.",
-          result: false
-        });
+      if (_.isEmpty(data)) {
+        errors.push("No data found.");
+        throw new ErrorHandler(500, errors);
       }
-    } catch (err) {
-      res.json({
-        status: 401,
-        err: err,
-        message: "Failed to find data."
+
+      handleSuccess(res, {
+        statusCode: 200,
+        message: "Successfully find data.",
+        result: _.omit(data.get({ plain: true }), ["is_deleted"]),
       });
+    } catch (err) {
+      next(err);
     }
   },
 
@@ -617,71 +497,113 @@ module.exports = {
       try {
         let initialValues, inventoryHistoryInitialValue, data, criteria;
         // Pre-setting variables
-        criteria = { where: { sku: obj.sku, product_id: obj.product_id, is_deleted: NO } };
+        criteria = {
+          where: { sku: obj.sku, product_id: obj.product_id, is_deleted: NO },
+        };
         // Execute findOne query
         data = await Model.Inventories.findOne(criteria);
         if (!_.isEmpty(data)) {
-          const updatedAt = moment().utc(8).format('YYYY-MM-DD HH:mm:ss');
+          const updatedAt = moment().utc(8).format("YYYY-MM-DD HH:mm:ss");
           let computedQuantity, newQuantityReserved, newQuantityAvailable;
-          switch(obj.type) {
-            case 'INSERT':
-              newQuantityReserved = parseInt(data.quantity_reserved) + parseInt(obj.new_quantity);
-              newQuantityAvailable = parseInt(data.quantity_available) - parseInt(obj.new_quantity);
-              initialValues = { quantity_reserved: newQuantityReserved, quantity_available: newQuantityAvailable, updated_at: updatedAt };
-              inventoryHistoryInitialValue = { quantity_reserved: obj.new_quantity, quantity_available: -obj.new_quantity };
+          switch (obj.type) {
+            case "INSERT":
+              newQuantityReserved =
+                parseInt(data.quantity_reserved) + parseInt(obj.new_quantity);
+              newQuantityAvailable =
+                parseInt(data.quantity_available) - parseInt(obj.new_quantity);
+              initialValues = {
+                quantity_reserved: newQuantityReserved,
+                quantity_available: newQuantityAvailable,
+                updated_at: updatedAt,
+              };
+              inventoryHistoryInitialValue = {
+                quantity_reserved: obj.new_quantity,
+                quantity_available: -obj.new_quantity,
+              };
               break;
-            case 'UPDATE':
+            case "UPDATE":
               if (obj.old_quantity > obj.new_quantity) {
                 // old_quantity - new_quantity
-                computedQuantity = parseInt(obj.old_quantity) - parseInt(obj.new_quantity);
-                newQuantityReserved = parseInt(data.quantity_reserved) - computedQuantity;
-                newQuantityAvailable = parseInt(data.quantity_available) + computedQuantity;
-                initialValues = { quantity_reserved: newQuantityReserved, quantity_available: newQuantityAvailable, updated_at: updatedAt };
-                inventoryHistoryInitialValue = { quantity_reserved: -computedQuantity, quantity_available: computedQuantity };
+                computedQuantity =
+                  parseInt(obj.old_quantity) - parseInt(obj.new_quantity);
+                newQuantityReserved =
+                  parseInt(data.quantity_reserved) - computedQuantity;
+                newQuantityAvailable =
+                  parseInt(data.quantity_available) + computedQuantity;
+                initialValues = {
+                  quantity_reserved: newQuantityReserved,
+                  quantity_available: newQuantityAvailable,
+                  updated_at: updatedAt,
+                };
+                inventoryHistoryInitialValue = {
+                  quantity_reserved: -computedQuantity,
+                  quantity_available: computedQuantity,
+                };
               } else if (obj.old_quantity < obj.new_quantity) {
                 // new_quantity - old_quantity
-                computedQuantity = parseInt(obj.new_quantity) - parseInt(obj.old_quantity);
-                newQuantityReserved = parseInt(data.quantity_reserved) + computedQuantity;
-                newQuantityAvailable = parseInt(data.quantity_available) - computedQuantity;
-                initialValues = { quantity_reserved: newQuantityReserved, quantity_available: newQuantityAvailable, updated_at: updatedAt };
-                inventoryHistoryInitialValue = { quantity_reserved: computedQuantity, quantity_available: -computedQuantity };
+                computedQuantity =
+                  parseInt(obj.new_quantity) - parseInt(obj.old_quantity);
+                newQuantityReserved =
+                  parseInt(data.quantity_reserved) + computedQuantity;
+                newQuantityAvailable =
+                  parseInt(data.quantity_available) - computedQuantity;
+                initialValues = {
+                  quantity_reserved: newQuantityReserved,
+                  quantity_available: newQuantityAvailable,
+                  updated_at: updatedAt,
+                };
+                inventoryHistoryInitialValue = {
+                  quantity_reserved: computedQuantity,
+                  quantity_available: -computedQuantity,
+                };
               }
               break;
-            case 'DELETE':
-              newQuantityReserved = parseInt(data.quantity_reserved) - parseInt(obj.old_quantity);
-              newQuantityAvailable = parseInt(data.quantity_available) + parseInt(obj.old_quantity);
-              initialValues = { quantity_reserved: newQuantityReserved, quantity_available: newQuantityAvailable, updated_at: updatedAt };
-              inventoryHistoryInitialValue = { quantity_reserved: -obj.old_quantity, quantity_available: obj.old_quantity };
+            case "DELETE":
+              newQuantityReserved =
+                parseInt(data.quantity_reserved) - parseInt(obj.old_quantity);
+              newQuantityAvailable =
+                parseInt(data.quantity_available) + parseInt(obj.old_quantity);
+              initialValues = {
+                quantity_reserved: newQuantityReserved,
+                quantity_available: newQuantityAvailable,
+                updated_at: updatedAt,
+              };
+              inventoryHistoryInitialValue = {
+                quantity_reserved: -obj.old_quantity,
+                quantity_available: obj.old_quantity,
+              };
               break;
           }
-          data.update(initialValues)
-            .then(response => {
-              inventoryHistoryInitialValue.user_id = obj.user_id;
-              inventoryHistoryInitialValue.inventory_id = data.id;
-              inventoryHistoryInitialValue.created_at = moment().utc(8).format('YYYY-MM-DD HH:mm:ss');
-              
-              // Saving Inventory History
-              Model.InventoryHistories.create(inventoryHistoryInitialValue)
-                .then(response => {
-                  resolve({
-                    status: 200,
-                    message: "Successfully update data.",
-                    result: true
-                  });
+          data.update(initialValues).then((response) => {
+            inventoryHistoryInitialValue.user_id = obj.user_id;
+            inventoryHistoryInitialValue.inventory_id = data.id;
+            inventoryHistoryInitialValue.created_at = moment()
+              .utc(8)
+              .format("YYYY-MM-DD HH:mm:ss");
+
+            // Saving Inventory History
+            Model.InventoryHistories.create(inventoryHistoryInitialValue).then(
+              (response) => {
+                resolve({
+                  status: 200,
+                  message: "Successfully update data.",
+                  result: true,
                 });
-            });
+              }
+            );
+          });
         } else {
           resolve({
             status: 200,
             message: "Data doesn't exist.",
-            result: false
+            result: false,
           });
         }
       } catch (err) {
         resolve({
           status: 401,
           err: err,
-          message: "Failed to find data."
+          message: "Failed to find data.",
         });
       }
     });
@@ -695,45 +617,58 @@ module.exports = {
       try {
         let initialValues, inventoryHistoryInitialValue, data, criteria;
         // Pre-setting variables
-        criteria = { where: { sku: obj.sku, product_id: obj.product_id, is_deleted: NO } };
+        criteria = {
+          where: { sku: obj.sku, product_id: obj.product_id, is_deleted: NO },
+        };
         // Execute findOne query
         data = await Model.Inventories.findOne(criteria);
         if (!_.isEmpty(data)) {
-          const updatedAt = moment().utc(8).format('YYYY-MM-DD HH:mm:ss');
+          const updatedAt = moment().utc(8).format("YYYY-MM-DD HH:mm:ss");
           let newQuantityOut, newQuantityReserved;
-          newQuantityOut = parseInt(data.quantity_out) + parseInt(obj.new_quantity);
-          newQuantityReserved = parseInt(data.quantity_reserved) - parseInt(obj.new_quantity);
-          initialValues = { quantity_out: newQuantityOut, quantity_reserved: newQuantityReserved, updated_at: updatedAt };
-          inventoryHistoryInitialValue = { quantity_out: obj.new_quantity, quantity_reserved: -obj.new_quantity };
+          newQuantityOut =
+            parseInt(data.quantity_out) + parseInt(obj.new_quantity);
+          newQuantityReserved =
+            parseInt(data.quantity_reserved) - parseInt(obj.new_quantity);
+          initialValues = {
+            quantity_out: newQuantityOut,
+            quantity_reserved: newQuantityReserved,
+            updated_at: updatedAt,
+          };
+          inventoryHistoryInitialValue = {
+            quantity_out: obj.new_quantity,
+            quantity_reserved: -obj.new_quantity,
+          };
 
-          data.update(initialValues)
-            .then(response => {
-              inventoryHistoryInitialValue.user_id = obj.user_id;
-              inventoryHistoryInitialValue.inventory_id = data.id;
-              inventoryHistoryInitialValue.created_at = moment().utc(8).format('YYYY-MM-DD HH:mm:ss');
-              
-              // Saving Inventory History
-              Model.InventoryHistories.create(inventoryHistoryInitialValue)
-                .then(response => {
-                  resolve({
-                    status: 200,
-                    message: "Successfully update data.",
-                    result: true
-                  });
+          data.update(initialValues).then((response) => {
+            inventoryHistoryInitialValue.user_id = obj.user_id;
+            inventoryHistoryInitialValue.inventory_id = data.id;
+            inventoryHistoryInitialValue.created_at = moment()
+              .utc(8)
+              .format("YYYY-MM-DD HH:mm:ss");
+
+            // Saving Inventory History
+            Model.InventoryHistories.create(inventoryHistoryInitialValue).then(
+              (response) => {
+                resolve({
+                  status: 200,
+                  message: "Successfully update data.",
+                  result: true,
                 });
-            });
+              }
+            );
+          });
         } else {
           resolve({
             status: 200,
             message: "Data doesn't exist.",
-            result: false
+            result: false,
           });
         }
       } catch (err) {
         resolve({
           status: 401,
           err: err,
-          message: "Failed to find data."
+          message: "Failed to find data.",
         });
       }
     });
@@ -747,71 +682,111 @@ module.exports = {
       try {
         let initialValues, inventoryHistoryInitialValue, data, criteria;
         // Pre-setting variables
-        criteria = { where: { sku: obj.sku, product_id: obj.product_id, is_deleted: NO } };
+        criteria = {
+          where: { sku: obj.sku, product_id: obj.product_id, is_deleted: NO },
+        };
         // Execute findOne query
         data = await Model.Inventories.findOne(criteria);
         if (!_.isEmpty(data)) {
-          const updatedAt = moment().utc(8).format('YYYY-MM-DD HH:mm:ss');
+          const updatedAt = moment().utc(8).format("YYYY-MM-DD HH:mm:ss");
           let computedQuantity, newQuantityReturned, newQuantityOut;
-          switch(obj.type) {
-            case 'INSERT':
-              newQuantityReturned = parseInt(data.quantity_returned) + parseInt(obj.new_quantity);
-              newQuantityOut = parseInt(data.quantity_out) - parseInt(obj.new_quantity);
-              initialValues = { quantity_returned: newQuantityReturned, quantity_out: newQuantityOut, updated_at: updatedAt };
-              inventoryHistoryInitialValue = { quantity_returned: obj.new_quantity, quantity_out: -obj.new_quantity };
+          switch (obj.type) {
+            case "INSERT":
+              newQuantityReturned =
+                parseInt(data.quantity_returned) + parseInt(obj.new_quantity);
+              newQuantityOut =
+                parseInt(data.quantity_out) - parseInt(obj.new_quantity);
+              initialValues = {
+                quantity_returned: newQuantityReturned,
+                quantity_out: newQuantityOut,
+                updated_at: updatedAt,
+              };
+              inventoryHistoryInitialValue = {
+                quantity_returned: obj.new_quantity,
+                quantity_out: -obj.new_quantity,
+              };
               break;
-            case 'UPDATE':
+            case "UPDATE":
               if (obj.old_quantity > obj.new_quantity) {
                 // old_quantity - new_quantity
-                computedQuantity = parseInt(obj.old_quantity) - parseInt(obj.new_quantity);
-                newQuantityReturned = parseInt(data.quantity_returned) - computedQuantity;
+                computedQuantity =
+                  parseInt(obj.old_quantity) - parseInt(obj.new_quantity);
+                newQuantityReturned =
+                  parseInt(data.quantity_returned) - computedQuantity;
                 newQuantityOut = parseInt(data.quantity_out) + computedQuantity;
-                initialValues = { quantity_returned: newQuantityReturned, quantity_out: newQuantityOut, updated_at: updatedAt };
-                inventoryHistoryInitialValue = { quantity_returned: -computedQuantity, quantity_out: computedQuantity };
+                initialValues = {
+                  quantity_returned: newQuantityReturned,
+                  quantity_out: newQuantityOut,
+                  updated_at: updatedAt,
+                };
+                inventoryHistoryInitialValue = {
+                  quantity_returned: -computedQuantity,
+                  quantity_out: computedQuantity,
+                };
               } else if (obj.old_quantity < obj.new_quantity) {
                 // new_quantity - old_quantity
-                computedQuantity = parseInt(obj.new_quantity) - parseInt(obj.old_quantity);
-                newQuantityReturned = parseInt(data.quantity_returned) + computedQuantity;
+                computedQuantity =
+                  parseInt(obj.new_quantity) - parseInt(obj.old_quantity);
+                newQuantityReturned =
+                  parseInt(data.quantity_returned) + computedQuantity;
                 newQuantityOut = parseInt(data.quantity_out) - computedQuantity;
-                initialValues = { quantity_returned: newQuantityReturned, quantity_out: newQuantityOut, updated_at: updatedAt };
-                inventoryHistoryInitialValue = { quantity_returned: computedQuantity, quantity_out: -computedQuantity };
+                initialValues = {
+                  quantity_returned: newQuantityReturned,
+                  quantity_out: newQuantityOut,
+                  updated_at: updatedAt,
+                };
+                inventoryHistoryInitialValue = {
+                  quantity_returned: computedQuantity,
+                  quantity_out: -computedQuantity,
+                };
               }
               break;
-            case 'DELETE':
-              newQuantityReturned = parseInt(data.quantity_returned) - parseInt(obj.old_quantity);
-              newQuantityOut = parseInt(data.quantity_out) + parseInt(obj.old_quantity);
-              initialValues = { quantity_returned: newQuantityReturned, quantity_out: newQuantityOut, updated_at: updatedAt };
-              inventoryHistoryInitialValue = { quantity_returned: -obj.old_quantity, quantity_out: obj.old_quantity };
+            case "DELETE":
+              newQuantityReturned =
+                parseInt(data.quantity_returned) - parseInt(obj.old_quantity);
+              newQuantityOut =
+                parseInt(data.quantity_out) + parseInt(obj.old_quantity);
+              initialValues = {
+                quantity_returned: newQuantityReturned,
+                quantity_out: newQuantityOut,
+                updated_at: updatedAt,
+              };
+              inventoryHistoryInitialValue = {
+                quantity_returned: -obj.old_quantity,
+                quantity_out: obj.old_quantity,
+              };
               break;
           }
-          data.update(initialValues)
-            .then(response => {
-              inventoryHistoryInitialValue.user_id = obj.user_id;
-              inventoryHistoryInitialValue.inventory_id = data.id;
-              inventoryHistoryInitialValue.created_at = moment().utc(8).format('YYYY-MM-DD HH:mm:ss');
-              
-              // Saving Inventory History
-              Model.InventoryHistories.create(inventoryHistoryInitialValue)
-                .then(response => {
-                  resolve({
-                    status: 200,
-                    message: "Successfully update data.",
-                    result: true
-                  });
+          data.update(initialValues).then((response) => {
+            inventoryHistoryInitialValue.user_id = obj.user_id;
+            inventoryHistoryInitialValue.inventory_id = data.id;
+            inventoryHistoryInitialValue.created_at = moment()
+              .utc(8)
+              .format("YYYY-MM-DD HH:mm:ss");
+
+            // Saving Inventory History
+            Model.InventoryHistories.create(inventoryHistoryInitialValue).then(
+              (response) => {
+                resolve({
+                  status: 200,
+                  message: "Successfully update data.",
+                  result: true,
                 });
-            });
+              }
+            );
+          });
         } else {
           resolve({
             status: 200,
             message: "Data doesn't exist.",
-            result: false
+            result: false,
           });
         }
       } catch (err) {
         resolve({
           status: 401,
           err: err,
-          message: "Failed to find data."
+          message: "Failed to find data.",
         });
       }
     });
@@ -822,16 +797,18 @@ module.exports = {
  * Other Functions
  */
 const setBulkInventoryData = (params, data, product) => {
-  let multiplyLength = 1, 
+  let multiplyLength = 1,
     arrayValues = [],
     bulkData = [""],
     finalData = "",
     sliceStart = 0,
-    sliceEnd = 0
+    sliceEnd = 0;
 
   // 1. Set array values and multiply length
   for (let i = 0; i < data.length; i++) {
-    const value = JSON.parse(data[i].values).sort((a, b) => {return a.id - b.id});
+    const value = JSON.parse(data[i].values).sort((a, b) => {
+      return a.id - b.id;
+    });
     multiplyLength = multiplyLength * value.length;
     arrayValues.push(value);
   }
@@ -840,13 +817,15 @@ const setBulkInventoryData = (params, data, product) => {
   for (let a = 0; a < arrayValues.length; a++) {
     const value = arrayValues[a];
     const valueLength = value.length;
-    bulkData.map(response => {
+    bulkData.map((response) => {
       let newValue = [];
-      responseName = response === '' ? product.name : response;
-      responseSku = response === '' ? product.code : response;
+      responseName = response === "" ? product.name : response;
+      responseSku = response === "" ? product.code : response;
       for (let b = 0; b < valueLength; b++) {
-        let name = _.isObject(responseName) === true ? responseName.name : responseName;
-        let sku = _.isObject(responseSku) === true ? responseSku.sku : responseSku;
+        let name =
+          _.isObject(responseName) === true ? responseName.name : responseName;
+        let sku =
+          _.isObject(responseSku) === true ? responseSku.sku : responseSku;
         newValue[b] = {
           name: `${name} ${value[b].name}`,
           sku: `${sku}-${value[b].code.toUpperCase()}`,
@@ -860,7 +839,7 @@ const setBulkInventoryData = (params, data, product) => {
         };
         bulkData.push(newValue[b]);
       }
-    })
+    });
   }
 
   // 3. Remove unnecessary data and return
@@ -869,4 +848,4 @@ const setBulkInventoryData = (params, data, product) => {
   finalData = bulkData.slice(sliceStart, sliceEnd);
 
   return finalData;
-}
+};
