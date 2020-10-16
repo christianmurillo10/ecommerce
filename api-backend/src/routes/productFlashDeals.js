@@ -9,7 +9,6 @@ router.route('/').get(authController.authorization, productFlashDealsController.
 router.route('/create').post(authController.authorization, productFlashDealsController.create);
 router.route('/update/:id').put(authController.authorization, productFlashDealsController.update);
 router.route('/delete/:id').put(authController.authorization, productFlashDealsController.delete);
-router.route('/search/:value').get(authController.authorization, productFlashDealsController.search);
 router.route('/:id').get(authController.authorization, productFlashDealsController.findById);
 
 module.exports = router;

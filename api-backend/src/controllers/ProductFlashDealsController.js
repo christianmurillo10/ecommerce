@@ -1,264 +1,204 @@
-const Model = require('../models');
-const { 
-  NO, 
+const Model = require("../models");
+const { ErrorHandler, handleSuccess } = require("../helpers/response-helper");
+const {
+  NO,
   YES,
   PRODUCT_IMAGES_TYPE_MAIN,
   PRODUCT_IMAGES_TYPE_THUMBNAIL,
   PRODUCT_IMAGES_TYPE_FEATURED,
-  PRODUCT_IMAGES_TYPE_FASH_DEAL
-} = require('../helpers/constant-helper');
+  PRODUCT_IMAGES_TYPE_FASH_DEAL,
+} = require("../helpers/constant-helper");
 
 module.exports = {
   /**
    * Create
-   * @param req
-   * @param res
-   * @returns {Promise<void>}
    * @routes POST /productFlashDeals/create
    */
-  create: async (req, res) => {
+  create: async (req, res, next) => {
     const params = req.body;
-    let criteria, criteriaFindExistingDate, initialValues, data, dataFindExistingDate;
-
-    // Validators
-    if (_.isUndefined(params))
-      return res.badRequest({ err: "Invalid Parameter: [params]" });
-    if (_.isEmpty(params))
-      return res.badRequest({ err: "Empty Parameter: [params]" });
-
-    // Override variables
-    params.created_at = moment().utc(8).format('YYYY-MM-DD HH:mm:ss');
-    params.user_id = req.user.id.toLocaleString();
+    let errors = [],
+      criteria,
+      criteriaFindExistingDate,
+      initialValues,
+      data,
+      dataFindExistingDate;
 
     try {
       // Validators
-      if (_.isEmpty(params.title)) return res.json({ status: 200, message: "Title is required.", result: false });
-      if (_.isEmpty(params.date_from)) return res.json({ status: 200, message: "Date From is required.", result: false });
-      if (_.isEmpty(params.date_to)) return res.json({ status: 200, message: "Date To is required.", result: false });
+      if (_.isEmpty(params)) {
+        errors.push("Invalid Parameter.");
+        throw new ErrorHandler(400, errors);
+      }
 
-      // Pre-setting variables
+      // Override variables
+      params.created_at = moment().utc(8).format("YYYY-MM-DD HH:mm:ss");
+      params.user_id = req.user.id.toLocaleString();
+
+      if (_.isEmpty(params.title)) errors.push("Title is required.");
+      if (_.isEmpty(params.date_from)) errors.push("Date From is required.");
+      if (_.isEmpty(params.date_to)) errors.push("Date To is required.");
+      if (errors.length > 0) {
+        throw new ErrorHandler(400, errors);
+      }
+
+      // Validate Data
       criteria = { where: { title: params.title } };
-      criteriaFindExistingDate = { 
-        attributes: ['id', 'title', 'date_from', 'date_to'],
-        where: { 
+      data = await Model.ProductFlashDeals.findAll(criteria);
+      if (!_.isEmpty(data[0])) {
+        errors.push("Data already exist.");
+        throw new ErrorHandler(500, errors);
+      }
+
+      criteriaFindExistingDate = {
+        attributes: ["id", "title", "date_from", "date_to"],
+        where: {
           date_from: { $lte: params.date_from },
           date_to: { $gte: params.date_from },
-          is_deleted: NO
+          is_deleted: NO,
         },
       };
-      initialValues = _.pick(params, ['title', 'date_from', 'date_to', 'user_id', 'created_at']);
-      // Pre-setting variables
-      // Execute findAll query
-      data = await Model.ProductFlashDeals.findAll(criteria);
-      if (_.isEmpty(data[0])) {
-        dataFindExistingDate = await Model.ProductFlashDeals.findOne(criteriaFindExistingDate);
-        if (_.isEmpty(dataFindExistingDate)) {
-          let finalData = await Model.ProductFlashDeals.create(initialValues);
-          res.json({
-            status: 200,
-            message: "Successfully created data.",
-            result: _.omit(finalData.get({ plain: true }), ['is_deleted'])
-          });
-        } else {
-          res.json({
-            status: 200,
-            message: "Date already exist.",
-            result: false
-          });
-        }
-      } else {
-        res.json({
-          status: 200,
-          message: "Data already exist.",
-          result: false
-        });
+      dataFindExistingDate = await Model.ProductFlashDeals.findOne(
+        criteriaFindExistingDate
+      );
+      if (!_.isEmpty(dataFindExistingDate)) {
+        errors.push("Data already exist.");
+        throw new ErrorHandler(500, errors);
       }
-    } catch (err) {
-      res.json({
-        status: 401,
-        err: err,
-        message: "Failed creating data."
+
+      // Pre-setting variables
+      initialValues = _.pick(params, [
+        "title",
+        "date_from",
+        "date_to",
+        "user_id",
+        "created_at",
+      ]);
+      let finalData = await Model.ProductFlashDeals.create(initialValues);
+
+      handleSuccess(res, {
+        statusCode: 201,
+        message: "Successfully created data.",
+        result: _.omit(finalData.get({ plain: true }), ["is_deleted"]),
       });
+    } catch (err) {
+      next(err);
     }
   },
 
   /**
    * Update
    * @route PUT /productFlashDeals/update/:id
-   * @param req
-   * @param res
-   * @returns {never}
    */
-  update: async (req, res) => {
+  update: async (req, res, next) => {
     const params = req.body;
-    let criteria, initialValues, data, dataFindExistingDate;
-
-    if (_.isUndefined(params))
-      return res.badRequest({ err: "Invalid Parameter: [params]" });
-    if (_.isEmpty(params))
-      return res.badRequest({ err: "Empty Parameter: [params]" });
+    let errors = [],
+      criteria,
+      initialValues,
+      data,
+      dataFindExistingDate;
 
     try {
-      // Pre-setting variables
-      criteria = { 
-        attributes: ['id', 'title', 'date_from', 'date_to'],
-        where: { 
+      // Validators
+      if (_.isEmpty(params)) {
+        errors.push("Invalid Parameter.");
+        throw new ErrorHandler(400, errors);
+      }
+
+      // Override Variables
+      params.updated_at = moment().utc(8).format("YYYY-MM-DD HH:mm:ss");
+
+      // Validate Data
+      criteria = {
+        attributes: ["id", "title", "date_from", "date_to", "updated_at"],
+        where: {
           date_from: { $lte: params.date_from },
           date_to: { $gte: params.date_from },
-          is_deleted: NO
+          is_deleted: NO,
         },
       };
-      initialValues = _.pick(params, ['title', 'date_from', 'date_to', 'is_active']);
-      // Execute findByPk query
       data = await Model.ProductFlashDeals.findByPk(req.params.id);
-      if (!_.isEmpty(data)) {
-        dataFindExistingDate = await Model.ProductFlashDeals.findOne(criteria);
-        if (_.isEmpty(dataFindExistingDate)) {
-          let finalData = await data.update(initialValues);
-          res.json({
-            status: 200,
-            message: "Successfully updated data.",
-            result: finalData
-          });
-        } else {
-          res.json({
-            status: 200,
-            message: "Date already exist.",
-            result: false
-          });
-        }
-      } else {
-        res.json({
-          status: 200,
-          message: "Data doesn't exist.",
-          result: false
-        });
+      if (_.isEmpty(data)) {
+        errors.push("Data doesn't exist.");
+        throw new ErrorHandler(500, errors);
       }
-    } catch (err) {
-      res.json({
-        status: 401,
-        err: err,
-        message: "Failed updating data."
+
+      dataFindExistingDate = await Model.ProductFlashDeals.findOne(criteria);
+      if (!_.isEmpty(dataFindExistingDate)) {
+        errors.push("Date already exist.");
+        throw new ErrorHandler(500, errors);
+      }
+
+      // Pre-setting variables
+      initialValues = _.pick(params, [
+        "title",
+        "date_from",
+        "date_to",
+        "is_active",
+      ]);
+      let finalData = await data.update(initialValues);
+
+      handleSuccess(res, {
+        statusCode: 200,
+        message: "Successfully updated data.",
+        result: finalData,
       });
+    } catch (err) {
+      next(err);
     }
   },
 
   /**
    * Delete
    * @route PUT /productFlashDeals/delete/:id
-   * @param req
-   * @param res
-   * @returns {never}
    */
-  delete: async (req, res) => {
-    let data;
+  delete: async (req, res, next) => {
+    let errors = [],
+      data;
 
     try {
-      // Execute findByPk query
+      // Validate Data
       data = await Model.ProductFlashDeals.findByPk(req.params.id);
-      if (!_.isEmpty(data)) {
-        let finalData = await data.update({ is_deleted: YES });
-        res.json({
-          status: 200,
-          message: "Successfully deleted data.",
-          result: finalData
-        });
-      } else {
-        res.json({
-          status: 200,
-          message: "Data doesn't exist.",
-          result: false
-        });
+      if (_.isEmpty(data)) {
+        errors.push("Data doesn't exist.");
+        throw new ErrorHandler(500, errors);
       }
+      let finalData = await data.update({ is_deleted: YES });
+
+      handleSuccess(res, {
+        statusCode: 200,
+        message: "Successfully deleted data.",
+        result: finalData,
+      });
     } catch (err) {
-      res.json({
-        status: 401,
-        err: err,
-        message: "Failed deleting data."
-      });
-    }
-  },
-
-  /**
-   * Search
-   * @route POST /productFlashDeals/search/:value
-   * @param req
-   * @param res
-   * @returns {never}
-   */
-  search: async (req, res) => {
-    const params = req.params;
-    let query, data;
-
-    if (_.isUndefined(params))
-      return res.badRequest({ err: "Invalid Parameter: [params]" });
-    if (_.isEmpty(params))
-      return res.badRequest({ err: "Empty Parameter: [params]" });
-
-    try {
-      // Pre-setting variables
-      query = `SELECT id, title, date_from, date_to, created_at, updated_at, is_active FROM product_flash_deals WHERE CONCAT(title) LIKE ? AND is_deleted = ${NO};`;
-      // Execute native query
-      data = await Model.sequelize.query(query, {
-        replacements: [`%${params.value}%`],
-        type: Model.sequelize.QueryTypes.SELECT
-      });
-      if (!_.isEmpty(data)) {
-        res.json({
-          status: 200,
-          message: "Successfully searched data.",
-          result: data
-        });
-      } else {
-        res.json({
-          status: 200,
-          message: "No Data Found.",
-          result: false
-        });
-      }
-    } catch (err) {
-      res.json({
-        status: 401,
-        err: err,
-        message: "Failed to search data."
-      });
+      next(err);
     }
   },
 
   /**
    * Find all
    * @route GET /productFlashDeals
-   * @param req
-   * @param res
-   * @returns {never}
    */
-  findAll: async (req, res) => {
-    let data, criteria;
+  findAll: async (req, res, next) => {
+    let errors = [],
+      data,
+      criteria;
 
     try {
-      // Pre-setting variables
+      // Validate Data
       criteria = { where: { is_deleted: NO } };
-      // Execute findAll query
       data = await Model.ProductFlashDeals.findAll(criteria);
-      if (!_.isEmpty(data[0])) {
-        res.json({
-          status: 200,
-          message: "Successfully find all data.",
-          result: data
-        });
-      } else {
-        res.json({
-          status: 200,
-          message: "No Data Found.",
-          result: false
-        });
+      if (_.isEmpty(data[0])) {
+        errors.push("No data found.");
+        throw new ErrorHandler(500, errors);
       }
-    } catch (err) {
-      res.json({
-        status: 401,
-        err: err,
-        message: "Failed to find all data."
+
+      handleSuccess(res, {
+        statusCode: 200,
+        message: "Successfully find all data.",
+        result: data,
       });
+    } catch (err) {
+      next(err);
     }
   },
 
@@ -269,108 +209,105 @@ module.exports = {
    * @param res
    * @returns {never}
    */
-  findTodayFlashDeal: async (req, res) => {
-    let data, criteria;
+  findTodayFlashDeal: async (req, res, next) => {
+    let errors = [],
+      data,
+      criteria;
 
     try {
-      let dateToday = moment().utc(8).format('YYYY-MM-DD');
-      // Pre-setting variables
-      criteria = { 
-        attributes: ['id', 'title', 'date_from', 'date_to'],
-        where: { 
+      // Validate Data
+      let dateToday = moment().utc(8).format("YYYY-MM-DD");
+      criteria = {
+        attributes: ["id", "title", "date_from", "date_to"],
+        where: {
           date_from: { $lte: dateToday },
           date_to: { $gte: dateToday },
-          is_active: YES, 
-          is_deleted: NO
+          is_active: YES,
+          is_deleted: NO,
         },
-        order: [ ['id', 'DESC'] ],
+        order: [["id", "DESC"]],
         include: [
-          { 
-            model: Model.ProductFlashDealDetails, 
-            as: "productFlashDealDetails", 
-            attributes: [ 'id', 'discount_percentage', 'discount_amount', 'base_price_amount', 'current_price_amount', 'product_id', 'discount_type'],
+          {
+            model: Model.ProductFlashDealDetails,
+            as: "productFlashDealDetails",
+            attributes: [
+              "id",
+              "discount_percentage",
+              "discount_amount",
+              "base_price_amount",
+              "current_price_amount",
+              "product_id",
+              "discount_type",
+            ],
             where: { is_deleted: NO },
-            order: [ ['id', 'ASC'] ],
+            order: [["id", "ASC"]],
             include: [
-              { 
-                model: Model.Products, 
-                as: "products", 
-                attributes: ['name', 'unit'],
+              {
+                model: Model.Products,
+                as: "products",
+                attributes: ["name", "unit"],
                 where: { is_published: YES, is_deleted: NO },
                 include: [
-                  { 
-                    model: Model.ProductImages, as: "productImages", 
-                    attributes: ['file_name', 'order', 'type'],
-                    where: { type: PRODUCT_IMAGES_TYPE_FASH_DEAL, is_deleted: NO },
-                    order: [ ['id', 'ASC'] ],
+                  {
+                    model: Model.ProductImages,
+                    as: "productImages",
+                    attributes: ["file_name", "order", "type"],
+                    where: {
+                      type: PRODUCT_IMAGES_TYPE_FASH_DEAL,
+                      is_deleted: NO,
+                    },
+                    order: [["id", "ASC"]],
                     separate: true,
-                    required: false 
+                    required: false,
                   },
                 ],
-                required: false 
+                required: false,
               },
             ],
             separate: true,
-            required: false 
+            required: false,
           },
-        ]
+        ],
       };
-      // Execute findAll query
       data = await Model.ProductFlashDeals.findOne(criteria);
-      if (!_.isEmpty(data)) {
-        res.json({
-          status: 200,
-          message: "Successfully find data.",
-          result: data
-        });
-      } else {
-        res.json({
-          status: 200,
-          message: "No Data Found.",
-          result: false
-        });
+      if (_.isEmpty(data)) {
+        errors.push("No data found.");
+        throw new ErrorHandler(500, errors);
       }
-    } catch (err) {
-      res.json({
-        status: 401,
-        err: err,
-        message: "Failed to find data."
+
+      handleSuccess(res, {
+        statusCode: 200,
+        message: "Successfully find data.",
+        result: data,
       });
+    } catch (err) {
+      next(err);
     }
   },
 
   /**
    * Find by id
    * @route GET /productFlashDeals/:id
-   * @param req
-   * @param res
-   * @returns {never}
    */
-  findById: async (req, res) => {
-    let data;
+  findById: async (req, res, next) => {
+    let errors = [],
+      data;
 
     try {
-      // Execute findAll query
+      // Validate Data
       data = await Model.ProductFlashDeals.findByPk(req.params.id);
-      if (!_.isEmpty(data)) {
-        res.json({
-          status: 200,
-          message: "Successfully find data.",
-          result: _.omit(data.get({ plain: true }), ['is_deleted'])
-        });
-      } else {
-        res.json({
-          status: 200,
-          message: "No Data Found.",
-          result: false
-        });
+      if (_.isEmpty(data)) {
+        errors.push("No data found.");
+        throw new ErrorHandler(500, errors);
       }
-    } catch (err) {
-      res.json({
-        status: 401,
-        err: err,
-        message: "Failed to find data."
+
+      handleSuccess(res, {
+        statusCode: 200,
+        message: "Successfully find data.",
+        result: _.omit(data.get({ plain: true }), ["is_deleted"]),
       });
+    } catch (err) {
+      next(err);
     }
   },
 };
