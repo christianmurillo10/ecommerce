@@ -39,8 +39,8 @@ module.exports = {
         throw new ErrorHandler(400, errors);
       }
 
+      // Validate Data
       criteria = { where: { name: params.name, is_deleted: NO } };
-      // Execute findAll query
       data = await Model.ProductBrands.findAll(criteria);
       if (!_.isEmpty(data[0])) {
         errors.push("Data already exist.");
@@ -91,6 +91,7 @@ module.exports = {
       data = await Model.ProductBrands.findByPk(req.params.id);
 
       // Override variables
+      params.updated_at = moment().utc(8).format("YYYY-MM-DD HH:mm:ss");
       if (!_.isUndefined(req.file)) {
         let date = moment(params.created_at).format("YYYY-MM-DD");
         let extension = path.extname(params.file_name);
@@ -107,7 +108,7 @@ module.exports = {
       }
 
       // Pre-setting variables
-      initialValues = _.pick(params, ["name", "description", "file_name"]);
+      initialValues = _.pick(params, ["name", "description", "file_name", "updated_at"]);
       let finalData = await data.update(initialValues);
       // For Upload Images
       if (!_.isUndefined(req.file)) {
