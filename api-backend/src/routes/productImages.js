@@ -17,7 +17,6 @@ router.route('/').get(authController.authorization, productImagesController.find
 router.route('/create').post(authController.authorization, upload.single('image'), productImagesController.create);
 router.route('/update/:id').put(authController.authorization, upload.single('image'), productImagesController.update);
 router.route('/delete/:id').put(authController.authorization, productImagesController.delete);
-router.route('/search/:value').get(authController.authorization, productImagesController.search);
 
 
 module.exports = router;
