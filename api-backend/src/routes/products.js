@@ -5,13 +5,13 @@ const authController = require('../controllers').auth;
 const productsController = require('../controllers').products;
 
 // Without Authentication
-router.route('/findAllWithLimitAndOffset/:limit/:offset').get(productsController.findAllWithLimitAndOffset);
-router.route('/findAllByProductCategoryIdWithLimitAndOffset/:productCategoryId/:limit/:offset').get(productsController.findAllByProductCategoryIdWithLimitAndOffset);
-router.route('/findAllByProductSubCategoryIdWithLimitAndOffset/:productSubCategoryId/:limit/:offset').get(productsController.findAllByProductSubCategoryIdWithLimitAndOffset);
-router.route('/findAllByProductSubSubCategoryIdWithLimitAndOffset/:productSubSubCategoryId/:limit/:offset').get(productsController.findAllByProductSubSubCategoryIdWithLimitAndOffset);
-router.route('/search/:keyword/:limit/:offset').get(productsController.search);
-router.route('/searchWithRelatedCategories/:keyword/:limit/:offset').get(productsController.searchWithRelatedCategories);
-router.route('/searchBySubCategoryIdWithRelatedCategories/:subCategoryId/:keyword/:limit/:offset').get(productsController.searchBySubCategoryIdWithRelatedCategories);
+router.route('/findAllWithLimitAndOffset').get(productsController.findAllWithLimitAndOffset);
+router.route('/findAllByProductCategoryIdWithLimitAndOffset/:productCategoryId').get(productsController.findAllByProductCategoryIdWithLimitAndOffset);
+router.route('/findAllByProductSubCategoryIdWithLimitAndOffset/:productSubCategoryId').get(productsController.findAllByProductSubCategoryIdWithLimitAndOffset);
+router.route('/findAllByProductSubSubCategoryIdWithLimitAndOffset/:productSubSubCategoryId').get(productsController.findAllByProductSubSubCategoryIdWithLimitAndOffset);
+router.route('/search/:keyword').get(productsController.search);
+router.route('/searchWithRelatedCategories/:keyword').get(productsController.searchWithRelatedCategories);
+router.route('/searchBySubCategoryIdWithRelatedCategories/:subCategoryId/:keyword').get(productsController.searchBySubCategoryIdWithRelatedCategories);
 router.route('/:id').get(productsController.findById);
 router.route('/findByIdWithImageType/:id/:imageType').get(productsController.findByIdWithImageType);
 router.route('/').get(productsController.findAll);

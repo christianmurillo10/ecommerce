@@ -1,66 +1,118 @@
 const Model = require("../models");
-const { 
-  NO, 
+const { ErrorHandler, handleSuccess } = require("../helpers/response-helper");
+const {
+  NO,
   YES,
   PRODUCT_IMAGES_TYPE_MAIN,
   PRODUCT_IMAGES_TYPE_THUMBNAIL,
   PRODUCT_IMAGES_TYPE_FEATURED,
-  PRODUCT_IMAGES_TYPE_FASH_DEAL
-} = require('../helpers/constant-helper');
+  PRODUCT_IMAGES_TYPE_FASH_DEAL,
+} = require("../helpers/constant-helper");
 
 module.exports = {
   /**
    * Create
-   * @param req
-   * @param res
-   * @returns {Promise<void>}
    * @routes POST /products/create
    */
-  create: async (req, res) => {
+  create: async (req, res, next) => {
     const params = req.body;
-    let criteria, initialValues, data;
-
-    // Validators
-    if (_.isUndefined(params))
-      return res.badRequest({ err: "Invalid Parameter: [params]" });
-    if (_.isEmpty(params))
-      return res.badRequest({ err: "Empty Parameter: [params]" });
-
-    // Override variables
-    params.created_at = moment().utc(8).format("YYYY-MM-DD HH:mm:ss");
-    params.tags = params.tags.length === 0 ? null : params.tags.toString();
-    params.price_amount = params.price_amount.toLocaleString();
-    params.user_id = req.user.id.toLocaleString();
-    params.product_store_id = params.product_store_id.toLocaleString();
-    params.product_brand_id = params.product_brand_id.toLocaleString();
-    params.product_category_id = params.product_category_id.toLocaleString();
-    params.product_sub_category_id = params.product_sub_category_id.toLocaleString();
-    params.product_sub_sub_category_id = params.product_sub_sub_category_id.toLocaleString();
+    let errors = [],
+      criteria,
+      initialValues,
+      data;
 
     try {
       // Validators
-      if (_.isEmpty(params.code)) return res.json({ status: 200, message: "Code is required.", result: false });
-      if (_.isEmpty(params.name)) return res.json({ status: 200, message: "Name is required.", result: false });
-      if (_.isEmpty(params.unit)) return res.json({ status: 200, message: "Unit is required.", result: false });
-      if (_.isEmpty(params.price_amount)) return res.json({ status: 200, message: "Price Amount is required.", result: false });
-      if (_.isEmpty(params.product_store_id)) return res.json({ status: 200, message: "Product Store is required.", result: false });
-      if (_.isEmpty(params.product_brand_id)) return res.json({ status: 200, message: "Product Brand is required.", result: false });
-      if (_.isEmpty(params.product_category_id)) return res.json({ status: 200, message: "Product Category is required.", result: false });
-      if (_.isEmpty(params.product_sub_category_id)) return res.json({ status: 200, message: "Product Sub-Category is required.", result: false });
-      if (_.isEmpty(params.product_sub_sub_category_id)) return res.json({ status: 200, message: "Product Sub Sub-Category is required.", result: false });
+      if (_.isEmpty(params)) {
+        errors.push("Invalid Parameter.");
+        throw new ErrorHandler(400, errors);
+      }
 
-      // Pre-setting variables
+      // Override variables
+      params.created_at = moment().utc(8).format("YYYY-MM-DD HH:mm:ss");
+      params.tags = params.tags.length > 0 ? params.tags.toString() : null;
+      params.price_amount = params.price_amount
+        ? params.price_amount.toLocaleString()
+        : null;
+      params.user_id = req.user.id.toLocaleString();
+      params.product_store_id = params.product_store_id
+        ? params.product_store_id.toLocaleString()
+        : null;
+      params.product_brand_id = params.product_brand_id
+        ? params.product_brand_id.toLocaleString()
+        : null;
+      params.product_category_id = params.product_category_id
+        ? params.product_category_id.toLocaleString()
+        : null;
+      params.product_sub_category_id = params.product_sub_category_id
+        ? params.product_sub_category_id.toLocaleString()
+        : null;
+      params.product_sub_sub_category_id = params.product_sub_sub_category_id
+        ? params.product_sub_sub_category_id.toLocaleString()
+        : null;
+
+      if (_.isEmpty(params.code)) errors.push("Code is required.");
+      if (_.isEmpty(params.name)) errors.push("Name is required.");
+      if (_.isEmpty(params.unit)) errors.push("Unit is required.");
+      if (_.isEmpty(params.price_amount))
+        errors.push("Price Amount is required.");
+      if (_.isEmpty(params.product_store_id))
+        errors.push("Product Store is required.");
+      if (_.isEmpty(params.product_brand_id))
+        errors.push("Product Brand is required.");
+      if (_.isEmpty(params.product_category_id))
+        errors.push("Product Category is required.");
+      if (_.isEmpty(params.product_sub_category_id))
+        errors.push("Product Sub-Category is required.");
+      if (_.isEmpty(params.product_sub_sub_category_id))
+        errors.push("Product Sub Sub-Category is required.");
+      if (errors.length > 0) {
+        throw new ErrorHandler(400, errors);
+      }
+
+      // Validate Data
       criteria = {
         where: { name: params.name },
         include: [
-          { model: Model.ProductStores, as: "productStores", attributes: ['name', 'description'] },
-          { model: Model.ProductBrands, as: "productBrands", attributes: ['name', 'description'] },
-          { model: Model.ProductCategories, as: "productCategories", attributes: ['name', 'description'] },
-          { model: Model.ProductSubCategories, as: "productSubCategories", attributes: ['name', 'description'] },
-          { model: Model.ProductSubSubCategories, as: "productSubSubCategories", attributes: ['name', 'description'] },
-          { model: Model.Users, as: "users", attributes: ['email', 'username'] }
-        ]
+          {
+            model: Model.ProductStores,
+            as: "productStores",
+            attributes: ["name", "description"],
+          },
+          {
+            model: Model.ProductBrands,
+            as: "productBrands",
+            attributes: ["name", "description"],
+          },
+          {
+            model: Model.ProductCategories,
+            as: "productCategories",
+            attributes: ["name", "description"],
+          },
+          {
+            model: Model.ProductSubCategories,
+            as: "productSubCategories",
+            attributes: ["name", "description"],
+          },
+          {
+            model: Model.ProductSubSubCategories,
+            as: "productSubSubCategories",
+            attributes: ["name", "description"],
+          },
+          {
+            model: Model.Users,
+            as: "users",
+            attributes: ["email", "username"],
+          },
+        ],
       };
+      data = await Model.Products.findAll(criteria);
+      if (!_.isEmpty(data[0])) {
+        errors.push("Data already exist.");
+        throw new ErrorHandler(500, errors);
+      }
+
+      // Pre-setting variables
       initialValues = _.pick(params, [
         "code",
         "name",
@@ -76,57 +128,52 @@ module.exports = {
         "product_sub_sub_category_id",
         "created_at",
         "is_featured",
-        "is_published"
+        "is_published",
       ]);
-      // Execute findAll query
-      data = await Model.Products.findAll(criteria);
-      if (_.isEmpty(data[0])) {
-        await Model.Products.create(initialValues)
-          .then(() => Model.Products.findOrCreate(criteria))
-          .then(async ([finalData, created]) => {
-            let plainData = finalData.get({ plain: true });
-            res.json({
-              status: 200,
-              message: "Successfully created data.",
-              result: _.omit(plainData, ["is_deleted"])
-            });
+
+      await Model.Products.create(initialValues)
+        .then(() => Model.Products.findOrCreate(criteria))
+        .then(async ([finalData, created]) => {
+          let plainData = finalData.get({ plain: true });
+          handleSuccess(res, {
+            statusCode: 201,
+            message: "Successfully created data.",
+            result: _.omit(plainData, ["is_deleted"]),
           });
-      } else {
-        res.json({
-          status: 200,
-          message: "Data already exist.",
-          result: false
         });
-      }
     } catch (err) {
-      res.json({
-        status: 401,
-        err: err,
-        message: "Failed creating data."
-      });
+      next(err);
     }
   },
 
   /**
    * Update
    * @route PUT /products/update/:id
-   * @param req
-   * @param res
-   * @returns {never}
    */
-  update: async (req, res) => {
+  update: async (req, res, next) => {
     const params = req.body;
-    let initialValues, data;
-
-    if (_.isUndefined(params))
-      return res.badRequest({ err: "Invalid Parameter: [params]" });
-    if (_.isEmpty(params))
-      return res.badRequest({ err: "Empty Parameter: [params]" });
-
-    // Override variables
-    params.tags = params.tags.length === 0 ? null : params.tags.toString();
+    let errors = [],
+      initialValues,
+      data;
 
     try {
+      // Validators
+      if (_.isEmpty(params)) {
+        errors.push("Invalid Parameter.");
+        throw new ErrorHandler(400, errors);
+      }
+
+      // Override variables
+      params.updated_at = moment().utc(8).format("YYYY-MM-DD HH:mm:ss");
+      params.tags = params.tags.length === 0 ? null : params.tags.toString();
+
+      // Validate Data
+      data = await Model.Products.findByPk(req.params.id);
+      if (_.isEmpty(data)) {
+        errors.push("Data doesn't exist.");
+        throw new ErrorHandler(500, errors);
+      }
+
       // Pre-setting variables
       initialValues = _.pick(params, [
         "code",
@@ -135,442 +182,409 @@ module.exports = {
         "unit",
         "tags",
         "price_amount",
-        "user_id",
         "product_store_id",
         "product_brand_id",
         "product_category_id",
         "product_sub_category_id",
         "product_sub_sub_category_id",
+        "updated_at",
         "is_featured",
-        "is_published"
+        "is_published",
       ]);
-      // Execute findByPk query
-      data = await Model.Products.findByPk(req.params.id);
-      if (!_.isEmpty(data)) {
-        let finalData = await data.update(initialValues);
-        res.json({
-          status: 200,
-          message: "Successfully updated data.",
-          result: finalData
-        });
-      } else {
-        res.json({
-          status: 200,
-          message: "Data doesn't exist.",
-          result: false
-        });
-      }
-    } catch (err) {
-      res.json({
-        status: 401,
-        err: err,
-        message: "Failed updating data."
+      let finalData = await data.update(initialValues);
+
+      handleSuccess(res, {
+        statusCode: 200,
+        message: "Successfully updated data.",
+        result: finalData,
       });
+    } catch (err) {
+      next(err);
     }
   },
 
   /**
    * Update status
    * @route PUT /products/updateStatus/:id
-   * @param req
-   * @param res
-   * @returns {never}
    */
-  updateStatus: async (req, res) => {
+  updateStatus: async (req, res, next) => {
     const params = req.body;
-    let initialValues, data;
-
-    if (_.isUndefined(params))
-      return res.badRequest({ err: "Invalid Parameter: [params]" });
-    if (_.isEmpty(params))
-      return res.badRequest({ err: "Empty Parameter: [params]" });
+    let errors = [],
+      initialValues,
+      data;
 
     try {
+      // Validators
+      if (_.isEmpty(params)) {
+        errors.push("Invalid Parameter.");
+        throw new ErrorHandler(400, errors);
+      }
+
+      // Override Variables
+      params.updated_at = moment().utc(8).format("YYYY-MM-DD HH:mm:ss");
+
+      // Validate Data
+      data = await Model.Products.findByPk(req.params.id);
+      if (_.isEmpty(data)) {
+        errors.push("Data doesn't exist.");
+        throw new ErrorHandler(500, errors);
+      }
+
       // Pre-setting variables
       initialValues = _.pick(params, [
+        "updated_at",
         "is_featured",
-        "is_published"
+        "is_published",
       ]);
-      // Execute findByPk query
-      data = await Model.Products.findByPk(req.params.id);
-      if (!_.isEmpty(data)) {
-        let finalData = await data.update(initialValues);
-        res.json({
-          status: 200,
-          message: "Successfully updated data.",
-          result: finalData
-        });
-      } else {
-        res.json({
-          status: 200,
-          message: "Data doesn't exist.",
-          result: false
-        });
-      }
-    } catch (err) {
-      res.json({
-        status: 401,
-        err: err,
-        message: "Failed updating data."
+      let finalData = await data.update(initialValues);
+
+      handleSuccess(res, {
+        statusCode: 200,
+        message: "Successfully updated data.",
+        result: finalData,
       });
+    } catch (err) {
+      next(err);
     }
   },
 
   /**
    * Delete
    * @route PUT /products/delete/:id
-   * @param req
-   * @param res
-   * @returns {never}
    */
-  delete: async (req, res) => {
-    let data;
+  delete: async (req, res, next) => {
+    let errors = [],
+      data;
 
     try {
-      // Execute findByPk query
+      // Validate Data
       data = await Model.Products.findByPk(req.params.id);
-      if (!_.isEmpty(data)) {
-        let finalData = await data.update({ is_deleted: YES });
-        res.json({
-          status: 200,
-          message: "Successfully deleted data.",
-          result: finalData
-        });
-      } else {
-        res.json({
-          status: 200,
-          message: "Data doesn't exist.",
-          result: false
-        });
+      if (_.isEmpty(data)) {
+        errors.push("Data doesn't exist.");
+        throw new ErrorHandler(500, errors);
       }
-    } catch (err) {
-      res.json({
-        status: 401,
-        err: err,
-        message: "Failed deleting data."
+      let finalData = await data.update({ is_deleted: YES });
+
+      handleSuccess(res, {
+        statusCode: 200,
+        message: "Successfully deleted data.",
+        result: finalData,
       });
+    } catch (err) {
+      next(err);
     }
   },
 
   /**
    * Search
-   * @route GET /products/search/:keyword/:limit/:offset
-   * @param req
-   * @param res
-   * @returns {never}
+   * @route GET /products/search/:keyword?limit=:limit&offset=:offset
    */
-  search: async (req, res) => {
+  search: async (req, res, next) => {
     const params = req.params;
-    let data, criteria, countCriteria;
-
-    if (_.isUndefined(params))
-      return res.badRequest({ err: "Invalid Parameter: [params]" });
-    if (_.isEmpty(params))
-      return res.badRequest({ err: "Empty Parameter: [params]" });
+    const query = req.query;
+    let errors = [],
+      data,
+      criteria,
+      countCriteria;
 
     try {
-      // Pre-setting variables
-      let limit = parseInt(params.limit);
-      let offset = parseInt(params.offset);
+      // Validate Data
+      let limit = query.limit ? parseInt(query.limit) : 10;
+      let offset = query.offset ? parseInt(query.offset) : 0;
+
       criteria = {
         attributes: [
-          'id',
+          "id",
           "code",
-          'name',
-          'unit',
-          'tags',
-          'price_amount',
-          'product_store_id',
-          'product_brand_id',
-          'product_category_id',
-          'product_sub_category_id',
-          'product_sub_sub_category_id',
-          'created_at',
-          'is_featured',
-          'is_published'
+          "name",
+          "unit",
+          "tags",
+          "price_amount",
+          "product_store_id",
+          "product_brand_id",
+          "product_category_id",
+          "product_sub_category_id",
+          "product_sub_sub_category_id",
+          "created_at",
+          "is_featured",
+          "is_published",
         ],
         where: { name: { $like: `${params.keyword}%` }, is_deleted: NO },
-        order: [
-          ['id', 'ASC'],
-        ],
+        order: [["id", "ASC"]],
         limit,
         offset,
         include: [
-          { 
-            model: Model.ProductImages, as: "productImages", 
-            attributes: ['file_name', 'order', 'type', 'product_id'],
+          {
+            model: Model.ProductImages,
+            as: "productImages",
+            attributes: ["file_name", "order", "type", "product_id"],
             where: { type: PRODUCT_IMAGES_TYPE_THUMBNAIL, is_deleted: NO },
-            required: false 
+            required: false,
           },
-          { 
-            model: Model.Inventories, as: "inventories", 
-            attributes: ['quantity_available', 'price_amount', 'product_id'], 
+          {
+            model: Model.Inventories,
+            as: "inventories",
+            attributes: ["quantity_available", "price_amount", "product_id"],
             where: { is_deleted: NO },
-            required: false 
+            required: false,
           },
-        ]
+        ],
       };
-      countCriteria = { where: { name: { $like: `${params.keyword}%` }, is_deleted: NO } };
-
-      // Execute findAll query
       data = await Model.Products.findAll(criteria);
-      if (!_.isEmpty(data[0])) {
-        count = await Model.Products.count(countCriteria);
-        let obj = {
-          data: data,
-          count: count
-        }
-
-        res.json({
-          status: 200,
-          message: "Successfully find all data.",
-          result: obj
-        });
-      } else {
-        res.json({
-          status: 200,
-          message: "No Data Found.",
-          result: false
-        });
+      if (_.isEmpty(data[0])) {
+        errors.push("No data found.");
+        throw new ErrorHandler(500, errors);
       }
-    } catch (err) {
-      res.json({
-        status: 401,
-        err: err,
-        message: "Failed to search data."
+
+      countCriteria = {
+        where: { name: { $like: `${params.keyword}%` }, is_deleted: NO },
+      };
+      count = await Model.Products.count(countCriteria);
+      let obj = {
+        data: data,
+        count: count,
+      };
+
+      handleSuccess(res, {
+        statusCode: 200,
+        message: "Successfully find all data.",
+        result: obj,
       });
+    } catch (err) {
+      next(err);
     }
   },
 
   /**
    * Search with related categories
-   * @route GET /products/searchWithRelatedCategories/:keyword/:limit/:offset
-   * @param req
-   * @param res
-   * @returns {never}
+   * @route GET /products/searchWithRelatedCategories/:keyword?limit=:limit&offset=:offset
    */
-  searchWithRelatedCategories: async (req, res) => {
+  searchWithRelatedCategories: async (req, res, next) => {
     const params = req.params;
-    let data, criteria, countCriteria, relatedCategoriesCriteria;
-
-    if (_.isUndefined(params))
-      return res.badRequest({ err: "Invalid Parameter: [params]" });
-    if (_.isEmpty(params))
-      return res.badRequest({ err: "Empty Parameter: [params]" });
+    const query = req.query;
+    let errors = [],
+      data,
+      criteria,
+      countCriteria,
+      relatedCategoriesCriteria;
 
     try {
-      // Pre-setting variables
-      let limit = parseInt(params.limit);
-      let offset = parseInt(params.offset);
+      // Validate Data
+      let limit = query.limit ? parseInt(query.limit) : 10;
+      let offset = query.offset ? parseInt(query.offset) : 0;
+
       criteria = {
         attributes: [
-          'id',
+          "id",
           "code",
-          'name',
-          'unit',
-          'tags',
-          'price_amount',
-          'product_store_id',
-          'product_brand_id',
-          'product_category_id',
-          'product_sub_category_id',
-          'product_sub_sub_category_id',
-          'created_at',
-          'is_featured',
-          'is_published'
+          "name",
+          "unit",
+          "tags",
+          "price_amount",
+          "product_store_id",
+          "product_brand_id",
+          "product_category_id",
+          "product_sub_category_id",
+          "product_sub_sub_category_id",
+          "created_at",
+          "is_featured",
+          "is_published",
         ],
         where: { name: { $like: `${params.keyword}%` }, is_deleted: NO },
-        order: [
-          ['id', 'ASC'],
-        ],
+        order: [["id", "ASC"]],
         limit,
         offset,
         include: [
-          { 
-            model: Model.ProductImages, as: "productImages", 
-            attributes: ['file_name', 'order', 'type', 'product_id'],
+          {
+            model: Model.ProductImages,
+            as: "productImages",
+            attributes: ["file_name", "order", "type", "product_id"],
             where: { type: PRODUCT_IMAGES_TYPE_THUMBNAIL, is_deleted: NO },
-            required: false 
+            required: false,
           },
-          { 
-            model: Model.Inventories, as: "inventories", 
-            attributes: ['quantity_available', 'price_amount', 'product_id'], 
+          {
+            model: Model.Inventories,
+            as: "inventories",
+            attributes: ["quantity_available", "price_amount", "product_id"],
             where: { is_deleted: NO },
-            required: false 
+            required: false,
           },
-        ]
+        ],
       };
-      countCriteria = { where: { name: { $like: `${params.keyword}%` }, is_deleted: NO } };
-      relatedCategoriesCriteria = {
-        attributes: ['product_sub_category_id'],
-        where: { name: { $like: `${params.keyword}%` }, is_deleted: NO },
-        group: ['product_sub_category_id'],
-        include: [
-          { model: Model.ProductSubCategories, as: "productSubCategories", attributes: ['name', 'description'] }
-        ]
-      };
-
-      // Execute findAll query
       data = await Model.Products.findAll(criteria);
-      if (!_.isEmpty(data[0])) {
-        count = await Model.Products.count(countCriteria);
-        relatedCategoriesData = await Model.Products.findAll(relatedCategoriesCriteria);
-        let obj = {
-          data: data,
-          count: count,
-          relatedCategoriesData: relatedCategoriesData
-        }
-
-        res.json({
-          status: 200,
-          message: "Successfully find all data.",
-          result: obj
-        });
-      } else {
-        res.json({
-          status: 200,
-          message: "No Data Found.",
-          result: false
-        });
+      if (_.isEmpty(data[0])) {
+        errors.push("No data found.");
+        throw new ErrorHandler(500, errors);
       }
-    } catch (err) {
-      res.json({
-        status: 401,
-        err: err,
-        message: "Failed to search data."
+
+      countCriteria = {
+        where: { name: { $like: `${params.keyword}%` }, is_deleted: NO },
+      };
+      count = await Model.Products.count(countCriteria);
+      relatedCategoriesCriteria = {
+        attributes: ["product_sub_category_id"],
+        where: { name: { $like: `${params.keyword}%` }, is_deleted: NO },
+        group: ["product_sub_category_id"],
+        include: [
+          {
+            model: Model.ProductSubCategories,
+            as: "productSubCategories",
+            attributes: ["name", "description"],
+          },
+        ],
+      };
+      relatedCategoriesData = await Model.Products.findAll(
+        relatedCategoriesCriteria
+      );
+      let obj = {
+        data: data,
+        count: count,
+        relatedCategoriesData: relatedCategoriesData,
+      };
+
+      handleSuccess(res, {
+        statusCode: 200,
+        message: "Successfully find all data.",
+        result: obj,
       });
+    } catch (err) {
+      next(err);
     }
   },
 
   /**
    * Search by sub category id with related categories
-   * @route GET /products/searchBySubCategoryIdWithRelatedCategories/:subCategoryId/:keyword/:limit/:offset
-   * @param req
-   * @param res
-   * @returns {never}
+   * @route GET /products/searchBySubCategoryIdWithRelatedCategories/:subCategoryId/:keyword?limit=:limit&offset=:offset
    */
-  searchBySubCategoryIdWithRelatedCategories: async (req, res) => {
+  searchBySubCategoryIdWithRelatedCategories: async (req, res, next) => {
     const params = req.params;
-    let data, criteria, countCriteria, relatedCategoriesCriteria;
-
-    if (_.isUndefined(params))
-      return res.badRequest({ err: "Invalid Parameter: [params]" });
-    if (_.isEmpty(params))
-      return res.badRequest({ err: "Empty Parameter: [params]" });
+    const query = req.query;
+    let errors = [],
+      data,
+      criteria,
+      countCriteria,
+      relatedCategoriesCriteria;
 
     try {
-      // Pre-setting variables
-      let limit = parseInt(params.limit);
-      let offset = parseInt(params.offset);
+      // Validate Data
+      let limit = query.limit ? parseInt(query.limit) : 10;
+      let offset = query.offset ? parseInt(query.offset) : 0;
+
       criteria = {
         attributes: [
-          'id',
+          "id",
           "code",
-          'name',
-          'unit',
-          'tags',
-          'price_amount',
-          'product_store_id',
-          'product_brand_id',
-          'product_category_id',
-          'product_sub_category_id',
-          'product_sub_sub_category_id',
-          'created_at',
-          'is_featured',
-          'is_published'
+          "name",
+          "unit",
+          "tags",
+          "price_amount",
+          "product_store_id",
+          "product_brand_id",
+          "product_category_id",
+          "product_sub_category_id",
+          "product_sub_sub_category_id",
+          "created_at",
+          "is_featured",
+          "is_published",
         ],
-        where: { name: { $like: `${params.keyword}%` }, product_sub_category_id: params.subCategoryId, is_deleted: NO },
-        order: [
-          ['id', 'ASC'],
-        ],
+        where: {
+          name: { $like: `${params.keyword}%` },
+          product_sub_category_id: params.subCategoryId,
+          is_deleted: NO,
+        },
+        order: [["id", "ASC"]],
         limit,
         offset,
         include: [
-          { 
-            model: Model.ProductImages, as: "productImages", 
-            attributes: ['file_name', 'order', 'type', 'product_id'],
+          {
+            model: Model.ProductImages,
+            as: "productImages",
+            attributes: ["file_name", "order", "type", "product_id"],
             where: { type: PRODUCT_IMAGES_TYPE_THUMBNAIL, is_deleted: NO },
-            required: false 
+            required: false,
           },
-          { 
-            model: Model.Inventories, as: "inventories", 
-            attributes: ['quantity_available', 'price_amount', 'product_id'], 
+          {
+            model: Model.Inventories,
+            as: "inventories",
+            attributes: ["quantity_available", "price_amount", "product_id"],
             where: { is_deleted: NO },
-            required: false 
+            required: false,
           },
-        ]
+        ],
       };
-      countCriteria = { where: { name: { $like: `${params.keyword}%` }, product_sub_category_id: params.subCategoryId, is_deleted: NO } };
-      relatedCategoriesCriteria = {
-        attributes: ['product_sub_category_id'],
-        where: { name: { $like: `${params.keyword}%` }, is_deleted: NO },
-        group: ['product_sub_category_id'],
-        include: [
-          { model: Model.ProductSubCategories, as: "productSubCategories", attributes: ['name', 'description'] }
-        ]
-      };
-
-      // Execute findAll query
       data = await Model.Products.findAll(criteria);
-      if (!_.isEmpty(data[0])) {
-        count = await Model.Products.count(countCriteria);
-        relatedCategoriesData = await Model.Products.findAll(relatedCategoriesCriteria);
-        let obj = {
-          data: data,
-          count: count,
-          relatedCategoriesData: relatedCategoriesData
-        }
-
-        res.json({
-          status: 200,
-          message: "Successfully find all data.",
-          result: obj
-        });
-      } else {
-        res.json({
-          status: 200,
-          message: "No Data Found.",
-          result: false
-        });
+      if (_.isEmpty(data[0])) {
+        errors.push("No data found.");
+        throw new ErrorHandler(500, errors);
       }
-    } catch (err) {
-      res.json({
-        status: 401,
-        err: err,
-        message: "Failed to search data."
+
+      countCriteria = {
+        where: {
+          name: { $like: `${params.keyword}%` },
+          product_sub_category_id: params.subCategoryId,
+          is_deleted: NO,
+        },
+      };
+      count = await Model.Products.count(countCriteria);
+      relatedCategoriesCriteria = {
+        attributes: ["product_sub_category_id"],
+        where: { name: { $like: `${params.keyword}%` }, is_deleted: NO },
+        group: ["product_sub_category_id"],
+        include: [
+          {
+            model: Model.ProductSubCategories,
+            as: "productSubCategories",
+            attributes: ["name", "description"],
+          },
+        ],
+      };
+      relatedCategoriesData = await Model.Products.findAll(
+        relatedCategoriesCriteria
+      );
+      let obj = {
+        data: data,
+        count: count,
+        relatedCategoriesData: relatedCategoriesData,
+      };
+
+      handleSuccess(res, {
+        statusCode: 200,
+        message: "Successfully find all data.",
+        result: obj,
       });
+    } catch (err) {
+      next(err);
     }
   },
 
   /**
    * Find all
    * @route GET /products
-   * @param req
-   * @param res
-   * @returns {never}
    */
-  findAll: async (req, res) => {
-    let data, criteria;
+  findAll: async (req, res, next) => {
+    let errors = [],
+      data,
+      criteria;
 
     try {
-      // Pre-setting variables
+      // Validate Data
       criteria = {
         attributes: [
-          'id',
+          "id",
           "code",
-          'name',
-          'description',
-          'unit',
-          'tags',
-          'price_amount',
-          'product_store_id',
-          'product_brand_id',
-          'product_category_id',
-          'product_sub_category_id',
-          'product_sub_sub_category_id',
-          'created_at',
-          'is_featured',
-          'is_published'
+          "name",
+          "description",
+          "unit",
+          "tags",
+          "price_amount",
+          "product_store_id",
+          "product_brand_id",
+          "product_category_id",
+          "product_sub_category_id",
+          "product_sub_sub_category_id",
+          "created_at",
+          "is_featured",
+          "is_published",
         ],
         where: { is_deleted: NO },
         // include: [
@@ -581,601 +595,641 @@ module.exports = {
         //   { model: Model.ProductSubSubCategories, as: "productSubSubCategories", attributes: ['name', 'description'] }
         // ]
       };
-      // Execute findAll query
       data = await Model.Products.findAll(criteria);
-      if (!_.isEmpty(data[0])) {
-        res.json({
-          status: 200,
-          message: "Successfully find all data.",
-          result: data
-        });
-      } else {
-        res.json({
-          status: 200,
-          message: "No Data Found.",
-          result: false
-        });
+      if (_.isEmpty(data[0])) {
+        errors.push("No data found.");
+        throw new ErrorHandler(500, errors);
       }
-    } catch (err) {
-      res.json({
-        status: 401,
-        err: err,
-        message: "Failed to find all data."
+
+      handleSuccess(res, {
+        statusCode: 200,
+        message: "Successfully find all data.",
+        result: data,
       });
+    } catch (err) {
+      next(err);
     }
   },
 
   /**
    * Find all by is featured
    * @route GET /products/featured/:value
-   * @param req
-   * @param res
-   * @returns {never}
    */
-  findAllByIsFeatured: async (req, res) => {
-    let data, criteria;
+  findAllByIsFeatured: async (req, res, next) => {
+    let errors = [],
+      data,
+      criteria;
 
     try {
-      // Pre-setting variables
+      // Validate Data
       criteria = {
         attributes: [
-          'id',
+          "id",
           "code",
-          'name',
-          'unit',
-          'price_amount',
-          'created_at',
-          'is_featured',
-          'is_published'
+          "name",
+          "unit",
+          "price_amount",
+          "created_at",
+          "is_featured",
+          "is_published",
         ],
-        where: { is_deleted: NO, is_featured: req.params.value, is_published: YES },
-        order: [
-          ['id', 'ASC'],
-        ],
+        where: {
+          is_deleted: NO,
+          is_featured: req.params.value,
+          is_published: YES,
+        },
+        order: [["id", "ASC"]],
         include: [
-          { 
-            model: Model.ProductImages, as: "productImages", 
-            attributes: ['file_name', 'order', 'type', 'product_id'],
+          {
+            model: Model.ProductImages,
+            as: "productImages",
+            attributes: ["file_name", "order", "type", "product_id"],
             where: { type: PRODUCT_IMAGES_TYPE_FEATURED, is_deleted: NO },
-            required: false 
+            required: false,
           },
-          { 
-            model: Model.Inventories, as: "inventories", 
-            attributes: ['quantity_available', 'product_id'], 
+          {
+            model: Model.Inventories,
+            as: "inventories",
+            attributes: ["quantity_available", "product_id"],
             where: { is_deleted: NO },
-            required: false 
+            required: false,
           },
-        ]
+        ],
       };
-      // Execute findAll query
       data = await Model.Products.findAll(criteria);
-      if (!_.isEmpty(data[0])) {
-        res.json({
-          status: 200,
-          message: "Successfully find all data.",
-          result: data
-        });
-      } else {
-        res.json({
-          status: 200,
-          message: "No Data Found.",
-          result: false
-        });
+      if (_.isEmpty(data[0])) {
+        errors.push("No data found.");
+        throw new ErrorHandler(500, errors);
       }
-    } catch (err) {
-      res.json({
-        status: 401,
-        err: err,
-        message: "Failed to find all data."
+
+      handleSuccess(res, {
+        statusCode: 200,
+        message: "Successfully find all data.",
+        result: data,
       });
+    } catch (err) {
+      next(err);
     }
   },
 
   /**
    * Find all with limit and offset
-   * @route GET /products/findAllWithLimitAndOffset/:limit/:offset
-   * @param req
-   * @param res
-   * @returns {never}
+   * @route GET /products/findAllWithLimitAndOffset?limit=:limit&offset=:offset
    */
-  findAllWithLimitAndOffset: async (req, res) => {
+  findAllWithLimitAndOffset: async (req, res, next) => {
     let params = req.params;
-    let data, criteria, countCriteria;
+    let query = req.query;
+    let errors = [],
+      data,
+      criteria,
+      countCriteria;
 
     try {
-      // Pre-setting variables
-      let limit = parseInt(params.limit);
-      let offset = parseInt(params.offset);
+      // Validate Data
+      let limit = query.limit ? parseInt(query.limit) : 10;
+      let offset = query.offset ? parseInt(query.offset) : 0;
+
       criteria = {
         attributes: [
-          'id',
+          "id",
           "code",
-          'name',
-          'unit',
-          'tags',
-          'price_amount',
-          'product_store_id',
-          'product_brand_id',
-          'product_category_id',
-          'product_sub_category_id',
-          'product_sub_sub_category_id',
-          'created_at',
-          'is_featured',
-          'is_published'
+          "name",
+          "unit",
+          "tags",
+          "price_amount",
+          "product_store_id",
+          "product_brand_id",
+          "product_category_id",
+          "product_sub_category_id",
+          "product_sub_sub_category_id",
+          "created_at",
+          "is_featured",
+          "is_published",
         ],
         where: { is_deleted: NO },
-        order: [
-          ['id', 'ASC'],
-        ],
+        order: [["id", "ASC"]],
         limit,
         offset,
         include: [
-          { model: Model.ProductStores, as: "productStores", attributes: ['name', 'description'] },
-          { model: Model.ProductBrands, as: "productBrands", attributes: ['name', 'description'] },
-          { model: Model.ProductCategories, as: "productCategories", attributes: ['name', 'description'] },
-          { model: Model.ProductSubCategories, as: "productSubCategories", attributes: ['name', 'description'] },
-          { model: Model.ProductSubSubCategories, as: "productSubSubCategories", attributes: ['name', 'description'] },
-          { 
-            model: Model.ProductImages, as: "productImages", 
-            attributes: ['file_name', 'order', 'type', 'product_id'],
+          {
+            model: Model.ProductStores,
+            as: "productStores",
+            attributes: ["name", "description"],
+          },
+          {
+            model: Model.ProductBrands,
+            as: "productBrands",
+            attributes: ["name", "description"],
+          },
+          {
+            model: Model.ProductCategories,
+            as: "productCategories",
+            attributes: ["name", "description"],
+          },
+          {
+            model: Model.ProductSubCategories,
+            as: "productSubCategories",
+            attributes: ["name", "description"],
+          },
+          {
+            model: Model.ProductSubSubCategories,
+            as: "productSubSubCategories",
+            attributes: ["name", "description"],
+          },
+          {
+            model: Model.ProductImages,
+            as: "productImages",
+            attributes: ["file_name", "order", "type", "product_id"],
             where: { type: PRODUCT_IMAGES_TYPE_THUMBNAIL, is_deleted: NO },
-            required: false 
+            required: false,
           },
-          { 
-            model: Model.ProductVariants, as: "productVariants", 
-            attributes: ['id', 'title', 'values', 'product_id'], 
+          {
+            model: Model.ProductVariants,
+            as: "productVariants",
+            attributes: ["id", "title", "values", "product_id"],
             where: { is_deleted: NO },
-            required: false 
+            required: false,
           },
-          { 
-            model: Model.Inventories, as: "inventories", 
-            attributes: ['quantity_available', 'product_id'], 
+          {
+            model: Model.Inventories,
+            as: "inventories",
+            attributes: ["quantity_available", "product_id"],
             where: { is_deleted: NO },
-            required: false 
+            required: false,
           },
-        ]
+        ],
       };
-      countCriteria = { where: { is_deleted: NO } };
-
-      // Execute findAll query
       data = await Model.Products.findAll(criteria);
-      if (!_.isEmpty(data[0])) {
-        count = await Model.Products.count(countCriteria);
-        let obj = {
-          data: data,
-          count: count
-        }
-
-        res.json({
-          status: 200,
-          message: "Successfully find all data.",
-          result: obj
-        });
-      } else {
-        res.json({
-          status: 200,
-          message: "No Data Found.",
-          result: false
-        });
+      if (_.isEmpty(data[0])) {
+        errors.push("No data found.");
+        throw new ErrorHandler(500, errors);
       }
-    } catch (err) {
-      res.json({
-        status: 401,
-        err: err,
-        message: "Failed to find all data."
+
+      countCriteria = { where: { is_deleted: NO } };
+      count = await Model.Products.count(countCriteria);
+      let obj = {
+        data: data,
+        count: count,
+      };
+
+      handleSuccess(res, {
+        statusCode: 200,
+        message: "Successfully find all data.",
+        result: obj,
       });
+    } catch (err) {
+      next(err);
     }
   },
 
   /**
    * Find all by product category id with limit and offset
-   * @route GET /products/findAllByProductCategoryIdWithLimitAndOffset/:productCategoryId/:limit/:offset
-   * @param req
-   * @param res
-   * @returns {never}
+   * @route GET /products/findAllByProductCategoryIdWithLimitAndOffset/:productCategoryId?limit=:limit&offset=:offset
    */
-  findAllByProductCategoryIdWithLimitAndOffset: async (req, res) => {
+  findAllByProductCategoryIdWithLimitAndOffset: async (req, res, next) => {
     let params = req.params;
-    let data, criteria, countCriteria;
+    let query = req.query;
+    let errors = [],
+      data,
+      criteria,
+      countCriteria;
 
     try {
-      // Pre-setting variables
-      let limit = parseInt(params.limit);
-      let offset = parseInt(params.offset);
+      // Validate Data
+      let limit = query.limit ? parseInt(query.limit) : 10;
+      let offset = query.offset ? parseInt(query.offset) : 0;
+
       criteria = {
         attributes: [
-          'id',
+          "id",
           "code",
-          'name',
-          'unit',
-          'tags',
-          'price_amount',
-          'product_store_id',
-          'product_brand_id',
-          'product_category_id',
-          'product_sub_category_id',
-          'product_sub_sub_category_id',
-          'created_at',
-          'is_featured',
-          'is_published'
+          "name",
+          "unit",
+          "tags",
+          "price_amount",
+          "product_store_id",
+          "product_brand_id",
+          "product_category_id",
+          "product_sub_category_id",
+          "product_sub_sub_category_id",
+          "created_at",
+          "is_featured",
+          "is_published",
         ],
-        where: { product_category_id: params.productCategoryId, is_deleted: NO },
-        order: [
-          ['id', 'ASC'],
-        ],
+        where: {
+          product_category_id: params.productCategoryId,
+          is_deleted: NO,
+        },
+        order: [["id", "ASC"]],
         limit,
         offset,
         include: [
-          { 
-            model: Model.ProductImages, as: "productImages", 
-            attributes: ['file_name', 'order', 'type', 'product_id'],
+          {
+            model: Model.ProductImages,
+            as: "productImages",
+            attributes: ["file_name", "order", "type", "product_id"],
             where: { type: PRODUCT_IMAGES_TYPE_THUMBNAIL, is_deleted: NO },
-            required: false 
+            required: false,
           },
-          { 
-            model: Model.Inventories, as: "inventories", 
-            attributes: ['quantity_available', 'price_amount', 'product_id'], 
+          {
+            model: Model.Inventories,
+            as: "inventories",
+            attributes: ["quantity_available", "price_amount", "product_id"],
             where: { is_deleted: NO },
-            required: false 
+            required: false,
           },
-        ]
+        ],
       };
-      countCriteria = { where: { product_category_id: params.productCategoryId, is_deleted: NO } };
-
-      // Execute findAll query
       data = await Model.Products.findAll(criteria);
-      if (!_.isEmpty(data[0])) {
-        count = await Model.Products.count(countCriteria);
-        let obj = {
-          data: data,
-          count: count
-        }
-
-        res.json({
-          status: 200,
-          message: "Successfully find all data.",
-          result: obj
-        });
-      } else {
-        res.json({
-          status: 200,
-          message: "No Data Found.",
-          result: false
-        });
+      if (_.isEmpty(data[0])) {
+        errors.push("No data found.");
+        throw new ErrorHandler(500, errors);
       }
-    } catch (err) {
-      res.json({
-        status: 401,
-        err: err,
-        message: "Failed to find all data."
+
+      countCriteria = {
+        where: {
+          product_category_id: params.productCategoryId,
+          is_deleted: NO,
+        },
+      };
+      count = await Model.Products.count(countCriteria);
+      let obj = {
+        data: data,
+        count: count,
+      };
+
+      handleSuccess(res, {
+        statusCode: 200,
+        message: "Successfully find all data.",
+        result: obj,
       });
+    } catch (err) {
+      next(err);
     }
   },
 
   /**
    * Find all by product sub category id with limit and offset
-   * @route GET /products/findAllByProductSubCategoryIdWithLimitAndOffset/:productSubCategoryId/:limit/:offset
-   * @param req
-   * @param res
-   * @returns {never}
+   * @route GET /products/findAllByProductSubCategoryIdWithLimitAndOffset/:productSubCategoryId?limit=:limit&offset=:offset
    */
-  findAllByProductSubCategoryIdWithLimitAndOffset: async (req, res) => {
+  findAllByProductSubCategoryIdWithLimitAndOffset: async (req, res, next) => {
     let params = req.params;
-    let data, criteria, countCriteria;
+    let query = req.query;
+    let errors = [],
+      data,
+      criteria,
+      countCriteria;
 
     try {
-      // Pre-setting variables
-      let limit = parseInt(params.limit);
-      let offset = parseInt(params.offset);
+      // Validate Data
+      let limit = query.limit ? parseInt(query.limit) : 10;
+      let offset = query.offset ? parseInt(query.offset) : 0;
+
       criteria = {
         attributes: [
-          'id',
+          "id",
           "code",
-          'name',
-          'unit',
-          'tags',
-          'price_amount',
-          'product_store_id',
-          'product_brand_id',
-          'product_category_id',
-          'product_sub_category_id',
-          'product_sub_sub_category_id',
-          'created_at',
-          'is_featured',
-          'is_published'
+          "name",
+          "unit",
+          "tags",
+          "price_amount",
+          "product_store_id",
+          "product_brand_id",
+          "product_category_id",
+          "product_sub_category_id",
+          "product_sub_sub_category_id",
+          "created_at",
+          "is_featured",
+          "is_published",
         ],
-        where: { product_sub_category_id: params.productSubCategoryId, is_deleted: NO },
-        order: [
-          ['id', 'ASC'],
-        ],
+        where: {
+          product_sub_category_id: params.productSubCategoryId,
+          is_deleted: NO,
+        },
+        order: [["id", "ASC"]],
         limit,
         offset,
         include: [
-          { 
-            model: Model.ProductImages, as: "productImages", 
-            attributes: ['file_name', 'order', 'type', 'product_id'],
+          {
+            model: Model.ProductImages,
+            as: "productImages",
+            attributes: ["file_name", "order", "type", "product_id"],
             where: { type: PRODUCT_IMAGES_TYPE_THUMBNAIL, is_deleted: NO },
-            required: false 
+            required: false,
           },
-          { 
-            model: Model.Inventories, as: "inventories", 
-            attributes: ['quantity_available', 'price_amount', 'product_id'], 
+          {
+            model: Model.Inventories,
+            as: "inventories",
+            attributes: ["quantity_available", "price_amount", "product_id"],
             where: { is_deleted: NO },
-            required: false 
+            required: false,
           },
-        ]
+        ],
       };
-      countCriteria = { where: { product_sub_category_id: params.productSubCategoryId, is_deleted: NO } };
-
-      // Execute findAll query
       data = await Model.Products.findAll(criteria);
-      if (!_.isEmpty(data[0])) {
-        count = await Model.Products.count(countCriteria);
-        let obj = {
-          data: data,
-          count: count
-        }
-
-        res.json({
-          status: 200,
-          message: "Successfully find all data.",
-          result: obj
-        });
-      } else {
-        res.json({
-          status: 200,
-          message: "No Data Found.",
-          result: false
-        });
+      if (_.isEmpty(data[0])) {
+        errors.push("No data found.");
+        throw new ErrorHandler(500, errors);
       }
-    } catch (err) {
-      res.json({
-        status: 401,
-        err: err,
-        message: "Failed to find all data."
+
+      countCriteria = {
+        where: {
+          product_sub_category_id: params.productSubCategoryId,
+          is_deleted: NO,
+        },
+      };
+      count = await Model.Products.count(countCriteria);
+      let obj = {
+        data: data,
+        count: count,
+      };
+
+      handleSuccess(res, {
+        statusCode: 200,
+        message: "Successfully find all data.",
+        result: obj,
       });
+    } catch (err) {
+      next(err);
     }
   },
 
   /**
    * Find all by product sub sub-category id with limit and offset
-   * @route GET /products/findAllByProductSubSubCategoryIdWithLimitAndOffset/:productSubSubCategoryId/:limit/:offset
-   * @param req
-   * @param res
-   * @returns {never}
+   * @route GET /products/findAllByProductSubSubCategoryIdWithLimitAndOffset/:productSubSubCategoryId?limit=:limit&offset=:offset
    */
-  findAllByProductSubSubCategoryIdWithLimitAndOffset: async (req, res) => {
+  findAllByProductSubSubCategoryIdWithLimitAndOffset: async (
+    req,
+    res,
+    next
+  ) => {
     let params = req.params;
-    let data, criteria, countCriteria;
+    let query = req.query;
+    let errors = [],
+      data,
+      criteria,
+      countCriteria;
 
     try {
-      // Pre-setting variables
-      let limit = parseInt(params.limit);
-      let offset = parseInt(params.offset);
+      // Validate Data
+      let limit = query.limit ? parseInt(query.limit) : 10;
+      let offset = query.offset ? parseInt(query.offset) : 0;
+
       criteria = {
         attributes: [
-          'id',
+          "id",
           "code",
-          'name',
-          'unit',
-          'tags',
-          'price_amount',
-          'product_store_id',
-          'product_brand_id',
-          'product_category_id',
-          'product_sub_category_id',
-          'product_sub_sub_category_id',
-          'created_at',
-          'is_featured',
-          'is_published'
+          "name",
+          "unit",
+          "tags",
+          "price_amount",
+          "product_store_id",
+          "product_brand_id",
+          "product_category_id",
+          "product_sub_category_id",
+          "product_sub_sub_category_id",
+          "created_at",
+          "is_featured",
+          "is_published",
         ],
-        where: { product_sub_sub_category_id: params.productSubSubCategoryId, is_deleted: NO },
-        order: [
-          ['id', 'ASC'],
-        ],
+        where: {
+          product_sub_sub_category_id: params.productSubSubCategoryId,
+          is_deleted: NO,
+        },
+        order: [["id", "ASC"]],
         limit,
         offset,
         include: [
-          { 
-            model: Model.ProductImages, as: "productImages", 
-            attributes: ['file_name', 'order', 'type', 'product_id'],
+          {
+            model: Model.ProductImages,
+            as: "productImages",
+            attributes: ["file_name", "order", "type", "product_id"],
             where: { type: PRODUCT_IMAGES_TYPE_THUMBNAIL, is_deleted: NO },
-            required: false 
+            required: false,
           },
-          { 
-            model: Model.Inventories, as: "inventories", 
-            attributes: ['quantity_available', 'price_amount', 'product_id'], 
+          {
+            model: Model.Inventories,
+            as: "inventories",
+            attributes: ["quantity_available", "price_amount", "product_id"],
             where: { is_deleted: NO },
-            required: false 
+            required: false,
           },
-        ]
+        ],
       };
-      countCriteria = { where: { product_sub_sub_category_id: params.productSubSubCategoryId, is_deleted: NO } };
-
-      // Execute findAll query
       data = await Model.Products.findAll(criteria);
-      if (!_.isEmpty(data[0])) {
-        count = await Model.Products.count(countCriteria);
-        let obj = {
-          data: data,
-          count: count
-        }
-
-        res.json({
-          status: 200,
-          message: "Successfully find all data.",
-          result: obj
-        });
-      } else {
-        res.json({
-          status: 200,
-          message: "No Data Found.",
-          result: false
-        });
+      if (_.isEmpty(data[0])) {
+        errors.push("No data found.");
+        throw new ErrorHandler(500, errors);
       }
-    } catch (err) {
-      res.json({
-        status: 401,
-        err: err,
-        message: "Failed to find all data."
+
+      countCriteria = {
+        where: {
+          product_sub_sub_category_id: params.productSubSubCategoryId,
+          is_deleted: NO,
+        },
+      };
+      count = await Model.Products.count(countCriteria);
+      let obj = {
+        data: data,
+        count: count,
+      };
+
+      handleSuccess(res, {
+        statusCode: 200,
+        message: "Successfully find all data.",
+        result: obj,
       });
+    } catch (err) {
+      next(err);
     }
   },
 
   /**
    * Find by id
    * @route GET /products/:id
-   * @param req
-   * @param res
-   * @returns {never}
    */
-  findById: async (req, res) => {
-    let data;
+  findById: async (req, res, next) => {
+    let errors = [],
+      data;
 
     try {
-      // Pre-setting variables
+      // Validate Data
       criteria = {
         where: { is_deleted: NO },
         include: [
-          { model: Model.ProductStores, as: "productStores", attributes: ['name', 'description'] },
-          { model: Model.ProductBrands, as: "productBrands", attributes: ['name', 'description'] },
-          { model: Model.ProductCategories, as: "productCategories", attributes: ['name', 'description'] },
-          { model: Model.ProductSubCategories, as: "productSubCategories", attributes: ['name', 'description'] },
-          { model: Model.ProductSubSubCategories, as: "productSubSubCategories", attributes: ['name', 'description'] },
-          { 
-            model: Model.ProductImages, as: "productImages", 
-            attributes: ['file_name', 'order', 'type', 'product_id'],
-            where: { is_deleted: NO },
-            required: false 
+          {
+            model: Model.ProductStores,
+            as: "productStores",
+            attributes: ["name", "description"],
           },
-          { 
-            model: Model.ProductVariants, as: "productVariants", 
-            attributes: ['id', 'title', 'values', 'product_id'], 
-            where: { is_deleted: NO },
-            required: false 
+          {
+            model: Model.ProductBrands,
+            as: "productBrands",
+            attributes: ["name", "description"],
           },
-          { 
-            model: Model.Inventories, as: "inventories", 
-            attributes: ['name', 'price_amount', 'sku', 'quantity_available', 'product_id'], 
-            where: { is_deleted: NO },
-            required: false 
+          {
+            model: Model.ProductCategories,
+            as: "productCategories",
+            attributes: ["name", "description"],
           },
-        ]
+          {
+            model: Model.ProductSubCategories,
+            as: "productSubCategories",
+            attributes: ["name", "description"],
+          },
+          {
+            model: Model.ProductSubSubCategories,
+            as: "productSubSubCategories",
+            attributes: ["name", "description"],
+          },
+          {
+            model: Model.ProductImages,
+            as: "productImages",
+            attributes: ["file_name", "order", "type", "product_id"],
+            where: { is_deleted: NO },
+            required: false,
+          },
+          {
+            model: Model.ProductVariants,
+            as: "productVariants",
+            attributes: ["id", "title", "values", "product_id"],
+            where: { is_deleted: NO },
+            required: false,
+          },
+          {
+            model: Model.Inventories,
+            as: "inventories",
+            attributes: [
+              "name",
+              "price_amount",
+              "sku",
+              "quantity_available",
+              "product_id",
+            ],
+            where: { is_deleted: NO },
+            required: false,
+          },
+        ],
       };
-      // Execute findAll query
       data = await Model.Products.findByPk(req.params.id, criteria);
-      if (!_.isEmpty(data)) {
-        res.json({
-          status: 200,
-          message: "Successfully find data.",
-          result: _.omit(data.get({ plain: true }), ["is_deleted"])
-        });
-      } else {
-        res.json({
-          status: 200,
-          message: "No Data Found.",
-          result: false
-        });
+      if (_.isEmpty(data)) {
+        errors.push("No data found.");
+        throw new ErrorHandler(500, errors);
       }
-    } catch (err) {
-      res.json({
-        status: 401,
-        err: err,
-        message: "Failed to find data."
+
+      handleSuccess(res, {
+        statusCode: 200,
+        message: "Successfully find data.",
+        result: _.omit(data.get({ plain: true }), ["is_deleted"]),
       });
+    } catch (err) {
+      next(err);
     }
   },
 
   /**
    * Find by id
    * @route GET /products/findByIdWithImageType/:id/:imageType
-   * @param req
-   * @param res
-   * @returns {never}
    */
-  findByIdWithImageType: async (req, res) => {
-    let data;
+  findByIdWithImageType: async (req, res, next) => {
+    let errors = [],
+      data;
 
     try {
-      // Pre-setting variables
+      // Validate Data
       criteria = {
         where: { is_deleted: NO },
         include: [
-          { model: Model.ProductStores, as: "productStores", attributes: ['name', 'description'] },
-          { model: Model.ProductBrands, as: "productBrands", attributes: ['name', 'description'] },
-          { model: Model.ProductCategories, as: "productCategories", attributes: ['name', 'description'] },
-          { model: Model.ProductSubCategories, as: "productSubCategories", attributes: ['name', 'description'] },
-          { model: Model.ProductSubSubCategories, as: "productSubSubCategories", attributes: ['name', 'description'] },
-          { 
-            model: Model.ProductImages, as: "productImages", 
-            attributes: ['file_name', 'order', 'type', 'product_id'],
+          {
+            model: Model.ProductStores,
+            as: "productStores",
+            attributes: ["name", "description"],
+          },
+          {
+            model: Model.ProductBrands,
+            as: "productBrands",
+            attributes: ["name", "description"],
+          },
+          {
+            model: Model.ProductCategories,
+            as: "productCategories",
+            attributes: ["name", "description"],
+          },
+          {
+            model: Model.ProductSubCategories,
+            as: "productSubCategories",
+            attributes: ["name", "description"],
+          },
+          {
+            model: Model.ProductSubSubCategories,
+            as: "productSubSubCategories",
+            attributes: ["name", "description"],
+          },
+          {
+            model: Model.ProductImages,
+            as: "productImages",
+            attributes: ["file_name", "order", "type", "product_id"],
             where: { type: req.params.imageType, is_deleted: NO },
-            required: false 
+            required: false,
           },
-          { 
-            model: Model.ProductVariants, as: "productVariants", 
-            attributes: ['id', 'title', 'values', 'product_id'], 
+          {
+            model: Model.ProductVariants,
+            as: "productVariants",
+            attributes: ["id", "title", "values", "product_id"],
             where: { is_deleted: NO },
-            required: false 
+            required: false,
           },
-          { 
-            model: Model.Inventories, as: "inventories", 
-            attributes: ['name', 'price_amount', 'sku', 'quantity_available', 'product_id'], 
+          {
+            model: Model.Inventories,
+            as: "inventories",
+            attributes: [
+              "name",
+              "price_amount",
+              "sku",
+              "quantity_available",
+              "product_id",
+            ],
             where: { is_deleted: NO },
-            required: false 
+            required: false,
           },
-        ]
+        ],
       };
-      // Execute findAll query
       data = await Model.Products.findByPk(req.params.id, criteria);
-      if (!_.isEmpty(data)) {
-        res.json({
-          status: 200,
-          message: "Successfully find data.",
-          result: _.omit(data.get({ plain: true }), ["is_deleted"])
-        });
-      } else {
-        res.json({
-          status: 200,
-          message: "No Data Found.",
-          result: false
-        });
+      if (_.isEmpty(data)) {
+        errors.push("No data found.");
+        throw new ErrorHandler(500, errors);
       }
-    } catch (err) {
-      res.json({
-        status: 401,
-        err: err,
-        message: "Failed to find data."
+
+      handleSuccess(res, {
+        statusCode: 200,
+        message: "Successfully find data.",
+        result: _.omit(data.get({ plain: true }), ["is_deleted"]),
       });
+    } catch (err) {
+      next(err);
     }
   },
 
   /**
    * Count all
    * @route GET /products/count/all
-   * @param req
-   * @param res
-   * @returns {never}
    */
-  countAll: async (req, res) => {
-    let count, criteria;
+  countAll: async (req, res, next) => {
+    let errors = [],
+      count,
+      criteria;
 
     try {
-      // Pre-setting variables
       criteria = { where: { is_deleted: NO } };
-      // Execute findAll query
       count = await Model.Products.count(criteria);
-      res.json({
-        status: 200,
+
+      handleSuccess(res, {
+        statusCode: 200,
         message: "Successfully count all data.",
-        result: count
+        result: count,
       });
     } catch (err) {
-      res.json({
-        status: 401,
-        err: err,
-        message: "Failed to count all data."
-      });
+      next(err);
     }
   },
 
@@ -1191,8 +1245,8 @@ module.exports = {
       try {
         // Pre-setting variables
         criteria = {
-          attributes: ['name'],
-          where: { is_deleted: NO }
+          attributes: ["name"],
+          where: { is_deleted: NO },
         };
         // Execute findAll query
         data = await Model.Products.findByPk(id, criteria);
@@ -1201,7 +1255,7 @@ module.exports = {
         resolve({
           status: 401,
           err: err,
-          message: "Failed to find data."
+          message: "Failed to find data.",
         });
       }
     });
