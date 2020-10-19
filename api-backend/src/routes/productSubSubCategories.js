@@ -15,7 +15,6 @@ router.route('/count/all').get(authController.authorization, productSubSubCatego
 router.route('/create').post(authController.authorization, productSubSubCategoriesController.create);
 router.route('/update/:id').put(authController.authorization, productSubSubCategoriesController.update);
 router.route('/delete/:id').put(authController.authorization, productSubSubCategoriesController.delete);
-router.route('/search/:value').get(authController.authorization, productSubSubCategoriesController.search);
 
 
 module.exports = router;
