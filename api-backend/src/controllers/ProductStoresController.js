@@ -91,6 +91,7 @@ module.exports = {
       data = await Model.ProductStores.findByPk(req.params.id);
 
       // Override variables
+      params.updated_at = moment().utc(8).format("YYYY-MM-DD HH:mm:ss");
       if (!_.isUndefined(req.file)) {
         let date = moment(params.created_at).format("YYYY-MM-DD");
         let extension = path.extname(params.file_name);
@@ -110,6 +111,7 @@ module.exports = {
         "name",
         "description",
         "file_name",
+        "updated_at",
         "is_active",
       ]);
       let finalData = await data.update(initialValues);
