@@ -12,6 +12,5 @@ router.route('/findAllbyProductId/:productId').get(productVariantsController.fin
 router.route('/create').post(authController.authorization, productVariantsController.create);
 router.route('/update/:id').put(authController.authorization, productVariantsController.update);
 router.route('/delete/:id').put(authController.authorization, productVariantsController.delete);
-router.route('/search/:value').get(authController.authorization, productVariantsController.search);
 
 module.exports = router;
