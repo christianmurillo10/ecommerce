@@ -1,325 +1,245 @@
-const Model = require('../models');
-const fs = require('fs');
-const path = require('path');
-const { NO, YES } = require('../helpers/constant-helper');
+const Model = require("../models");
+const { ErrorHandler, handleSuccess } = require("../helpers/response-helper");
+const fs = require("fs");
+const path = require("path");
+const { NO, YES } = require("../helpers/constant-helper");
 
 module.exports = {
   /**
    * Create
-   * @param req
-   * @param res
-   * @returns {Promise<void>}
    * @routes POST /productStores/create
    */
-  create: async (req, res) => {
+  create: async (req, res, next) => {
     const params = req.body;
-    let criteria, initialValues, data;
-
-    // Validators
-    if (_.isUndefined(params))
-      return res.badRequest({ err: "Invalid Parameter: [params]" });
-    if (_.isEmpty(params))
-      return res.badRequest({ err: "Empty Parameter: [params]" });
-
-    // Override variables
-    params.created_at = moment().utc(8).format('YYYY-MM-DD HH:mm:ss');
-
-    let date = moment(params.created_at).format('YYYY-MM-DD');
-
-    if (!_.isUndefined(req.file)) {
-      let extension = path.extname(params.file_name);
-      let fileName = `${params.name}-${date}${extension}`;
-      params.file_name = fileName;
-    } else {
-      params.file_name = null;
-    }
+    let errors = [],
+      criteria,
+      initialValues,
+      data;
 
     try {
       // Validators
-      if (_.isEmpty(params.name)) return res.json({ status: 200, message: "Name required.", result: false });
+      if (_.isEmpty(params)) {
+        errors.push("Invalid Parameter.");
+        throw new ErrorHandler(400, errors);
+      }
+
+      // Override variables
+      params.created_at = moment().utc(8).format("YYYY-MM-DD HH:mm:ss");
+      let date = moment(params.created_at).format("YYYY-MM-DD");
+      if (!_.isUndefined(req.file)) {
+        let extension = path.extname(params.file_name);
+        let fileName = `${params.name}-${date}${extension}`;
+        params.file_name = fileName;
+      } else {
+        params.file_name = null;
+      }
+
+      if (_.isEmpty(params.name)) {
+        errors.push("Name is required.");
+        throw new ErrorHandler(400, errors);
+      }
+
+      // Validate Data
+      criteria = { where: { name: params.name, is_deleted: NO } };
+      data = await Model.ProductStores.findAll(criteria);
+      if (!_.isEmpty(data[0])) {
+        errors.push("Data already exist.");
+        throw new ErrorHandler(500, errors);
+      }
 
       // Pre-setting variables
-      criteria = { where: { name: params.name, is_deleted: NO } };
-      initialValues = _.pick(params, ['name', 'description', 'file_name', 'created_at']);
-      // Execute findAll query
-      data = await Model.ProductStores.findAll(criteria);
-      if (_.isEmpty(data[0])) {
-        let finalData = await Model.ProductStores.create(initialValues);
-        // For Upload Images
-        if (!_.isUndefined(req.file)) {
-          let fileUpload = await uploadImage(params.file_name, req.file);
-        }
-        res.json({
-          status: 200,
-          message: "Successfully created data.",
-          result: _.omit(finalData.get({ plain: true }), ['is_deleted'])
-        });
-      } else {
-        res.json({
-          status: 200,
-          message: "Data already exist.",
-          result: false
-        });
+      initialValues = _.pick(params, [
+        "name",
+        "description",
+        "file_name",
+        "created_at",
+      ]);
+      let finalData = await Model.ProductStores.create(initialValues);
+      // For Upload Images
+      if (!_.isUndefined(req.file)) {
+        let fileUpload = await uploadImage(params.file_name, req.file);
       }
-    } catch (err) {
-      res.json({
-        status: 401,
-        err: err,
-        message: "Failed creating data."
+
+      handleSuccess(res, {
+        statusCode: 201,
+        message: "Successfully created data.",
+        result: _.omit(finalData.get({ plain: true }), ["is_deleted"]),
       });
+    } catch (err) {
+      next(err);
     }
   },
 
   /**
    * Update
    * @route PUT /productStores/update/:id
-   * @param req
-   * @param res
-   * @returns {never}
    */
-  update: async (req, res) => {
+  update: async (req, res, next) => {
     const params = req.body;
-    let initialValues, data;
-
-    if (_.isUndefined(params))
-      return res.badRequest({ err: "Invalid Parameter: [params]" });
-    if (_.isEmpty(params))
-      return res.badRequest({ err: "Empty Parameter: [params]" });
+    let errors = [],
+      initialValues,
+      data;
 
     try {
+      // Validators
+      if (_.isEmpty(params)) {
+        errors.push("Invalid Parameter.");
+        throw new ErrorHandler(400, errors);
+      }
+
       // Execute findByPk query
       data = await Model.ProductStores.findByPk(req.params.id);
+
       // Override variables
       if (!_.isUndefined(req.file)) {
-        let date = moment(params.created_at).format('YYYY-MM-DD');
+        let date = moment(params.created_at).format("YYYY-MM-DD");
         let extension = path.extname(params.file_name);
         let fileName = `${params.name}-${date}${extension}`;
         params.file_name = fileName;
       } else {
         params.file_name = data.file_name;
       }
-      // Pre-setting variables
-      initialValues = _.pick(params, ['name', 'description', 'file_name', 'is_active']);
 
-      if (!_.isEmpty(data)) {
-        let finalData = await data.update(initialValues);
-        // For Upload Images
-        if (!_.isUndefined(req.file)) {
-          let fileUpload = await uploadImage(params.file_name, req.file);
-        }
-        res.json({
-          status: 200,
-          message: "Successfully updated data.",
-          result: finalData
-        });
-      } else {
-        res.json({
-          status: 200,
-          message: "Data doesn't exist.",
-          result: false
-        });
+      if (_.isEmpty(data)) {
+        errors.push("Data doesn't exist.");
+        throw new ErrorHandler(500, errors);
       }
-    } catch (err) {
-      res.json({
-        status: 401,
-        err: err,
-        message: "Failed updating data."
+
+      // Pre-setting variables
+      initialValues = _.pick(params, [
+        "name",
+        "description",
+        "file_name",
+        "is_active",
+      ]);
+      let finalData = await data.update(initialValues);
+      // For Upload Images
+      if (!_.isUndefined(req.file)) {
+        let fileUpload = await uploadImage(params.file_name, req.file);
+      }
+
+      handleSuccess(res, {
+        statusCode: 200,
+        message: "Successfully updated data.",
+        result: finalData,
       });
+    } catch (err) {
+      next(err);
     }
   },
 
   /**
    * Delete
    * @route PUT /productStores/delete/:id
-   * @param req
-   * @param res
-   * @returns {never}
    */
-  delete: async (req, res) => {
-    let data;
+  delete: async (req, res, next) => {
+    let errors = [],
+      data;
 
     try {
-      // Execute findByPk query
+      // Validate Data
       data = await Model.ProductStores.findByPk(req.params.id);
-      if (!_.isEmpty(data)) {
-        let finalData = await data.update({ is_deleted: YES });
-        res.json({
-          status: 200,
-          message: "Successfully deleted data.",
-          result: finalData
-        });
-      } else {
-        res.json({
-          status: 200,
-          message: "Data doesn't exist.",
-          result: false
-        });
+      if (_.isEmpty(data)) {
+        errors.push("Data doesn't exist.");
+        throw new ErrorHandler(500, errors);
       }
+      let finalData = await data.update({ is_deleted: YES });
+
+      handleSuccess(res, {
+        statusCode: 200,
+        message: "Successfully deleted data.",
+        result: finalData,
+      });
     } catch (err) {
-      res.json({
-        status: 401,
-        err: err,
-        message: "Failed deleting data."
-      });
-    }
-  },
-
-  /**
-   * Search
-   * @route POST /productStores/search/:value
-   * @param req
-   * @param res
-   * @returns {never}
-   */
-  search: async (req, res) => {
-    const params = req.params;
-    let query, data;
-
-    if (_.isUndefined(params))
-      return res.badRequest({ err: "Invalid Parameter: [params]" });
-    if (_.isEmpty(params))
-      return res.badRequest({ err: "Empty Parameter: [params]" });
-
-    try {
-      // Pre-setting variables
-      query = `SELECT id, name, description, file_name, created_at, updated_at FROM product_stores WHERE CONCAT(name) LIKE ? AND is_active = ${YES} AND is_deleted = ${NO};`;
-      // Execute native query
-      data = await Model.sequelize.query(query, {
-        replacements: [`%${params.value}%`],
-        type: Model.sequelize.QueryTypes.SELECT
-      });
-      if (!_.isEmpty(data)) {
-        res.json({
-          status: 200,
-          message: "Successfully searched data.",
-          result: data
-        });
-      } else {
-        res.json({
-          status: 200,
-          message: "No Data Found.",
-          result: false
-        });
-      }
-    } catch (err) {
-      res.json({
-        status: 401,
-        err: err,
-        message: "Failed to search data."
-      });
+      next(err);
     }
   },
 
   /**
    * Find all
    * @route GET /productStores
-   * @param req
-   * @param res
-   * @returns {never}
    */
-  findAll: async (req, res) => {
-    let data, criteria;
+  findAll: async (req, res, next) => {
+    let errors = [],
+      data,
+      criteria;
 
     try {
-      // Pre-setting variables
+      // Validate Data
       criteria = { where: { is_deleted: NO } };
-      // Execute findAll query
       data = await Model.ProductStores.findAll(criteria);
-      if (!_.isEmpty(data[0])) {
-        res.json({
-          status: 200,
-          message: "Successfully find all data.",
-          result: data
-        });
-      } else {
-        res.json({
-          status: 200,
-          message: "No Data Found.",
-          result: false
-        });
+      if (_.isEmpty(data[0])) {
+        errors.push("No data found.");
+        throw new ErrorHandler(500, errors);
       }
-    } catch (err) {
-      res.json({
-        status: 401,
-        err: err,
-        message: "Failed to find all data."
+
+      handleSuccess(res, {
+        statusCode: 200,
+        message: "Successfully find all data.",
+        result: data,
       });
+    } catch (err) {
+      next(err);
     }
   },
 
   /**
    * Find by id
    * @route GET /productStores/:id
-   * @param req
-   * @param res
-   * @returns {never}
    */
-  findById: async (req, res) => {
-    let data;
+  findById: async (req, res, next) => {
+    let errors = [],
+      data;
 
     try {
-      // Execute findAll query
+      // Validate Data
       data = await Model.ProductStores.findByPk(req.params.id);
-      if (!_.isEmpty(data)) {
-        res.json({
-          status: 200,
-          message: "Successfully find data.",
-          result: _.omit(data.get({ plain: true }), ['is_deleted'])
-        });
-      } else {
-        res.json({
-          status: 200,
-          message: "No Data Found.",
-          result: false
-        });
+      if (_.isEmpty(data)) {
+        errors.push("No data found.");
+        throw new ErrorHandler(500, errors);
       }
-    } catch (err) {
-      res.json({
-        status: 401,
-        err: err,
-        message: "Failed to find data."
+
+      handleSuccess(res, {
+        statusCode: 200,
+        message: "Successfully find data.",
+        result: _.omit(data.get({ plain: true }), ["is_deleted"]),
       });
+    } catch (err) {
+      next(err);
     }
   },
 
   /**
    * Count all
    * @route GET /productStores/count/all
-   * @param req
-   * @param res
-   * @returns {never}
    */
-  countAll: async (req, res) => {
-    let count, criteria;
+  countAll: async (req, res, next) => {
+    let errors = [],
+      count,
+      criteria;
 
     try {
-      // Pre-setting variables
       criteria = { where: { is_deleted: NO } };
-      // Execute findAll query
       count = await Model.ProductStores.count(criteria);
-      res.json({
-        status: 200,
+      
+      handleSuccess(res, {
+        statusCode: 200,
         message: "Successfully count all data.",
-        result: count
+        result: count,
       });
     } catch (err) {
-      res.json({
-        status: 401,
-        err: err,
-        message: "Failed to find all data."
-      });
+      next(err);
     }
   },
 
   /**
    * Find by file_name
    * @route GET /productStores/viewImage/:fileName
-   * @param req
-   * @param res
-   * @returns {never}
    */
   viewImage: (req, res) => {
-    res.sendFile(path.join(__dirname, "../../images/productStores/" + req.params.fileName));
+    res.sendFile(
+      path.join(__dirname, "../../images/productStores/" + req.params.fileName)
+    );
   },
 };
 
@@ -328,13 +248,13 @@ module.exports = {
  */
 const uploadImage = (name, file) => {
   try {
-    fs.writeFile('images/productStores/' + name, file.buffer, function (err) {
+    fs.writeFile("images/productStores/" + name, file.buffer, function (err) {
       if (err) throw err;
-    })
+    });
 
     return true;
   } catch (err) {
     console.log(err);
     return false;
   }
-}
+};

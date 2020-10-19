@@ -209,9 +209,6 @@ module.exports = {
   /**
    * Count all
    * @route GET /productBrands/count/all
-   * @param req
-   * @param res
-   * @returns {never}
    */
   countAll: async (req, res, next) => {
     let errors = [],
