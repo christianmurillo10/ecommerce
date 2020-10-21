@@ -226,7 +226,8 @@ module.exports = {
     return new Promise(async (resolve, reject) => {
       try {
         let initialValues, data, criteria;
-        // Pre-setting variables
+
+        // Validate Data
         criteria = {
           where: {
             customer_id: obj.customer_id,
@@ -235,58 +236,46 @@ module.exports = {
           },
           order: [["id", "DESC"]],
         };
-        // Execute findOne query
         data = await Model.CustomerBalance.findOne(criteria);
-        if (!_.isEmpty(data)) {
-          const plainData = data.get({ plain: true });
-
-          // Set and compute initial values
-          const createdAt = moment().utc(8).format("YYYY-MM-DD HH:mm:ss");
-          const computedBalance =
-            parseFloat(plainData.balance) - parseFloat(obj.amount);
-          const balance =
-            parseFloat(computedBalance) > 0 ? parseFloat(computedBalance) : 0;
-          const overpayment =
-            parseFloat(computedBalance) < 0
-              ? Math.abs(parseFloat(computedBalance))
-              : 0;
-          const credit =
-            parseFloat(computedBalance) <= 0
-              ? parseFloat(plainData.balance)
-              : parseFloat(plainData.balance) - parseFloat(computedBalance);
-
-          initialValues = {
-            remarks: obj.remarks ? obj.remarks : null,
-            credit: credit,
-            balance: balance,
-            overpayment: overpayment,
-            amount: obj.amount,
-            customer_id: obj.customer_id,
-            sales_order_id: obj.sales_order_id,
-            payment_id: obj.payment_id,
-            created_at: createdAt,
-          };
-
-          Model.CustomerBalance.create(initialValues).then((response) => {
-            resolve({
-              status: 200,
-              message: "Successfully created data.",
-              result: true,
-            });
-          });
-        } else {
-          resolve({
-            status: 200,
-            message: "Data doesn't exist.",
-            result: false,
-          });
+        if (_.isEmpty(data)) {
+          resolve(false);
         }
-      } catch (err) {
-        resolve({
-          status: 401,
-          err: err,
-          message: "Failed to find data.",
+
+        const plainData = data.get({ plain: true });
+
+        // Set and compute initial values
+        const createdAt = moment().utc(8).format("YYYY-MM-DD HH:mm:ss");
+        const computedBalance =
+          parseFloat(plainData.balance) - parseFloat(obj.amount);
+        const balance =
+          parseFloat(computedBalance) > 0 ? parseFloat(computedBalance) : 0;
+        const overpayment =
+          parseFloat(computedBalance) < 0
+            ? Math.abs(parseFloat(computedBalance))
+            : 0;
+        const credit =
+          parseFloat(computedBalance) <= 0
+            ? parseFloat(plainData.balance)
+            : parseFloat(plainData.balance) - parseFloat(computedBalance);
+
+        // Pre-setting variables
+        initialValues = {
+          remarks: obj.remarks ? obj.remarks : null,
+          credit: credit,
+          balance: balance,
+          overpayment: overpayment,
+          amount: obj.amount,
+          customer_id: obj.customer_id,
+          sales_order_id: obj.sales_order_id,
+          payment_id: obj.payment_id,
+          created_at: createdAt,
+        };
+
+        Model.CustomerBalance.create(initialValues).then((response) => {
+          resolve(true);
         });
+      } catch (err) {
+        reject(err);
       }
     });
   },

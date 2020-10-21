@@ -1013,56 +1013,44 @@ module.exports = {
           criteria,
           computedTotalBalanceAmount,
           totalBalanceAmount;
-        // Pre-setting variables
+
+        // Validate Data
         criteria = { where: { id: obj.sales_order_id, is_deleted: NO } };
-        // Execute findOne query
         data = await Model.SalesOrders.findOne(criteria);
-        if (!_.isEmpty(data)) {
-          switch (obj.type) {
-            case "INSERT":
-              computedTotalBalanceAmount =
-                parseFloat(data.total_balance_amount) - parseFloat(obj.amount);
-              totalBalanceAmount =
-                computedTotalBalanceAmount > 0 ? computedTotalBalanceAmount : 0;
-              break;
-            case "DELETE":
-              computedTotalBalanceAmount =
-                parseFloat(data.total_balance_amount) + parseFloat(obj.amount);
-              totalBalanceAmount = computedTotalBalanceAmount;
-              break;
-          }
-
-          const updatedAt = moment().utc(8).format("YYYY-MM-DD HH:mm:ss");
-          const isPaid =
-            parseFloat(data.total_amount) === totalBalanceAmount ? NO : YES;
-          const isFullyPaid = computedTotalBalanceAmount > 0 ? NO : YES;
-
-          initialValues = {
-            total_balance_amount: totalBalanceAmount,
-            updated_at: updatedAt,
-            is_paid: isPaid,
-            is_fully_paid: isFullyPaid,
-          };
-          data.update(initialValues).then((response) => {
-            resolve({
-              status: 200,
-              message: "Successfully update data.",
-              result: true,
-            });
-          });
-        } else {
-          resolve({
-            status: 200,
-            message: "Data doesn't exist.",
-            result: false,
-          });
+        if (_.isEmpty(data)) {
+          resolve(false);
         }
-      } catch (err) {
-        resolve({
-          status: 401,
-          err: err,
-          message: "Failed to find data.",
+        
+        switch (obj.type) {
+          case "INSERT":
+            computedTotalBalanceAmount =
+              parseFloat(data.total_balance_amount) - parseFloat(obj.amount);
+            totalBalanceAmount =
+              computedTotalBalanceAmount > 0 ? computedTotalBalanceAmount : 0;
+            break;
+          case "DELETE":
+            computedTotalBalanceAmount =
+              parseFloat(data.total_balance_amount) + parseFloat(obj.amount);
+            totalBalanceAmount = computedTotalBalanceAmount;
+            break;
+        }
+
+        const updatedAt = moment().utc(8).format("YYYY-MM-DD HH:mm:ss");
+        const isPaid =
+          parseFloat(data.total_amount) === totalBalanceAmount ? NO : YES;
+        const isFullyPaid = computedTotalBalanceAmount > 0 ? NO : YES;
+
+        initialValues = {
+          total_balance_amount: totalBalanceAmount,
+          updated_at: updatedAt,
+          is_paid: isPaid,
+          is_fully_paid: isFullyPaid,
+        };
+        data.update(initialValues).then((response) => {
+          resolve(true);
         });
+      } catch (err) {
+        reject(err);
       }
     });
   },

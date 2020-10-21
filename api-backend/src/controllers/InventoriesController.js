@@ -496,115 +496,103 @@ module.exports = {
     return new Promise(async (resolve, reject) => {
       try {
         let initialValues, inventoryHistoryInitialValue, data, criteria;
-        // Pre-setting variables
+
+        // Validate Data
         criteria = {
           where: { sku: obj.sku, product_id: obj.product_id, is_deleted: NO },
         };
-        // Execute findOne query
         data = await Model.Inventories.findOne(criteria);
-        if (!_.isEmpty(data)) {
-          const updatedAt = moment().utc(8).format("YYYY-MM-DD HH:mm:ss");
-          let computedQuantity, newQuantityReserved, newQuantityAvailable;
-          switch (obj.type) {
-            case "INSERT":
-              newQuantityReserved =
-                parseInt(data.quantity_reserved) + parseInt(obj.new_quantity);
-              newQuantityAvailable =
-                parseInt(data.quantity_available) - parseInt(obj.new_quantity);
-              initialValues = {
-                quantity_reserved: newQuantityReserved,
-                quantity_available: newQuantityAvailable,
-                updated_at: updatedAt,
-              };
-              inventoryHistoryInitialValue = {
-                quantity_reserved: obj.new_quantity,
-                quantity_available: -obj.new_quantity,
-              };
-              break;
-            case "UPDATE":
-              if (obj.old_quantity > obj.new_quantity) {
-                // old_quantity - new_quantity
-                computedQuantity =
-                  parseInt(obj.old_quantity) - parseInt(obj.new_quantity);
-                newQuantityReserved =
-                  parseInt(data.quantity_reserved) - computedQuantity;
-                newQuantityAvailable =
-                  parseInt(data.quantity_available) + computedQuantity;
-                initialValues = {
-                  quantity_reserved: newQuantityReserved,
-                  quantity_available: newQuantityAvailable,
-                  updated_at: updatedAt,
-                };
-                inventoryHistoryInitialValue = {
-                  quantity_reserved: -computedQuantity,
-                  quantity_available: computedQuantity,
-                };
-              } else if (obj.old_quantity < obj.new_quantity) {
-                // new_quantity - old_quantity
-                computedQuantity =
-                  parseInt(obj.new_quantity) - parseInt(obj.old_quantity);
-                newQuantityReserved =
-                  parseInt(data.quantity_reserved) + computedQuantity;
-                newQuantityAvailable =
-                  parseInt(data.quantity_available) - computedQuantity;
-                initialValues = {
-                  quantity_reserved: newQuantityReserved,
-                  quantity_available: newQuantityAvailable,
-                  updated_at: updatedAt,
-                };
-                inventoryHistoryInitialValue = {
-                  quantity_reserved: computedQuantity,
-                  quantity_available: -computedQuantity,
-                };
-              }
-              break;
-            case "DELETE":
-              newQuantityReserved =
-                parseInt(data.quantity_reserved) - parseInt(obj.old_quantity);
-              newQuantityAvailable =
-                parseInt(data.quantity_available) + parseInt(obj.old_quantity);
-              initialValues = {
-                quantity_reserved: newQuantityReserved,
-                quantity_available: newQuantityAvailable,
-                updated_at: updatedAt,
-              };
-              inventoryHistoryInitialValue = {
-                quantity_reserved: -obj.old_quantity,
-                quantity_available: obj.old_quantity,
-              };
-              break;
-          }
-          data.update(initialValues).then((response) => {
-            inventoryHistoryInitialValue.user_id = obj.user_id;
-            inventoryHistoryInitialValue.inventory_id = data.id;
-            inventoryHistoryInitialValue.created_at = moment()
-              .utc(8)
-              .format("YYYY-MM-DD HH:mm:ss");
-
-            // Saving Inventory History
-            Model.InventoryHistories.create(inventoryHistoryInitialValue).then(
-              (response) => {
-                resolve({
-                  status: 200,
-                  message: "Successfully update data.",
-                  result: true,
-                });
-              }
-            );
-          });
-        } else {
-          resolve({
-            status: 200,
-            message: "Data doesn't exist.",
-            result: false,
-          });
+        if (_.isEmpty(data)) {
+          resolve(false);
         }
-      } catch (err) {
-        resolve({
-          status: 401,
-          err: err,
-          message: "Failed to find data.",
+
+        const updatedAt = moment().utc(8).format("YYYY-MM-DD HH:mm:ss");
+        let computedQuantity, newQuantityReserved, newQuantityAvailable;
+        switch (obj.type) {
+          case "INSERT":
+            newQuantityReserved =
+              parseInt(data.quantity_reserved) + parseInt(obj.new_quantity);
+            newQuantityAvailable =
+              parseInt(data.quantity_available) - parseInt(obj.new_quantity);
+            initialValues = {
+              quantity_reserved: newQuantityReserved,
+              quantity_available: newQuantityAvailable,
+              updated_at: updatedAt,
+            };
+            inventoryHistoryInitialValue = {
+              quantity_reserved: obj.new_quantity,
+              quantity_available: -obj.new_quantity,
+            };
+            break;
+          case "UPDATE":
+            if (obj.old_quantity > obj.new_quantity) {
+              // old_quantity - new_quantity
+              computedQuantity =
+                parseInt(obj.old_quantity) - parseInt(obj.new_quantity);
+              newQuantityReserved =
+                parseInt(data.quantity_reserved) - computedQuantity;
+              newQuantityAvailable =
+                parseInt(data.quantity_available) + computedQuantity;
+              initialValues = {
+                quantity_reserved: newQuantityReserved,
+                quantity_available: newQuantityAvailable,
+                updated_at: updatedAt,
+              };
+              inventoryHistoryInitialValue = {
+                quantity_reserved: -computedQuantity,
+                quantity_available: computedQuantity,
+              };
+            } else if (obj.old_quantity < obj.new_quantity) {
+              // new_quantity - old_quantity
+              computedQuantity =
+                parseInt(obj.new_quantity) - parseInt(obj.old_quantity);
+              newQuantityReserved =
+                parseInt(data.quantity_reserved) + computedQuantity;
+              newQuantityAvailable =
+                parseInt(data.quantity_available) - computedQuantity;
+              initialValues = {
+                quantity_reserved: newQuantityReserved,
+                quantity_available: newQuantityAvailable,
+                updated_at: updatedAt,
+              };
+              inventoryHistoryInitialValue = {
+                quantity_reserved: computedQuantity,
+                quantity_available: -computedQuantity,
+              };
+            }
+            break;
+          case "DELETE":
+            newQuantityReserved =
+              parseInt(data.quantity_reserved) - parseInt(obj.old_quantity);
+            newQuantityAvailable =
+              parseInt(data.quantity_available) + parseInt(obj.old_quantity);
+            initialValues = {
+              quantity_reserved: newQuantityReserved,
+              quantity_available: newQuantityAvailable,
+              updated_at: updatedAt,
+            };
+            inventoryHistoryInitialValue = {
+              quantity_reserved: -obj.old_quantity,
+              quantity_available: obj.old_quantity,
+            };
+            break;
+        }
+        data.update(initialValues).then((response) => {
+          inventoryHistoryInitialValue.user_id = obj.user_id;
+          inventoryHistoryInitialValue.inventory_id = data.id;
+          inventoryHistoryInitialValue.created_at = moment()
+            .utc(8)
+            .format("YYYY-MM-DD HH:mm:ss");
+
+          // Saving Inventory History
+          Model.InventoryHistories.create(inventoryHistoryInitialValue).then(
+            (response) => {
+              resolve(true);
+            }
+          );
         });
+      } catch (err) {
+        reject(err);
       }
     });
   },
@@ -616,60 +604,48 @@ module.exports = {
     return new Promise(async (resolve, reject) => {
       try {
         let initialValues, inventoryHistoryInitialValue, data, criteria;
-        // Pre-setting variables
+
+        // Validate Data
         criteria = {
           where: { sku: obj.sku, product_id: obj.product_id, is_deleted: NO },
         };
-        // Execute findOne query
         data = await Model.Inventories.findOne(criteria);
-        if (!_.isEmpty(data)) {
-          const updatedAt = moment().utc(8).format("YYYY-MM-DD HH:mm:ss");
-          let newQuantityOut, newQuantityReserved;
-          newQuantityOut =
-            parseInt(data.quantity_out) + parseInt(obj.new_quantity);
-          newQuantityReserved =
-            parseInt(data.quantity_reserved) - parseInt(obj.new_quantity);
-          initialValues = {
-            quantity_out: newQuantityOut,
-            quantity_reserved: newQuantityReserved,
-            updated_at: updatedAt,
-          };
-          inventoryHistoryInitialValue = {
-            quantity_out: obj.new_quantity,
-            quantity_reserved: -obj.new_quantity,
-          };
-
-          data.update(initialValues).then((response) => {
-            inventoryHistoryInitialValue.user_id = obj.user_id;
-            inventoryHistoryInitialValue.inventory_id = data.id;
-            inventoryHistoryInitialValue.created_at = moment()
-              .utc(8)
-              .format("YYYY-MM-DD HH:mm:ss");
-
-            // Saving Inventory History
-            Model.InventoryHistories.create(inventoryHistoryInitialValue).then(
-              (response) => {
-                resolve({
-                  status: 200,
-                  message: "Successfully update data.",
-                  result: true,
-                });
-              }
-            );
-          });
-        } else {
-          resolve({
-            status: 200,
-            message: "Data doesn't exist.",
-            result: false,
-          });
+        if (_.isEmpty(data)) {
+          resolve(false);
         }
-      } catch (err) {
-        resolve({
-          status: 401,
-          err: err,
-          message: "Failed to find data.",
+        
+        const updatedAt = moment().utc(8).format("YYYY-MM-DD HH:mm:ss");
+        let newQuantityOut, newQuantityReserved;
+        newQuantityOut =
+          parseInt(data.quantity_out) + parseInt(obj.new_quantity);
+        newQuantityReserved =
+          parseInt(data.quantity_reserved) - parseInt(obj.new_quantity);
+        initialValues = {
+          quantity_out: newQuantityOut,
+          quantity_reserved: newQuantityReserved,
+          updated_at: updatedAt,
+        };
+        inventoryHistoryInitialValue = {
+          quantity_out: obj.new_quantity,
+          quantity_reserved: -obj.new_quantity,
+        };
+
+        data.update(initialValues).then((response) => {
+          inventoryHistoryInitialValue.user_id = obj.user_id;
+          inventoryHistoryInitialValue.inventory_id = data.id;
+          inventoryHistoryInitialValue.created_at = moment()
+            .utc(8)
+            .format("YYYY-MM-DD HH:mm:ss");
+
+          // Saving Inventory History
+          Model.InventoryHistories.create(inventoryHistoryInitialValue).then(
+            (response) => {
+              resolve(true);
+            }
+          );
         });
+      } catch (err) {
+        reject(err);
       }
     });
   },
@@ -681,113 +657,101 @@ module.exports = {
     return new Promise(async (resolve, reject) => {
       try {
         let initialValues, inventoryHistoryInitialValue, data, criteria;
-        // Pre-setting variables
+
+        // Validate Data
         criteria = {
           where: { sku: obj.sku, product_id: obj.product_id, is_deleted: NO },
         };
-        // Execute findOne query
         data = await Model.Inventories.findOne(criteria);
-        if (!_.isEmpty(data)) {
-          const updatedAt = moment().utc(8).format("YYYY-MM-DD HH:mm:ss");
-          let computedQuantity, newQuantityReturned, newQuantityOut;
-          switch (obj.type) {
-            case "INSERT":
-              newQuantityReturned =
-                parseInt(data.quantity_returned) + parseInt(obj.new_quantity);
-              newQuantityOut =
-                parseInt(data.quantity_out) - parseInt(obj.new_quantity);
-              initialValues = {
-                quantity_returned: newQuantityReturned,
-                quantity_out: newQuantityOut,
-                updated_at: updatedAt,
-              };
-              inventoryHistoryInitialValue = {
-                quantity_returned: obj.new_quantity,
-                quantity_out: -obj.new_quantity,
-              };
-              break;
-            case "UPDATE":
-              if (obj.old_quantity > obj.new_quantity) {
-                // old_quantity - new_quantity
-                computedQuantity =
-                  parseInt(obj.old_quantity) - parseInt(obj.new_quantity);
-                newQuantityReturned =
-                  parseInt(data.quantity_returned) - computedQuantity;
-                newQuantityOut = parseInt(data.quantity_out) + computedQuantity;
-                initialValues = {
-                  quantity_returned: newQuantityReturned,
-                  quantity_out: newQuantityOut,
-                  updated_at: updatedAt,
-                };
-                inventoryHistoryInitialValue = {
-                  quantity_returned: -computedQuantity,
-                  quantity_out: computedQuantity,
-                };
-              } else if (obj.old_quantity < obj.new_quantity) {
-                // new_quantity - old_quantity
-                computedQuantity =
-                  parseInt(obj.new_quantity) - parseInt(obj.old_quantity);
-                newQuantityReturned =
-                  parseInt(data.quantity_returned) + computedQuantity;
-                newQuantityOut = parseInt(data.quantity_out) - computedQuantity;
-                initialValues = {
-                  quantity_returned: newQuantityReturned,
-                  quantity_out: newQuantityOut,
-                  updated_at: updatedAt,
-                };
-                inventoryHistoryInitialValue = {
-                  quantity_returned: computedQuantity,
-                  quantity_out: -computedQuantity,
-                };
-              }
-              break;
-            case "DELETE":
-              newQuantityReturned =
-                parseInt(data.quantity_returned) - parseInt(obj.old_quantity);
-              newQuantityOut =
-                parseInt(data.quantity_out) + parseInt(obj.old_quantity);
-              initialValues = {
-                quantity_returned: newQuantityReturned,
-                quantity_out: newQuantityOut,
-                updated_at: updatedAt,
-              };
-              inventoryHistoryInitialValue = {
-                quantity_returned: -obj.old_quantity,
-                quantity_out: obj.old_quantity,
-              };
-              break;
-          }
-          data.update(initialValues).then((response) => {
-            inventoryHistoryInitialValue.user_id = obj.user_id;
-            inventoryHistoryInitialValue.inventory_id = data.id;
-            inventoryHistoryInitialValue.created_at = moment()
-              .utc(8)
-              .format("YYYY-MM-DD HH:mm:ss");
-
-            // Saving Inventory History
-            Model.InventoryHistories.create(inventoryHistoryInitialValue).then(
-              (response) => {
-                resolve({
-                  status: 200,
-                  message: "Successfully update data.",
-                  result: true,
-                });
-              }
-            );
-          });
-        } else {
-          resolve({
-            status: 200,
-            message: "Data doesn't exist.",
-            result: false,
-          });
+        if (_.isEmpty(data)) {
+          resolve(false);
         }
-      } catch (err) {
-        resolve({
-          status: 401,
-          err: err,
-          message: "Failed to find data.",
+        
+        const updatedAt = moment().utc(8).format("YYYY-MM-DD HH:mm:ss");
+        let computedQuantity, newQuantityReturned, newQuantityOut;
+        switch (obj.type) {
+          case "INSERT":
+            newQuantityReturned =
+              parseInt(data.quantity_returned) + parseInt(obj.new_quantity);
+            newQuantityOut =
+              parseInt(data.quantity_out) - parseInt(obj.new_quantity);
+            initialValues = {
+              quantity_returned: newQuantityReturned,
+              quantity_out: newQuantityOut,
+              updated_at: updatedAt,
+            };
+            inventoryHistoryInitialValue = {
+              quantity_returned: obj.new_quantity,
+              quantity_out: -obj.new_quantity,
+            };
+            break;
+          case "UPDATE":
+            if (obj.old_quantity > obj.new_quantity) {
+              // old_quantity - new_quantity
+              computedQuantity =
+                parseInt(obj.old_quantity) - parseInt(obj.new_quantity);
+              newQuantityReturned =
+                parseInt(data.quantity_returned) - computedQuantity;
+              newQuantityOut = parseInt(data.quantity_out) + computedQuantity;
+              initialValues = {
+                quantity_returned: newQuantityReturned,
+                quantity_out: newQuantityOut,
+                updated_at: updatedAt,
+              };
+              inventoryHistoryInitialValue = {
+                quantity_returned: -computedQuantity,
+                quantity_out: computedQuantity,
+              };
+            } else if (obj.old_quantity < obj.new_quantity) {
+              // new_quantity - old_quantity
+              computedQuantity =
+                parseInt(obj.new_quantity) - parseInt(obj.old_quantity);
+              newQuantityReturned =
+                parseInt(data.quantity_returned) + computedQuantity;
+              newQuantityOut = parseInt(data.quantity_out) - computedQuantity;
+              initialValues = {
+                quantity_returned: newQuantityReturned,
+                quantity_out: newQuantityOut,
+                updated_at: updatedAt,
+              };
+              inventoryHistoryInitialValue = {
+                quantity_returned: computedQuantity,
+                quantity_out: -computedQuantity,
+              };
+            }
+            break;
+          case "DELETE":
+            newQuantityReturned =
+              parseInt(data.quantity_returned) - parseInt(obj.old_quantity);
+            newQuantityOut =
+              parseInt(data.quantity_out) + parseInt(obj.old_quantity);
+            initialValues = {
+              quantity_returned: newQuantityReturned,
+              quantity_out: newQuantityOut,
+              updated_at: updatedAt,
+            };
+            inventoryHistoryInitialValue = {
+              quantity_returned: -obj.old_quantity,
+              quantity_out: obj.old_quantity,
+            };
+            break;
+        }
+        data.update(initialValues).then((response) => {
+          inventoryHistoryInitialValue.user_id = obj.user_id;
+          inventoryHistoryInitialValue.inventory_id = data.id;
+          inventoryHistoryInitialValue.created_at = moment()
+            .utc(8)
+            .format("YYYY-MM-DD HH:mm:ss");
+
+          // Saving Inventory History
+          Model.InventoryHistories.create(inventoryHistoryInitialValue).then(
+            (response) => {
+              resolve(true);
+            }
+          );
         });
+      } catch (err) {
+        reject(err);
       }
     });
   },

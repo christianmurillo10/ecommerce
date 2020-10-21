@@ -1252,11 +1252,7 @@ module.exports = {
         data = await Model.Products.findByPk(id, criteria);
         resolve(data.name);
       } catch (err) {
-        resolve({
-          status: 401,
-          err: err,
-          message: "Failed to find data.",
-        });
+        reject(err);
       }
     });
   },
