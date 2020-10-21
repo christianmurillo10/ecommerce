@@ -30,6 +30,7 @@ router.use("/productFlashDeals", require("./productFlashDeals"));
 router.use("/productFlashDealDetails", require("./productFlashDealDetails"));
 router.use("/salesOrderDetails", require("./salesOrderDetails"));
 router.use("/salesOrders", require("./salesOrders"));
+router.use("/salesOrderShippingDetails", require("./salesOrderShippingDetails"));
 router.use("/shippingMethods", require("./shippingMethods"));
 router.use("/shippingMethodRates", require("./shippingMethodRates"));
 router.use((req, res, next) => {
