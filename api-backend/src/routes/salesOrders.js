@@ -12,7 +12,6 @@ router.route('/update/:id').put(authController.authorization, salesOrdersControl
 router.route('/updateReturn/:id').put(authController.authorization, salesOrdersController.updateReturn);
 router.route('/updateStatus/:id').put(authController.authorization, salesOrdersController.updateStatus);
 router.route('/delete/:id').put(authController.authorization, salesOrdersController.delete);
-router.route('/search/:value').get(authController.authorization, salesOrdersController.search);
 router.route('/:id').get(authController.authorization, salesOrdersController.findById);
 
 module.exports = router;
