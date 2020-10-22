@@ -19,6 +19,7 @@ module.exports = {
     let ip = req.headers["x-forwarded-for"] || req.ip;
     let params = req.body;
     let errors = [],
+      message = "User successfully signed in.",
       criteria,
       data,
       token;
@@ -39,8 +40,8 @@ module.exports = {
       criteria = { where: { username: params.username } };
       user = await Model.Users.findAll(criteria);
       if (_.isEmpty(user[0])) {
-        errors.push("Invalid Username.");
-        throw new ErrorHandler(400, errors);
+        errors.push("Data doesn't exist.");
+        throw new ErrorHandler(404, errors);
       }
 
       // Validate Password
@@ -67,7 +68,7 @@ module.exports = {
 
       handleSuccess(res, {
         statusCode: 200,
-        message: "User successfully signed in.",
+        message: message,
         result: {
           token: token,
           data: _.omit(data, [
@@ -94,6 +95,7 @@ module.exports = {
     let ip = req.headers["x-forwarded-for"] || req.ip;
     let params = req.body;
     let errors = [],
+      message = "Successfully signed out.",
       token = params.token;
 
     try {
@@ -125,7 +127,7 @@ module.exports = {
 
       handleSuccess(res, {
         statusCode: 200,
-        message: "Successfully signed out.",
+        message: message,
         result: [],
       });
     } catch (err) {
@@ -141,6 +143,7 @@ module.exports = {
     let ip = req.headers["x-forwarded-for"] || req.ip;
     let params = req.body;
     let errors = [],
+      message = "Customer successfully signed in.",
       criteria,
       data,
       token;
@@ -161,8 +164,8 @@ module.exports = {
       criteria = { where: { email: params.email, is_deleted: NO } };
       customer = await Model.Customers.findAll(criteria);
       if (_.isEmpty(customer[0])) {
-        errors.push("Invalid Email.");
-        throw new ErrorHandler(400, errors);
+        errors.push("Data doesn't exist.");
+        throw new ErrorHandler(404, errors);
       }
 
       // Validate Password
@@ -193,7 +196,7 @@ module.exports = {
 
         handleSuccess(res, {
           statusCode: 200,
-          message: "Customer successfully signed in.",
+          message: message,
           result: {
             token: token,
             data: _.omit(data, [
@@ -211,10 +214,10 @@ module.exports = {
         errors.push(
           "Your account is inactive, please contact administration to activate your account."
         );
-        throw new ErrorHandler(500, errors);
+        throw new ErrorHandler(401, errors);
       } else {
         errors.push("Your account is not yet activated.");
-        throw new ErrorHandler(500, errors);
+        throw new ErrorHandler(401, errors);
       }
     } catch (err) {
       next(err);
@@ -229,6 +232,7 @@ module.exports = {
     let ip = req.headers["x-forwarded-for"] || req.ip;
     let params = req.body;
     let errors = [],
+      message = "Successfully signed out.",
       token = params.token;
 
     try {
@@ -260,7 +264,7 @@ module.exports = {
 
       handleSuccess(res, {
         statusCode: 200,
-        message: "Successfully signed out.",
+        message: message,
         result: [],
       });
     } catch (err) {
@@ -275,6 +279,7 @@ module.exports = {
   validateToken: async (req, res, next) => {
     let params = req.body;
     let errors = [],
+      message = "Token Exist.",
       token = params.token;
 
     try {
@@ -297,7 +302,7 @@ module.exports = {
 
       handleSuccess(res, {
         statusCode: 200,
-        message: "Token Exist.",
+        message: message,
         result: [],
       });
     } catch (err) {

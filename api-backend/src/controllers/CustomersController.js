@@ -21,6 +21,7 @@ module.exports = {
     const params = req.body;
     const emailChecker = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
     let errors = [],
+      message = "Successfully created data.",
       criteria,
       initialValues,
       data;
@@ -67,7 +68,7 @@ module.exports = {
       data = await Model.Customers.findAll(criteria);
       if (!_.isEmpty(data[0])) {
         errors.push("Data already exist.");
-        throw new ErrorHandler(500, errors);
+        throw new ErrorHandler(409, errors);
       }
 
       // Pre-setting variables
@@ -99,7 +100,7 @@ module.exports = {
 
       handleSuccess(res, {
         statusCode: 201,
-        message: "Successfully created data.",
+        message: message,
         result: _.omit(finalData, ["password", "is_deleted"]),
       });
     } catch (err) {
@@ -115,6 +116,7 @@ module.exports = {
     const params = req.body;
     const emailChecker = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
     let errors = [],
+      message = "Successfully created data.",
       criteria,
       initialValues,
       data;
@@ -150,8 +152,8 @@ module.exports = {
       criteria = { where: { email: params.email } };
       data = await Model.Customers.findAll(criteria);
       if (!_.isEmpty(data[0])) {
-        errors.push("Email already exist.");
-        throw new ErrorHandler(500, errors);
+        errors.push("Data already exist.");
+        throw new ErrorHandler(409, errors);
       }
 
       // Pre-setting variables
@@ -175,7 +177,7 @@ module.exports = {
 
       handleSuccess(res, {
         statusCode: 201,
-        message: "Successfully created data.",
+        message: message,
         result: _.omit(finalData.get({ plain: true }), [
           "password",
           "is_deleted",
@@ -193,6 +195,7 @@ module.exports = {
   update: async (req, res, next) => {
     const params = req.body;
     let errors = [],
+      message = "Successfully updated data.",
       initialValues,
       data;
 
@@ -203,8 +206,12 @@ module.exports = {
         throw new ErrorHandler(400, errors);
       }
 
-      // Execute findByPk query
+      // Validate Data
       data = await Model.Customers.findByPk(req.params.id);
+      if (_.isEmpty(data)) {
+        errors.push("Data doesn't exist.");
+        throw new ErrorHandler(404, errors);
+      }
 
       // Override variables
       if (!_.isUndefined(req.file)) {
@@ -214,13 +221,8 @@ module.exports = {
       } else {
         params.file_name = data.file_name;
       }
-      if (params.status === CUSTOMER_STATUS_APPROVED.toLocaleString())
+      if (params.status === CUSTOMER_STATUS_APPROVED.toLocaleString()) {
         params.customer_no = await generateCustomerNo();
-
-      // Validate Data
-      if (_.isEmpty(data)) {
-        errors.push("Data doesn't exist.");
-        throw new ErrorHandler(500, errors);
       }
 
       // Pre-setting variables
@@ -248,7 +250,7 @@ module.exports = {
 
       handleSuccess(res, {
         statusCode: 200,
-        message: "Successfully updated data.",
+        message: message,
         result: _.omit(finalData.get({ plain: true }), [
           "password",
           "is_deleted",
@@ -265,6 +267,7 @@ module.exports = {
    */
   delete: async (req, res, next) => {
     let errors = [],
+      message = "Successfully deleted data.",
       data;
 
     try {
@@ -272,13 +275,13 @@ module.exports = {
       data = await Model.Customers.findByPk(req.params.id);
       if (_.isEmpty(data)) {
         errors.push("Data doesn't exist.");
-        throw new ErrorHandler(500, errors);
+        throw new ErrorHandler(404, errors);
       }
       let finalData = await data.update({ is_deleted: YES });
 
       handleSuccess(res, {
         statusCode: 200,
-        message: "Successfully deleted data.",
+        message: message,
         result: finalData,
       });
     } catch (err) {
@@ -293,6 +296,7 @@ module.exports = {
   changePassword: async (req, res, next) => {
     const params = req.body;
     let errors = [],
+      message = "Successfully changed password.",
       initialValues,
       data,
       compareOldPassword,
@@ -312,16 +316,16 @@ module.exports = {
         throw new ErrorHandler(400, errors);
       }
 
-      // Override variables
-      params.updated_at = moment().utc(8).format("YYYY-MM-DD HH:mm:ss");
-      params.password = params.new_password;
-
       // Validate Data
       data = await Model.Customers.findByPk(req.params.id);
       if (_.isEmpty(data)) {
         errors.push("Data doesn't exist.");
-        throw new ErrorHandler(500, errors);
+        throw new ErrorHandler(404, errors);
       }
+
+      // Override variables
+      params.updated_at = moment().utc(8).format("YYYY-MM-DD HH:mm:ss");
+      params.password = params.new_password;
 
       // Validate Old Password
       compareOldPassword = await bcrypt.comparePassword(
@@ -330,7 +334,7 @@ module.exports = {
       );
       if (!compareOldPassword) {
         errors.push("Old password is incorrect.");
-        throw new ErrorHandler(500, errors);
+        throw new ErrorHandler(400, errors);
       }
 
       // Validate New Password
@@ -340,7 +344,7 @@ module.exports = {
       );
       if (compareNewPassword) {
         errors.push("New password cannot be the same as your old password.");
-        throw new ErrorHandler(500, errors);
+        throw new ErrorHandler(400, errors);
       }
 
       // Pre-setting variables
@@ -352,7 +356,7 @@ module.exports = {
 
       handleSuccess(res, {
         statusCode: 200,
-        message: "Successfully changed password.",
+        message: message,
         result: [],
       });
     } catch (err) {
@@ -366,6 +370,7 @@ module.exports = {
    */
   findAll: async (req, res, next) => {
     let errors = [],
+      message = "Successfully find all data.",
       data,
       criteria;
 
@@ -374,13 +379,12 @@ module.exports = {
       criteria = { where: { is_active: YES, is_deleted: NO } };
       data = await Model.Customers.findAll(criteria);
       if (_.isEmpty(data[0])) {
-        errors.push("No data found.");
-        throw new ErrorHandler(500, errors);
+        message = "No data found.";
       }
 
       handleSuccess(res, {
         statusCode: 200,
-        message: "Successfully find all data.",
+        message: message,
         result: data,
       });
     } catch (err) {
@@ -394,19 +398,20 @@ module.exports = {
    */
   findById: async (req, res, next) => {
     let errors = [],
+      message = "Successfully find data.",
       data;
 
     try {
       // Validate Data
       data = await Model.Customers.findByPk(req.params.id);
       if (_.isEmpty(data)) {
-        errors.push("No data found.");
-        throw new ErrorHandler(500, errors);
+        errors.push("Data doesn't exist.");
+        throw new ErrorHandler(404, errors);
       }
 
       handleSuccess(res, {
         statusCode: 200,
-        message: "Successfully find data.",
+        message: message,
         result: _.omit(data.get({ plain: true }), ["is_deleted"]),
       });
     } catch (err) {
@@ -421,6 +426,7 @@ module.exports = {
   countAllByStatusAndIsActive: async (req, res, next) => {
     const params = req.params;
     let errors = [],
+      message = "Successfully count all data.",
       count,
       criteria;
 
@@ -436,7 +442,7 @@ module.exports = {
 
       handleSuccess(res, {
         statusCode: 200,
-        message: "Successfully count all data.",
+        message: message,
         result: count,
       });
     } catch (err) {

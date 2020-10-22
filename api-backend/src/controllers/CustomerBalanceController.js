@@ -9,6 +9,7 @@ module.exports = {
    */
   findAll: async (req, res, next) => {
     let errors = [],
+      message = "Successfully find all data.",
       data,
       criteria;
 
@@ -36,13 +37,12 @@ module.exports = {
       };
       data = await Model.CustomerBalance.findAll(criteria);
       if (_.isEmpty(data[0])) {
-        errors.push("No data found.");
-        throw new ErrorHandler(500, errors);
+        message = "No data found.";
       }
 
       handleSuccess(res, {
         statusCode: 200,
-        message: "Successfully find all data.",
+        message: message,
         result: data,
       });
     } catch (err) {
@@ -57,6 +57,7 @@ module.exports = {
   findAllbyCustomerId: async (req, res, next) => {
     const params = req.params;
     let errors = [],
+      message = "Successfully find all data.",
       data,
       criteria;
 
@@ -79,13 +80,12 @@ module.exports = {
       };
       data = await Model.CustomerBalance.findAll(criteria);
       if (_.isEmpty(data[0])) {
-        errors.push("No data found.");
-        throw new ErrorHandler(500, errors);
+        message = "No data found.";
       }
 
       handleSuccess(res, {
         statusCode: 200,
-        message: "Successfully find all data.",
+        message: message,
         result: data,
       });
     } catch (err) {
@@ -100,6 +100,7 @@ module.exports = {
   findAllbySalesOrderId: async (req, res, next) => {
     const params = req.params;
     let errors = [],
+      message = "Successfully find all data.",
       data,
       criteria;
 
@@ -122,13 +123,12 @@ module.exports = {
       };
       data = await Model.CustomerBalance.findAll(criteria);
       if (_.isEmpty(data[0])) {
-        errors.push("No data found.");
-        throw new ErrorHandler(500, errors);
+        message = "No data found.";
       }
 
       handleSuccess(res, {
         statusCode: 200,
-        message: "Successfully find all data.",
+        message: message,
         result: data,
       });
     } catch (err) {
@@ -142,6 +142,7 @@ module.exports = {
    */
   findById: async (req, res, next) => {
     let errors = [],
+      message = "Successfully find data.",
       data,
       criteria;
 
@@ -170,13 +171,13 @@ module.exports = {
       // Execute findAll query
       data = await Model.CustomerBalance.findByPk(req.params.id, criteria);
       if (_.isEmpty(data)) {
-        errors.push("No data found.");
-        throw new ErrorHandler(500, errors);
+        errors.push("Data doesn't exist.");
+        throw new ErrorHandler(404, errors);
       }
 
       handleSuccess(res, {
         statusCode: 200,
-        message: "Successfully find data.",
+        message: message,
         result: _.omit(data.get({ plain: true }), ["is_deleted"]),
       });
     } catch (err) {
@@ -203,18 +204,10 @@ module.exports = {
         };
 
         Model.CustomerBalance.create(initialValues).then((response) => {
-          resolve({
-            status: 200,
-            message: "Successfully created data.",
-            result: true,
-          });
+          resolve(true);
         });
       } catch (err) {
-        resolve({
-          status: 401,
-          err: err,
-          message: "Failed to find data.",
-        });
+        reject(err);
       }
     });
   },

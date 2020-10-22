@@ -10,6 +10,7 @@ module.exports = {
   generateBulkWithProductVariantsByProductId: async (req, res, next) => {
     const params = req.body;
     let errors = [],
+      message = "Successfully created data.",
       criteriaProduct,
       criteriaVariants,
       dataVariants,
@@ -44,7 +45,7 @@ module.exports = {
       );
       if (_.isEmpty(dataProduct)) {
         errors.push("Data doesn't exist.");
-        throw new ErrorHandler(500, errors);
+        throw new ErrorHandler(404, errors);
       }
 
       // Get Variants Data by product id
@@ -54,7 +55,7 @@ module.exports = {
       dataVariants = await Model.ProductVariants.findAll(criteriaVariants);
       if (_.isEmpty(dataVariants)) {
         errors.push("No Product Variant found.");
-        throw new ErrorHandler(500, errors);
+        throw new ErrorHandler(404, errors);
       }
 
       // Setup bulk data by product variant values
@@ -81,7 +82,7 @@ module.exports = {
 
       if (filteredBulkValues.length < 1) {
         errors.push("No data to be generated.");
-        throw new ErrorHandler(500, errors);
+        throw new ErrorHandler(404, errors);
       }
 
       // Create bulk inventories
@@ -89,7 +90,7 @@ module.exports = {
         async (response) => {
           handleSuccess(res, {
             statusCode: 201,
-            message: "Successfully created data.",
+            message: message,
             result: [],
           });
         }
@@ -106,6 +107,7 @@ module.exports = {
   addStock: async (req, res, next) => {
     const params = req.body;
     let errors = [],
+      message = "Successfully update data.",
       initialValues,
       inventoryHistoryInitialValue,
       data,
@@ -133,7 +135,7 @@ module.exports = {
       data = await Model.Inventories.findByPk(req.params.id);
       if (_.isEmpty(data)) {
         errors.push("Data doesn't exist.");
-        throw new ErrorHandler(500, errors);
+        throw new ErrorHandler(404, errors);
       }
 
       let newQuantityIn, newQuantityAvailable;
@@ -163,7 +165,7 @@ module.exports = {
             (response) => {
               handleSuccess(res, {
                 statusCode: 200,
-                message: "Successfully update data.",
+                message: message,
                 result: _.omit(finalData.get({ plain: true }), ["is_deleted"]),
               });
             }
@@ -182,6 +184,7 @@ module.exports = {
   update: async (req, res, next) => {
     const params = req.body;
     let errors = [],
+      message = "Successfully updated data.",
       initialValues,
       data,
       criteria;
@@ -200,7 +203,7 @@ module.exports = {
       data = await Model.Inventories.findByPk(req.params.id);
       if (_.isEmpty(data)) {
         errors.push("Data doesn't exist.");
-        throw new ErrorHandler(500, errors);
+        throw new ErrorHandler(404, errors);
       }
 
       // Pre-setting variables
@@ -211,7 +214,7 @@ module.exports = {
         Model.Inventories.findByPk(data.id, criteria).then((finalData) => {
           handleSuccess(res, {
             statusCode: 200,
-            message: "Successfully updated data.",
+            message: message,
             result: _.omit(finalData.get({ plain: true }), ["is_deleted"]),
           });
         })
@@ -227,6 +230,7 @@ module.exports = {
    */
   delete: async (req, res, next) => {
     let errors = [],
+      message = "Successfully deleted data.",
       data;
 
     try {
@@ -234,13 +238,13 @@ module.exports = {
       data = await Model.Inventories.findByPk(req.params.id);
       if (_.isEmpty(data)) {
         errors.push("Data doesn't exist.");
-        throw new ErrorHandler(500, errors);
+        throw new ErrorHandler(404, errors);
       }
       let finalData = await data.update({ is_deleted: YES });
 
       handleSuccess(res, {
         statusCode: 200,
-        message: "Successfully deleted data.",
+        message: message,
         result: finalData,
       });
     } catch (err) {
@@ -254,6 +258,7 @@ module.exports = {
    */
   findAll: async (req, res, next) => {
     let errors = [],
+      message = "Successfully find all data.",
       data,
       criteria;
 
@@ -269,13 +274,12 @@ module.exports = {
       // Execute findAll query
       data = await Model.Inventories.findAll(criteria);
       if (_.isEmpty(data[0])) {
-        errors.push("No data found.");
-        throw new ErrorHandler(500, errors);
+        message = "No data found.";
       }
 
       handleSuccess(res, {
         statusCode: 200,
-        message: "Successfully find all data.",
+        message: message,
         result: data,
       });
     } catch (err) {
@@ -289,6 +293,7 @@ module.exports = {
    */
   findAllTotalQuantity: async (req, res, next) => {
     let errors = [],
+      message = "Successfully find all data.",
       data,
       criteria;
 
@@ -333,13 +338,12 @@ module.exports = {
       };
       data = await Model.Inventories.findAll(criteria);
       if (_.isEmpty(data[0])) {
-        errors.push("No data found.");
-        throw new ErrorHandler(500, errors);
+        message = "No data found.";
       }
 
       handleSuccess(res, {
         statusCode: 200,
-        message: "Successfully find all data.",
+        message: message,
         result: data,
       });
     } catch (err) {
@@ -354,6 +358,7 @@ module.exports = {
   findAllbyProductId: async (req, res, next) => {
     const params = req.params;
     let errors = [],
+      message = "Successfully find all data.",
       data,
       criteria;
 
@@ -365,13 +370,12 @@ module.exports = {
       };
       data = await Model.Inventories.findAll(criteria);
       if (_.isEmpty(data[0])) {
-        errors.push("No data found.");
-        throw new ErrorHandler(500, errors);
+        message = "No data found.";
       }
 
       handleSuccess(res, {
         statusCode: 200,
-        message: "Successfully find all data.",
+        message: message,
         result: data,
       });
     } catch (err) {
@@ -386,6 +390,7 @@ module.exports = {
   findAvailableQuantityByProductId: async (req, res, next) => {
     const params = req.params;
     let errors = [],
+      message = "Successfully find all data.",
       data,
       criteria;
 
@@ -398,13 +403,12 @@ module.exports = {
       };
       data = await Model.Inventories.findOne(criteria);
       if (_.isEmpty(data)) {
-        errors.push("No data found.");
-        throw new ErrorHandler(500, errors);
+        message = "No data found.";
       }
 
       handleSuccess(res, {
         statusCode: 200,
-        message: "Successfully find all data.",
+        message: message,
         result: data.get({ plain: true }),
       });
     } catch (err) {
@@ -419,6 +423,7 @@ module.exports = {
   findBySku: async (req, res, next) => {
     const params = req.params;
     let errors = [],
+      message = "Successfully find data.",
       data,
       criteria;
 
@@ -437,13 +442,13 @@ module.exports = {
       };
       data = await Model.Inventories.findOne(criteria);
       if (_.isEmpty(data)) {
-        errors.push("No data found.");
-        throw new ErrorHandler(500, errors);
+        errors.push("Data doesn't exist.");
+        throw new ErrorHandler(404, errors);
       }
 
       handleSuccess(res, {
         statusCode: 200,
-        message: "Successfully find data.",
+        message: message,
         result: data.get({ plain: true }),
       });
     } catch (err) {
@@ -457,6 +462,7 @@ module.exports = {
    */
   findById: async (req, res, next) => {
     let errors = [],
+      message = "Successfully find data.",
       data,
       criteria;
 
@@ -471,13 +477,13 @@ module.exports = {
       };
       data = await Model.Inventories.findByPk(req.params.id, criteria);
       if (_.isEmpty(data)) {
-        errors.push("No data found.");
-        throw new ErrorHandler(500, errors);
+        errors.push("Data doesn't exist.");
+        throw new ErrorHandler(404, errors);
       }
 
       handleSuccess(res, {
         statusCode: 200,
-        message: "Successfully find data.",
+        message: message,
         result: _.omit(data.get({ plain: true }), ["is_deleted"]),
       });
     } catch (err) {
@@ -613,7 +619,7 @@ module.exports = {
         if (_.isEmpty(data)) {
           resolve(false);
         }
-        
+
         const updatedAt = moment().utc(8).format("YYYY-MM-DD HH:mm:ss");
         let newQuantityOut, newQuantityReserved;
         newQuantityOut =
@@ -666,7 +672,7 @@ module.exports = {
         if (_.isEmpty(data)) {
           resolve(false);
         }
-        
+
         const updatedAt = moment().utc(8).format("YYYY-MM-DD HH:mm:ss");
         let computedQuantity, newQuantityReturned, newQuantityOut;
         switch (obj.type) {
