@@ -59,14 +59,14 @@ const actions = {
         axios
           .post(url, data, config)
           .then((response) => {
-            const status = response.data.status;
+            const data = response.data;
 
-            if (status === "success") {
+            if (data.status === "success") {
               commit("SET_LOGOUT");
               localStorage.removeItem("details");
               localStorage.removeItem("token");
               delete axios.defaults.headers.common["Authorization"];
-              resolve(response.data);
+              resolve(data);
             }
           })
           .catch((err) => {
@@ -94,18 +94,18 @@ const actions = {
           axios
             .post(url, data, config)
             .then((response) => {
-              const result = response.data.result;
+              const data = response.data;
 
-              if (!result) {
+              if (!data.result) {
                 commit("SET_LOGOUT");
                 localStorage.removeItem("details");
                 localStorage.removeItem("token");
                 delete axios.defaults.headers.common["Authorization"];
-                resolve(response.data);
+                resolve(data);
               }
             })
             .catch((err) => {
-              // console.log(err);
+              resolve(err.response.data);
               localStorage.removeItem("details");
               localStorage.removeItem("token");
               reject(err);

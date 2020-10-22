@@ -1,113 +1,159 @@
 import axios from "axios";
+const apiUrl = process.env.VUE_APP_API_BACKEND;
 
 const state = {
-  bankList: []
+  bankList: [],
 };
 
 const getters = {
   getBankById: (state) => (id) => {
-    return state.bankList.find(bank => bank.id === id);
+    return state.bankList.find((bank) => bank.id === id);
   },
   getBankNameById: (state) => (id) => {
-    return state.bankList.find(bank => bank.id === id).name;
+    return state.bankList.find((bank) => bank.id === id).name;
   },
   getBankList: (state) => {
     return state.bankList;
-  }
+  },
 };
 
 const actions = {
   getData({ dispatch, commit, state, rootState, getters, rootGetters }) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/banks/`;
-    let header = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
-    return new Promise((resolve, reject) => {
-      try {
-        axios.get(url, header)
-          .then(response => {
-            commit("SET_DATA", response.data.result);
-          });
-      } catch (err) {
-        reject(err);
-      }
-    });
-  },
-  getDataById({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/banks/${payload}`;
-    let header = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
+    const url = `${apiUrl}/banks/`;
+    const header = {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    };
     return new Promise((resolve, reject) => {
       try {
         axios
           .get(url, header)
-          .then(response => {
-            resolve(response);
+          .then((response) => {
+            const data = response.data;
+            commit("SET_DATA", data.result);
+            resolve(data);
+          })
+          .catch((err) => {
+            commit("SET_DATA", []);
+            resolve(err.response.data);
           });
       } catch (err) {
         reject(err);
       }
     });
   },
-  saveData({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/banks/create`;
-    let header = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
+  getDataById(
+    { dispatch, commit, state, rootState, getters, rootGetters },
+    payload
+  ) {
+    const url = `${apiUrl}/banks/${payload}`;
+    const header = {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    };
+    return new Promise((resolve, reject) => {
+      try {
+        axios
+          .get(url, header)
+          .then((response) => {
+            const data = response.data;
+            resolve(data);
+          })
+          .catch((err) => {
+            resolve(err.response.data);
+          });
+      } catch (err) {
+        reject(err);
+      }
+    });
+  },
+  saveData(
+    { dispatch, commit, state, rootState, getters, rootGetters },
+    payload
+  ) {
+    const url = `${apiUrl}/banks/create`;
+    const header = {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    };
     return new Promise((resolve, reject) => {
       try {
         let obj = {
           code: payload.code,
           name: payload.name,
-          description: payload.description
+          description: payload.description,
         };
 
         axios
           .post(url, obj, header)
-          .then(response => {
-            if (response.data.result) {
-              commit("ADD_DATA", response.data.result);
+          .then((response) => {
+            const data = response.data;
+            if (data.result) {
+              commit("ADD_DATA", data.result);
             }
-            resolve(response);
+            resolve(data);
+          })
+          .catch((err) => {
+            resolve(err.response.data);
           });
       } catch (err) {
         reject(err);
       }
     });
   },
-  updateData({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/banks/update/${payload.id}`;
-    let header = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
+  updateData(
+    { dispatch, commit, state, rootState, getters, rootGetters },
+    payload
+  ) {
+    const url = `${apiUrl}/banks/update/${payload.id}`;
+    const header = {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    };
     return new Promise((resolve, reject) => {
       try {
         let obj = {
           code: payload.code,
           name: payload.name,
-          description: payload.description
+          description: payload.description,
         };
 
         axios
           .put(url, obj, header)
-          .then(response => {
-            commit("UPDATE_DATA", response.data.result);
-            resolve(response);
+          .then((response) => {
+            const data = response.data;
+            commit("UPDATE_DATA", data.result);
+            resolve(data);
+          })
+          .catch((err) => {
+            resolve(err.response.data);
           });
       } catch (err) {
         reject(err);
       }
     });
   },
-  deleteData({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/banks/delete/${payload}`;
-    let header = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
+  deleteData(
+    { dispatch, commit, state, rootState, getters, rootGetters },
+    payload
+  ) {
+    const url = `${apiUrl}/banks/delete/${payload}`;
+    const header = {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    };
     return new Promise((resolve, reject) => {
       try {
         axios
-          .put(url, '', header)
-          .then(response => {
+          .put(url, "", header)
+          .then((response) => {
+            const data = response.data;
             commit("DELETE_DATA", payload);
-            resolve(response);
+            resolve(data);
+          })
+          .catch((err) => {
+            resolve(err.response.data);
           });
       } catch (err) {
         reject(err);
       }
     });
-  }
+  },
 };
 
 const mutations = {
@@ -122,17 +168,17 @@ const mutations = {
     state.bankList.push(payload);
   },
   UPDATE_DATA(state, payload) {
-    let index = state.bankList.map(bank => bank.id).indexOf(payload.id);
+    let index = state.bankList.map((bank) => bank.id).indexOf(payload.id);
     Object.assign(state.bankList[index], {
       code: payload.code,
       name: payload.name,
-      description: payload.description
+      description: payload.description,
     });
   },
   DELETE_DATA(state, payload) {
-    let index = state.bankList.map(bank => bank.id).indexOf(payload);
+    let index = state.bankList.map((bank) => bank.id).indexOf(payload);
     state.bankList.splice(index, 1);
-  }
+  },
 };
 
 export default {
@@ -140,5 +186,5 @@ export default {
   state,
   getters,
   actions,
-  mutations
+  mutations,
 };

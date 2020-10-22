@@ -18,6 +18,9 @@ class ErrorHandler extends Error {
       case 404:
         this.message = "Not Found";
         break;
+      case 409:
+        this.message = "Conflict";
+        break;
       default:
         this.message = this.message;
     }
