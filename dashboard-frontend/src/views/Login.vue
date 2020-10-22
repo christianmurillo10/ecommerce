@@ -3,8 +3,15 @@
     <v-container fluid fill-height>
       <v-layout align-center justify-center>
         <v-flex xs12 sm8 md4>
-          <v-card class="elevation-24 mx-auto" color="transparent" dark max-width="400">
-            <Snackbars />
+          <v-card
+            class="elevation-24 mx-auto"
+            color="transparent"
+            dark
+            max-width="400"
+          >
+            <div class="pa-1">
+              <Alerts />
+            </div>
             <v-form @submit.prevent="login">
               <v-card-title primary-title class="justify-center">
                 <h4 class="headline font-weight-bold">Login Form</h4>
@@ -37,48 +44,49 @@
 </template>
 
 <script>
-import Snackbars from "../components/utilities/Snackbars";
+import Alerts from "@/components/utilities/Alerts";
 import { mapActions } from "vuex";
 
 export default {
   components: {
-    Snackbars
+    Alerts,
   },
 
   data() {
     return {
       username: "user01",
-      password: "password"
+      password: "password",
     };
   },
 
   methods: {
-    ...mapActions("snackbars", ["setSnackbar"]),
+    ...mapActions("alerts", ["setAlert"]),
     ...mapActions("userAuthentication", ["setLogin"]),
 
     login() {
       let obj = {
         username: this.username,
-        password: this.password
+        password: this.password,
       };
 
       this.setLogin(obj)
-        .then(response => {
-          if (!response.result) {
+        .then((response) => {
+          if (response.errors) {
             let obj = {
-              color: "error",
-              snackbar: true,
-              text: response.message,
-              timeout: 3000
+              alert: true,
+              type: "error",
+              message: response.errors,
+              outline: true,
             };
-            this.setSnackbar(obj);
+
+            this.setAlert(obj);
           } else {
             this.$router.push("/");
           }
         })
-        .catch(err => console.log(err));
-    }
-  }
+        .catch((err) => console.log(err));
+    },
+  },
 };
 </script>
 

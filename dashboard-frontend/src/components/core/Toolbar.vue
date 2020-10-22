@@ -70,7 +70,7 @@ export default {
     userProfile() {},
     logout() {
       this.setLogout().then(() => {
-        this.$router.push("/login");
+        this.$router.push("/");
       });
     },
   },

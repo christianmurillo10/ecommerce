@@ -2,22 +2,26 @@ const state = {
   alertDetails: {
     alert: false,
     type: "success",
-    message: ""
-  }
+    message: "",
+    outline: false,
+  },
 };
 
 const getters = {};
 
 const actions = {
-  setAlert({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
+  setAlert(
+    { dispatch, commit, state, rootState, getters, rootGetters },
+    payload
+  ) {
     commit("SET_ALERT", payload);
-  }
+  },
 };
 
 const mutations = {
   SET_ALERT(state, payload) {
     state.alertDetails = payload;
-  }
+  },
 };
 
 export default {
@@ -25,5 +29,5 @@ export default {
   state,
   getters,
   actions,
-  mutations
+  mutations,
 };

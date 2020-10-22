@@ -3,10 +3,14 @@
     <v-alert
       v-model="alertDetails.alert"
       :type="alertDetails.type"
+      :outline="alertDetails.outline"
       dismissible
       dense
-      outline
-    >{{ alertDetails.message }}</v-alert>
+    >
+      <div v-for="(message, i) in alertDetails.message" :key="i">
+        {{ message }}
+      </div>
+    </v-alert>
   </div>
 </template>
 
@@ -15,7 +19,7 @@ import { mapState } from "vuex";
 
 export default {
   computed: {
-    ...mapState("alerts", ["alertDetails"])
-  }
+    ...mapState("alerts", ["alertDetails"]),
+  },
 };
 </script>
