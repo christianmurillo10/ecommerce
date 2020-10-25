@@ -13,6 +13,7 @@ module.exports = {
     const usernameChecker = /^(?=[a-zA-Z0-9._]{6,30}$)(?!.*[_.]{2})[^_.].*[^_.]$/;
     const emailChecker = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
     let errors = [],
+      message = "Successfully created data.",
       criteria,
       initialValues,
       data;
@@ -52,7 +53,7 @@ module.exports = {
       data = await Model.Users.findAll(criteria);
       if (!_.isEmpty(data[0])) {
         errors.push("Data already exist.");
-        throw new ErrorHandler(500, errors);
+        throw new ErrorHandler(409, errors);
       }
 
       // Pre-setting variables
@@ -67,7 +68,7 @@ module.exports = {
 
       handleSuccess(res, {
         statusCode: 201,
-        message: "Successfully created data.",
+        message: message,
         result: _.omit(finalData.get({ plain: true }), [
           "password",
           "is_deleted",
@@ -85,6 +86,7 @@ module.exports = {
   update: async (req, res, next) => {
     const params = req.body;
     let errors = [],
+      message = "Successfully updated data.",
       initialValues,
       data;
 
@@ -102,7 +104,7 @@ module.exports = {
       data = await Model.Users.findByPk(req.params.id);
       if (_.isEmpty(data)) {
         errors.push("Data doesn't exist.");
-        throw new ErrorHandler(500, errors);
+        throw new ErrorHandler(404, errors);
         y;
       }
 
@@ -117,7 +119,7 @@ module.exports = {
 
       handleSuccess(res, {
         statusCode: 200,
-        message: "Successfully updated data.",
+        message: message,
         result: finalData,
       });
     } catch (err) {
@@ -130,20 +132,22 @@ module.exports = {
    * @route PUT /users/delete/:id
    */
   delete: async (req, res, next) => {
-    let errors = [],data;
+    let errors = [],
+      message = "Successfully deleted an account.",
+      data;
 
     try {
       // Validate Data
       data = await Model.Users.findByPk(req.params.id);
       if (_.isEmpty(data)) {
         errors.push("Data doesn't exist.");
-        throw new ErrorHandler(500, errors);
+        throw new ErrorHandler(404, errors);
       }
       let finalData = await data.update({ is_deleted: YES });
 
       handleSuccess(res, {
         statusCode: 200,
-        message: "Successfully deleted an account.",
+        message: message,
         result: finalData,
       });
     } catch (err) {
@@ -158,6 +162,7 @@ module.exports = {
   changePassword: async (req, res, next) => {
     const params = req.body;
     let errors = [],
+      message = "Successfully changed password.",
       initialValues,
       data,
       compareOldPassword,
@@ -185,7 +190,7 @@ module.exports = {
       data = await Model.Users.findByPk(req.params.id);
       if (_.isEmpty(data)) {
         errors.push("Data doesn't exist.");
-        throw new ErrorHandler(500, errors);
+        throw new ErrorHandler(404, errors);
       }
 
       // Validate Old Password
@@ -195,7 +200,7 @@ module.exports = {
       );
       if (!compareOldPassword) {
         errors.push("Old password is incorrect.");
-        throw new ErrorHandler(500, errors);
+        throw new ErrorHandler(400, errors);
       }
 
       // Validate New Password
@@ -205,7 +210,7 @@ module.exports = {
       );
       if (compareNewPassword) {
         errors.push("New password cannot be the same as your old password.");
-        throw new ErrorHandler(500, errors);
+        throw new ErrorHandler(400, errors);
       }
 
       // Pre-setting variables
@@ -217,7 +222,7 @@ module.exports = {
 
       handleSuccess(res, {
         statusCode: 200,
-        message: "Successfully changed password.",
+        message: message,
         result: [],
       });
     } catch (err) {
@@ -230,24 +235,35 @@ module.exports = {
    * @route GET /users
    */
   findAll: async (req, res, next) => {
-    let errors = [],data, criteria;
+    let errors = [],
+      message = "Successfully find all data.",
+      data,
+      criteria;
 
     try {
       // Validate Data
       criteria = {
-        attributes: ['email', 'username', 'role_id', 'created_at', 'updated_at', 'permission_type', 'is_logged', 'is_active'],
+        attributes: [
+          "email",
+          "username",
+          "role_id",
+          "created_at",
+          "updated_at",
+          "permission_type",
+          "is_logged",
+          "is_active",
+        ],
         where: { is_deleted: NO },
         include: [{ model: Model.Roles, as: "roles" }],
       };
       data = await Model.Users.findAll(criteria);
       if (_.isEmpty(data[0])) {
-        errors.push("No data found.");
-        throw new ErrorHandler(500, errors);
+        message = "No data found.";
       }
-      
+
       handleSuccess(res, {
         statusCode: 200,
-        message: "Successfully find all data.",
+        message: message,
         result: data,
       });
     } catch (err) {
@@ -260,20 +276,23 @@ module.exports = {
    * @route GET /users/:id
    */
   findById: async (req, res, next) => {
-    let errors = [],data, criteria;
+    let errors = [],
+      message = "Successfully find data.",
+      data,
+      criteria;
 
     try {
       // Validate Data
       criteria = { include: [{ model: Model.Roles, as: "roles" }] };
       data = await Model.Users.findByPk(req.params.id, criteria);
       if (_.isEmpty(data)) {
-        errors.push("No data found.");
-        throw new ErrorHandler(500, errors);
+        errors.push("Data doesn't exist.");
+        throw new ErrorHandler(404, errors);
       }
 
       handleSuccess(res, {
         statusCode: 200,
-        message: "Successfully find data.",
+        message: message,
         result: _.omit(data.get({ plain: true }), ["password", "is_deleted"]),
       });
     } catch (err) {

@@ -10,6 +10,7 @@ module.exports = {
   create: async (req, res, next) => {
     const params = req.body;
     let errors = [],
+      message = "Successfully created data.",
       criteria,
       initialValues,
       data;
@@ -44,7 +45,7 @@ module.exports = {
       data = await Model.ProductVariants.findAll(criteria);
       if (!_.isEmpty(data[0])) {
         errors.push("Data already exist.");
-        throw new ErrorHandler(500, errors);
+        throw new ErrorHandler(409, errors);
       }
 
       // Pre-setting variables
@@ -61,7 +62,7 @@ module.exports = {
         .then(([finalData, created]) => {
           handleSuccess(res, {
             statusCode: 201,
-            message: "Successfully created data.",
+            message: message,
             result: _.omit(finalData.get({ plain: true }), ["is_deleted"]),
           });
         });
@@ -77,6 +78,7 @@ module.exports = {
   update: async (req, res, next) => {
     const params = req.body;
     let errors = [],
+      message = "Successfully updated data.",
       initialValues,
       data,
       criteria;
@@ -100,7 +102,7 @@ module.exports = {
       data = await Model.ProductVariants.findByPk(req.params.id);
       if (_.isEmpty(data)) {
         errors.push("Data doesn't exist.");
-        throw new ErrorHandler(500, errors);
+        throw new ErrorHandler(404, errors);
       }
 
       // Pre-setting variables
@@ -115,7 +117,7 @@ module.exports = {
         Model.ProductVariants.findByPk(data.id, criteria).then((finalData) => {
           handleSuccess(res, {
             statusCode: 200,
-            message: "Successfully updated data.",
+            message: message,
             result: _.omit(finalData.get({ plain: true }), ["is_deleted"]),
           });
         })
@@ -131,6 +133,7 @@ module.exports = {
    */
   delete: async (req, res, next) => {
     let errors = [],
+      message = "Successfully deleted data.",
       data;
 
     try {
@@ -138,13 +141,13 @@ module.exports = {
       data = await Model.ProductVariants.findByPk(req.params.id);
       if (_.isEmpty(data)) {
         errors.push("Data doesn't exist.");
-        throw new ErrorHandler(500, errors);
+        throw new ErrorHandler(404, errors);
       }
       let finalData = await data.update({ is_deleted: YES });
 
       handleSuccess(res, {
         statusCode: 200,
-        message: "Successfully deleted data.",
+        message: message,
         result: finalData,
       });
     } catch (err) {
@@ -158,6 +161,7 @@ module.exports = {
    */
   findAll: async (req, res, next) => {
     let errors = [],
+      message = "Successfully find all data.",
       data,
       criteria;
 
@@ -169,13 +173,12 @@ module.exports = {
       };
       data = await Model.ProductVariants.findAll(criteria);
       if (_.isEmpty(data[0])) {
-        errors.push("No data found.");
-        throw new ErrorHandler(500, errors);
+        message = "No data found.";
       }
 
       handleSuccess(res, {
         statusCode: 200,
-        message: "Successfully find all data.",
+        message: message,
         result: data,
       });
     } catch (err) {
@@ -190,6 +193,7 @@ module.exports = {
   findAllbyProductId: async (req, res, next) => {
     const params = req.params;
     let errors = [],
+      message = "Successfully find all data.",
       data,
       criteria;
 
@@ -201,13 +205,12 @@ module.exports = {
       };
       data = await Model.ProductVariants.findAll(criteria);
       if (_.isEmpty(data[0])) {
-        errors.push("No data found.");
-        throw new ErrorHandler(500, errors);
+        message = "No data found.";
       }
 
       handleSuccess(res, {
         statusCode: 200,
-        message: "Successfully find all data.",
+        message: message,
         result: data,
       });
     } catch (err) {
@@ -221,6 +224,7 @@ module.exports = {
    */
   findById: async (req, res, next) => {
     let errors = [],
+      message = "Successfully find data.",
       data,
       criteria;
 
@@ -232,13 +236,13 @@ module.exports = {
       };
       data = await Model.ProductVariants.findByPk(req.params.id, criteria);
       if (_.isEmpty(data)) {
-        errors.push("No data found.");
-        throw new ErrorHandler(500, errors);
+        errors.push("Data doesn't exist.");
+        throw new ErrorHandler(404, errors);
       }
 
       handleSuccess(res, {
         statusCode: 200,
-        message: "Successfully find data.",
+        message: message,
         result: _.omit(data.get({ plain: true }), ["is_deleted"]),
       });
     } catch (err) {
