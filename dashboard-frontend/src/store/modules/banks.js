@@ -168,7 +168,7 @@ const mutations = {
     state.bankList.push(payload);
   },
   UPDATE_DATA(state, payload) {
-    let index = state.bankList.map((bank) => bank.id).indexOf(payload.id);
+    const index = state.bankList.map((bank) => bank.id).indexOf(payload.id);
     Object.assign(state.bankList[index], {
       code: payload.code,
       name: payload.name,
@@ -176,7 +176,7 @@ const mutations = {
     });
   },
   DELETE_DATA(state, payload) {
-    let index = state.bankList.map((bank) => bank.id).indexOf(payload);
+    const index = state.bankList.map((bank) => bank.id).indexOf(payload);
     state.bankList.splice(index, 1);
   },
 };

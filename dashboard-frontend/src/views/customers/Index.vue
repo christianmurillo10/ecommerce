@@ -5,7 +5,8 @@
     <v-divider></v-divider>
     <v-card>
       <v-card-title>
-        <v-icon class="black--text">view_list</v-icon><span class="title">Customers</span>
+        <v-icon class="black--text">view_list</v-icon>
+        <span class="title">Customers</span>
         <v-spacer></v-spacer>
         <v-dialog v-model="dialog" max-width="850px">
           <template v-slot:activator="{ on: { click } }">
@@ -31,7 +32,12 @@
         </v-flex>
       </v-card-title>
       <v-card-text>
-        <v-data-table :headers="headers" :items="customerList" :search="search" class="elevation-1">
+        <v-data-table
+          :headers="headers"
+          :items="customerList"
+          :search="search"
+          class="elevation-1"
+        >
           <template v-slot:items="props">
             <td class="text-xs-left pt-1">
               <v-img
@@ -43,28 +49,65 @@
               ></v-img>
             </td>
             <td class="text-xs-left">{{ props.item.customer_no }}</td>
-            <td class="text-xs-left">{{ setFullnameLastnameFirst(props.item.firstname, props.item.middlename, props.item.lastname) }}</td>
+            <td class="text-xs-left">
+              {{
+                setFullnameLastnameFirst(
+                  props.item.firstname,
+                  props.item.middlename,
+                  props.item.lastname
+                )
+              }}
+            </td>
             <td class="text-xs-left">{{ props.item.email }}</td>
             <td class="text-xs-left">{{ props.item.contact_no }}</td>
             <td class="text-xs-left">
-              <v-chip :color='getCustomerStatusColor(props.item.status)' text-color='white' disabled>{{ getCustomerStatus(props.item.status) }}</v-chip>
+              <v-chip
+                :color="getCustomerStatusColor(props.item.status)"
+                text-color="white"
+                disabled
+              >
+                {{ getCustomerStatus(props.item.status) }}
+              </v-chip>
             </td>
             <td class="justify-center" width="100">
               <v-tooltip left>
                 <template v-slot:activator="{ on }">
-                  <v-icon small class="mr-2" color="blue-grey darken-2" @click="viewCards(props.item.id)" v-on="on">credit_card</v-icon>
+                  <v-icon
+                    small
+                    class="mr-2"
+                    color="blue-grey darken-2"
+                    @click="viewCards(props.item.id)"
+                    v-on="on"
+                  >
+                    credit_card
+                  </v-icon>
                 </template>
                 <span>Cards</span>
               </v-tooltip>
               <v-tooltip left>
                 <template v-slot:activator="{ on }">
-                  <v-icon small class="mr-2" @click="editItem(props.item.id)" v-on="on">edit</v-icon>
+                  <v-icon
+                    small
+                    class="mr-2"
+                    @click="editItem(props.item.id)"
+                    v-on="on"
+                  >
+                    edit
+                  </v-icon>
                 </template>
                 <span>Update</span>
               </v-tooltip>
               <v-tooltip left>
                 <template v-slot:activator="{ on }">
-                  <v-icon small color="red" class="mr-2" @click="deleteModal(props.item.id)" v-on="on">delete</v-icon>
+                  <v-icon
+                    small
+                    color="red"
+                    class="mr-2"
+                    @click="deleteModal(props.item.id)"
+                    v-on="on"
+                  >
+                    delete
+                  </v-icon>
                 </template>
                 <span>Delete</span>
               </v-tooltip>
@@ -74,7 +117,9 @@
             <p class="justify-center layout px-0">No data found!</p>
           </template>
           <template v-slot:no-results>
-            <p class="justify-center layout px-0">Your search for "{{ search }}" found no results.</p>
+            <p class="justify-center layout px-0">
+              Your search for "{{ search }}" found no results.
+            </p>
           </template>
         </v-data-table>
       </v-card-text>
@@ -85,8 +130,17 @@
         <v-card-text>Are you sure you want to delete this item?</v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn small outline color="error" @click="modalDelete.dialog = false">Cancel</v-btn>
-          <v-btn small outline color="success" @click="deleteItem()">Confirm</v-btn>
+          <v-btn
+            small
+            outline
+            color="error"
+            @click="modalDelete.dialog = false"
+          >
+            Cancel
+          </v-btn>
+          <v-btn small outline color="success" @click="deleteItem()">
+            Confirm
+          </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -105,16 +159,16 @@ export default {
   components: {
     Alerts,
     Loading,
-    ModalForm
+    ModalForm,
   },
 
   data: () => ({
     dialog: false,
     modalDelete: {
       dialog: false,
-      id: null
+      id: null,
     },
-    search: '',
+    search: "",
     headers: [
       { text: "Image", value: "" },
       { text: "Customer No.", value: "customer_no" },
@@ -122,8 +176,8 @@ export default {
       { text: "Email", value: "email" },
       { text: "Contact No.", value: "" },
       { text: "Status", value: "" },
-      { text: "Actions", align: "center", value: "", sortable: false }
-    ]
+      { text: "Actions", align: "center", value: "", sortable: false },
+    ],
   }),
 
   mounted() {
@@ -131,20 +185,20 @@ export default {
   },
 
   computed: {
-    ...mapState("customers", ["customerList"])
+    ...mapState("customers", ["customerList"]),
   },
 
   watch: {
     dialog(val) {
       val || this.close();
-    }
+    },
   },
 
   methods: {
     ...mapActions("alerts", ["setAlert"]),
     ...mapActions("customers", {
       getCustomerData: "getData",
-      deleteCustomerData: "deleteData"
+      deleteCustomerData: "deleteData",
     }),
 
     viewCards(id) {
@@ -163,19 +217,24 @@ export default {
 
     deleteItem() {
       this.deleteCustomerData(this.modalDelete.id)
-        .then(response => {
+        .then((response) => {
           let obj = {
             alert: true,
             type: "success",
-            message: response.data.message
+            message: [response.message],
+            outline: true,
           };
 
-          if (!response.data.result) obj.type = "error";
+          if (response.status === "error") {
+            obj.type = "error";
+            obj.message = response.errors;
+          }
+          
           this.setAlert(obj);
           this.modalDelete.id = null;
           this.modalDelete.dialog = false;
         })
-        .catch(err => console.log(err));
+        .catch((err) => console.log(err));
     },
 
     close() {
@@ -185,7 +244,7 @@ export default {
 
     setDialog(value) {
       this.dialog = value;
-    }
-  }
+    },
+  },
 };
 </script>

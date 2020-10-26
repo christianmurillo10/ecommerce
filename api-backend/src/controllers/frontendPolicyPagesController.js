@@ -169,7 +169,8 @@ module.exports = {
       criteria = { where: { type: params.type, is_deleted: NO } };
       data = await Model.FrontendPolicyPages.findOne(criteria);
       if (_.isEmpty(data)) {
-        message = "No data found.";
+        errors.push("Data doesn't exist.");
+        throw new ErrorHandler(404, errors);
       }
 
       handleSuccess(res, {

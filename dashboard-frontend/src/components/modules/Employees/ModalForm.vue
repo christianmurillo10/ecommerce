@@ -2,7 +2,8 @@
   <v-form ref="form" @submit.prevent="save" v-model="valid" lazy-validation>
     <v-card>
       <v-card-title>
-        <v-icon class="black--text">{{ formIcon }}</v-icon><span class="title">{{ formTitle }}</span>
+        <v-icon class="black--text">{{ formIcon }}</v-icon>
+        <span class="title">{{ formTitle }}</span>
       </v-card-title>
       <v-card-text>
         <v-container grid-list-md>
@@ -31,14 +32,31 @@
                         v-on="on"
                       ></v-text-field>
                     </template>
-                    <v-date-picker v-model="formData.date_hired" no-title scrollable>
+                    <v-date-picker
+                      v-model="formData.date_hired"
+                      no-title
+                      scrollable
+                    >
                       <v-spacer></v-spacer>
-                      <v-btn flat color="primary" @click="date_hired = false">Cancel</v-btn>
-                      <v-btn flat color="primary" @click="$refs.date_hired.save(formData.date_hired)">OK</v-btn>
+                      <v-btn flat color="primary" @click="date_hired = false">
+                        Cancel
+                      </v-btn>
+                      <v-btn
+                        flat
+                        color="primary"
+                        @click="$refs.date_hired.save(formData.date_hired)"
+                      >
+                        OK
+                      </v-btn>
                     </v-date-picker>
                   </v-menu>
                 </v-flex>
-                <v-flex xs12 sm12 md6 v-if="formType === 'update' && formData.is_active === 0">
+                <v-flex
+                  xs12
+                  sm12
+                  md6
+                  v-if="formType === 'update' && formData.is_active === 0"
+                >
                   <v-menu
                     ref="date_endo"
                     v-model="date_endo"
@@ -60,10 +78,22 @@
                         v-on="on"
                       ></v-text-field>
                     </template>
-                    <v-date-picker v-model="formData.date_endo" no-title scrollable>
+                    <v-date-picker
+                      v-model="formData.date_endo"
+                      no-title
+                      scrollable
+                    >
                       <v-spacer></v-spacer>
-                      <v-btn flat color="primary" @click="date_endo = false">Cancel</v-btn>
-                      <v-btn flat color="primary" @click="$refs.date_endo.save(formData.date_endo)">OK</v-btn>
+                      <v-btn flat color="primary" @click="date_endo = false">
+                        Cancel
+                      </v-btn>
+                      <v-btn
+                        flat
+                        color="primary"
+                        @click="$refs.date_endo.save(formData.date_endo)"
+                      >
+                        OK
+                      </v-btn>
                     </v-date-picker>
                   </v-menu>
                 </v-flex>
@@ -105,7 +135,6 @@
                 v-model="formData.secondary_address"
                 :rules="[rules.max255Chars]"
                 label="Secondary Address"
-                required
               ></v-text-field>
             </v-flex>
             <v-flex xs12 sm12 md4>
@@ -150,7 +179,9 @@
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn color="blue darken-1" flat @click="close">Cancel</v-btn>
-        <v-btn color="blue darken-1" type="submit" flat :disabled="!valid">Save</v-btn>
+        <v-btn color="blue darken-1" type="submit" flat :disabled="!valid">
+          Save
+        </v-btn>
       </v-card-actions>
     </v-card>
   </v-form>
@@ -177,7 +208,7 @@ export default {
       gender_type: "",
       date_hired: new Date().toISOString().substr(0, 10),
       date_endo: new Date().toISOString().substr(0, 10),
-      is_active: ""
+      is_active: "",
     },
     formType: "new",
     formData: {
@@ -191,26 +222,28 @@ export default {
       gender_type: "",
       date_hired: new Date().toISOString().substr(0, 10),
       date_endo: new Date().toISOString().substr(0, 10),
-      is_active: ""
+      is_active: "",
     },
-    valid: true
+    valid: true,
   }),
 
   computed: {
     ...mapGetters("employees", ["getEmployeeById"]),
     formTitle() {
-      return this.formType === "new" ? "Employee - Create" : "Employee - Update";
+      return this.formType === "new"
+        ? "Employee - Create"
+        : "Employee - Update";
     },
     formIcon() {
       return this.formType === "new" ? "add_box" : "edit";
-    }
+    },
   },
 
   methods: {
     ...mapActions("alerts", ["setAlert"]),
     ...mapActions("employees", {
       saveEmployeeData: "saveData",
-      updateEmployeeData: "updateData"
+      updateEmployeeData: "updateData",
     }),
 
     editItem(id) {
@@ -221,7 +254,9 @@ export default {
       this.formData.lastname = data.lastname;
       this.formData.email = data.email;
       this.formData.primary_address = data.primary_address;
-      this.formData.secondary_address = data.secondary_address;
+      this.formData.secondary_address = data.secondary_address
+        ? data.secondary_address
+        : "";
       this.formData.contact_no = data.contact_no;
       this.formData.gender_type = data.gender_type;
       this.formData.date_hired = data.date_hired;
@@ -242,34 +277,44 @@ export default {
       if (this.$refs.form.validate()) {
         if (this.formType === "new") {
           this.saveEmployeeData(this.formData)
-            .then(response => {
+            .then((response) => {
               let obj = {
                 alert: true,
                 type: "success",
-                message: response.data.message
+                message: [response.message],
+                outline: true,
               };
-              
-              if (!response.data.result) obj.type = "error"
+
+              if (response.status === "error") {
+                obj.type = "error";
+                obj.message = response.errors;
+              }
+
               this.setAlert(obj);
             })
-            .catch(err => console.log(err));
+            .catch((err) => console.log(err));
         } else if (this.formType === "update") {
           this.updateEmployeeData(this.formData)
-            .then(response => {
+            .then((response) => {
               let obj = {
                 alert: true,
                 type: "success",
-                message: response.data.message
+                message: [response.message],
+                outline: true,
               };
-              
-              if (!response.data.result) obj.type = "error"
+
+              if (response.status === "error") {
+                obj.type = "error";
+                obj.message = response.errors;
+              }
+
               this.setAlert(obj);
             })
-            .catch(err => console.log(err));
+            .catch((err) => console.log(err));
         }
         this.close();
       }
-    }
-  }
+    },
+  },
 };
 </script>

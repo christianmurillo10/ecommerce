@@ -2,14 +2,21 @@
   <v-form ref="form" @submit.prevent="save" v-model="valid" lazy-validation>
     <v-card>
       <v-card-title>
-        <v-icon class="black--text">{{ formIcon }}</v-icon><span class="title">{{ formTitle }}</span>
+        <v-icon class="black--text">{{ formIcon }}</v-icon>
+        <span class="title">{{ formTitle }}</span>
       </v-card-title>
       <v-card-text>
         <v-container grid-list-md>
           <v-layout wrap>
             <v-flex xs12 sm12 md12>
               <v-layout wrap justify-center>
-                <v-img :src="formData.file_path" lazy-src="@/assets/images/no-image.png" height="200" width="600" contain></v-img>
+                <v-img
+                  :src="formData.file_path"
+                  lazy-src="@/assets/images/no-image.png"
+                  height="200"
+                  width="600"
+                  contain
+                ></v-img>
               </v-layout>
             </v-flex>
             <v-flex xs12 sm12 md12>
@@ -34,10 +41,7 @@
               ></v-text-field>
             </v-flex>
             <v-flex xs12 sm12 md8>
-              <v-text-field
-                v-model="formData.url"
-                label="Url"
-              ></v-text-field>
+              <v-text-field v-model="formData.url" label="Url"></v-text-field>
             </v-flex>
           </v-layout>
         </v-container>
@@ -48,7 +52,9 @@
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn color="blue darken-1" flat @click="close">Cancel</v-btn>
-        <v-btn color="blue darken-1" type="submit" flat :disabled="!valid">Save</v-btn>
+        <v-btn color="blue darken-1" type="submit" flat :disabled="!valid">
+          Save
+        </v-btn>
       </v-card-actions>
     </v-card>
   </v-form>
@@ -68,7 +74,7 @@ export default {
       file_name: null,
       url: "",
       order: "",
-      product_id: null
+      product_id: null,
     },
     formType: "new",
     formData: {
@@ -77,26 +83,28 @@ export default {
       file_name: null,
       url: "",
       order: null,
-      product_id: null
+      product_id: null,
     },
-    valid: true
+    valid: true,
   }),
 
   computed: {
     ...mapGetters("frontendSliderImages", ["getFrontendSliderImageById"]),
     formTitle() {
-      return this.formType === "new" ? "Frontend Slider Image - Create" : "Frontend Slider Image - Update";
+      return this.formType === "new"
+        ? "Frontend Slider Image - Create"
+        : "Frontend Slider Image - Update";
     },
     formIcon() {
       return this.formType === "new" ? "add_box" : "edit";
-    }
+    },
   },
 
   methods: {
     ...mapActions("alerts", ["setAlert"]),
     ...mapActions("frontendSliderImages", {
       saveFrontendSliderImageData: "saveData",
-      updateFrontendSliderImageData: "updateData"
+      updateFrontendSliderImageData: "updateData",
     }),
 
     pickFile() {
@@ -128,7 +136,11 @@ export default {
       this.formData.id = data.id;
       this.formData.url = data.url;
       this.formData.order = data.order;
-      this.formData.file_path = _.isNull(data.file_name) ? require("@/assets/images/no-image.png") : `${process.env.VUE_APP_API_BACKEND}/frontendSliderImages/viewImage/${data.file_name}`;
+      this.formData.file_path = _.isNull(data.file_name)
+        ? require("@/assets/images/no-image.png")
+        : `${process.env.VUE_APP_API_BACKEND}/frontendSliderImages/viewImage/${
+            data.file_name
+          }`;
       this.formType = "update";
     },
 
@@ -145,34 +157,44 @@ export default {
         if (this.formType === "new") {
           this.formData.product_id = this.$route.params.id;
           this.saveFrontendSliderImageData(this.formData)
-            .then(response => {
+            .then((response) => {
               let obj = {
                 alert: true,
                 type: "success",
-                message: response.data.message
+                message: [response.message],
+                outline: true,
               };
-              
-              if (!response.data.result) obj.type = "error"
+
+              if (response.status === "error") {
+                obj.type = "error";
+                obj.message = response.errors;
+              }
+
               this.setAlert(obj);
             })
-            .catch(err => console.log(err));
+            .catch((err) => console.log(err));
         } else if (this.formType === "update") {
           this.updateFrontendSliderImageData(this.formData)
-            .then(response => {
+            .then((response) => {
               let obj = {
                 alert: true,
                 type: "success",
-                message: response.data.message
+                message: [response.message],
+                outline: true,
               };
-              
-              if (!response.data.result) obj.type = "error"
+
+              if (response.status === "error") {
+                obj.type = "error";
+                obj.message = response.errors;
+              }
+
               this.setAlert(obj);
             })
-            .catch(err => console.log(err));
+            .catch((err) => console.log(err));
         }
         this.close();
       }
-    }
-  }
+    },
+  },
 };
 </script>

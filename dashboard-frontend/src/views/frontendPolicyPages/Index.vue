@@ -9,14 +9,19 @@
       <v-form ref="form" @submit.prevent="save" v-model="valid" lazy-validation>
         <v-card-text>
           <v-flex xs12 sm12 md12>
-            <vue-editor v-model="formData.description" :editorToolbar="customToolbar"></vue-editor>
+            <vue-editor
+              v-model="formData.description"
+              :editorToolbar="customToolbar"
+            ></vue-editor>
           </v-flex>
         </v-card-text>
         <v-divider></v-divider>
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn color="blue darken-1" flat @click="setFormType">Reset</v-btn>
-          <v-btn color="blue darken-1" type="submit" flat :disabled="!valid">Save</v-btn>
+          <v-btn color="blue darken-1" type="submit" flat :disabled="!valid">
+            Save
+          </v-btn>
         </v-card-actions>
       </v-form>
     </v-card>
@@ -31,25 +36,25 @@ import { VueEditor } from "vue2-editor";
 export default {
   components: {
     Alerts,
-    VueEditor
+    VueEditor,
   },
 
   data: () => ({
     customToolbar: [
-      [{ 'header': [false, 1, 2, 3, 4, 5, 6, ] }],
-      ['bold', 'italic', 'underline', 'strike'],
+      [{ header: [false, 1, 2, 3, 4, 5, 6] }],
+      ["bold", "italic", "underline", "strike"],
       // [{'align': ''}, {'align': 'center'}, {'align': 'right'}, {'align': 'justify'}],
-      [{ 'header': 1 }, { 'header': 2 }],
-      [{ 'list': 'ordered'}, { 'list': 'bullet' }, { 'list': 'check' }],
-      [{ 'color': [] }, { 'background': [] }],
-      ['clean'],
+      [{ header: 1 }, { header: 2 }],
+      [{ list: "ordered" }, { list: "bullet" }, { list: "check" }],
+      [{ color: [] }, { background: [] }],
+      ["clean"],
     ],
     title: "",
     formType: "new",
     formData: {
       id: null,
       description: "",
-      type: null
+      type: null,
     },
     valid: true,
   }),
@@ -59,7 +64,7 @@ export default {
     this.setFormType();
   },
 
-  computed: { },
+  computed: {},
 
   watch: {
     "$route.params.type": function() {
@@ -73,13 +78,13 @@ export default {
     ...mapActions("frontendPolicyPages", {
       getFrontendPolicyPageDataByType: "getDataByType",
       saveFrontendPolicyPageData: "saveData",
-      updateFrontendPolicyPageData: "updateData"
+      updateFrontendPolicyPageData: "updateData",
     }),
 
     setTypeValue() {
       let type = this.$route.params.type;
 
-      switch(type) {
+      switch (type) {
         case "terms":
           this.formData.type = "1";
           this.title = "Terms and Conditions";
@@ -104,18 +109,20 @@ export default {
     },
 
     setFormType() {
-      this.getFrontendPolicyPageDataByType(this.formData.type)
-        .then(response => {
-          if (!_.isEmpty(response.data.result)) {
+      this.getFrontendPolicyPageDataByType(this.formData.type).then(
+        (response) => {
+          const result = response.result;
+          if (!_.isEmpty(result)) {
             this.formType = "update";
-            this.formData.id = response.data.result.id;
-            this.formData.description = response.data.result.description;
+            this.formData.id = result.id;
+            this.formData.description = result.description;
           } else {
             this.formType = "new";
             this.formData.id = null;
             this.formData.description = "";
           }
-        });
+        }
+      );
     },
 
     save() {
@@ -123,35 +130,43 @@ export default {
         if (this.formData.description !== "") {
           if (this.formType === "new") {
             this.saveFrontendPolicyPageData(this.formData)
-              .then(response => {
+              .then((response) => {
                 let obj = {
                   alert: true,
                   type: "success",
-                  message: response.data.message
+                  message: [response.message],
+                  outline: true,
                 };
-                
-                if (!response.data.result) {
-                  obj.type = "error"
-                } else  {
+
+                if (response.status === "error") {
+                  obj.type = "error";
+                  obj.message = response.errors;
+                } else {
                   this.formType = "update";
-                  this.formData.id = response.data.result.id;
+                  this.formData.id = response.result.id;
                 }
+
                 this.setAlert(obj);
               })
-              .catch(err => console.log(err));
+              .catch((err) => console.log(err));
           } else if (this.formType === "update") {
             this.updateFrontendPolicyPageData(this.formData)
-              .then(response => {
+              .then((response) => {
                 let obj = {
                   alert: true,
                   type: "success",
-                  message: response.data.message
+                  message: [response.message],
+                  outline: true,
                 };
-                
-                if (!response.data.result) obj.type = "error"
+
+                if (response.status === "error") {
+                  obj.type = "error";
+                  obj.message = response.errors;
+                }
+
                 this.setAlert(obj);
               })
-              .catch(err => console.log(err));
+              .catch((err) => console.log(err));
           }
         }
       }

@@ -1,36 +1,47 @@
 import axios from "axios";
-import FormData from 'form-data';
+import FormData from "form-data";
+const apiUrl = process.env.VUE_APP_API_BACKEND;
 
 const state = {
-  frontendSliderImageList: []
+  frontendSliderImageList: [],
 };
 
 const getters = {
   getFrontendSliderImageById: (state) => (id) => {
-    return state.frontendSliderImageList.find(frontendSliderImage => frontendSliderImage.id === id);
+    return state.frontendSliderImageList.find(
+      (frontendSliderImage) => frontendSliderImage.id === id
+    );
   },
   getFrontendSliderImageFileNameById: (state) => (id) => {
-    return state.frontendSliderImageList.find(frontendSliderImage => frontendSliderImage.id === id).file_name;
+    return state.frontendSliderImageList.find(
+      (frontendSliderImage) => frontendSliderImage.id === id
+    ).file_name;
   },
   getFrontendSliderImageList: (state) => {
     return state.frontendSliderImageList;
-  }
+  },
 };
 
 const actions = {
   getData({ dispatch, commit, state, rootState, getters, rootGetters }) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/frontendSliderImages/`;
-    let header = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
+    const url = `${apiUrl}/frontendSliderImages/`;
+    const header = {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    };
     return new Promise((resolve, reject) => {
       try {
-        axios.get(url, header)
-          .then(response => {
-            let obj = response.data.result;
+        axios
+          .get(url, header)
+          .then((response) => {
+            const data = response.data;
+            let obj = data.result;
 
             if (obj !== false) {
-              obj.forEach(element => {
+              obj.forEach((element) => {
                 if (!_.isNull(element.file_name)) {
-                  element.file_path = `${process.env.VUE_APP_API_BACKEND}/frontendSliderImages/viewImage/${element.file_name}`;
+                  element.file_path = `${apiUrl}/frontendSliderImages/viewImage/${
+                    element.file_name
+                  }`;
                 } else {
                   element.file_path = require("../../assets/images/no-image.png");
                 }
@@ -38,90 +49,130 @@ const actions = {
             }
 
             commit("SET_DATA", obj);
-            resolve(response);
+            resolve(data);
+          })
+          .catch((err) => {
+            commit("SET_DATA", []);
+            resolve(err.response.data);
           });
       } catch (err) {
         reject(err);
       }
     });
   },
-  getDataById({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/frontendSliderImages/${payload}`;
-    let header = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
+  getDataById(
+    { dispatch, commit, state, rootState, getters, rootGetters },
+    payload
+  ) {
+    const url = `${apiUrl}/frontendSliderImages/${payload}`;
+    const header = {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    };
     return new Promise((resolve, reject) => {
       try {
         axios
           .get(url, header)
-          .then(response => {
-            resolve(response);
+          .then((response) => {
+            const data = response.data;
+            resolve(data);
+          })
+          .catch((err) => {
+            resolve(err.response.data);
           });
       } catch (err) {
         reject(err);
       }
     });
   },
-  saveData({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/frontendSliderImages/create`;
-    let header = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
+  saveData(
+    { dispatch, commit, state, rootState, getters, rootGetters },
+    payload
+  ) {
+    const url = `${apiUrl}/frontendSliderImages/create`;
+    const header = {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    };
     return new Promise((resolve, reject) => {
       try {
         var data = new FormData();
-        data.set('file_name', payload.file_name);
-        data.set('url', payload.url);
-        data.set('order', payload.order);
-        data.append('image', payload.file);
+        data.set("file_name", payload.file_name);
+        data.set("url", payload.url);
+        data.set("order", payload.order);
+        data.append("image", payload.file);
 
         axios
           .post(url, data, header)
-          .then(response => {
-            if (response.data.result) {
-              commit("ADD_DATA", response.data.result);
+          .then((response) => {
+            const data = response.data;
+            if (data.result) {
+              commit("ADD_DATA", data.result);
             }
-            resolve(response);
+            resolve(data);
+          })
+          .catch((err) => {
+            resolve(err.response.data);
           });
       } catch (err) {
         reject(err);
       }
     });
   },
-  updateData({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/frontendSliderImages/update/${payload.id}`;
-    let header = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
+  updateData(
+    { dispatch, commit, state, rootState, getters, rootGetters },
+    payload
+  ) {
+    const url = `${apiUrl}/frontendSliderImages/update/${payload.id}`;
+    const header = {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    };
     return new Promise((resolve, reject) => {
       try {
         var data = new FormData();
-        data.set('file_name', payload.file_name);
-        data.set('url', payload.url);
-        data.set('order', payload.order);
-        data.append('image', payload.file);
+        data.set("file_name", payload.file_name);
+        data.set("url", payload.url);
+        data.set("order", payload.order);
+        data.append("image", payload.file);
 
         axios
           .put(url, data, header)
-          .then(response => {
-            commit("UPDATE_DATA", response.data.result);
-            resolve(response);
+          .then((response) => {
+            const data = response.data;
+            commit("UPDATE_DATA", data.result);
+            resolve(data);
+          })
+          .catch((err) => {
+            resolve(err.response.data);
           });
       } catch (err) {
         reject(err);
       }
     });
   },
-  deleteData({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/frontendSliderImages/delete/${payload}`;
-    let header = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
+  deleteData(
+    { dispatch, commit, state, rootState, getters, rootGetters },
+    payload
+  ) {
+    const url = `${apiUrl}/frontendSliderImages/delete/${payload}`;
+    const header = {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    };
     return new Promise((resolve, reject) => {
       try {
         axios
-          .put(url, '', header)
-          .then(response => {
+          .put(url, "", header)
+          .then((response) => {
+            const data = response.data;
             commit("DELETE_DATA", payload);
-            resolve(response);
+            resolve(data);
+          })
+          .catch((err) => {
+            resolve(err.response.data);
           });
       } catch (err) {
         reject(err);
       }
     });
-  }
+  },
 };
 
 const mutations = {
@@ -134,22 +185,30 @@ const mutations = {
   },
   ADD_DATA(state, payload) {
     let obj = payload;
-    obj.file_path = _.isNull(payload.file_name) ? require("../../assets/images/no-image.png") : `${process.env.VUE_APP_API_BACKEND}/frontendSliderImages/viewImage/${payload.file_name}`;
+    obj.file_path = _.isNull(payload.file_name)
+      ? require("../../assets/images/no-image.png")
+      : `${apiUrl}/frontendSliderImages/viewImage/${payload.file_name}`;
     state.frontendSliderImageList.push(obj);
   },
   UPDATE_DATA(state, payload) {
-    let index = state.frontendSliderImageList.map(frontendSliderImage => frontendSliderImage.id).indexOf(payload.id);
+    const index = state.frontendSliderImageList
+      .map((frontendSliderImage) => frontendSliderImage.id)
+      .indexOf(payload.id);
     Object.assign(state.frontendSliderImageList[index], {
       file_name: payload.file_name,
       url: payload.url,
       order: payload.order,
-      file_path: _.isNull(payload.file_name) ? require("../../assets/images/no-image.png") : `${process.env.VUE_APP_API_BACKEND}/frontendSliderImages/viewImage/${payload.file_name}`
+      file_path: _.isNull(payload.file_name)
+        ? require("../../assets/images/no-image.png")
+        : `${apiUrl}/frontendSliderImages/viewImage/${payload.file_name}`,
     });
   },
   DELETE_DATA(state, payload) {
-    let index = state.frontendSliderImageList.map(frontendSliderImage => frontendSliderImage.id).indexOf(payload);
+    const index = state.frontendSliderImageList
+      .map((frontendSliderImage) => frontendSliderImage.id)
+      .indexOf(payload);
     state.frontendSliderImageList.splice(index, 1);
-  }
+  },
 };
 
 export default {
@@ -157,5 +216,5 @@ export default {
   state,
   getters,
   actions,
-  mutations
+  mutations,
 };

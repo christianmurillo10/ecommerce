@@ -1,66 +1,99 @@
 import axios from "axios";
+const apiUrl = process.env.VUE_APP_API_BACKEND;
 
 const state = {
   employeeList: [],
-  employeeTotalCountByIsActive: 0
+  employeeTotalCountByIsActive: 0,
 };
 
 const getters = {
   getEmployeeById: (state) => (id) => {
-    return state.employeeList.find(employee => employee.id === id);
+    return state.employeeList.find((employee) => employee.id === id);
   },
   getEmployeeEmployeeNoById: (state) => (id) => {
-    return state.employeeList.find(employee => employee.id === id).employee_no;
+    return state.employeeList.find((employee) => employee.id === id)
+      .employee_no;
   },
   getEmployeeList: (state) => {
     return state.employeeList;
-  }
+  },
 };
 
 const actions = {
   getData({ dispatch, commit, state, rootState, getters, rootGetters }) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/employees/`;
-    let header = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
+    const url = `${apiUrl}/employees/`;
+    const header = {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    };
     return new Promise((resolve, reject) => {
       try {
-        axios.get(url, header)
-          .then(response => {
-            let obj = response.data.result;
+        axios
+          .get(url, header)
+          .then((response) => {
+            const data = response.data;
+            let obj = data.result;
             if (obj) {
-              obj.forEach(element => {
+              obj.forEach((element) => {
                 // set fullname lastname first
-                let firstname = element.firstname ? element.firstname.charAt(0).toUpperCase() + element.firstname.slice(1) : "";
-                let middlename = element.middlename ? `${element.middlename.charAt(0).toUpperCase()}.` : "";
-                let lastname = element.lastname ? `${element.lastname.toUpperCase()},` : "";
+                const firstname = element.firstname
+                  ? element.firstname.charAt(0).toUpperCase() +
+                    element.firstname.slice(1)
+                  : "";
+                const middlename = element.middlename
+                  ? `${element.middlename.charAt(0).toUpperCase()}.`
+                  : "";
+                const lastname = element.lastname
+                  ? `${element.lastname.toUpperCase()},`
+                  : "";
                 element.name = `${lastname} ${firstname} ${middlename}`;
               });
             }
             commit("SET_DATA", obj);
-            resolve(response);
+            resolve(data);
+          })
+          .catch((err) => {
+            commit("SET_DATA", []);
+            resolve(err.response.data);
           });
       } catch (err) {
         reject(err);
       }
     });
   },
-  getTotalCountByStatusAndIsActive({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/employees/countAllByIsActive/${payload.is_active}`;
-    let header = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
+  getTotalCountByStatusAndIsActive(
+    { dispatch, commit, state, rootState, getters, rootGetters },
+    payload
+  ) {
+    const url = `${apiUrl}/employees/countAllByIsActive/${payload.is_active}`;
+    const header = {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    };
     return new Promise((resolve, reject) => {
       try {
-        axios.get(url, header)
-          .then(response => {
-            commit("SET_TOTAL_COUNT_BY_IS_ACTIVE", response.data.result);
-            resolve(response);
+        axios
+          .get(url, header)
+          .then((response) => {
+            const data = response.data;
+            commit("SET_TOTAL_COUNT_BY_IS_ACTIVE", data.result);
+            resolve(data);
+          })
+          .catch((err) => {
+            commit("SET_DATA", []);
+            resolve(err.response.data);
           });
       } catch (err) {
         reject(err);
       }
     });
   },
-  saveData({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/employees/create`;
-    let header = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
+  saveData(
+    { dispatch, commit, state, rootState, getters, rootGetters },
+    payload
+  ) {
+    const url = `${apiUrl}/employees/create`;
+    const header = {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    };
     return new Promise((resolve, reject) => {
       try {
         let obj = {
@@ -77,23 +110,32 @@ const actions = {
 
         axios
           .post(url, obj, header)
-          .then(response => {
-            let obj = response.data.result;
+          .then((response) => {
+            const data = response.data;
+            let obj = data.result;
             if (obj) {
               obj.gender_type = parseInt(obj.gender_type);
               obj.is_active = parseInt(obj.is_active);
               commit("ADD_DATA", obj);
             }
-            resolve(response);
+            resolve(data);
+          })
+          .catch((err) => {
+            resolve(err.response.data);
           });
       } catch (err) {
         reject(err);
       }
     });
   },
-  updateData({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/employees/update/${payload.id}`;
-    let header = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
+  updateData(
+    { dispatch, commit, state, rootState, getters, rootGetters },
+    payload
+  ) {
+    const url = `${apiUrl}/employees/update/${payload.id}`;
+    const header = {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    };
     return new Promise((resolve, reject) => {
       try {
         let obj = {
@@ -107,41 +149,54 @@ const actions = {
           date_hired: payload.date_hired,
           date_endo: payload.date_endo,
           gender_type: payload.gender_type,
-          is_active: payload.is_active
+          is_active: payload.is_active,
         };
 
         axios
           .put(url, obj, header)
-          .then(response => {
-            let obj = response.data.result;
+          .then((response) => {
+            const data = response.data;
+            let obj = data.result;
             if (obj) {
               obj.gender_type = parseInt(obj.gender_type);
               obj.is_active = parseInt(obj.is_active);
               commit("UPDATE_DATA", response.data.result);
             }
-            resolve(response);
+            resolve(data);
+          })
+          .catch((err) => {
+            resolve(err.response.data);
           });
       } catch (err) {
         reject(err);
       }
     });
   },
-  deleteData({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/employees/delete/${payload}`;
-    let header = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
+  deleteData(
+    { dispatch, commit, state, rootState, getters, rootGetters },
+    payload
+  ) {
+    const url = `${apiUrl}/employees/delete/${payload}`;
+    const header = {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    };
     return new Promise((resolve, reject) => {
       try {
         axios
-          .put(url, '', header)
-          .then(response => {
+          .put(url, "", header)
+          .then((response) => {
+            const data = response.data;
             commit("DELETE_DATA", payload);
-            resolve(response);
+            resolve(data);
+          })
+          .catch((err) => {
+            resolve(err.response.data);
           });
       } catch (err) {
         reject(err);
       }
     });
-  }
+  },
 };
 
 const mutations = {
@@ -163,7 +218,9 @@ const mutations = {
     state.employeeList.push(payload);
   },
   UPDATE_DATA(state, payload) {
-    let index = state.employeeList.map(employee => employee.id).indexOf(payload.id);
+    const index = state.employeeList
+      .map((employee) => employee.id)
+      .indexOf(payload.id);
 
     Object.assign(state.employeeList[index], {
       employee_no: payload.employee_no,
@@ -177,13 +234,15 @@ const mutations = {
       date_hired: payload.date_hired,
       date_endo: payload.date_endo,
       gender_type: payload.gender_type,
-      is_active: payload.is_active
+      is_active: payload.is_active,
     });
   },
   DELETE_DATA(state, payload) {
-    let index = state.employeeList.map(employee => employee.id).indexOf(payload);
+    const index = state.employeeList
+      .map((employee) => employee.id)
+      .indexOf(payload);
     state.employeeList.splice(index, 1);
-  }
+  },
 };
 
 export default {
@@ -191,5 +250,5 @@ export default {
   state,
   getters,
   actions,
-  mutations
+  mutations,
 };

@@ -2,7 +2,8 @@
   <v-form ref="form" @submit.prevent="save" v-model="valid" lazy-validation>
     <v-card>
       <v-card-title>
-        <v-icon class="black--text">{{ formIcon }}</v-icon><span class="title">{{ formTitle }}</span>
+        <v-icon class="black--text">{{ formIcon }}</v-icon>
+        <span class="title">{{ formTitle }}</span>
       </v-card-title>
       <v-card-text>
         <v-container grid-list-md>
@@ -78,7 +79,9 @@
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn color="blue darken-1" flat @click="close">Cancel</v-btn>
-        <v-btn color="blue darken-1" type="submit" flat :disabled="!valid">Save</v-btn>
+        <v-btn color="blue darken-1" type="submit" flat :disabled="!valid">
+          Save
+        </v-btn>
       </v-card-actions>
     </v-card>
   </v-form>
@@ -99,7 +102,7 @@ export default {
       lastname: "",
       bank_id: "",
       date_expired: "",
-      type: ""
+      type: "",
     },
     formType: "new",
     formData: {
@@ -109,20 +112,24 @@ export default {
       lastname: "",
       bank_id: "",
       date_expired: "",
-      type: ""
+      type: "",
     },
-    valid: true
+    valid: true,
   }),
 
   computed: {
-    ...mapGetters("customerCreditDebitCards", ["getCustomerCreditDebitCardById"]),
+    ...mapGetters("customerCreditDebitCards", [
+      "getCustomerCreditDebitCardById",
+    ]),
     ...mapGetters("banks", ["getBankList"]),
     formTitle() {
-      return this.formType === "new" ? "Customer Credit/Debit Card - Create" : "Customer Credit/Debit Card - Update";
+      return this.formType === "new"
+        ? "Customer Credit/Debit Card - Create"
+        : "Customer Credit/Debit Card - Update";
     },
     formIcon() {
       return this.formType === "new" ? "add_box" : "edit";
-    }
+    },
   },
 
   created() {
@@ -134,7 +141,7 @@ export default {
     ...mapActions("banks", { getBankData: "getData" }),
     ...mapActions("customerCreditDebitCards", {
       saveCustomerCreditDebitCardData: "saveData",
-      updateCustomerCreditDebitCardData: "updateData"
+      updateCustomerCreditDebitCardData: "updateData",
     }),
 
     editItem(id) {
@@ -163,34 +170,44 @@ export default {
         if (this.formType === "new") {
           this.formData.customer_id = this.$route.params.customerId;
           this.saveCustomerCreditDebitCardData(this.formData)
-            .then(response => {
+            .then((response) => {
               let obj = {
                 alert: true,
                 type: "success",
-                message: response.data.message
+                message: [response.message],
+                outline: true,
               };
-              
-              if (!response.data.result) obj.type = "error"
+
+              if (response.status === "error") {
+                obj.type = "error";
+                obj.message = response.errors;
+              }
+
               this.setAlert(obj);
             })
-            .catch(err => console.log(err));
+            .catch((err) => console.log(err));
         } else if (this.formType === "update") {
           this.updateCustomerCreditDebitCardData(this.formData)
-            .then(response => {
+            .then((response) => {
               let obj = {
                 alert: true,
                 type: "success",
-                message: response.data.message
+                message: [response.message],
+                outline: true,
               };
-              
-              if (!response.data.result) obj.type = "error"
+
+              if (response.status === "error") {
+                obj.type = "error";
+                obj.message = response.errors;
+              }
+
               this.setAlert(obj);
             })
-            .catch(err => console.log(err));
+            .catch((err) => console.log(err));
         }
         this.close();
       }
-    }
-  }
+    },
+  },
 };
 </script>

@@ -4,7 +4,8 @@
     <v-divider></v-divider>
     <v-card>
       <v-card-title>
-        <v-icon class="black--text">view_list</v-icon><span class="title">Employees</span>
+        <v-icon class="black--text">view_list</v-icon>
+        <span class="title">Employees</span>
         <v-spacer></v-spacer>
         <v-dialog v-model="dialog" max-width="850px">
           <template v-slot:activator="{ on: { click } }">
@@ -30,25 +31,59 @@
         </v-flex>
       </v-card-title>
       <v-card-text>
-        <v-data-table :headers="headers" :items="employeeList" :search="search" class="elevation-1">
+        <v-data-table
+          :headers="headers"
+          :items="employeeList"
+          :search="search"
+          class="elevation-1"
+        >
           <template v-slot:items="props">
             <td class="text-xs-left">{{ props.item.employee_no }}</td>
-            <td class="text-xs-left">{{ setFullnameLastnameFirst(props.item.firstname, props.item.middlename, props.item.lastname) }}</td>
+            <td class="text-xs-left">
+              {{
+                setFullnameLastnameFirst(
+                  props.item.firstname,
+                  props.item.middlename,
+                  props.item.lastname
+                )
+              }}
+            </td>
             <td class="text-xs-left">{{ props.item.email }}</td>
             <td class="text-xs-left">{{ props.item.contact_no }}</td>
             <td class="text-xs-left">
-              <v-chip :color='getYesNoStatusColor(props.item.is_active)' text-color='white' disabled>{{ getYesNoStatus(props.item.is_active) }}</v-chip>
+              <v-chip
+                :color="getYesNoStatusColor(props.item.is_active)"
+                text-color="white"
+                disabled
+              >
+                {{ getYesNoStatus(props.item.is_active) }}
+              </v-chip>
             </td>
             <td class="text-xs-center">
               <v-tooltip left>
                 <template v-slot:activator="{ on }">
-                  <v-icon small class="mr-2" @click="editItem(props.item.id)" v-on="on">edit</v-icon>
+                  <v-icon
+                    small
+                    class="mr-2"
+                    @click="editItem(props.item.id)"
+                    v-on="on"
+                  >
+                    edit
+                  </v-icon>
                 </template>
                 <span>Update</span>
               </v-tooltip>
               <v-tooltip left>
                 <template v-slot:activator="{ on }">
-                  <v-icon small color="red" class="mr-2" @click="deleteModal(props.item.id)" v-on="on">delete</v-icon>
+                  <v-icon
+                    small
+                    color="red"
+                    class="mr-2"
+                    @click="deleteModal(props.item.id)"
+                    v-on="on"
+                  >
+                    delete
+                  </v-icon>
                 </template>
                 <span>Delete</span>
               </v-tooltip>
@@ -58,7 +93,9 @@
             <p class="justify-center layout px-0">No data found!</p>
           </template>
           <template v-slot:no-results>
-            <p class="justify-center layout px-0">Your search for "{{ search }}" found no results.</p>
+            <p class="justify-center layout px-0">
+              Your search for "{{ search }}" found no results.
+            </p>
           </template>
         </v-data-table>
       </v-card-text>
@@ -69,8 +106,17 @@
         <v-card-text>Are you sure you want to delete this item?</v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn small outline color="error" @click="modalDelete.dialog = false">Cancel</v-btn>
-          <v-btn small outline color="success" @click="deleteItem()">Confirm</v-btn>
+          <v-btn
+            small
+            outline
+            color="error"
+            @click="modalDelete.dialog = false"
+          >
+            Cancel
+          </v-btn>
+          <v-btn small outline color="success" @click="deleteItem()">
+            Confirm
+          </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -87,24 +133,24 @@ export default {
   mixins: [Mixins],
   components: {
     Alerts,
-    ModalForm
+    ModalForm,
   },
 
   data: () => ({
     dialog: false,
     modalDelete: {
       dialog: false,
-      id: null
+      id: null,
     },
-    search: '',
+    search: "",
     headers: [
       { text: "Employee No.", value: "employee_no" },
       { text: "Name", value: "lastname" },
       { text: "Email", value: "email" },
       { text: "Contact No.", value: "" },
       { text: "Active?", value: "" },
-      { text: "Actions", align: "center", value: "", sortable: false }
-    ]
+      { text: "Actions", align: "center", value: "", sortable: false },
+    ],
   }),
 
   mounted() {
@@ -112,20 +158,20 @@ export default {
   },
 
   computed: {
-    ...mapState("employees", ["employeeList"])
+    ...mapState("employees", ["employeeList"]),
   },
 
   watch: {
     dialog(val) {
       val || this.close();
-    }
+    },
   },
 
   methods: {
     ...mapActions("alerts", ["setAlert"]),
     ...mapActions("employees", {
       getEmployeeData: "getData",
-      deleteEmployeeData: "deleteData"
+      deleteEmployeeData: "deleteData",
     }),
 
     editItem(id) {
@@ -140,19 +186,24 @@ export default {
 
     deleteItem() {
       this.deleteEmployeeData(this.modalDelete.id)
-        .then(response => {
+        .then((response) => {
           let obj = {
             alert: true,
             type: "success",
-            message: response.data.message
+            message: [response.message],
+            outline: true,
           };
 
-          if (!response.data.result) obj.type = "error";
+          if (response.status === "error") {
+            obj.type = "error";
+            obj.message = response.errors;
+          }
+
           this.setAlert(obj);
           this.modalDelete.id = null;
           this.modalDelete.dialog = false;
         })
-        .catch(err => console.log(err));
+        .catch((err) => console.log(err));
     },
 
     close() {
@@ -162,7 +213,7 @@ export default {
 
     setDialog(value) {
       this.dialog = value;
-    }
-  }
+    },
+  },
 };
 </script>

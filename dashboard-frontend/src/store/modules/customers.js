@@ -1,37 +1,45 @@
 import axios from "axios";
-import FormData from 'form-data';
+import FormData from "form-data";
+const apiUrl = process.env.VUE_APP_API_BACKEND;
 
 const state = {
   customerList: [],
   customerTotalCountByStatusAndIsActive: 0,
-  customerDataById: ""
+  customerDataById: "",
 };
 
 const getters = {
   getCustomerById: (state) => (id) => {
-    return state.customerList.find(customer => customer.id === id);
+    return state.customerList.find((customer) => customer.id === id);
   },
   getCustomerCustomerNoById: (state) => (id) => {
-    return state.customerList.find(customer => customer.id === id).customer_no;
+    return state.customerList.find((customer) => customer.id === id)
+      .customer_no;
   },
   getCustomerList: (state) => {
     return state.customerList;
-  }
+  },
 };
 
 const actions = {
   getData({ dispatch, commit, state, rootState, getters, rootGetters }) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/customers/`;
-    let header = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
+    const url = `${apiUrl}/customers/`;
+    const header = {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    };
     return new Promise((resolve, reject) => {
       try {
-        axios.get(url, header)
-          .then(response => {
-            let obj = response.data.result
+        axios
+          .get(url, header)
+          .then((response) => {
+            const data = response.data;
+            let obj = data.result;
             if (obj) {
-              obj.forEach(element => {
+              obj.forEach((element) => {
                 if (!_.isNull(element.file_name)) {
-                  element.file_path = `${process.env.VUE_APP_API_BACKEND}/customers/viewImage/${element.file_name}`;
+                  element.file_path = `${apiUrl}/customers/viewImage/${
+                    element.file_name
+                  }`;
                 } else {
                   element.file_path = require("../../assets/images/no-image.png");
                 }
@@ -39,132 +47,186 @@ const actions = {
             }
 
             commit("SET_DATA", obj);
-            resolve(response);
+            resolve(data);
+          })
+          .catch((err) => {
+            commit("SET_DATA", []);
+            resolve(err.response.data);
           });
       } catch (err) {
         reject(err);
       }
     });
   },
-  getTotalCountByStatusAndIsActive({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/customers/countAllByStatusAndIsActive/${payload.status}/${payload.is_active}`;
-    let header = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
-    return new Promise((resolve, reject) => {
-      try {
-        axios.get(url, header)
-          .then(response => {
-            commit("SET_TOTAL_COUNT_BY_STATUS_AND_IS_ACTIVE", response.data.result);
-            resolve(response);
-          });
-      } catch (err) {
-        reject(err);
-      }
-    });
-  },
-  getDataById({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/customers/${payload}`;
-    let header = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
+  getTotalCountByStatusAndIsActive(
+    { dispatch, commit, state, rootState, getters, rootGetters },
+    payload
+  ) {
+    const url = `${apiUrl}/customers/countAllByStatusAndIsActive/${
+      payload.status
+    }/${payload.is_active}`;
+    const header = {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    };
     return new Promise((resolve, reject) => {
       try {
         axios
           .get(url, header)
-          .then(response => {
-            commit("SET_DATA_BY_ID", response.data.result);
-            resolve(response);
+          .then((response) => {
+            const data = response.data;
+            commit("SET_TOTAL_COUNT_BY_STATUS_AND_IS_ACTIVE", data.result);
+            resolve(data);
+          })
+          .catch((err) => {
+            commit("SET_TOTAL_COUNT_BY_STATUS_AND_IS_ACTIVE", []);
+            resolve(err.response.data);
           });
       } catch (err) {
         reject(err);
       }
     });
   },
-  saveData({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/customers/create`;
-    let header = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
+  getDataById(
+    { dispatch, commit, state, rootState, getters, rootGetters },
+    payload
+  ) {
+    const url = `${apiUrl}/customers/${payload}`;
+    const header = {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    };
+    return new Promise((resolve, reject) => {
+      try {
+        axios
+          .get(url, header)
+          .then((response) => {
+            const data = response.data;
+            commit("SET_DATA_BY_ID", data.result);
+            resolve(data);
+          })
+          .catch((err) => {
+            commit("SET_DATA_BY_ID", "");
+            resolve(err.response.data);
+          });
+      } catch (err) {
+        reject(err);
+      }
+    });
+  },
+  saveData(
+    { dispatch, commit, state, rootState, getters, rootGetters },
+    payload
+  ) {
+    const url = `${apiUrl}/customers/create`;
+    const header = {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    };
     return new Promise((resolve, reject) => {
       try {
         var data = new FormData();
-        data.set('firstname', payload.firstname);
-        data.set('middlename', payload.middlename);
-        data.set('lastname', payload.lastname);
-        data.set('email', payload.email);
-        data.set('password', payload.password);
-        data.set('primary_address', payload.primary_address);
-        data.set('secondary_address', payload.secondary_address);
-        data.set('contact_no', payload.contact_no);
-        data.set('file_name', payload.file_name);
-        data.set('date_approved', payload.date_approved);
-        data.set('gender_type', payload.gender_type);
-        data.set('status', payload.status);
-        data.append('image', payload.file);
+        data.set("firstname", payload.firstname);
+        data.set("middlename", payload.middlename);
+        data.set("lastname", payload.lastname);
+        data.set("email", payload.email);
+        data.set("password", payload.password);
+        data.set("primary_address", payload.primary_address);
+        data.set("secondary_address", payload.secondary_address);
+        data.set("contact_no", payload.contact_no);
+        data.set("file_name", payload.file_name);
+        data.set("date_approved", payload.date_approved);
+        data.set("gender_type", payload.gender_type);
+        data.set("status", payload.status);
+        data.append("image", payload.file);
 
         axios
           .post(url, data, header)
-          .then(response => {
-            let obj = response.data.result;
+          .then((response) => {
+            const data = response.data;
+            let obj = data.result;
             if (obj) {
               obj.gender_type = parseInt(obj.gender_type);
               obj.status = parseInt(obj.status);
               commit("ADD_DATA", obj);
             }
-            resolve(response);
+            resolve(data);
+          })
+          .catch((err) => {
+            resolve(err.response.data);
           });
       } catch (err) {
         reject(err);
       }
     });
   },
-  updateData({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/customers/update/${payload.id}`;
-    let header = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
+  updateData(
+    { dispatch, commit, state, rootState, getters, rootGetters },
+    payload
+  ) {
+    const url = `${apiUrl}/customers/update/${payload.id}`;
+    const header = {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    };
     return new Promise((resolve, reject) => {
       try {
         var data = new FormData();
-        data.set('firstname', payload.firstname);
-        data.set('middlename', payload.middlename);
-        data.set('lastname', payload.lastname);
-        data.set('email', payload.email);
-        data.set('password', payload.password);
-        data.set('primary_address', payload.primary_address);
-        data.set('secondary_address', payload.secondary_address);
-        data.set('contact_no', payload.contact_no);
-        data.set('file_name', payload.file_name);
-        data.set('date_approved', payload.date_approved);
-        data.set('gender_type', payload.gender_type);
-        data.set('status', payload.status);
-        data.append('image', payload.file);
+        data.set("firstname", payload.firstname);
+        data.set("middlename", payload.middlename);
+        data.set("lastname", payload.lastname);
+        data.set("email", payload.email);
+        data.set("password", payload.password);
+        data.set("primary_address", payload.primary_address);
+        data.set("secondary_address", payload.secondary_address);
+        data.set("contact_no", payload.contact_no);
+        data.set("file_name", payload.file_name);
+        data.set("date_approved", payload.date_approved);
+        data.set("gender_type", payload.gender_type);
+        data.set("status", payload.status);
+        data.append("image", payload.file);
 
         axios
           .put(url, data, header)
-          .then(response => {
-            let obj = response.data.result;
+          .then((response) => {
+            const data = response.data;
+            let obj = data.result;
             if (obj) {
               obj.gender_type = parseInt(obj.gender_type);
               obj.status = parseInt(obj.status);
               commit("UPDATE_DATA", obj);
             }
-            resolve(response);
+            resolve(data);
+          })
+          .catch((err) => {
+            resolve(err.response.data);
           });
       } catch (err) {
         reject(err);
       }
     });
   },
-  deleteData({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/customers/delete/${payload}`;
-    let header = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
+  deleteData(
+    { dispatch, commit, state, rootState, getters, rootGetters },
+    payload
+  ) {
+    const url = `${apiUrl}/customers/delete/${payload}`;
+    const header = {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    };
     return new Promise((resolve, reject) => {
       try {
         axios
-          .put(url, '', header)
-          .then(response => {
+          .put(url, "", header)
+          .then((response) => {
+            const data = response.data;
             commit("DELETE_DATA", payload);
-            resolve(response);
+            resolve(data);
+          })
+          .catch((err) => {
+            resolve(err.response.data);
           });
       } catch (err) {
         reject(err);
       }
     });
-  }
+  },
 };
 
 const mutations = {
@@ -191,11 +253,15 @@ const mutations = {
   },
   ADD_DATA(state, payload) {
     let obj = payload;
-    obj.file_path = _.isNull(payload.file_name) ? require("../../assets/images/no-image.png") : `${process.env.VUE_APP_API_BACKEND}/customers/viewImage/${payload.file_name}`;
+    obj.file_path = _.isNull(payload.file_name)
+      ? require("../../assets/images/no-image.png")
+      : `${apiUrl}/customers/viewImage/${payload.file_name}`;
     state.customerList.push(obj);
   },
   UPDATE_DATA(state, payload) {
-    let index = state.customerList.map(customer => customer.id).indexOf(payload.id);
+    const index = state.customerList
+      .map((customer) => customer.id)
+      .indexOf(payload.id);
 
     Object.assign(state.customerList[index], {
       customer_no: payload.customer_no,
@@ -211,13 +277,17 @@ const mutations = {
       date_approved: payload.date_approved,
       gender_type: payload.gender_type,
       status: payload.status,
-      file_path: _.isNull(payload.file_name) ? require("../../assets/images/no-image.png") : `${process.env.VUE_APP_API_BACKEND}/customers/viewImage/${payload.file_name}`
+      file_path: _.isNull(payload.file_name)
+        ? require("../../assets/images/no-image.png")
+        : `${apiUrl}/customers/viewImage/${payload.file_name}`,
     });
   },
   DELETE_DATA(state, payload) {
-    let index = state.customerList.map(customer => customer.id).indexOf(payload);
+    const index = state.customerList
+      .map((customer) => customer.id)
+      .indexOf(payload);
     state.customerList.splice(index, 1);
-  }
+  },
 };
 
 export default {
@@ -225,5 +295,5 @@ export default {
   state,
   getters,
   actions,
-  mutations
+  mutations,
 };

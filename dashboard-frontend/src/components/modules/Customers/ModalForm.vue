@@ -2,7 +2,8 @@
   <v-form ref="form" @submit.prevent="save" v-model="valid" lazy-validation>
     <v-card>
       <v-card-title>
-        <v-icon class="black--text">{{ formIcon }}</v-icon><span class="title">{{ formTitle }}</span>
+        <v-icon class="black--text">{{ formIcon }}</v-icon>
+        <span class="title">{{ formTitle }}</span>
       </v-card-title>
       <v-card-text>
         <v-container grid-list-md>
@@ -10,7 +11,13 @@
             <v-flex xs12 sm12 md3>
               <v-flex xs12 sm12 md12>
                 <v-layout wrap justify-center>
-                  <v-img :src="formData.file_path" lazy-src="@/assets/images/no-image.png" height="180" width="180" contain></v-img>
+                  <v-img
+                    :src="formData.file_path"
+                    lazy-src="@/assets/images/no-image.png"
+                    height="180"
+                    width="180"
+                    contain
+                  ></v-img>
                 </v-layout>
               </v-flex>
               <v-flex xs12 sm12 md12>
@@ -122,7 +129,9 @@
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn color="blue darken-1" flat @click="close">Cancel</v-btn>
-        <v-btn color="blue darken-1" type="submit" flat :disabled="!valid">Save</v-btn>
+        <v-btn color="blue darken-1" type="submit" flat :disabled="!valid">
+          Save
+        </v-btn>
       </v-card-actions>
     </v-card>
   </v-form>
@@ -149,7 +158,7 @@ export default {
       secondary_address: "",
       contact_no: "",
       gender_type: "",
-      status: ""
+      status: "",
     },
     formType: "new",
     formData: {
@@ -165,19 +174,21 @@ export default {
       secondary_address: "",
       contact_no: "",
       gender_type: "",
-      status: ""
+      status: "",
     },
-    valid: true
+    valid: true,
   }),
 
   computed: {
     ...mapGetters("customers", ["getCustomerById"]),
     formTitle() {
-      return this.formType === "new" ? "Customer - Create" : "Customer - Update";
+      return this.formType === "new"
+        ? "Customer - Create"
+        : "Customer - Update";
     },
     formIcon() {
       return this.formType === "new" ? "add_box" : "edit";
-    }
+    },
   },
 
   methods: {
@@ -185,7 +196,7 @@ export default {
     ...mapActions("alerts", ["setAlert"]),
     ...mapActions("customers", {
       saveCustomerData: "saveData",
-      updateCustomerData: "updateData"
+      updateCustomerData: "updateData",
     }),
 
     pickFile() {
@@ -215,23 +226,30 @@ export default {
     editItem(id) {
       let data = this.getCustomerById(id);
       let filePath;
-      if (!_.isEmpty(data.file_name) && !_.isNull(data.file_name)) 
-        filePath = `${process.env.VUE_APP_API_BACKEND}/customers/viewImage/${data.file_name}`;
-      else 
-        filePath = require("@/assets/images/no-image.png");
+      if (!_.isEmpty(data.file_name) && !_.isNull(data.file_name))
+        filePath = `${process.env.VUE_APP_API_BACKEND}/customers/viewImage/${
+          data.file_name
+        }`;
+      else filePath = require("@/assets/images/no-image.png");
 
       this.formData.id = data.id;
       this.formData.firstname = data.firstname;
-      this.formData.middlename = data.middlename === null ? "" : data.middlename;
+      this.formData.middlename =
+        data.middlename === null ? "" : data.middlename;
       this.formData.lastname = data.lastname;
       this.formData.email = data.email;
       this.formData.primary_address = data.primary_address;
-      this.formData.secondary_address = data.secondary_address === null ? "" : data.secondary_address;
+      this.formData.secondary_address =
+        data.secondary_address === null ? "" : data.secondary_address;
       this.formData.contact_no = data.contact_no;
       this.formData.file_name = data.file_name;
       this.formData.gender_type = data.gender_type;
       this.formData.status = data.status;
-      this.formData.file_path = _.isNull(data.file_name) ? require("@/assets/images/no-image.png") : `${process.env.VUE_APP_API_BACKEND}/customers/viewImage/${data.file_name}`;
+      this.formData.file_path = _.isNull(data.file_name)
+        ? require("@/assets/images/no-image.png")
+        : `${process.env.VUE_APP_API_BACKEND}/customers/viewImage/${
+            data.file_name
+          }`;
       this.formType = "update";
     },
 
@@ -246,41 +264,51 @@ export default {
     save() {
       if (this.$refs.form.validate()) {
         this.setLoading({ dialog: true, text: "Please wait" });
-        
+
         if (this.formType === "new") {
           this.formData.product_id = this.$route.params.id;
           this.saveCustomerData(this.formData)
-            .then(response => {
+            .then((response) => {
               let obj = {
                 alert: true,
                 type: "success",
-                message: response.data.message
+                message: [response.message],
+                outline: true,
               };
-              
-              if (!response.data.result) obj.type = "error"
+
+              if (response.status === "error") {
+                obj.type = "error";
+                obj.message = response.errors;
+              }
+
               this.setAlert(obj);
               this.setLoading({ dialog: false, text: "" });
               this.close();
             })
-            .catch(err => console.log(err));
+            .catch((err) => console.log(err));
         } else if (this.formType === "update") {
           this.updateCustomerData(this.formData)
-            .then(response => {
+            .then((response) => {
               let obj = {
                 alert: true,
                 type: "success",
-                message: response.data.message
+                message: [response.message],
+                outline: true,
               };
-              
-              if (!response.data.result) obj.type = "error"
+
+              if (response.status === "error") {
+                obj.type = "error";
+                obj.message = response.errors;
+              }
+
               this.setAlert(obj);
               this.setLoading({ dialog: false, text: "" });
               this.close();
             })
-            .catch(err => console.log(err));
+            .catch((err) => console.log(err));
         }
       }
-    }
-  }
+    },
+  },
 };
 </script>
