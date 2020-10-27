@@ -1,59 +1,92 @@
 import axios from "axios";
+const apiUrl = process.env.VUE_APP_API_BACKEND;
 
 const state = {
   productSubSubCategoryList: [],
-  productSubSubCategoryTotalCount: 0
+  productSubSubCategoryTotalCount: 0,
 };
 
 const getters = {
   getProductSubSubCategoryById: (state) => (id) => {
-    return state.productSubSubCategoryList.find(productSubSubCategory => productSubSubCategory.id === id);
+    return state.productSubSubCategoryList.find(
+      (productSubSubCategory) => productSubSubCategory.id === id
+    );
   },
   getProductSubSubCategoryList: (state) => {
     return state.productSubSubCategoryList;
-  }
+  },
 };
 
 const actions = {
   getData({ dispatch, commit, state, rootState, getters, rootGetters }) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/productSubSubCategories/`;
-    let header = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
+    const url = `${apiUrl}/productSubSubCategories/`;
+    const header = {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    };
     return new Promise((resolve, reject) => {
       try {
-        axios.get(url, header)
-          .then(response => {
-            commit("SET_DATA", response.data.result);
+        axios
+          .get(url, header)
+          .then((response) => {
+            const data = response.data;
+            commit("SET_DATA", data.result);
+            resolve(data);
+          })
+          .catch((err) => {
+            commit("SET_DATA", []);
+            resolve(err.response.data);
           });
       } catch (err) {
         reject(err);
       }
     });
   },
-  getDataByProductCategoryIdAndProductSubCategoryId({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/productSubSubCategories/findAllbyProductCategoryIdAndProductSubCategoryId/${payload.categoryId}/${payload.subCategoryId}`;
-    let header = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
+  getDataByProductCategoryIdAndProductSubCategoryId(
+    { dispatch, commit, state, rootState, getters, rootGetters },
+    payload
+  ) {
+    const url = `${apiUrl}/productSubSubCategories/findAllbyProductCategoryIdAndProductSubCategoryId/${
+      payload.categoryId
+    }/${payload.subCategoryId}`;
+    const header = {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    };
     return new Promise((resolve, reject) => {
       try {
         axios
           .get(url, header)
-          .then(response => {
-            commit("SET_DATA", response.data.result);
-            resolve(response);
+          .then((response) => {
+            const data = response.data;
+            commit("SET_DATA", data.result);
+            resolve(data);
+          })
+          .catch((err) => {
+            commit("SET_DATA", []);
+            resolve(err.response.data);
           });
       } catch (err) {
         reject(err);
       }
     });
   },
-  getDataById({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/productSubSubCategories/${payload}`;
-    let header = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
+  getDataById(
+    { dispatch, commit, state, rootState, getters, rootGetters },
+    payload
+  ) {
+    const url = `${apiUrl}/productSubSubCategories/${payload}`;
+    const header = {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    };
     return new Promise((resolve, reject) => {
       try {
         axios
           .get(url, header)
-          .then(response => {
-            resolve(response);
+          .then((response) => {
+            const data = response.data;
+            resolve(data);
+          })
+          .catch((err) => {
+            resolve(err.response.data);
           });
       } catch (err) {
         reject(err);
@@ -61,84 +94,119 @@ const actions = {
     });
   },
   getTotalCount({ dispatch, commit, state, rootState, getters, rootGetters }) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/productSubSubCategories/count/all`;
-    let header = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
+    const url = `${apiUrl}/productSubSubCategories/count/all`;
+    const header = {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    };
     return new Promise((resolve, reject) => {
       try {
-        axios.get(url, header)
-          .then(response => {
-            commit("SET_TOTAL_COUNT", response.data.result);
-            resolve(response);
+        axios
+          .get(url, header)
+          .then((response) => {
+            const data = response.data;
+            commit("SET_TOTAL_COUNT", data.result);
+            resolve(data);
+          })
+          .catch((err) => {
+            commit("SET_TOTAL_COUNT", 0);
+            resolve(err.response.data);
           });
       } catch (err) {
         reject(err);
       }
     });
   },
-  saveData({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/productSubSubCategories/create`;
-    let header = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
+  saveData(
+    { dispatch, commit, state, rootState, getters, rootGetters },
+    payload
+  ) {
+    const url = `${apiUrl}/productSubSubCategories/create`;
+    const header = {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    };
     return new Promise((resolve, reject) => {
       try {
         let obj = {
           name: payload.name,
           description: payload.description,
           product_category_id: payload.product_category_id,
-          product_sub_category_id: payload.product_sub_category_id
-        }
+          product_sub_category_id: payload.product_sub_category_id,
+        };
 
         axios
           .post(url, obj, header)
-          .then(response => {
-            if (response.data.result) {
-              commit("ADD_DATA", response.data.result);
+          .then((response) => {
+            const data = response.data;
+            if (data.result) {
+              commit("ADD_DATA", data.result);
             }
-            resolve(response);
+            resolve(data);
+          })
+          .catch((err) => {
+            resolve(err.response.data);
           });
       } catch (err) {
         reject(err);
       }
     });
   },
-  updateData({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/productSubSubCategories/update/${payload.id}`;
-    let header = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
+  updateData(
+    { dispatch, commit, state, rootState, getters, rootGetters },
+    payload
+  ) {
+    const url = `${apiUrl}/productSubSubCategories/update/${payload.id}`;
+    const header = {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    };
     return new Promise((resolve, reject) => {
       try {
         let obj = {
           name: payload.name,
           description: payload.description,
           product_category_id: payload.product_category_id,
-          product_sub_category_id: payload.product_sub_category_id
-        }
+          product_sub_category_id: payload.product_sub_category_id,
+        };
 
         axios
           .put(url, obj, header)
-          .then(response => {
-            commit("UPDATE_DATA", response.data.result);
-            resolve(response);
+          .then((response) => {
+            const data = response.data;
+            commit("UPDATE_DATA", data.result);
+            resolve(data);
+          })
+          .catch((err) => {
+            resolve(err.response.data);
           });
       } catch (err) {
         reject(err);
       }
     });
   },
-  deleteData({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/productSubSubCategories/delete/${payload}`;
-    let header = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
+  deleteData(
+    { dispatch, commit, state, rootState, getters, rootGetters },
+    payload
+  ) {
+    const url = `${apiUrl}/productSubSubCategories/delete/${payload}`;
+    const header = {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    };
     return new Promise((resolve, reject) => {
       try {
         axios
-          .put(url, '', header)
-          .then(response => {
+          .put(url, "", header)
+          .then((response) => {
+            const data = response.data;
             commit("DELETE_DATA", payload);
-            resolve(response);
+            resolve(data);
+          })
+          .catch((err) => {
+            resolve(err.response.data);
           });
       } catch (err) {
         reject(err);
       }
     });
-  }
+  },
 };
 
 const mutations = {
@@ -160,20 +228,24 @@ const mutations = {
     state.productSubSubCategoryList.push(payload);
   },
   UPDATE_DATA(state, payload) {
-    let index = state.productSubSubCategoryList.map(productSubSubCategory => productSubSubCategory.id).indexOf(payload.id);
+    const index = state.productSubSubCategoryList
+      .map((productSubSubCategory) => productSubSubCategory.id)
+      .indexOf(payload.id);
     Object.assign(state.productSubSubCategoryList[index], {
       name: payload.name,
       description: payload.description,
       product_category_id: payload.product_category_id,
       productCategories: payload.productCategories,
       product_sub_category_id: payload.product_sub_category_id,
-      productSubCategories: payload.productSubCategories
+      productSubCategories: payload.productSubCategories,
     });
   },
   DELETE_DATA(state, payload) {
-    let index = state.productSubSubCategoryList.map(productSubSubCategory => productSubSubCategory.id).indexOf(payload);
+    const index = state.productSubSubCategoryList
+      .map((productSubSubCategory) => productSubSubCategory.id)
+      .indexOf(payload);
     state.productSubSubCategoryList.splice(index, 1);
-  }
+  },
 };
 
 export default {
@@ -181,5 +253,5 @@ export default {
   state,
   getters,
   actions,
-  mutations
+  mutations,
 };

@@ -61,15 +61,16 @@
                     </template>
                     <v-date-picker v-model="formData.date" no-title scrollable>
                       <v-spacer></v-spacer>
-                      <v-btn flat color="primary" @click="date = false"
-                        >Cancel</v-btn
-                      >
+                      <v-btn flat color="primary" @click="date = false">
+                        Cancel
+                      </v-btn>
                       <v-btn
                         flat
                         color="primary"
                         @click="$refs.date.save(formData.date)"
-                        >OK</v-btn
                       >
+                        OK
+                      </v-btn>
                     </v-date-picker>
                   </v-menu>
                 </v-flex>
@@ -180,9 +181,9 @@
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn color="blue darken-1" flat @click="close">Cancel</v-btn>
-        <v-btn color="blue darken-1" type="submit" flat :disabled="!valid"
-          >Save</v-btn
-        >
+        <v-btn color="blue darken-1" type="submit" flat :disabled="!valid">
+          Save
+        </v-btn>
       </v-card-actions>
     </v-card>
   </v-form>
@@ -319,7 +320,7 @@ export default {
     async setDataBySalesOrderId() {
       const salesOrderId = this.formData.sales_order_id;
       const response = await this.getSalesOrderDataById(salesOrderId);
-      const data = response.data.result;
+      const data = response.result;
 
       // set sales order details
       this.salesOrderDetails.order_no = data.order_no;
@@ -372,10 +373,15 @@ export default {
               let obj = {
                 alert: true,
                 type: "success",
-                message: response.data.message,
+                message: [response.message],
+                outline: true,
               };
 
-              if (!response.data.result) obj.type = "error";
+              if (response.status === "error") {
+                obj.type = "error";
+                obj.message = response.errors;
+              }
+
               this.setAlert(obj);
             })
             .catch((err) => console.log(err));
@@ -385,10 +391,15 @@ export default {
               let obj = {
                 alert: true,
                 type: "success",
-                message: response.data.message,
+                message: [response.message],
+                outline: true,
               };
 
-              if (!response.data.result) obj.type = "error";
+              if (response.status === "error") {
+                obj.type = "error";
+                obj.message = response.errors;
+              }
+
               this.setAlert(obj);
             })
             .catch((err) => console.log(err));

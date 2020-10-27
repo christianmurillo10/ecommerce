@@ -3,7 +3,8 @@
     <Alerts />
     <v-card>
       <v-card-title>
-        <v-icon class="black--text">view_list</v-icon><span class="title">Products</span>
+        <v-icon class="black--text">view_list</v-icon>
+        <span class="title">Products</span>
         <v-spacer></v-spacer>
         <v-tooltip left>
           <template v-slot:activator="{ on }">
@@ -62,7 +63,13 @@
               <v-switch
                 v-model="props.item.is_published"
                 color="success"
-                @change="updateStatus({ id: props.item.id, fieldName: 'is_published', value: $event })"
+                @change="
+                  updateStatus({
+                    id: props.item.id,
+                    fieldName: 'is_published',
+                    value: $event,
+                  })
+                "
                 hide-details
               ></v-switch>
             </td>
@@ -70,32 +77,69 @@
               <v-switch
                 v-model="props.item.is_featured"
                 color="success"
-                @change="updateStatus({ id: props.item.id, fieldName: 'is_featured', value: $event })"
+                @change="
+                  updateStatus({
+                    id: props.item.id,
+                    fieldName: 'is_featured',
+                    value: $event,
+                  })
+                "
                 hide-details
               ></v-switch>
             </td>
             <td class="justify-center" width="100">
               <v-tooltip left>
                 <template v-slot:activator="{ on }">
-                  <v-icon small class="mr-2" color="blue darken-2" @click="editVariant(props.item.id)" v-on="on">list_alt</v-icon>
+                  <v-icon
+                    small
+                    class="mr-2"
+                    color="blue darken-2"
+                    @click="editVariant(props.item.id)"
+                    v-on="on"
+                  >
+                    list_alt
+                  </v-icon>
                 </template>
                 <span>Variant</span>
               </v-tooltip>
               <v-tooltip left>
                 <template v-slot:activator="{ on }">
-                  <v-icon small class="mr-2" color="blue-grey darken-2" @click="editImage(props.item.id)" v-on="on">image</v-icon>
+                  <v-icon
+                    small
+                    class="mr-2"
+                    color="blue-grey darken-2"
+                    @click="editImage(props.item.id)"
+                    v-on="on"
+                  >
+                    image
+                  </v-icon>
                 </template>
                 <span>Images</span>
               </v-tooltip>
               <v-tooltip left>
                 <template v-slot:activator="{ on }">
-                  <v-icon small class="mr-2" @click="editItem(props.item.id)" v-on="on">edit</v-icon>
+                  <v-icon
+                    small
+                    class="mr-2"
+                    @click="editItem(props.item.id)"
+                    v-on="on"
+                  >
+                    edit
+                  </v-icon>
                 </template>
                 <span>Update</span>
               </v-tooltip>
               <v-tooltip left>
                 <template v-slot:activator="{ on }">
-                  <v-icon small color="red" class="mr-2" @click="deleteModal(props.item.id)" v-on="on">delete</v-icon>
+                  <v-icon
+                    small
+                    color="red"
+                    class="mr-2"
+                    @click="deleteModal(props.item.id)"
+                    v-on="on"
+                  >
+                    delete
+                  </v-icon>
                 </template>
                 <span>Delete</span>
               </v-tooltip>
@@ -120,8 +164,17 @@
         <v-card-text>Are you sure you want to delete this item?</v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn small outline color="error" @click="modalDelete.dialog = false">Cancel</v-btn>
-          <v-btn small outline color="success" @click="deleteItem()">Confirm</v-btn>
+          <v-btn
+            small
+            outline
+            color="error"
+            @click="modalDelete.dialog = false"
+          >
+            Cancel
+          </v-btn>
+          <v-btn small outline color="success" @click="deleteItem()">
+            Confirm
+          </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -134,13 +187,13 @@ import { mapState, mapActions } from "vuex";
 
 export default {
   components: {
-    Alerts
+    Alerts,
   },
 
   data: () => ({
     modalDelete: {
       dialog: false,
-      id: null
+      id: null,
     },
     loading: true,
     // search: '',
@@ -151,14 +204,14 @@ export default {
       { text: "Price", value: "name", sortable: false },
       { text: "Published", value: "name", sortable: false },
       { text: "Featured", value: "name", sortable: false },
-      { text: "Actions", align: "center", value: "name", sortable: false }
+      { text: "Actions", align: "center", value: "name", sortable: false },
     ],
     pagination: {
       descending: true,
       page: 1,
       rowsPerPage: 5,
-      sortBy: 'name',
-      rowsPerPageItems: [5, 10, 25, 50, 100]
+      sortBy: "name",
+      rowsPerPageItems: [5, 10, 25, 50, 100],
     },
   }),
 
@@ -167,12 +220,12 @@ export default {
       handler() {
         this.setTableData();
       },
-      deep: true
+      deep: true,
     },
   },
 
   computed: {
-    ...mapState("products", ["productList", "productTotalCount"])
+    ...mapState("products", ["productList", "productTotalCount"]),
   },
 
   methods: {
@@ -180,30 +233,35 @@ export default {
     ...mapActions("products", {
       getProductDataWithLimitAndOffset: "getDataWithLimitAndOffset",
       updateStatusProductData: "updateStatusData",
-      deleteProductData: "deleteData"
+      deleteProductData: "deleteData",
     }),
 
     setTableData() {
       const { sortBy, descending, page, rowsPerPage } = this.pagination;
       let limit = rowsPerPage;
       let offset = page === 1 ? 0 : (page - 1) * rowsPerPage;
-      this.getProductDataWithLimitAndOffset({limit, offset});
+      this.getProductDataWithLimitAndOffset({ limit, offset });
       this.loading = false;
     },
 
     updateStatus(obj) {
       this.updateStatusProductData(obj)
-        .then(response => {
+        .then((response) => {
           let obj = {
             alert: true,
             type: "success",
-            message: response.data.message
+            message: [response.message],
+            outline: true,
           };
 
-          if (!response.data.result) obj.type = "error";
+          if (response.status === "error") {
+            obj.type = "error";
+            obj.message = response.errors;
+          }
+
           this.setAlert(obj);
         })
-        .catch(err => console.log(err));
+        .catch((err) => console.log(err));
     },
 
     editItem(id) {
@@ -225,20 +283,25 @@ export default {
 
     deleteItem() {
       this.deleteProductData(this.modalDelete.id)
-        .then(response => {
+        .then((response) => {
           let obj = {
             alert: true,
             type: "success",
-            message: response.data.message
+            message: [response.message],
+            outline: true,
           };
 
-          if (!response.data.result) obj.type = "error";
+          if (response.status === "error") {
+            obj.type = "error";
+            obj.message = response.errors;
+          }
+
           this.setAlert(obj);
           this.modalDelete.id = null;
           this.modalDelete.dialog = false;
         })
-        .catch(err => console.log(err));
+        .catch((err) => console.log(err));
     },
-  }
+  },
 };
 </script>

@@ -20,7 +20,12 @@
           hide-details
         ></v-text-field>
       </v-flex>
-      <v-data-table :headers="headers" :items="inventoryList" :search="search" class="elevation-1">
+      <v-data-table
+        :headers="headers"
+        :items="inventoryList"
+        :search="search"
+        class="elevation-1"
+      >
         <template v-slot:items="props">
           <td class="text-xs-left">{{ props.item.sku }}</td>
           <td class="text-xs-left">{{ props.item.name }}</td>
@@ -34,7 +39,9 @@
           <p class="justify-center layout px-0">No data found!</p>
         </template>
         <template v-slot:no-results>
-          <p class="justify-center layout px-0">Your search for "{{ search }}" found no results.</p>
+          <p class="justify-center layout px-0">
+            Your search for "{{ search }}" found no results.
+          </p>
         </template>
       </v-data-table>
     </v-card-text>
@@ -68,7 +75,7 @@ export default {
       { text: "Out", value: "", sortable: false },
       { text: "Reserved", value: "", sortable: false },
       { text: "Returned", value: "", sortable: false },
-      { text: "Available", value: "", sortable: false }
+      { text: "Available", value: "", sortable: false },
     ],
   }),
 
@@ -92,8 +99,7 @@ export default {
     async viewItemByProductId(id) {
       await this.getInventoryDataByProductId(id);
       const response = await this.getProductDataById(id);
-      const data = response.data.result;
-      this.productDetails.name = data.name;
+      this.productDetails.name = response.name;
     },
 
     close() {

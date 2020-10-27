@@ -145,9 +145,9 @@
     <v-card-actions>
       <v-spacer></v-spacer>
       <v-btn color="blue darken-1" flat to="/products">Cancel</v-btn>
-      <v-btn color="blue darken-1" type="submit" flat :disabled="!valid"
-        >Save</v-btn
-      >
+      <v-btn color="blue darken-1" type="submit" flat :disabled="!valid">
+        Save
+      </v-btn>
     </v-card-actions>
   </v-form>
 </template>
@@ -287,7 +287,7 @@ export default {
     async setFormType() {
       if (this.formType === "update") {
         let response = await this.getProductDataById(this.$route.params.id);
-        let data = response.data.result;
+        let data = response;
         this.formData.id = data.id;
         this.formData.code = data.code;
         this.formData.name = data.name;
@@ -329,14 +329,17 @@ export default {
       let obj = {
         alert: true,
         type: "success",
-        message: response.data.message,
+        message: [response.message],
+        outline: true,
       };
 
-      if (!response.data.result) {
+      if (response.status === "error") {
         obj.type = "error";
+        obj.message = response.errors;
       } else {
         this.$router.push(url);
       }
+
       this.setAlert(obj);
     },
   },

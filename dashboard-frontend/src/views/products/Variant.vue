@@ -152,7 +152,7 @@ export default {
 
   mounted() {
     this.getProductDataById(this.$route.params.id).then((response) => {
-      this.productDetails = response.data.result;
+      this.productDetails = response;
     });
     this.getProductVariantDataByProductId(this.$route.params.id);
   },
@@ -195,10 +195,15 @@ export default {
           let obj = {
             alert: true,
             type: "success",
-            message: response.data.message,
+            message: [response.message],
+            outline: true,
           };
 
-          if (!response.data.result) obj.type = "error";
+          if (response.status === "error") {
+            obj.type = "error";
+            obj.message = response.errors;
+          }
+
           this.setAlert(obj);
           this.modalDelete.id = null;
           this.modalDelete.dialog = false;

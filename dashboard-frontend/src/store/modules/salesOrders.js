@@ -1,79 +1,124 @@
 import axios from "axios";
+const apiUrl = process.env.VUE_APP_API_BACKEND;
 
 const state = {
   salesOrderList: [],
   salesOrderByCustomerList: [],
   salesOrderByStatusList: [],
-  salesOrderTotalCount: 0
+  salesOrderTotalCount: 0,
 };
 
 const getters = {
   getSalesOrderById: (state) => (id) => {
-    return state.salesOrderList.find(salesOrder => salesOrder.id === id);
+    return state.salesOrderList.find((salesOrder) => salesOrder.id === id);
   },
   getSalesOrderByStatusAndId: (state) => (id) => {
-    return state.salesOrderByStatusList.find(salesOrder => salesOrder.id === id);
+    return state.salesOrderByStatusList.find(
+      (salesOrder) => salesOrder.id === id
+    );
   },
   getSalesOrderList: (state) => {
     return state.salesOrderList;
   },
   getSalesOrderByCustomerList: (state) => {
     return state.salesOrderByCustomerList;
-  }
+  },
 };
 
 const actions = {
   getData({ dispatch, commit, state, rootState, getters, rootGetters }) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/salesOrders/`;
-    let header = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
-    return new Promise((resolve, reject) => {
-      try {
-        axios.get(url, header)
-          .then(response => {
-            commit("SET_DATA", response.data.result);
-          });
-      } catch (err) {
-        reject(err);
-      }
-    });
-  },
-  getDataByCustomerId({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/salesOrders/findAllbyCustomerId/${payload}`;
-    let header = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
-    return new Promise((resolve, reject) => {
-      try {
-        axios.get(url, header)
-          .then(response => {
-            commit("SET_DATA_BY_CUSTOMER_ID", response.data.result);
-          });
-      } catch (err) {
-        reject(err);
-      }
-    });
-  },
-  getDataByStatus({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/salesOrders/findAllbyStatus/${payload}`;
-    let header = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
-    return new Promise((resolve, reject) => {
-      try {
-        axios.get(url, header)
-          .then(response => {
-            commit("SET_DATA_BY_STATUS", response.data.result);
-          });
-      } catch (err) {
-        reject(err);
-      }
-    });
-  },
-  getDataById({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/salesOrders/${payload}`;
-    let header = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
+    const url = `${apiUrl}/salesOrders/`;
+    const header = {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    };
     return new Promise((resolve, reject) => {
       try {
         axios
           .get(url, header)
-          .then(response => {
-            resolve(response);
+          .then((response) => {
+            const data = response.data;
+            commit("SET_DATA", data.result);
+            resolve(data);
+          })
+          .catch((err) => {
+            commit("SET_DATA", []);
+            resolve(err.response.data);
+          });
+      } catch (err) {
+        reject(err);
+      }
+    });
+  },
+  getDataByCustomerId(
+    { dispatch, commit, state, rootState, getters, rootGetters },
+    payload
+  ) {
+    const url = `${apiUrl}/salesOrders/findAllbyCustomerId/${payload}`;
+    const header = {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    };
+    return new Promise((resolve, reject) => {
+      try {
+        axios
+          .get(url, header)
+          .then((response) => {
+            const data = response.data;
+            commit("SET_DATA_BY_CUSTOMER_ID", data.result);
+            resolve(data);
+          })
+          .catch((err) => {
+            commit("SET_DATA_BY_CUSTOMER_ID", []);
+            resolve(err.response.data);
+          });
+      } catch (err) {
+        reject(err);
+      }
+    });
+  },
+  getDataByStatus(
+    { dispatch, commit, state, rootState, getters, rootGetters },
+    payload
+  ) {
+    const url = `${apiUrl}/salesOrders/findAllbyStatus/${payload}`;
+    const header = {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    };
+    return new Promise((resolve, reject) => {
+      try {
+        axios
+          .get(url, header)
+          .then((response) => {
+            const data = response.data;
+            commit("SET_DATA_BY_STATUS", data.result);
+            resolve(data);
+          })
+          .catch((err) => {
+            commit("SET_DATA_BY_STATUS", []);
+            resolve(err.response.data);
+          });
+      } catch (err) {
+        reject(err);
+      }
+    });
+  },
+  getDataById(
+    { dispatch, commit, state, rootState, getters, rootGetters },
+    payload
+  ) {
+    const url = `${apiUrl}/salesOrders/${payload}`;
+    const header = {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    };
+    return new Promise((resolve, reject) => {
+      try {
+        axios
+          .get(url, header)
+          .then((response) => {
+            const data = response.data;
+            resolve(data);
+          })
+          .catch((err) => {
+            resolve(err.response.data);
           });
       } catch (err) {
         reject(err);
@@ -81,23 +126,36 @@ const actions = {
     });
   },
   getTotalCount({ dispatch, commit, state, rootState, getters, rootGetters }) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/salesOrders/count/all`;
-    let header = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
+    const url = `${apiUrl}/salesOrders/count/all`;
+    const header = {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    };
     return new Promise((resolve, reject) => {
       try {
-        axios.get(url, header)
-          .then(response => {
-            commit("SET_TOTAL_COUNT", response.data.result);
-            resolve(response);
+        axios
+          .get(url, header)
+          .then((response) => {
+            const data = response.data;
+            commit("SET_TOTAL_COUNT", data.result);
+            resolve(data);
+          })
+          .catch((err) => {
+            commit("SET_TOTAL_COUNT", o);
+            resolve(err.response.data);
           });
       } catch (err) {
         reject(err);
       }
     });
   },
-  saveData({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/salesOrders/create`;
-    let header = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
+  saveData(
+    { dispatch, commit, state, rootState, getters, rootGetters },
+    payload
+  ) {
+    const url = `${apiUrl}/salesOrders/create`;
+    const header = {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    };
     return new Promise((resolve, reject) => {
       try {
         let obj = {
@@ -111,25 +169,34 @@ const actions = {
           date_ordered: payload.date_ordered,
           payment_method_type: payload.payment_method_type,
           is_with_vat: payload.is_with_vat,
-          details: payload.details
+          details: payload.details,
         };
 
         axios
           .post(url, obj, header)
-          .then(response => {
-            if (response.data.result) {
-              commit("ADD_DATA_BY_STATUS", response.data.result);
+          .then((response) => {
+            const data = response.data;
+            if (data.result) {
+              commit("ADD_DATA_BY_STATUS", data.result);
             }
-            resolve(response);
+            resolve(data);
+          })
+          .catch((err) => {
+            resolve(err.response.data);
           });
       } catch (err) {
         reject(err);
       }
     });
   },
-  updateData({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/salesOrders/update/${payload.id}`;
-    let header = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
+  updateData(
+    { dispatch, commit, state, rootState, getters, rootGetters },
+    payload
+  ) {
+    const url = `${apiUrl}/salesOrders/update/${payload.id}`;
+    const header = {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    };
     return new Promise((resolve, reject) => {
       try {
         let obj = {
@@ -143,77 +210,109 @@ const actions = {
           date_ordered: payload.date_ordered,
           payment_method_type: payload.payment_method_type,
           is_with_vat: payload.is_with_vat,
-          details: payload.details
+          details: payload.details,
         };
 
         axios
           .put(url, obj, header)
-          .then(response => {
-            commit("UPDATE_DATA_BY_STATUS", response.data.result);
-            resolve(response);
+          .then((response) => {
+            const data = response.data;
+            commit("UPDATE_DATA_BY_STATUS", data.result);
+            resolve(data);
+          })
+          .catch((err) => {
+            resolve(err.response.data);
           });
       } catch (err) {
         reject(err);
       }
     });
   },
-  updateReturnData({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/salesOrders/updateReturn/${payload.id}`;
-    let header = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
+  updateReturnData(
+    { dispatch, commit, state, rootState, getters, rootGetters },
+    payload
+  ) {
+    const url = `${apiUrl}/salesOrders/updateReturn/${payload.id}`;
+    const header = {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    };
     return new Promise((resolve, reject) => {
       try {
         let obj = {
-          details: payload.details
+          details: payload.details,
         };
 
         axios
           .put(url, obj, header)
-          .then(response => {
-            commit("UPDATE_DATA_BY_STATUS", response.data.result);
-            resolve(response);
+          .then((response) => {
+            const data = response.data;
+            commit("UPDATE_DATA_BY_STATUS", data.result);
+            resolve(data);
+          })
+          .catch((err) => {
+            resolve(err.response.data);
           });
       } catch (err) {
         reject(err);
       }
     });
   },
-  updateStatusData({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/salesOrders/updateStatus/${payload.id}`;
-    let header = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
+  updateStatusData(
+    { dispatch, commit, state, rootState, getters, rootGetters },
+    payload
+  ) {
+    const url = `${apiUrl}/salesOrders/updateStatus/${payload.id}`;
+    const header = {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    };
     return new Promise((resolve, reject) => {
       try {
         let obj = {
           status: payload.status,
-          date: payload.date
+          date: payload.date,
+          employee_id: payload.employee_id,
         };
 
         axios
           .put(url, obj, header)
-          .then(response => {
-            commit("DELETE_DATA_BY_STATUS", response.data.result);
-            resolve(response);
+          .then((response) => {
+            const data = response.data;
+            commit("DELETE_DATA_BY_STATUS", data.result);
+            resolve(data);
+          })
+          .catch((err) => {
+            resolve(err.response.data);
           });
       } catch (err) {
         reject(err);
       }
     });
   },
-  deleteData({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/salesOrders/delete/${payload}`;
-    let header = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
+  deleteData(
+    { dispatch, commit, state, rootState, getters, rootGetters },
+    payload
+  ) {
+    const url = `${apiUrl}/salesOrders/delete/${payload}`;
+    const header = {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    };
     return new Promise((resolve, reject) => {
       try {
         axios
-          .put(url, '', header)
-          .then(response => {
+          .put(url, "", header)
+          .then((response) => {
+            const data = response.data;
             commit("DELETE_DATA", payload);
-            resolve(response);
+            resolve(data);
+          })
+          .catch((err) => {
+            resolve(err.response.data);
           });
       } catch (err) {
         reject(err);
       }
     });
-  }
+  },
 };
 
 const mutations = {
@@ -252,7 +351,9 @@ const mutations = {
     state.salesOrderByStatusList.push(payload);
   },
   UPDATE_DATA(state, payload) {
-    let index = state.salesOrderList.map(salesOrder => salesOrder.id).indexOf(payload.id);
+    const index = state.salesOrderList
+      .map((salesOrder) => salesOrder.id)
+      .indexOf(payload.id);
     Object.assign(state.salesOrderList[index], {
       order_no: payload.order_no,
       remarks: payload.remarks,
@@ -274,11 +375,13 @@ const mutations = {
       is_with_return: payload.is_with_return,
       is_paid: payload.is_paid,
       is_fully_paid: payload.is_fully_paid,
-      is_viewed: payload.is_viewed
+      is_viewed: payload.is_viewed,
     });
   },
   UPDATE_DATA_BY_STATUS(state, payload) {
-    let index = state.salesOrderByStatusList.map(salesOrder => salesOrder.id).indexOf(payload.id);
+    const index = state.salesOrderByStatusList
+      .map((salesOrder) => salesOrder.id)
+      .indexOf(payload.id);
     Object.assign(state.salesOrderByStatusList[index], {
       order_no: payload.order_no,
       remarks: payload.remarks,
@@ -300,17 +403,21 @@ const mutations = {
       is_with_return: payload.is_with_return,
       is_paid: payload.is_paid,
       is_fully_paid: payload.is_fully_paid,
-      is_viewed: payload.is_viewed
+      is_viewed: payload.is_viewed,
     });
   },
   DELETE_DATA(state, payload) {
-    let index = state.salesOrderList.map(salesOrder => salesOrder.id).indexOf(payload);
+    const index = state.salesOrderList
+      .map((salesOrder) => salesOrder.id)
+      .indexOf(payload);
     state.salesOrderList.splice(index, 1);
   },
   DELETE_DATA_BY_STATUS(state, payload) {
-    let index = state.salesOrderByStatusList.map(salesOrder => salesOrder.id).indexOf(payload);
+    const index = state.salesOrderByStatusList
+      .map((salesOrder) => salesOrder.id)
+      .indexOf(payload);
     state.salesOrderByStatusList.splice(index, 1);
-  }
+  },
 };
 
 export default {
@@ -318,5 +425,5 @@ export default {
   state,
   getters,
   actions,
-  mutations
+  mutations,
 };

@@ -2,7 +2,8 @@
   <v-form ref="form" @submit.prevent="save" v-model="valid" lazy-validation>
     <v-card>
       <v-card-title>
-        <v-icon class="black--text">{{ formIcon }}</v-icon><span class="title">{{ formTitle }}</span>
+        <v-icon class="black--text">{{ formIcon }}</v-icon>
+        <span class="title">{{ formTitle }}</span>
       </v-card-title>
       <v-card-text>
         <v-container grid-list-md>
@@ -82,7 +83,9 @@
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn color="blue darken-1" flat @click="close">Cancel</v-btn>
-        <v-btn color="blue darken-1" type="submit" flat :disabled="!valid">Save</v-btn>
+        <v-btn color="blue darken-1" type="submit" flat :disabled="!valid">
+          Save
+        </v-btn>
       </v-card-actions>
     </v-card>
   </v-form>
@@ -103,7 +106,7 @@ export default {
       current_price_amount: "0.00",
       quantity: null,
       product_id: "",
-      discount_type: ""
+      discount_type: "",
     },
     formType: "new",
     formData: {
@@ -113,20 +116,22 @@ export default {
       current_price_amount: "0.00",
       quantity: null,
       product_id: "",
-      discount_type: ""
+      discount_type: "",
     },
-    valid: true
+    valid: true,
   }),
 
   computed: {
     ...mapGetters("products", ["getProductById", "getProductList"]),
     ...mapGetters("productFlashDealDetails", ["getProductFlashDealDetailById"]),
     formTitle() {
-      return this.formType === "new" ? "Flash Deal Details - Create" : "Flash Deal Details - Update";
+      return this.formType === "new"
+        ? "Flash Deal Details - Create"
+        : "Flash Deal Details - Update";
     },
     formIcon() {
       return this.formType === "new" ? "add_box" : "edit";
-    }
+    },
   },
 
   created() {
@@ -138,7 +143,7 @@ export default {
     ...mapActions("products", { getProductData: "getData" }),
     ...mapActions("productFlashDealDetails", {
       saveProductFlashDealDetailData: "saveData",
-      updateProductFlashDealDetailData: "updateData"
+      updateProductFlashDealDetailData: "updateData",
     }),
 
     setPriceAmount() {
@@ -156,7 +161,11 @@ export default {
       let discountAmount = 0;
       if (this.formData.discount_type !== null) {
         if (this.formData.discount_type === 2) {
-          discountAmount = (this.formData.base_price_amount * this.formData.discount_percentage / 100).toFixed(2);
+          discountAmount = (
+            (this.formData.base_price_amount *
+              this.formData.discount_percentage) /
+            100
+          ).toFixed(2);
         } else {
           this.formData.discount_percentage = null;
           discountAmount = this.formData.discount_amount;
@@ -168,7 +177,8 @@ export default {
 
     async computeCurrentPriceAmount() {
       await this.computeDiscountAmount();
-      let currentPriceAmount = this.formData.base_price_amount - this.formData.discount_amount;
+      let currentPriceAmount =
+        this.formData.base_price_amount - this.formData.discount_amount;
       this.formData.current_price_amount = currentPriceAmount.toFixed(2);
     },
 
@@ -198,34 +208,44 @@ export default {
         if (this.formType === "new") {
           this.formData.product_flash_deal_id = this.$route.params.productFlashDealId;
           this.saveProductFlashDealDetailData(this.formData)
-            .then(response => {
+            .then((response) => {
               let obj = {
                 alert: true,
                 type: "success",
-                message: response.data.message
+                message: [response.message],
+                outline: true,
               };
-              
-              if (!response.data.result) obj.type = "error"
+
+              if (response.status === "error") {
+                obj.type = "error";
+                obj.message = response.errors;
+              }
+
               this.setAlert(obj);
             })
-            .catch(err => console.log(err));
+            .catch((err) => console.log(err));
         } else if (this.formType === "update") {
           this.updateProductFlashDealDetailData(this.formData)
-            .then(response => {
+            .then((response) => {
               let obj = {
                 alert: true,
                 type: "success",
-                message: response.data.message
+                message: [response.message],
+                outline: true,
               };
-              
-              if (!response.data.result) obj.type = "error"
+
+              if (response.status === "error") {
+                obj.type = "error";
+                obj.message = response.errors;
+              }
+
               this.setAlert(obj);
             })
-            .catch(err => console.log(err));
+            .catch((err) => console.log(err));
         }
         this.close();
       }
-    }
-  }
+    },
+  },
 };
 </script>

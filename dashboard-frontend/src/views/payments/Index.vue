@@ -4,7 +4,8 @@
     <v-divider></v-divider>
     <v-card>
       <v-card-title>
-        <v-icon class="black--text">view_list</v-icon><span class="title">Payments</span>
+        <v-icon class="black--text">view_list</v-icon>
+        <span class="title">Payments</span>
         <v-spacer></v-spacer>
         <v-dialog v-model="dialog" scrollable persistent max-width="850px">
           <template v-slot:activator="{ on: { click } }">
@@ -30,23 +31,51 @@
         </v-flex>
       </v-card-title>
       <v-card-text>
-        <v-data-table :headers="headers" :items="paymentList" :search="search" class="elevation-1">
+        <v-data-table
+          :headers="headers"
+          :items="paymentList"
+          :search="search"
+          class="elevation-1"
+        >
           <template v-slot:items="props">
             <td class="text-xs-left">{{ props.item.date }}</td>
             <td class="text-xs-left">{{ props.item.reference_no }}</td>
-            <td class="text-xs-left">{{ setFullnameLastnameFirst(props.item.customers.firstname, props.item.customers.middlename, props.item.customers.lastname) }}</td>
+            <td class="text-xs-left">
+              {{
+                setFullnameLastnameFirst(
+                  props.item.customers.firstname,
+                  props.item.customers.middlename,
+                  props.item.customers.lastname
+                )
+              }}
+            </td>
             <td class="text-xs-left">{{ props.item.salesOrders.order_no }}</td>
             <td class="text-xs-left">{{ props.item.amount }}</td>
             <td class="text-xs-center">
               <v-tooltip left>
                 <template v-slot:activator="{ on }">
-                  <v-icon small class="mr-2" @click="viewItem(props.item.id)" v-on="on">pageview</v-icon>
+                  <v-icon
+                    small
+                    class="mr-2"
+                    @click="viewItem(props.item.id)"
+                    v-on="on"
+                  >
+                    pageview
+                  </v-icon>
                 </template>
                 <span>View</span>
               </v-tooltip>
               <v-tooltip left>
                 <template v-slot:activator="{ on }">
-                  <v-icon small color="red" class="mr-2" @click="deleteModal(props.item.id)" v-on="on">delete</v-icon>
+                  <v-icon
+                    small
+                    color="red"
+                    class="mr-2"
+                    @click="deleteModal(props.item.id)"
+                    v-on="on"
+                  >
+                    delete
+                  </v-icon>
                 </template>
                 <span>Delete</span>
               </v-tooltip>
@@ -56,7 +85,9 @@
             <p class="justify-center layout px-0">No data found!</p>
           </template>
           <template v-slot:no-results>
-            <p class="justify-center layout px-0">Your search for "{{ search }}" found no results.</p>
+            <p class="justify-center layout px-0">
+              Your search for "{{ search }}" found no results.
+            </p>
           </template>
         </v-data-table>
       </v-card-text>
@@ -70,8 +101,17 @@
         <v-card-text>Are you sure you want to delete this item?</v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn small outline color="error" @click="modalDelete.dialog = false">Cancel</v-btn>
-          <v-btn small outline color="success" @click="deleteItem()">Confirm</v-btn>
+          <v-btn
+            small
+            outline
+            color="error"
+            @click="modalDelete.dialog = false"
+          >
+            Cancel
+          </v-btn>
+          <v-btn small outline color="success" @click="deleteItem()">
+            Confirm
+          </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -90,7 +130,7 @@ export default {
   components: {
     Alerts,
     ModalForm,
-    ModalView
+    ModalView,
   },
 
   data: () => ({
@@ -98,17 +138,17 @@ export default {
     dialogView: false,
     modalDelete: {
       dialog: false,
-      id: null
+      id: null,
     },
-    search: '',
+    search: "",
     headers: [
       { text: "Date", value: "" },
       { text: "Reference No.", value: "reference_no" },
       { text: "Customer", value: "" },
       { text: "Sales Order", value: "" },
       { text: "Amount", value: "" },
-      { text: "Actions", align: "center", value: "", sortable: false }
-    ]
+      { text: "Actions", align: "center", value: "", sortable: false },
+    ],
   }),
 
   mounted() {
@@ -116,7 +156,7 @@ export default {
   },
 
   computed: {
-    ...mapState("payments", ["paymentList"])
+    ...mapState("payments", ["paymentList"]),
   },
 
   watch: {
@@ -125,14 +165,14 @@ export default {
     },
     dialogView(val) {
       val || this.closeView();
-    }
+    },
   },
 
   methods: {
     ...mapActions("alerts", ["setAlert"]),
     ...mapActions("payments", {
       getPaymentData: "getData",
-      deletePaymentData: "deleteData"
+      deletePaymentData: "deleteData",
     }),
 
     viewItem(id) {
@@ -147,19 +187,24 @@ export default {
 
     deleteItem() {
       this.deletePaymentData(this.modalDelete.id)
-        .then(response => {
+        .then((response) => {
           let obj = {
             alert: true,
             type: "success",
-            message: response.data.message
+            message: [response.message],
+            outline: true,
           };
 
-          if (!response.data.result) obj.type = "error";
+          if (response.status === "error") {
+            obj.type = "error";
+            obj.message = response.errors;
+          }
+
           this.setAlert(obj);
           this.modalDelete.id = null;
           this.modalDelete.dialog = false;
         })
-        .catch(err => console.log(err));
+        .catch((err) => console.log(err));
     },
 
     close() {
@@ -178,7 +223,7 @@ export default {
 
     setDialogView(value) {
       this.dialogView = value;
-    }
-  }
+    },
+  },
 };
 </script>

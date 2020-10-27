@@ -12,9 +12,9 @@
 export default {
   metaInfo() {
     return {
-      title: "Vue Dashboard"
+      title: "Vue Dashboard",
     };
-  }
+  },
 };
 </script>
 

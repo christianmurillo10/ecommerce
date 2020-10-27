@@ -1,13 +1,13 @@
 <template>
   <v-app>
     <template v-if="isLoggedIn">
-      <core-toolbar/>
-      <core-drawer/>
-      <core-view/>
-      <core-footer/>
+      <core-toolbar />
+      <core-drawer />
+      <core-view />
+      <core-footer />
     </template>
     <template v-else>
-      <login/>
+      <login />
     </template>
   </v-app>
 </template>
@@ -19,16 +19,16 @@ import { mapGetters, mapActions } from "vuex";
 export default {
   data: () => ({}),
   components: {
-    Login
+    Login,
   },
   computed: {
-    ...mapGetters("userAuthentication", ["isLoggedIn"])
+    ...mapGetters("userAuthentication", ["isLoggedIn"]),
   },
   mounted() {
     this.validateToken();
   },
   methods: {
-    ...mapActions("userAuthentication", ["validateToken"])
-  }
+    ...mapActions("userAuthentication", ["validateToken"]),
+  },
 };
 </script>

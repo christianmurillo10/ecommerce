@@ -28,15 +28,7 @@ import { mapState, mapActions } from "vuex";
 export default {
   components: {
     Alerts,
-    Form
+    Form,
   },
-
-  data: () => ({}),
-
-  mounted() {},
-
-  computed: {},
-
-  methods: {}
 };
 </script>

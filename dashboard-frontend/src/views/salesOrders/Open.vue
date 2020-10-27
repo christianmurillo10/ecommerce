@@ -5,7 +5,8 @@
     <v-divider></v-divider>
     <v-card>
       <v-card-title>
-        <v-icon class="black--text">view_list</v-icon><span class="title">Sales Orders - Open</span>
+        <v-icon class="black--text">view_list</v-icon>
+        <span class="title">Sales Orders - Open</span>
         <v-spacer></v-spacer>
         <v-dialog v-model="dialog" scrollable persistent max-width="999px">
           <template v-slot:activator="{ on: { click } }">
@@ -31,34 +32,78 @@
         </v-flex>
       </v-card-title>
       <v-card-text>
-        <v-data-table :headers="headers" :items="salesOrderByStatusList" :search="search" class="elevation-1">
+        <v-data-table
+          :headers="headers"
+          :items="salesOrderByStatusList"
+          :search="search"
+          class="elevation-1"
+        >
           <template v-slot:items="props">
             <td class="text-xs-left">{{ props.item.order_no }}</td>
-            <td class="text-xs-left">{{ setFullnameLastnameFirst(props.item.customers.firstname, props.item.customers.middlename, props.item.customers.lastname) }}</td>
+            <td class="text-xs-left">
+              {{
+                setFullnameLastnameFirst(
+                  props.item.customers.firstname,
+                  props.item.customers.middlename,
+                  props.item.customers.lastname
+                )
+              }}
+            </td>
             <td class="text-xs-left">{{ props.item.total_amount }}</td>
             <td class="text-xs-left">{{ props.item.date_ordered }}</td>
             <td class="text-xs-center">
               <v-tooltip left>
                 <template v-slot:activator="{ on }">
-                  <v-icon small class="mr-2" color="purple darken-2" @click="viewInvoice(props.item.id)" v-on="on">list_alt</v-icon>
+                  <v-icon
+                    small
+                    class="mr-2"
+                    color="purple darken-2"
+                    @click="viewInvoice(props.item.id)"
+                    v-on="on"
+                  >
+                    list_alt
+                  </v-icon>
                 </template>
                 <span>Invoice</span>
               </v-tooltip>
               <v-tooltip left>
                 <template v-slot:activator="{ on }">
-                  <v-icon small class="mr-2" color="blue-grey darken-2" @click="editStatus(props.item.id)" v-on="on">assignment</v-icon>
+                  <v-icon
+                    small
+                    class="mr-2"
+                    color="blue-grey darken-2"
+                    @click="editStatus(props.item.id)"
+                    v-on="on"
+                  >
+                    assignment
+                  </v-icon>
                 </template>
                 <span>Update Status</span>
               </v-tooltip>
               <v-tooltip left>
                 <template v-slot:activator="{ on }">
-                  <v-icon small class="mr-2" @click="editItem(props.item.id)" v-on="on">edit</v-icon>
+                  <v-icon
+                    small
+                    class="mr-2"
+                    @click="editItem(props.item.id)"
+                    v-on="on"
+                  >
+                    edit
+                  </v-icon>
                 </template>
                 <span>Update</span>
               </v-tooltip>
               <v-tooltip left>
                 <template v-slot:activator="{ on }">
-                  <v-icon small color="red" class="mr-2" @click="deleteModal(props.item.id)" v-on="on">delete</v-icon>
+                  <v-icon
+                    small
+                    color="red"
+                    class="mr-2"
+                    @click="deleteModal(props.item.id)"
+                    v-on="on"
+                  >
+                    delete
+                  </v-icon>
                 </template>
                 <span>Delete</span>
               </v-tooltip>
@@ -68,13 +113,18 @@
             <p class="justify-center layout px-0">No data found!</p>
           </template>
           <template v-slot:no-results>
-            <p class="justify-center layout px-0">Your search for "{{ search }}" found no results.</p>
+            <p class="justify-center layout px-0">
+              Your search for "{{ search }}" found no results.
+            </p>
           </template>
         </v-data-table>
       </v-card-text>
     </v-card>
     <v-dialog v-model="dialogStatus" max-width="500px">
-      <ModalFormStatus ref="modalFormStatus" @setDialogStatus="setDialogStatus" />
+      <ModalFormStatus
+        ref="modalFormStatus"
+        @setDialogStatus="setDialogStatus"
+      />
     </v-dialog>
     <v-dialog v-model="modalDelete.dialog" persistent max-width="300">
       <v-card>
@@ -82,8 +132,17 @@
         <v-card-text>Are you sure you want to delete this item?</v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn small outline color="error" @click="modalDelete.dialog = false">Cancel</v-btn>
-          <v-btn small outline color="success" @click="deleteItem()">Confirm</v-btn>
+          <v-btn
+            small
+            outline
+            color="error"
+            @click="modalDelete.dialog = false"
+          >
+            Cancel
+          </v-btn>
+          <v-btn small outline color="success" @click="deleteItem()">
+            Confirm
+          </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -96,7 +155,10 @@ import Loading from "@/components/utilities/Loading";
 import ModalFormOpen from "@/components/modules/SalesOrders/ModalFormOpen";
 import ModalFormStatus from "@/components/modules/SalesOrders/ModalFormStatus";
 import Mixins from "@/helpers/Mixins.js";
-import { SALES_ORDER_STATUS_REVIEWED, SALES_ORDER_STATUS_OPEN } from "@/helpers/Constant.js";
+import {
+  SALES_ORDER_STATUS_REVIEWED,
+  SALES_ORDER_STATUS_OPEN,
+} from "@/helpers/Constant.js";
 import { mapState, mapActions } from "vuex";
 
 export default {
@@ -105,7 +167,7 @@ export default {
     Alerts,
     Loading,
     ModalFormOpen,
-    ModalFormStatus
+    ModalFormStatus,
   },
 
   data: () => ({
@@ -113,16 +175,16 @@ export default {
     dialogStatus: false,
     modalDelete: {
       dialog: false,
-      id: null
+      id: null,
     },
-    search: '',
+    search: "",
     headers: [
       { text: "Order No.", value: "order_no" },
       { text: "Customer", value: "" },
       { text: "Total Amount", value: "" },
       { text: "Date Ordered", value: "" },
-      { text: "Actions", align: "center", value: "", sortable: false }
-    ]
+      { text: "Actions", align: "center", value: "", sortable: false },
+    ],
   }),
 
   mounted() {
@@ -130,7 +192,7 @@ export default {
   },
 
   computed: {
-    ...mapState("salesOrders", ["salesOrderByStatusList"])
+    ...mapState("salesOrders", ["salesOrderByStatusList"]),
   },
 
   watch: {
@@ -139,14 +201,14 @@ export default {
     },
     dialogStatus(val) {
       val || this.closeStatus();
-    }
+    },
   },
 
   methods: {
     ...mapActions("alerts", ["setAlert"]),
     ...mapActions("salesOrders", {
       getSalesOrderDataByStatus: "getDataByStatus",
-      deleteSalesOrderData: "deleteData"
+      deleteSalesOrderData: "deleteData",
     }),
 
     viewInvoice(id) {
@@ -170,19 +232,24 @@ export default {
 
     deleteItem() {
       this.deleteSalesOrderData(this.modalDelete.id)
-        .then(response => {
+        .then((response) => {
           let obj = {
             alert: true,
             type: "success",
-            message: response.data.message
+            message: [response.message],
+            outline: true,
           };
 
-          if (!response.data.result) obj.type = "error";
+          if (response.status === "error") {
+            obj.type = "error";
+            obj.message = response.errors;
+          }
+
           this.setAlert(obj);
           this.modalDelete.id = null;
           this.modalDelete.dialog = false;
         })
-        .catch(err => console.log(err));
+        .catch((err) => console.log(err));
     },
 
     close() {
@@ -201,7 +268,7 @@ export default {
 
     setDialogStatus(value) {
       this.dialogStatus = value;
-    }
-  }
+    },
+  },
 };
 </script>

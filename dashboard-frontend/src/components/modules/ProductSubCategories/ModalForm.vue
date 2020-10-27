@@ -2,7 +2,8 @@
   <v-form ref="form" @submit.prevent="save" v-model="valid" lazy-validation>
     <v-card>
       <v-card-title>
-        <v-icon class="black--text">{{ formIcon }}</v-icon><span class="title">{{ formTitle }}</span>
+        <v-icon class="black--text">{{ formIcon }}</v-icon>
+        <span class="title">{{ formTitle }}</span>
       </v-card-title>
       <v-card-text>
         <v-container grid-list-md>
@@ -42,7 +43,9 @@
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn color="blue darken-1" flat @click="close">Cancel</v-btn>
-        <v-btn color="blue darken-1" type="submit" flat :disabled="!valid">Save</v-btn>
+        <v-btn color="blue darken-1" type="submit" flat :disabled="!valid">
+          Save
+        </v-btn>
       </v-card-actions>
     </v-card>
   </v-form>
@@ -59,26 +62,28 @@ export default {
     defaultFormData: {
       name: "",
       description: "",
-      product_category_id: ""
+      product_category_id: "",
     },
     formType: "new",
     formData: {
       name: "",
       description: "",
-      product_category_id: ""
+      product_category_id: "",
     },
-    valid: true
+    valid: true,
   }),
 
   computed: {
     ...mapGetters("productSubCategories", ["getProductSubCategoryById"]),
     ...mapGetters("productCategories", ["getProductCategoryList"]),
     formTitle() {
-      return this.formType === "new" ? "Product Sub-Category - Create" : "Product Sub-Category - Update";
+      return this.formType === "new"
+        ? "Product Sub-Category - Create"
+        : "Product Sub-Category - Update";
     },
     formIcon() {
       return this.formType === "new" ? "add_box" : "edit";
-    }
+    },
   },
 
   created() {
@@ -90,7 +95,7 @@ export default {
     ...mapActions("productCategories", { getProductCategoriesData: "getData" }),
     ...mapActions("productSubCategories", {
       saveProductSubCategoryData: "saveData",
-      updateProductSubCategoryData: "updateData"
+      updateProductSubCategoryData: "updateData",
     }),
 
     editItem(id) {
@@ -114,34 +119,44 @@ export default {
       if (this.$refs.form.validate()) {
         if (this.formType === "new") {
           this.saveProductSubCategoryData(this.formData)
-            .then(response => {
+            .then((response) => {
               let obj = {
                 alert: true,
                 type: "success",
-                message: response.data.message
+                message: [response.message],
+                outline: true,
               };
-              
-              if (!response.data.result) obj.type = "error"
+
+              if (response.status === "error") {
+                obj.type = "error";
+                obj.message = response.errors;
+              }
+
               this.setAlert(obj);
             })
-            .catch(err => console.log(err));
+            .catch((err) => console.log(err));
         } else if (this.formType === "update") {
           this.updateProductSubCategoryData(this.formData)
-            .then(response => {
+            .then((response) => {
               let obj = {
                 alert: true,
                 type: "success",
-                message: response.data.message
+                message: [response.message],
+                outline: true,
               };
-              
-              if (!response.data.result) obj.type = "error"
+
+              if (response.status === "error") {
+                obj.type = "error";
+                obj.message = response.errors;
+              }
+
               this.setAlert(obj);
             })
-            .catch(err => console.log(err));
+            .catch((err) => console.log(err));
         }
         this.close();
       }
-    }
-  }
+    },
+  },
 };
 </script>

@@ -4,7 +4,8 @@
     <v-divider></v-divider>
     <v-card>
       <v-card-title>
-        <v-icon class="black--text">view_list</v-icon><span class="title">Flash Deal Details</span>
+        <v-icon class="black--text">view_list</v-icon>
+        <span class="title">Flash Deal Details</span>
         <v-spacer></v-spacer>
         <v-dialog v-model="dialog" scrollable persistent max-width="500px">
           <template v-slot:activator="{ on: { click } }">
@@ -35,26 +36,38 @@
               <v-flex xs12 sm12 md12 lg12>
                 <v-list-tile>
                   <v-list-tile-action>
-                    <v-list-tile-title class="body-2 font-weight-bold">Title:&nbsp;</v-list-tile-title>
+                    <v-list-tile-title class="body-2 font-weight-bold">
+                      Title:&nbsp;
+                    </v-list-tile-title>
                   </v-list-tile-action>
                   <v-list-tile-content>
-                    <v-list-tile-title class="body-2">{{ productFlashDealDataById.title }}</v-list-tile-title>
+                    <v-list-tile-title class="body-2">
+                      {{ productFlashDealDataById.title }}
+                    </v-list-tile-title>
                   </v-list-tile-content>
                 </v-list-tile>
                 <v-list-tile>
                   <v-list-tile-action>
-                    <v-list-tile-title class="body-2 font-weight-bold">From Date:&nbsp;</v-list-tile-title>
+                    <v-list-tile-title class="body-2 font-weight-bold">
+                      From Date:&nbsp;
+                    </v-list-tile-title>
                   </v-list-tile-action>
                   <v-list-tile-content>
-                    <v-list-tile-title class="body-2">{{ productFlashDealDataById.date_from }}</v-list-tile-title>
+                    <v-list-tile-title class="body-2">
+                      {{ productFlashDealDataById.date_from }}
+                    </v-list-tile-title>
                   </v-list-tile-content>
                 </v-list-tile>
                 <v-list-tile>
                   <v-list-tile-action>
-                    <v-list-tile-title class="body-2 font-weight-bold">To Date:&nbsp;</v-list-tile-title>
+                    <v-list-tile-title class="body-2 font-weight-bold">
+                      To Date:&nbsp;
+                    </v-list-tile-title>
                   </v-list-tile-action>
                   <v-list-tile-content>
-                    <v-list-tile-title class="body-2">{{ productFlashDealDataById.date_to }}</v-list-tile-title>
+                    <v-list-tile-title class="body-2">
+                      {{ productFlashDealDataById.date_to }}
+                    </v-list-tile-title>
                   </v-list-tile-content>
                 </v-list-tile>
               </v-flex>
@@ -73,7 +86,12 @@
           </div>
         </v-flex>
         <v-flex xs12 sm12 md12 lg12>
-          <v-data-table :headers="headers" :items="productFlashDealDetailList" :search="search" class="elevation-1">
+          <v-data-table
+            :headers="headers"
+            :items="productFlashDealDetailList"
+            :search="search"
+            class="elevation-1"
+          >
             <template v-slot:items="props">
               <td class="text-xs-left py-1">
                 <v-img
@@ -85,20 +103,41 @@
                 ></v-img>
               </td>
               <td class="text-xs-left">{{ props.item.products.name }}</td>
-              <td class="text-xs-left">&#8369; {{ props.item.base_price_amount }}</td>
-              <td class="text-xs-left">&#8369; {{ props.item.discount_amount }}</td>
-              <td class="text-xs-left">&#8369; {{ props.item.current_price_amount }}</td>
+              <td class="text-xs-left">
+                &#8369; {{ props.item.base_price_amount }}
+              </td>
+              <td class="text-xs-left">
+                &#8369; {{ props.item.discount_amount }}
+              </td>
+              <td class="text-xs-left">
+                &#8369; {{ props.item.current_price_amount }}
+              </td>
               <td class="text-xs-left">{{ props.item.quantity }}</td>
               <td class="justify-center">
                 <v-tooltip left>
                   <template v-slot:activator="{ on }">
-                    <v-icon small class="mr-2" @click="editItem(props.item.id)" v-on="on">edit</v-icon>
+                    <v-icon
+                      small
+                      class="mr-2"
+                      @click="editItem(props.item.id)"
+                      v-on="on"
+                    >
+                      edit
+                    </v-icon>
                   </template>
                   <span>Update</span>
                 </v-tooltip>
                 <v-tooltip left>
                   <template v-slot:activator="{ on }">
-                    <v-icon small color="red" class="mr-2" @click="deleteModal(props.item.id)" v-on="on">delete</v-icon>
+                    <v-icon
+                      small
+                      color="red"
+                      class="mr-2"
+                      @click="deleteModal(props.item.id)"
+                      v-on="on"
+                    >
+                      delete
+                    </v-icon>
                   </template>
                   <span>Delete</span>
                 </v-tooltip>
@@ -108,7 +147,9 @@
               <p class="justify-center layout px-0">No data found!</p>
             </template>
             <template v-slot:no-results>
-              <p class="justify-center layout px-0">Your search for "{{ search }}" found no results.</p>
+              <p class="justify-center layout px-0">
+                Your search for "{{ search }}" found no results.
+              </p>
             </template>
           </v-data-table>
         </v-flex>
@@ -120,8 +161,17 @@
         <v-card-text>Are you sure you want to delete this item?</v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn small outline color="error" @click="modalDelete.dialog = false">Cancel</v-btn>
-          <v-btn small outline color="success" @click="deleteItem()">Confirm</v-btn>
+          <v-btn
+            small
+            outline
+            color="error"
+            @click="modalDelete.dialog = false"
+          >
+            Cancel
+          </v-btn>
+          <v-btn small outline color="success" @click="deleteItem()">
+            Confirm
+          </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -138,16 +188,16 @@ export default {
   mixins: [Mixins],
   components: {
     Alerts,
-    ModalFormDetails
+    ModalFormDetails,
   },
 
   data: () => ({
     dialog: false,
     modalDelete: {
       dialog: false,
-      id: null
+      id: null,
     },
-    search: '',
+    search: "",
     headers: [
       { text: "Image", value: "name", sortable: false },
       { text: "Product", value: "products.name" },
@@ -155,34 +205,36 @@ export default {
       { text: "Discount", value: "" },
       { text: "Current Price Amount", value: "" },
       { text: "Quantity", value: "" },
-      { text: "Actions", align: "left", value: "", sortable: false }
-    ]
+      { text: "Actions", align: "left", value: "", sortable: false },
+    ],
   }),
 
   mounted() {
-    this.getProductFlashDealDataById(this.$route.params.productFlashDealId)
-    this.getProductFlashDealDetailDataById(this.$route.params.productFlashDealId);
+    this.getProductFlashDealDataById(this.$route.params.productFlashDealId);
+    this.getProductFlashDealDetailDataById(
+      this.$route.params.productFlashDealId
+    );
   },
 
   computed: {
     ...mapState("productFlashDeals", ["productFlashDealDataById"]),
-    ...mapState("productFlashDealDetails", ["productFlashDealDetailList"])
+    ...mapState("productFlashDealDetails", ["productFlashDealDetailList"]),
   },
 
   watch: {
     dialog(val) {
       val || this.close();
-    }
+    },
   },
 
   methods: {
     ...mapActions("alerts", ["setAlert"]),
     ...mapActions("productFlashDeals", {
-      getProductFlashDealDataById: "getDataById"
+      getProductFlashDealDataById: "getDataById",
     }),
     ...mapActions("productFlashDealDetails", {
       getProductFlashDealDetailDataById: "getDataByProductFlashDealId",
-      deleteProductFlashDealDetailData: "deleteData"
+      deleteProductFlashDealDetailData: "deleteData",
     }),
 
     editItem(id) {
@@ -197,19 +249,24 @@ export default {
 
     deleteItem() {
       this.deleteProductFlashDealDetailData(this.modalDelete.id)
-        .then(response => {
+        .then((response) => {
           let obj = {
             alert: true,
             type: "success",
-            message: response.data.message
+            message: [response.message],
+            outline: true,
           };
 
-          if (!response.data.result) obj.type = "error";
+          if (response.status === "error") {
+            obj.type = "error";
+            obj.message = response.errors;
+          }
+
           this.setAlert(obj);
           this.modalDelete.id = null;
           this.modalDelete.dialog = false;
         })
-        .catch(err => console.log(err));
+        .catch((err) => console.log(err));
     },
 
     close() {
@@ -219,7 +276,7 @@ export default {
 
     setDialog(value) {
       this.dialog = value;
-    }
-  }
+    },
+  },
 };
 </script>

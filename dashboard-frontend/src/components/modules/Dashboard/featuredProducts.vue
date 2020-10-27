@@ -52,11 +52,13 @@ export default {
   },
 
   computed: {
-    ...mapState("products", ["productIsFeaturedList"])
+    ...mapState("products", ["productIsFeaturedList"]),
   },
 
   methods: {
-    ...mapActions("products", { getProductDataByIsFeatured: "getDataByIsFeatured" })
-  }
+    ...mapActions("products", {
+      getProductDataByIsFeatured: "getDataByIsFeatured",
+    }),
+  },
 };
 </script>

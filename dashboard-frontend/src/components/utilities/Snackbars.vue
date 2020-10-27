@@ -15,11 +15,11 @@ import { mapState, mapActions } from "vuex";
 
 export default {
   computed: {
-    ...mapState("snackbars", ["snackbarDetails"])
+    ...mapState("snackbars", ["snackbarDetails"]),
   },
 
   methods: {
-    ...mapActions("snackbars", ['closeSnackbar']),
-  }
+    ...mapActions("snackbars", ["closeSnackbar"]),
+  },
 };
 </script>

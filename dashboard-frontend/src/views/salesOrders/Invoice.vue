@@ -219,7 +219,7 @@ export default {
   created() {
     this.getSalesOrderDataById(this.$route.params.salesOrderId).then(
       (response) => {
-        this.salesOrders = response.data.result;
+        this.salesOrders = response.result;
         this.customers = this.salesOrders.customers;
         this.options.filename = this.salesOrders.order_no;
       }

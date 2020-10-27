@@ -483,6 +483,7 @@ module.exports = {
       // Override variables
       params.updated_at = moment().utc(8).format("YYYY-MM-DD HH:mm:ss");
       params.user_id = req.user.id.toLocaleString();
+      params.employee_id = params.employee_id ? params.employee_id.toLocaleString() : null;
       params.status = params.status ? params.status.toLocaleString() : null;
 
       if (_.isEmpty(params.status)) errors.push("Status is required.");

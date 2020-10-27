@@ -2,14 +2,21 @@
   <v-form ref="form" @submit.prevent="save" v-model="valid" lazy-validation>
     <v-card>
       <v-card-title>
-        <v-icon class="black--text">{{ formIcon }}</v-icon><span class="title">{{ formTitle }}</span>
+        <v-icon class="black--text">{{ formIcon }}</v-icon>
+        <span class="title">{{ formTitle }}</span>
       </v-card-title>
       <v-card-text>
         <v-container grid-list-md>
           <v-layout wrap>
             <v-flex xs12 sm12 md12>
               <v-layout wrap justify-center>
-                <v-img :src="formData.file_path" lazy-src="@/assets/images/no-image.png" height="80" width="120" contain></v-img>
+                <v-img
+                  :src="formData.file_path"
+                  lazy-src="@/assets/images/no-image.png"
+                  height="80"
+                  width="120"
+                  contain
+                ></v-img>
               </v-layout>
             </v-flex>
             <v-flex xs12 sm12 md12>
@@ -48,9 +55,9 @@
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn color="blue darken-1" flat @click="close">Cancel</v-btn>
-        <v-btn color="blue darken-1" type="submit" flat :disabled="!valid"
-          >Save</v-btn
-        >
+        <v-btn color="blue darken-1" type="submit" flat :disabled="!valid">
+          Save
+        </v-btn>
       </v-card-actions>
     </v-card>
   </v-form>
@@ -69,7 +76,7 @@ export default {
       description: "",
       file: null,
       file_path: require("@/assets/images/no-image.png"),
-      file_name: null
+      file_name: null,
     },
     formType: "new",
     formData: {
@@ -77,26 +84,28 @@ export default {
       description: "",
       file: null,
       file_path: require("@/assets/images/no-image.png"),
-      file_name: null
+      file_name: null,
     },
-    valid: true
+    valid: true,
   }),
 
   computed: {
     ...mapGetters("productBrands", ["getProductBrandById"]),
     formTitle() {
-      return this.formType === "new" ? "Product Brand - Create" : "Product Brand - Update";
+      return this.formType === "new"
+        ? "Product Brand - Create"
+        : "Product Brand - Update";
     },
     formIcon() {
       return this.formType === "new" ? "add_box" : "edit";
-    }
+    },
   },
 
   methods: {
     ...mapActions("alerts", ["setAlert"]),
     ...mapActions("productBrands", {
       saveProductBrandData: "saveData",
-      updateProductBrandData: "updateData"
+      updateProductBrandData: "updateData",
     }),
 
     pickFile() {
@@ -128,7 +137,11 @@ export default {
       this.formData.id = data.id;
       this.formData.name = data.name;
       this.formData.description = data.description;
-      this.formData.file_path = _.isNull(data.file_name) ? require("@/assets/images/no-image.png") : `${process.env.VUE_APP_API_BACKEND}/productBrands/viewImage/${data.file_name}`;
+      this.formData.file_path = _.isNull(data.file_name)
+        ? require("@/assets/images/no-image.png")
+        : `${process.env.VUE_APP_API_BACKEND}/productBrands/viewImage/${
+            data.file_name
+          }`;
       this.formType = "update";
     },
 
@@ -145,34 +158,44 @@ export default {
         if (this.formType === "new") {
           this.formData.product_id = this.$route.params.id;
           this.saveProductBrandData(this.formData)
-            .then(response => {
+            .then((response) => {
               let obj = {
                 alert: true,
                 type: "success",
-                message: response.data.message
+                message: [response.message],
+                outline: true,
               };
 
-              if (!response.data.result) obj.type = "error";
+              if (response.status === "error") {
+                obj.type = "error";
+                obj.message = response.errors;
+              }
+
               this.setAlert(obj);
             })
-            .catch(err => console.log(err));
+            .catch((err) => console.log(err));
         } else if (this.formType === "update") {
           this.updateProductBrandData(this.formData)
-            .then(response => {
+            .then((response) => {
               let obj = {
                 alert: true,
                 type: "success",
-                message: response.data.message
+                message: [response.message],
+                outline: true,
               };
 
-              if (!response.data.result) obj.type = "error";
+              if (response.status === "error") {
+                obj.type = "error";
+                obj.message = response.errors;
+              }
+
               this.setAlert(obj);
             })
-            .catch(err => console.log(err));
+            .catch((err) => console.log(err));
         }
         this.close();
       }
-    }
-  }
+    },
+  },
 };
 </script>

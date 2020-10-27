@@ -275,7 +275,7 @@ export default {
     async setDataBySalesOrderId() {
       const salesOrderId = this.viewData.sales_order_id;
       const response = await this.getSalesOrderDataById(salesOrderId);
-      const data = response.data.result;
+      const data = response.result;
 
       // set sales order details
       this.salesOrderDetails.order_no = data.order_no;

@@ -40,10 +40,10 @@ export default {
   data() {
     return {
       headers: [
-      { text: "Image", value: "", sortable: false },
+        { text: "Image", value: "", sortable: false },
         { text: "Name", value: "name" },
         { text: "Price Amount", value: "price_amount" },
-      ]
+      ],
     };
   },
 
@@ -52,11 +52,13 @@ export default {
   },
 
   computed: {
-    ...mapState("productFlashDeals", ["productFlashDealTodayFlashDeal"])
+    ...mapState("productFlashDeals", ["productFlashDealTodayFlashDeal"]),
   },
 
   methods: {
-    ...mapActions("productFlashDeals", { getCustomerTotalCountByStatusAndIsActive: "getDataTodayFlashDeal" })
-  }
+    ...mapActions("productFlashDeals", {
+      getCustomerTotalCountByStatusAndIsActive: "getDataTodayFlashDeal",
+    }),
+  },
 };
 </script>

@@ -52,15 +52,16 @@
                 </template>
                 <v-date-picker v-model="formData.date" no-title scrollable>
                   <v-spacer></v-spacer>
-                  <v-btn flat color="primary" @click="date.model = false"
-                    >Cancel</v-btn
-                  >
+                  <v-btn flat color="primary" @click="date.model = false">
+                    Cancel
+                  </v-btn>
                   <v-btn
                     flat
                     color="primary"
                     @click="$refs.date.save(formData.date)"
-                    >OK</v-btn
                   >
+                    OK
+                  </v-btn>
                 </v-date-picker>
               </v-menu>
             </v-flex>
@@ -180,16 +181,31 @@ export default {
           filteredStatus = [SALES_ORDER_STATUS_CLOSED];
           break;
         case SALES_ORDER_STATUS_DELIVERED:
-          filteredStatus = [SALES_ORDER_STATUS_DELIVERED, SALES_ORDER_STATUS_FAILED];
+          filteredStatus = [
+            SALES_ORDER_STATUS_DELIVERED,
+            SALES_ORDER_STATUS_FAILED,
+          ];
           break;
         case SALES_ORDER_STATUS_ON_PROCESS:
-          filteredStatus = [SALES_ORDER_STATUS_ON_PROCESS, SALES_ORDER_STATUS_CANCELLED, SALES_ORDER_STATUS_FAILED];
+          filteredStatus = [
+            SALES_ORDER_STATUS_ON_PROCESS,
+            SALES_ORDER_STATUS_CANCELLED,
+            SALES_ORDER_STATUS_FAILED,
+          ];
           break;
         case SALES_ORDER_STATUS_APPROVED:
-          filteredStatus = [SALES_ORDER_STATUS_APPROVED, SALES_ORDER_STATUS_CANCELLED, SALES_ORDER_STATUS_FAILED];
+          filteredStatus = [
+            SALES_ORDER_STATUS_APPROVED,
+            SALES_ORDER_STATUS_CANCELLED,
+            SALES_ORDER_STATUS_FAILED,
+          ];
           break;
         case SALES_ORDER_STATUS_REVIEWED:
-          filteredStatus = [SALES_ORDER_STATUS_REVIEWED, SALES_ORDER_STATUS_CANCELLED, SALES_ORDER_STATUS_FAILED];
+          filteredStatus = [
+            SALES_ORDER_STATUS_REVIEWED,
+            SALES_ORDER_STATUS_CANCELLED,
+            SALES_ORDER_STATUS_FAILED,
+          ];
           break;
       }
 
@@ -221,10 +237,15 @@ export default {
             let obj = {
               alert: true,
               type: "success",
-              message: response.data.message,
+              message: [response.message],
+              outline: true,
             };
 
-            if (!response.data.result) obj.type = "error";
+            if (response.status === "error") {
+              obj.type = "error";
+              obj.message = response.errors;
+            }
+
             this.setAlert(obj);
             this.setLoading({ dialog: false, text: "" });
           })

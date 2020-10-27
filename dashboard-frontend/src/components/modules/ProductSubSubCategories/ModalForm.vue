@@ -2,7 +2,8 @@
   <v-form ref="form" @submit.prevent="save" v-model="valid" lazy-validation>
     <v-card>
       <v-card-title>
-        <v-icon class="black--text">{{ formIcon }}</v-icon><span class="title">{{ formTitle }}</span>
+        <v-icon class="black--text">{{ formIcon }}</v-icon>
+        <span class="title">{{ formTitle }}</span>
       </v-card-title>
       <v-card-text>
         <v-container grid-list-md>
@@ -55,9 +56,9 @@
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn color="blue darken-1" flat @click="close">Cancel</v-btn>
-        <v-btn color="blue darken-1" type="submit" flat :disabled="!valid"
-          >Save</v-btn
-        >
+        <v-btn color="blue darken-1" type="submit" flat :disabled="!valid">
+          Save
+        </v-btn>
       </v-card-actions>
     </v-card>
   </v-form>
@@ -75,16 +76,16 @@ export default {
       name: "",
       description: "",
       product_category_id: "",
-      product_sub_category_id: ""
+      product_sub_category_id: "",
     },
     formType: "new",
     formData: {
       name: "",
       description: "",
       product_category_id: "",
-      product_sub_category_id: ""
+      product_sub_category_id: "",
     },
-    valid: true
+    valid: true,
   }),
 
   computed: {
@@ -92,11 +93,13 @@ export default {
     ...mapGetters("productCategories", ["getProductCategoryList"]),
     ...mapGetters("productSubCategories", ["getProductSubCategoryList"]),
     formTitle() {
-      return this.formType === "new" ? "Product Sub Sub-Category - Create" : "Product Sub Sub-Category - Update";
+      return this.formType === "new"
+        ? "Product Sub Sub-Category - Create"
+        : "Product Sub Sub-Category - Update";
     },
     formIcon() {
       return this.formType === "new" ? "add_box" : "edit";
-    }
+    },
   },
 
   created() {
@@ -108,18 +111,19 @@ export default {
     ...mapActions("productCategories", { getProductCategoriesData: "getData" }),
     ...mapActions("productSubCategories", {
       getProductSubCategoriesDataByProductCategoryId:
-        "getDataByProductCategoryId"
+        "getDataByProductCategoryId",
     }),
     ...mapActions("productSubSubCategories", {
       saveProductSubSubCategoryData: "saveData",
-      updateProductSubSubCategoryData: "updateData"
+      updateProductSubSubCategoryData: "updateData",
     }),
 
     setProductSubCategoryList() {
       let categoryId = this.formData.product_category_id;
 
       if (categoryId) {
-        if (this.formType === "new") this.formData.product_sub_category_id = this.defaultFormData.product_sub_category_id;
+        if (this.formType === "new")
+          this.formData.product_sub_category_id = this.defaultFormData.product_sub_category_id;
         this.getProductSubCategoriesDataByProductCategoryId(categoryId);
       }
     },
@@ -147,34 +151,44 @@ export default {
       if (this.$refs.form.validate()) {
         if (this.formType === "new") {
           this.saveProductSubSubCategoryData(this.formData)
-            .then(response => {
+            .then((response) => {
               let obj = {
                 alert: true,
                 type: "success",
-                message: response.data.message
+                message: [response.message],
+                outline: true,
               };
 
-              if (!response.data.result) obj.type = "error";
+              if (response.status === "error") {
+                obj.type = "error";
+                obj.message = response.errors;
+              }
+
               this.setAlert(obj);
             })
-            .catch(err => console.log(err));
+            .catch((err) => console.log(err));
         } else if (this.formType === "update") {
           this.updateProductSubSubCategoryData(this.formData)
-            .then(response => {
+            .then((response) => {
               let obj = {
                 alert: true,
                 type: "success",
-                message: response.data.message
+                message: [response.message],
+                outline: true,
               };
 
-              if (!response.data.result) obj.type = "error";
+              if (response.status === "error") {
+                obj.type = "error";
+                obj.message = response.errors;
+              }
+
               this.setAlert(obj);
             })
-            .catch(err => console.log(err));
+            .catch((err) => console.log(err));
         }
         this.close();
       }
-    }
-  }
+    },
+  },
 };
 </script>

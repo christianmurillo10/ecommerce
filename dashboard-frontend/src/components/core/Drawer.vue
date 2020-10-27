@@ -34,7 +34,6 @@
 
       <v-list two-line subheader>
         <v-divider></v-divider>
-
         <v-list-tile v-if="responsive">
           <v-text-field
             class="blue-input search-input"
@@ -50,9 +49,9 @@
           <v-list-group :prepend-icon="link.icon">
             <template v-slot:activator>
               <v-list-tile>
-                <v-list-tile-title class="margin-left-n10">{{
-                  link.text
-                }}</v-list-tile-title>
+                <v-list-tile-title class="margin-left-n10">
+                  {{ link.text }}
+                </v-list-tile-title>
               </v-list-tile>
             </template>
             <!-- Child navigation -->
@@ -78,9 +77,9 @@
                   >
                     <v-list-tile :to="subChild.to">
                       <v-list-tile-content>
-                        <v-list-tile-title>{{
-                          subChild.text
-                        }}</v-list-tile-title>
+                        <v-list-tile-title>
+                          {{ subChild.text }}
+                        </v-list-tile-title>
                       </v-list-tile-content>
                     </v-list-tile>
                   </v-list>
@@ -150,11 +149,11 @@ export default {
           },
           {
             to: "/productStores",
-            text: "Stores"
+            text: "Stores",
           },
           {
             to: "/productVariations",
-            text: "Variations"
+            text: "Variations",
           },
           {
             to: "/products",

@@ -2,15 +2,22 @@
   <v-layout row wrap>
     <v-flex xs12 sm12 md6 lg6>
       <v-hover>
-        <v-card
-          slot-scope="{ hover }"
-          :class="`elevation-${hover ? 12 : 1}`"
-        >
+        <v-card slot-scope="{ hover }" :class="`elevation-${hover ? 12 : 1}`">
           <v-card-title primary-title class="justify-center">
             <div>
-              <div class="text-xs-center"><v-icon large class="text-xs-center green--text text--accent-3" @click="redirectUrl('/products')">shopping_basket</v-icon></div>
+              <div class="text-xs-center">
+                <v-icon
+                  large
+                  class="text-xs-center green--text text--accent-3"
+                  @click="redirectUrl('/products')"
+                >
+                  shopping_basket
+                </v-icon>
+              </div>
               <h4 class="body-2 text-xs-center">Total Products</h4>
-              <p class="headline font-weight-bold text-xs-center">{{ productTotalCount }}</p>
+              <p class="headline font-weight-bold text-xs-center">
+                {{ productTotalCount }}
+              </p>
             </div>
           </v-card-title>
         </v-card>
@@ -18,15 +25,22 @@
     </v-flex>
     <v-flex xs12 sm12 md6 lg6>
       <v-hover>
-        <v-card
-          slot-scope="{ hover }"
-          :class="`elevation-${hover ? 12 : 1}`"
-        >
+        <v-card slot-scope="{ hover }" :class="`elevation-${hover ? 12 : 1}`">
           <v-card-title primary-title class="justify-center">
             <div>
-              <div class="text-xs-center"><v-icon large class="text-xs-center red--text text--accent-3" @click="redirectUrl('/customers')">people</v-icon></div>
+              <div class="text-xs-center">
+                <v-icon
+                  large
+                  class="text-xs-center red--text text--accent-3"
+                  @click="redirectUrl('/customers')"
+                >
+                  people
+                </v-icon>
+              </div>
               <h4 class="body-2 text-xs-center">Total Customers</h4>
-              <p class="headline font-weight-bold text-xs-center">{{ customerTotalCountByStatusAndIsActive }}</p>
+              <p class="headline font-weight-bold text-xs-center">
+                {{ customerTotalCountByStatusAndIsActive }}
+              </p>
             </div>
           </v-card-title>
         </v-card>
@@ -34,15 +48,22 @@
     </v-flex>
     <v-flex xs12 sm12 md12 lg12>
       <v-hover>
-        <v-card
-          slot-scope="{ hover }"
-          :class="`elevation-${hover ? 12 : 1}`"
-        >
+        <v-card slot-scope="{ hover }" :class="`elevation-${hover ? 12 : 1}`">
           <v-card-title primary-title class="justify-center">
             <div>
-              <div class="text-xs-center"><v-icon large class="text-xs-center blue--text text--accent-3" @click="redirectUrl('/salesOrders/index')">shopping_cart</v-icon></div>
+              <div class="text-xs-center">
+                <v-icon
+                  large
+                  class="text-xs-center blue--text text--accent-3"
+                  @click="redirectUrl('/salesOrders/index')"
+                >
+                  shopping_cart
+                </v-icon>
+              </div>
               <h4 class="body-2 text-xs-center">Total Orders</h4>
-              <p class="headline font-weight-bold text-xs-center">{{ salesOrderTotalCount }}</p>
+              <p class="headline font-weight-bold text-xs-center">
+                {{ salesOrderTotalCount }}
+              </p>
             </div>
           </v-card-title>
         </v-card>
@@ -66,17 +87,20 @@ export default {
   computed: {
     ...mapState("products", ["productTotalCount"]),
     ...mapState("customers", ["customerTotalCountByStatusAndIsActive"]),
-    ...mapState("salesOrders", ["salesOrderTotalCount"])
+    ...mapState("salesOrders", ["salesOrderTotalCount"]),
   },
 
   methods: {
     ...mapActions("products", { getProductTotalCount: "getTotalCount" }),
-    ...mapActions("customers", { getCustomerTotalCountByStatusAndIsActive: "getTotalCountByStatusAndIsActive" }),
+    ...mapActions("customers", {
+      getCustomerTotalCountByStatusAndIsActive:
+        "getTotalCountByStatusAndIsActive",
+    }),
     ...mapActions("salesOrders", { getSalesOrderTotalCount: "getTotalCount" }),
 
     redirectUrl(url) {
       this.$router.push(url);
-    }
-  }
-}
+    },
+  },
+};
 </script>

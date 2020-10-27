@@ -2,7 +2,8 @@
   <v-form ref="form" @submit.prevent="save" v-model="valid" lazy-validation>
     <v-card>
       <v-card-title>
-        <v-icon class="black--text">{{ formIcon }}</v-icon><span class="title">{{ formTitle }}</span>
+        <v-icon class="black--text">{{ formIcon }}</v-icon>
+        <span class="title">{{ formTitle }}</span>
       </v-card-title>
       <v-card-text>
         <v-container grid-list-md>
@@ -24,12 +25,20 @@
             </v-flex>
             <v-flex xs12 sm12 md12>
               <v-layout wrap justify-center>
-                <v-img :src="formData.icon_file_path" lazy-src="@/assets/images/no-image.png" height="32" width="32" contain></v-img>
+                <v-img
+                  :src="formData.icon_file_path"
+                  lazy-src="@/assets/images/no-image.png"
+                  height="32"
+                  width="32"
+                  contain
+                ></v-img>
               </v-layout>
             </v-flex>
             <v-flex xs12 sm12 md12>
               <v-layout wrap justify-center>
-                <v-btn small outline @click="pickFileIcon">Upload Icon Image</v-btn>
+                <v-btn small outline @click="pickFileIcon">
+                  Upload Icon Image
+                </v-btn>
                 <input
                   type="file"
                   style="display: none"
@@ -41,12 +50,20 @@
             </v-flex>
             <v-flex xs12 sm12 md12>
               <v-layout wrap justify-center>
-                <v-img :src="formData.banner_file_path" lazy-src="@/assets/images/no-image.png" height="100" width="620" contain></v-img>
+                <v-img
+                  :src="formData.banner_file_path"
+                  lazy-src="@/assets/images/no-image.png"
+                  height="100"
+                  width="620"
+                  contain
+                ></v-img>
               </v-layout>
             </v-flex>
             <v-flex xs12 sm12 md12>
               <v-layout wrap justify-center>
-                <v-btn small outline @click="pickFileBanner">Upload Banner Image</v-btn>
+                <v-btn small outline @click="pickFileBanner">
+                  Upload Banner Image
+                </v-btn>
                 <input
                   type="file"
                   style="display: none"
@@ -65,7 +82,9 @@
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn color="blue darken-1" flat @click="close">Cancel</v-btn>
-        <v-btn color="blue darken-1" type="submit" flat :disabled="!valid">Save</v-btn>
+        <v-btn color="blue darken-1" type="submit" flat :disabled="!valid">
+          Save
+        </v-btn>
       </v-card-actions>
     </v-card>
   </v-form>
@@ -87,7 +106,7 @@ export default {
       icon_file_name: null,
       banner_file: null,
       banner_file_path: require("@/assets/images/no-image.png"),
-      banner_file_name: null
+      banner_file_name: null,
     },
     formType: "new",
     formData: {
@@ -98,26 +117,28 @@ export default {
       icon_file_name: null,
       banner_file: null,
       banner_file_path: require("@/assets/images/no-image.png"),
-      banner_file_name: null
+      banner_file_name: null,
     },
-    valid: true
+    valid: true,
   }),
 
   computed: {
     ...mapGetters("productCategories", ["getProductCategoryById"]),
     formTitle() {
-      return this.formType === "new" ? "Product Category - Create" : "Product Category - Update";
+      return this.formType === "new"
+        ? "Product Category - Create"
+        : "Product Category - Update";
     },
     formIcon() {
       return this.formType === "new" ? "add_box" : "edit";
-    }
+    },
   },
 
   methods: {
     ...mapActions("alerts", ["setAlert"]),
     ...mapActions("productCategories", {
       saveProductCategoryData: "saveData",
-      updateProductCategoryData: "updateData"
+      updateProductCategoryData: "updateData",
     }),
 
     pickFileIcon() {
@@ -173,8 +194,16 @@ export default {
       this.formData.id = data.id;
       this.formData.name = data.name;
       this.formData.description = data.description;
-      this.formData.icon_file_path = _.isNull(data.icon_file_name) ? require("@/assets/images/no-image.png") : `${process.env.VUE_APP_API_BACKEND}/productCategories/viewImage/${data.icon_file_name}`;
-      this.formData.banner_file_path = _.isNull(data.banner_file_name) ? require("@/assets/images/no-image.png") : `${process.env.VUE_APP_API_BACKEND}/productCategories/viewImage/${data.banner_file_name}`;
+      this.formData.icon_file_path = _.isNull(data.icon_file_name)
+        ? require("@/assets/images/no-image.png")
+        : `${process.env.VUE_APP_API_BACKEND}/productCategories/viewImage/${
+            data.icon_file_name
+          }`;
+      this.formData.banner_file_path = _.isNull(data.banner_file_name)
+        ? require("@/assets/images/no-image.png")
+        : `${process.env.VUE_APP_API_BACKEND}/productCategories/viewImage/${
+            data.banner_file_name
+          }`;
       this.formType = "update";
     },
 
@@ -190,34 +219,44 @@ export default {
       if (this.$refs.form.validate()) {
         if (this.formType === "new") {
           this.saveProductCategoryData(this.formData)
-            .then(response => {
+            .then((response) => {
               let obj = {
                 alert: true,
                 type: "success",
-                message: response.data.message
+                message: [response.message],
+                outline: true,
               };
-              
-              if (!response.data.result) obj.type = "error"
+
+              if (response.status === "error") {
+                obj.type = "error";
+                obj.message = response.errors;
+              }
+
               this.setAlert(obj);
             })
-            .catch(err => console.log(err));
+            .catch((err) => console.log(err));
         } else if (this.formType === "update") {
           this.updateProductCategoryData(this.formData)
-            .then(response => {
+            .then((response) => {
               let obj = {
                 alert: true,
                 type: "success",
-                message: response.data.message
+                message: [response.message],
+                outline: true,
               };
-              
-              if (!response.data.result) obj.type = "error"
+
+              if (response.status === "error") {
+                obj.type = "error";
+                obj.message = response.errors;
+              }
+
               this.setAlert(obj);
             })
-            .catch(err => console.log(err));
+            .catch((err) => console.log(err));
         }
         this.close();
       }
-    }
-  }
+    },
+  },
 };
 </script>

@@ -10,7 +10,12 @@
       ></v-text-field>
     </v-flex>
     <v-flex xs12 sm12 md12>
-      <v-data-table :headers="headers" :items="inventoryDetails" :search="search" class="elevation-1">
+      <v-data-table
+        :headers="headers"
+        :items="inventoryDetails"
+        :search="search"
+        class="elevation-1"
+      >
         <template v-slot:items="props">
           <td class="text-xs-left">{{ props.item.sku }}</td>
           <td class="text-xs-left">{{ props.item.name }}</td>
@@ -21,7 +26,9 @@
           <p class="justify-center layout px-0">No data found!</p>
         </template>
         <template v-slot:no-results>
-          <p class="justify-center layout px-0">Your search for "{{ search }}" found no results.</p>
+          <p class="justify-center layout px-0">
+            Your search for "{{ search }}" found no results.
+          </p>
         </template>
       </v-data-table>
     </v-flex>
@@ -31,17 +38,17 @@
 <script>
 export default {
   props: {
-    inventoryDetails: Array
+    inventoryDetails: Array,
   },
 
   data: () => ({
-    search: '',
+    search: "",
     headers: [
       { text: "SKU", value: "sku" },
       { text: "Name", value: "name" },
       { text: "Price Amount", value: "" },
-      { text: "Quantity", value: "" }
-    ]
-  })
+      { text: "Quantity", value: "" },
+    ],
+  }),
 };
 </script>

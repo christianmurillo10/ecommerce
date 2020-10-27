@@ -3,8 +3,8 @@
     <Alerts />
     <v-card>
       <v-card-title>
-        <v-icon class="black--text">pageview</v-icon
-        ><span class="title">Products - View</span>
+        <v-icon class="black--text">pageview</v-icon>
+        <span class="title">Products - View</span>
         <v-spacer></v-spacer>
         <v-tooltip left>
           <template v-slot:activator="{ on }">
@@ -296,43 +296,33 @@ export default {
 
   mounted() {
     this.getProductDataById(this.$route.params.id).then((response) => {
-      this.productDetails = response.data.result;
-      this.productStoreDetails =
-        response.data.result.productStores === null
-          ? ""
-          : response.data.result.productStores;
-      this.productBrandDetails =
-        response.data.result.productBrands === null
-          ? ""
-          : response.data.result.productBrands;
-      this.productCategoryDetails =
-        response.data.result.productCategories === null
-          ? ""
-          : response.data.result.productCategories;
-      this.productSubCategoryDetails =
-        response.data.result.productSubCategories === null
-          ? ""
-          : response.data.result.productSubCategories;
-      this.productSubSubCategoryDetails =
-        response.data.result.productSubSubCategories === null
-          ? ""
-          : response.data.result.productSubSubCategories;
-      this.productImageDetails =
-        response.data.result.productImages === null
-          ? []
-          : response.data.result.productImages;
-      this.productVariantDetails =
-        response.data.result.productVariants === null
-          ? []
-          : response.data.result.productVariants;
-      this.productInventoryDetails =
-        response.data.result.inventories === null
-          ? []
-          : response.data.result.inventories;
+      this.productDetails = response;
+      this.productStoreDetails = response.productStores
+        ? response.productStores
+        : "";
+      this.productBrandDetails = response.productBrands
+        ? response.productBrands
+        : "";
+      this.productCategoryDetails = response.productCategories
+        ? response.productCategories
+        : "";
+      this.productSubCategoryDetails = response.productSubCategories
+        ? response.productSubCategories
+        : "";
+      this.productSubSubCategoryDetails = response.productSubSubCategories
+        ? response.productSubSubCategories
+        : "";
+      this.productImageDetails = response.productImages
+        ? response.productImages
+        : [];
+      this.productVariantDetails = response.productVariants
+        ? response.productVariants
+        : [];
+      this.productInventoryDetails = response.inventories
+        ? response.inventories
+        : [];
     });
   },
-
-  computed: {},
 
   methods: {
     ...mapActions("products", { getProductDataById: "getDataById" }),

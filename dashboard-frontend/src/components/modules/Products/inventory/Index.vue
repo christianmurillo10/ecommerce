@@ -1,7 +1,9 @@
 <template>
   <v-layout wrap row>
     <v-flex xs12 sm12 md3 class="pb-2">
-      <v-btn block outline color="blue" @click="generateModal()">Generate</v-btn>
+      <v-btn block outline color="blue" @click="generateModal()">
+        Generate
+      </v-btn>
     </v-flex>
     <v-flex xs12 sm12 md4 offset-md5 class="pb-4">
       <v-text-field
@@ -13,7 +15,12 @@
       ></v-text-field>
     </v-flex>
     <v-flex xs12 sm12 md12>
-      <v-data-table :headers="headers" :items="inventoryList" :search="search" class="elevation-1">
+      <v-data-table
+        :headers="headers"
+        :items="inventoryList"
+        :search="search"
+        class="elevation-1"
+      >
         <template v-slot:items="props">
           <td class="text-xs-left">{{ props.item.sku }}</td>
           <td class="text-xs-left">{{ props.item.name }}</td>
@@ -22,20 +29,37 @@
           <td class="justify-center layout px-0">
             <v-tooltip left>
               <template v-slot:activator="{ on }">
-                <v-icon small class="mr-2" @click="editItem(props.item.id)" v-on="on">edit</v-icon>
+                <v-icon
+                  small
+                  class="mr-2"
+                  @click="editItem(props.item.id)"
+                  v-on="on"
+                >
+                  edit
+                </v-icon>
               </template>
               <span>Update</span>
             </v-tooltip>
             <v-tooltip left>
               <template v-slot:activator="{ on }">
-                <v-icon small class="mr-2" color="green darken-2" @click="addStock(props.item.id)" v-on="on">add_box</v-icon>
+                <v-icon
+                  small
+                  class="mr-2"
+                  color="green darken-2"
+                  @click="addStock(props.item.id)"
+                  v-on="on"
+                >
+                  add_box
+                </v-icon>
               </template>
               <span>Add Stock</span>
             </v-tooltip>
           </td>
         </template>
         <template v-slot:no-results>
-          <p class="justify-center layout px-0">Your search for "{{ search }}" found no results.</p>
+          <p class="justify-center layout px-0">
+            Your search for "{{ search }}" found no results.
+          </p>
         </template>
       </v-data-table>
     </v-flex>
@@ -43,7 +67,10 @@
       <ModalFormInventory ref="modalFormInventory" @setDialog="setDialog" />
     </v-dialog>
     <v-dialog v-model="dialogAddStock" max-width="500px">
-      <ModalFormInventoryAddStock ref="modalFormInventoryAddStock" @setDialog="setDialogAddStock" />
+      <ModalFormInventoryAddStock
+        ref="modalFormInventoryAddStock"
+        @setDialog="setDialogAddStock"
+      />
     </v-dialog>
     <v-dialog v-model="dialogGenerate" persistent max-width="370">
       <v-card>
@@ -53,12 +80,7 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn
-            small
-            outline
-            color="error"
-            @click="dialogGenerate = false"
-          >
+          <v-btn small outline color="error" @click="dialogGenerate = false">
             Cancel
           </v-btn>
           <v-btn small outline color="success" @click="generateVariants()">
@@ -80,21 +102,21 @@ export default {
   components: {
     Alerts,
     ModalFormInventory,
-    ModalFormInventoryAddStock
+    ModalFormInventoryAddStock,
   },
 
   data: () => ({
     dialogGenerate: false,
     dialog: false,
     dialogAddStock: false,
-    search: '',
+    search: "",
     headers: [
       { text: "SKU", value: "sku" },
       { text: "Name", value: "name" },
       { text: "Price Amount", value: "" },
       { text: "Quantity", value: "" },
-      { text: "Actions", align: "center", value: "name", sortable: false }
-    ]
+      { text: "Actions", align: "center", value: "name", sortable: false },
+    ],
   }),
 
   created() {
@@ -102,7 +124,7 @@ export default {
   },
 
   computed: {
-    ...mapState("inventories", ["inventoryList"])
+    ...mapState("inventories", ["inventoryList"]),
   },
 
   watch: {
@@ -111,13 +133,14 @@ export default {
     },
     dialogAddStock(val) {
       val || this.closeAddStock();
-    }
+    },
   },
 
   methods: {
     ...mapActions("alerts", ["setAlert"]),
     ...mapActions("inventories", {
-      generateBulkInventoryDataWithProductVariantsByProductId: "generateBulkDataWithProductVariantsByProductId",
+      generateBulkInventoryDataWithProductVariantsByProductId:
+        "generateBulkDataWithProductVariantsByProductId",
       getInventoryDataByProductId: "getDataByProductId",
     }),
 
@@ -127,23 +150,28 @@ export default {
 
     generateVariants() {
       let productId = this.$route.params.id;
-      this.generateBulkInventoryDataWithProductVariantsByProductId({ product_id: productId })
-        .then(response => {
+      this.generateBulkInventoryDataWithProductVariantsByProductId({
+        product_id: productId,
+      })
+        .then((response) => {
           let obj = {
             alert: true,
             type: "success",
-            message: response.data.message
+            message: [response.message],
+            outline: true,
           };
 
-          if (response.data.result) {
-            this.getInventoryDataByProductId(productId);
-          } else {
+          if (response.status === "error") {
             obj.type = "error";
+            obj.message = response.errors;
+          } else {
+            this.getInventoryDataByProductId(productId);
           }
+
           this.setAlert(obj);
           this.dialogGenerate = false;
         })
-        .catch(err => console.log(err));
+        .catch((err) => console.log(err));
     },
 
     addStock(id) {
@@ -172,7 +200,7 @@ export default {
 
     setDialogAddStock(value) {
       this.dialogAddStock = value;
-    }
-  }
+    },
+  },
 };
 </script>

@@ -141,7 +141,7 @@ export default {
 
     async editItem(id) {
       const response = await this.getProductVariationDataById(id);
-      let data = response.data.result;
+      let data = response.result;
 
       // set details values
       let details = [];
@@ -176,10 +176,15 @@ export default {
               let obj = {
                 alert: true,
                 type: "success",
-                message: response.data.message,
+                message: [response.message],
+                outline: true,
               };
 
-              if (!response.data.result) obj.type = "error";
+              if (response.status === "error") {
+                obj.type = "error";
+                obj.message = response.errors;
+              }
+
               this.setAlert(obj);
             })
             .catch((err) => console.log(err));
@@ -189,10 +194,15 @@ export default {
               let obj = {
                 alert: true,
                 type: "success",
-                message: response.data.message,
+                message: [response.message],
+                outline: true,
               };
 
-              if (!response.data.result) obj.type = "error";
+              if (response.status === "error") {
+                obj.type = "error";
+                obj.message = response.errors;
+              }
+
               this.setAlert(obj);
             })
             .catch((err) => console.log(err));

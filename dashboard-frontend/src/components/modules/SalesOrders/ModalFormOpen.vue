@@ -2,7 +2,8 @@
   <v-form ref="form" @submit.prevent="save" v-model="valid" lazy-validation>
     <v-card>
       <v-card-title>
-        <v-icon class="black--text">{{ formIcon }}</v-icon><span class="title">{{ formTitle }}</span>
+        <v-icon class="black--text">{{ formIcon }}</v-icon>
+        <span class="title">{{ formTitle }}</span>
       </v-card-title>
       <v-divider></v-divider>
       <v-card-text style="height: 999px;">
@@ -34,10 +35,22 @@
                         v-on="on"
                       ></v-text-field>
                     </template>
-                    <v-date-picker v-model="formData.date_ordered" no-title scrollable>
+                    <v-date-picker
+                      v-model="formData.date_ordered"
+                      no-title
+                      scrollable
+                    >
                       <v-spacer></v-spacer>
-                      <v-btn flat color="primary" @click="date_ordered = false">Cancel</v-btn>
-                      <v-btn flat color="primary" @click="$refs.date_ordered.save(formData.date_ordered)">OK</v-btn>
+                      <v-btn flat color="primary" @click="date_ordered = false">
+                        Cancel
+                      </v-btn>
+                      <v-btn
+                        flat
+                        color="primary"
+                        @click="$refs.date_ordered.save(formData.date_ordered)"
+                      >
+                        OK
+                      </v-btn>
                     </v-date-picker>
                   </v-menu>
                 </v-flex>
@@ -161,16 +174,27 @@
             <v-flex xs12 sm12 md12>
               <span class="title py-3">Details</span>
             </v-flex>
-            <v-flex xs12 sm12 md12 mb-2 v-for="(item, i) in formData.details" :key="i">
+            <v-flex
+              xs12
+              sm12
+              md12
+              mb-2
+              v-for="(item, i) in formData.details"
+              :key="i"
+            >
               <v-card color="grey lighten-5">
                 <v-card-text>
                   <v-layout wrap row>
                     <v-flex xs12 sm12 md12>
                       <v-layout wrap row>
-                        <span class="subheading font-weight-bold py-3">Item {{ i + 1 }}</span>
+                        <span class="subheading font-weight-bold py-3">
+                          Item {{ i + 1 }}
+                        </span>
                         <v-spacer></v-spacer>
                         <v-btn icon>
-                          <v-icon color="error" @click="deleteRow(i)">delete</v-icon>
+                          <v-icon color="error" @click="deleteRow(i)">
+                            delete
+                          </v-icon>
                         </v-btn>
                       </v-layout>
                     </v-flex>
@@ -192,7 +216,13 @@
                         v-model="formData.details[i].product_id"
                         :rules="[rules.required]"
                         label="Product"
-                        v-on:change="setProductVariants(i, formData.details[i].product_id, 'new')"
+                        v-on:change="
+                          setProductVariants(
+                            i,
+                            formData.details[i].product_id,
+                            'new'
+                          )
+                        "
                       ></v-autocomplete>
                     </v-flex>
                     <v-flex xs12 sm12 md3 v-if="formData.details[i].product_id">
@@ -207,7 +237,13 @@
                     </v-flex>
                     <v-flex xs12 sm12 md12>
                       <v-layout wrap row>
-                        <v-flex xs12 sm12 md3 v-for="(variant, x) in productVariants[i].data" :key="x">
+                        <v-flex
+                          xs12
+                          sm12
+                          md3
+                          v-for="(variant, x) in productVariants[i].data"
+                          :key="x"
+                        >
                           <v-autocomplete
                             :items="variant.values"
                             item-text="name"
@@ -229,26 +265,53 @@
                             item-value="id"
                             v-model="formData.details[i].discount_type"
                             label="Discount Type"
-                            :disabled="formData.details[i].product_id === '' ? true : false"
-                            :readonly="formData.details[i].is_flash_deal === 1 ? true : false"
+                            :disabled="
+                              formData.details[i].product_id === ''
+                                ? true
+                                : false
+                            "
+                            :readonly="
+                              formData.details[i].is_flash_deal === 1
+                                ? true
+                                : false
+                            "
                             v-on:change="computeProductByIndex(i)"
                           ></v-autocomplete>
                         </v-flex>
-                        <v-flex xs12 sm12 md6 v-if="formData.details[i].discount_type === 2">
+                        <v-flex
+                          xs12
+                          sm12
+                          md6
+                          v-if="formData.details[i].discount_type === 2"
+                        >
                           <v-text-field
                             v-model="formData.details[i].discount_percentage"
                             label="Discount Percentage"
                             type="number"
-                            :readonly="formData.details[i].is_flash_deal === 1 ? true : false"
+                            :readonly="
+                              formData.details[i].is_flash_deal === 1
+                                ? true
+                                : false
+                            "
                             v-on:input="computeProductByIndex(i)"
                           ></v-text-field>
                         </v-flex>
-                        <v-flex xs12 sm12 md6 v-if="formData.details[i].discount_type">
+                        <v-flex
+                          xs12
+                          sm12
+                          md6
+                          v-if="formData.details[i].discount_type"
+                        >
                           <v-text-field
                             v-model="formData.details[i].discount_amount"
                             label="Discount Amount"
                             type="number"
-                            :readonly="formData.details[i].discount_type === 2 || formData.details[i].is_flash_deal === 1 ? true : false"
+                            :readonly="
+                              formData.details[i].discount_type === 2 ||
+                              formData.details[i].is_flash_deal === 1
+                                ? true
+                                : false
+                            "
                             v-on:input="computeProductByIndex(i)"
                           ></v-text-field>
                         </v-flex>
@@ -304,7 +367,9 @@
             <v-flex xs12 sm12 md12>
               <v-layout wrap row>
                 <v-spacer></v-spacer>
-                <v-btn small outline color="success" @click="addRow()">Add row</v-btn>
+                <v-btn small outline color="success" @click="addRow()">
+                  Add row
+                </v-btn>
               </v-layout>
             </v-flex>
           </v-layout>
@@ -314,7 +379,9 @@
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn color="blue darken-1" flat @click="close">Cancel</v-btn>
-        <v-btn color="blue darken-1" type="submit" flat :disabled="!valid">Save</v-btn>
+        <v-btn color="blue darken-1" type="submit" flat :disabled="!valid">
+          Save
+        </v-btn>
       </v-card-actions>
     </v-card>
   </v-form>
@@ -349,15 +416,15 @@ export default {
           quantity: "0",
           rate_amount: "0.00",
           discount_percentage: null,
-          discount_amount: "0.00" ,
+          discount_amount: "0.00",
           total_discount_amount: "0.00",
           amount: "0.00",
           product_id: "",
           product_flash_deal_detail_id: null,
           discount_type: null,
           claim_type: "",
-          is_flash_deal: 0
-        }
+          is_flash_deal: 0,
+        },
       ],
       // shippingDetails: {
       //   shipping_no: "",
@@ -366,10 +433,12 @@ export default {
       //   shipping_method_id: "",
       //   shipping_method_rate_id: ""
       // },
-      productVariants: [{
-          data: []
-      }],
-      valid: true
+      productVariants: [
+        {
+          data: [],
+        },
+      ],
+      valid: true,
     },
     formType: "new",
     formData: {
@@ -399,8 +468,8 @@ export default {
           product_flash_deal_detail_id: null,
           discount_type: null,
           claim_type: "",
-          is_flash_deal: 0
-        }
+          is_flash_deal: 0,
+        },
       ],
       // shippingDetails: {
       //   shipping_no: "",
@@ -410,10 +479,12 @@ export default {
       //   shipping_method_rate_id: ""
       // }
     },
-    productVariants: [{
-        data: []
-    }],
-    valid: true
+    productVariants: [
+      {
+        data: [],
+      },
+    ],
+    valid: true,
   }),
 
   computed: {
@@ -423,11 +494,13 @@ export default {
     ...mapGetters("productFlashDeals", ["getProductFlashDealTodayFlashDeal"]),
     ...mapGetters("productVariants", ["getProductVariantList"]),
     formTitle() {
-      return this.formType === "new" ? "Sales Order - Create" : "Sales Order - Update";
+      return this.formType === "new"
+        ? "Sales Order - Create"
+        : "Sales Order - Update";
     },
     formIcon() {
       return this.formType === "new" ? "add_box" : "edit";
-    }
+    },
   },
 
   created() {
@@ -439,8 +512,15 @@ export default {
 
   watch: {
     getCustomerList(val) {
-      val.map(element => element.name = this.setFullnameLastnameFirst(element.firstname, element.middlename, element.lastname));
-    }
+      val.map(
+        (element) =>
+          (element.name = this.setFullnameLastnameFirst(
+            element.firstname,
+            element.middlename,
+            element.lastname
+          ))
+      );
+    },
   },
 
   methods: {
@@ -449,13 +529,17 @@ export default {
     ...mapActions("customers", { getCustomersData: "getData" }),
     // ...mapActions("shippingMethods", { getShippingMethodData: "getData" }),
     ...mapActions("products", { getProductData: "getData" }),
-    ...mapActions("productFlashDeals", { getProductFlashDealDataTodayFlashDeal: "getDataTodayFlashDeal" }),
-    ...mapActions("productVariants", { getProductVariantDataByProductId: "getDataByProductId" }),
+    ...mapActions("productFlashDeals", {
+      getProductFlashDealDataTodayFlashDeal: "getDataTodayFlashDeal",
+    }),
+    ...mapActions("productVariants", {
+      getProductVariantDataByProductId: "getDataByProductId",
+    }),
     ...mapActions("inventories", { getInventoryDataBySku: "getDataBySku" }),
     ...mapActions("salesOrders", {
       saveSalesOrderData: "saveData",
       updateSalesOrderData: "updateData",
-      getSalesOrderDataById: "getDataById"
+      getSalesOrderDataById: "getDataById",
     }),
 
     async setProductVariants(index, productId, type) {
@@ -468,11 +552,17 @@ export default {
       try {
         let data = [];
 
-        this.getProductVariantList.forEach(element => {
+        this.getProductVariantList.forEach((element) => {
           let arrayValues = JSON.parse(element.values);
           let arrayObjValue = [];
-          arrayValues.map(value => arrayObjValue.push({ code: value.code, name: value.name }));
-          data.push({ id: element.id, title: element.title, values: arrayObjValue });
+          arrayValues.map((value) =>
+            arrayObjValue.push({ code: value.code, name: value.name })
+          );
+          data.push({
+            id: element.id,
+            title: element.title,
+            values: arrayObjValue,
+          });
         });
 
         if (this.productVariants[index]) {
@@ -480,8 +570,8 @@ export default {
         } else {
           this.productVariants.push({ data: data });
         }
-        
-        if (type === 'new') {
+
+        if (type === "new") {
           await this.setProductVariantListDefaultDataByIndex(index);
         }
       } catch (err) {
@@ -497,18 +587,21 @@ export default {
           // reset value of variant_details
           this.formData.details[index].variant_details = [];
           // set new value for variant_details
-          for (let i=0; i < value.data.length; i++) {
+          for (let i = 0; i < value.data.length; i++) {
             let obj = {
               id: value.data[i].id,
               title: value.data[i].title,
               code: value.data[i].values[0].code,
               name: value.data[i].values[0].name,
-            }
+            };
             this.formData.details[index].variant_details[i] = obj;
           }
 
           // set default value for sku
-          const sku = await this.generateSkuByIndexAndProductVariants(index, this.formData.details[index].variant_details);
+          const sku = await this.generateSkuByIndexAndProductVariants(
+            index,
+            this.formData.details[index].variant_details
+          );
           await this.setProductDetailsByIndexAndSku(index, sku);
           this.formData.details[index].sku = sku;
         }
@@ -523,18 +616,21 @@ export default {
 
         if (!_.isUndefined(value)) {
           // set new value for variant_details
-          for (let i=0; i < value.data.length; i++) {
+          for (let i = 0; i < value.data.length; i++) {
             let obj = {
               id: value.data[i].id,
               title: value.data[i].title,
               code: this.formData.details[index].variant_details[i].code,
               name: this.formData.details[index].variant_details[i].name,
-            }
+            };
             this.formData.details[index].variant_details[i] = obj;
           }
 
           // set default value for sku
-          const sku = await this.generateSkuByIndexAndProductVariants(index, this.formData.details[index].variant_details);
+          const sku = await this.generateSkuByIndexAndProductVariants(
+            index,
+            this.formData.details[index].variant_details
+          );
           await this.setProductDetailsByIndexAndSku(index, sku);
           this.formData.details[index].sku = sku;
         }
@@ -547,13 +643,43 @@ export default {
       try {
         const response = await this.getInventoryDataBySku(sku);
         const productDetails = await this.getProductDetails(sku);
-        this.formData.details[index].quantity = _.isUndefined(productDetails.quantity_available) ? "0" : productDetails.quantity_available.toString();
-        this.formData.details[index].rate_amount = _.isUndefined(productDetails.price_amount) ? "0.00" : productDetails.price_amount;
-        this.formData.details[index].product_flash_deal_detail_id = _.isUndefined(productDetails.product_flash_deal_detail_id) ? null : productDetails.product_flash_deal_detail_id;
-        this.formData.details[index].discount_type = _.isUndefined(productDetails.discount_type) ? "" : productDetails.discount_type;
-        this.formData.details[index].discount_percentage = _.isUndefined(productDetails.discount_percentage) ? "0.00" : productDetails.discount_percentage;
-        this.formData.details[index].discount_amount = _.isUndefined(productDetails.discount_amount) ? "0.00" : productDetails.discount_amount;
-        this.formData.details[index].is_flash_deal = _.isUndefined(productDetails.is_flash_deal) ? 0 : productDetails.is_flash_deal;
+        this.formData.details[index].quantity = _.isUndefined(
+          productDetails.quantity_available
+        )
+          ? "0"
+          : productDetails.quantity_available.toString();
+        this.formData.details[index].rate_amount = _.isUndefined(
+          productDetails.price_amount
+        )
+          ? "0.00"
+          : productDetails.price_amount;
+        this.formData.details[
+          index
+        ].product_flash_deal_detail_id = _.isUndefined(
+          productDetails.product_flash_deal_detail_id
+        )
+          ? null
+          : productDetails.product_flash_deal_detail_id;
+        this.formData.details[index].discount_type = _.isUndefined(
+          productDetails.discount_type
+        )
+          ? ""
+          : productDetails.discount_type;
+        this.formData.details[index].discount_percentage = _.isUndefined(
+          productDetails.discount_percentage
+        )
+          ? "0.00"
+          : productDetails.discount_percentage;
+        this.formData.details[index].discount_amount = _.isUndefined(
+          productDetails.discount_amount
+        )
+          ? "0.00"
+          : productDetails.discount_amount;
+        this.formData.details[index].is_flash_deal = _.isUndefined(
+          productDetails.is_flash_deal
+        )
+          ? 0
+          : productDetails.is_flash_deal;
         await this.computeProductByIndex(index);
       } catch (err) {
         console.log(err);
@@ -564,20 +690,31 @@ export default {
       return new Promise(async (resolve, reject) => {
         try {
           const response = await this.getInventoryDataBySku(sku);
-          const productDetails = response.data.result;
-          const productTodayFlashDealDetails = this.getProductFlashDealTodayFlashDeal.productFlashDealDetails;
-          const productFlashDealDetails = _.isUndefined(productTodayFlashDealDetails) ? undefined : productTodayFlashDealDetails.find(details => details.product_id === productDetails.product_id);
+          const productDetails = response.result;
+          const productTodayFlashDealDetails = this
+            .getProductFlashDealTodayFlashDeal.productFlashDealDetails;
+          const productFlashDealDetails = _.isUndefined(
+            productTodayFlashDealDetails
+          )
+            ? undefined
+            : productTodayFlashDealDetails.find(
+                (details) => details.product_id === productDetails.product_id
+              );
           let obj = {
             quantity_available: productDetails.quantity_available,
-            price_amount: productDetails.price_amount
-          }
+            price_amount: productDetails.price_amount,
+          };
 
           if (!_.isUndefined(productFlashDealDetails)) {
             obj.is_flash_deal = 1;
             obj.product_flash_deal_detail_id = productFlashDealDetails.id;
             obj.discount_type = productFlashDealDetails.discount_type;
             obj.discount_amount = productFlashDealDetails.discount_amount;
-            obj.discount_percentage = productFlashDealDetails.discount_type === 2 ? obj.discount_percentage = productFlashDealDetails.discount_percentage : null;
+            obj.discount_percentage =
+              productFlashDealDetails.discount_type === 2
+                ? (obj.discount_percentage =
+                    productFlashDealDetails.discount_percentage)
+                : null;
           } else {
             obj.discount_type = null;
             obj.product_flash_deal_detail_id = null;
@@ -585,7 +722,7 @@ export default {
             obj.discount_amount = "0.00";
             obj.is_flash_deal = 0;
           }
-      
+
           resolve(obj);
         } catch (err) {
           reject(err);
@@ -596,10 +733,12 @@ export default {
     generateSkuByIndexAndProductVariants(index, variants) {
       return new Promise((resolve, reject) => {
         try {
-          const productCode = this.getProductCodeById(this.formData.details[index].product_id);
+          const productCode = this.getProductCodeById(
+            this.formData.details[index].product_id
+          );
           let sku = productCode;
 
-          variants.forEach(element => {
+          variants.forEach((element) => {
             sku = `${sku}-${element.code}`;
           });
 
@@ -621,8 +760,13 @@ export default {
 
     computeProductDiscountAmountByPercentageIndex(index) {
       if (this.formData.details[index].discount_type === 2) {
-        const discountAmount = (this.formData.details[index].rate_amount * this.formData.details[index].discount_percentage) / 100;
-        this.formData.details[index].discount_amount = discountAmount.toFixed(2);
+        const discountAmount =
+          (this.formData.details[index].rate_amount *
+            this.formData.details[index].discount_percentage) /
+          100;
+        this.formData.details[index].discount_amount = discountAmount.toFixed(
+          2
+        );
       }
     },
 
@@ -630,21 +774,29 @@ export default {
       if (_.isNull(this.formData.details[index].discount_type)) {
         this.formData.details[index].total_discount_amount = "0.00";
       } else {
-        const totalDiscountAmount = this.formData.details[index].discount_amount * this.formData.details[index].quantity;
-        this.formData.details[index].total_discount_amount = totalDiscountAmount.toFixed(2);
+        const totalDiscountAmount =
+          this.formData.details[index].discount_amount *
+          this.formData.details[index].quantity;
+        this.formData.details[
+          index
+        ].total_discount_amount = totalDiscountAmount.toFixed(2);
       }
     },
 
     computeProductAmountByIndex(index) {
-      const amount = (this.formData.details[index].rate_amount * this.formData.details[index].quantity) - this.formData.details[index].total_discount_amount;
+      const amount =
+        this.formData.details[index].rate_amount *
+          this.formData.details[index].quantity -
+        this.formData.details[index].total_discount_amount;
       this.formData.details[index].amount = amount.toFixed(2);
     },
 
     computeSubTotalAmount() {
       const details = this.formData.details;
       let subTotalAmount = 0;
-      details.forEach(element => {
-        let amount = parseFloat(element.rate_amount) * parseInt(element.quantity);
+      details.forEach((element) => {
+        let amount =
+          parseFloat(element.rate_amount) * parseInt(element.quantity);
         subTotalAmount = subTotalAmount + parseFloat(amount);
       });
       this.formData.sub_total_amount = subTotalAmount.toFixed(2);
@@ -653,8 +805,9 @@ export default {
     computeTotalDiscountAmountAmount() {
       const details = this.formData.details;
       let totalDiscountAmount = 0;
-      details.forEach(element => {
-        totalDiscountAmount = totalDiscountAmount + parseFloat(element.discount_amount);
+      details.forEach((element) => {
+        totalDiscountAmount =
+          totalDiscountAmount + parseFloat(element.discount_amount);
       });
       this.formData.total_discount_amount = totalDiscountAmount.toFixed(2);
     },
@@ -662,9 +815,12 @@ export default {
     computeTotalAmount() {
       const subTotalAmount = parseFloat(this.formData.sub_total_amount);
       const shippingFeeAmount = parseFloat(this.formData.shipping_fee_amount);
-      const totalDiscountAmount = parseFloat(this.formData.total_discount_amount);
+      const totalDiscountAmount = parseFloat(
+        this.formData.total_discount_amount
+      );
       const vatAmount = parseFloat(this.formData.vat_amount);
-      let totalAmount = (subTotalAmount + shippingFeeAmount + vatAmount) - totalDiscountAmount;
+      let totalAmount =
+        subTotalAmount + shippingFeeAmount + vatAmount - totalDiscountAmount;
       this.formData.total_amount = totalAmount.toFixed(2);
     },
 
@@ -683,11 +839,11 @@ export default {
         product_flash_deal_detail_id: null,
         discount_type: null,
         claim_type: "",
-        is_flash_deal: 0
+        is_flash_deal: 0,
       });
       this.productVariants.push({
-          data: []
-      })
+        data: [],
+      });
     },
 
     deleteRow(index) {
@@ -698,31 +854,31 @@ export default {
 
     async editItem(id) {
       const response = await this.getSalesOrderDataById(id);
-      let data = response.data.result;
+      let data = response.result;
 
       // set details values
       let details = [];
-      for(let i = 0; i < data.salesOrderDetails.length; i++) {
-          let obj = data.salesOrderDetails[i];
-          details.push({
-            id: obj.id,
-            sku: obj.sku,
-            variant_details: JSON.parse(obj.variant_details),
-            remarks: obj.remarks,
-            quantity: obj.quantity.toString(),
-            rate_amount: obj.rate_amount,
-            discount_percentage: obj.discount_percentage,
-            discount_amount: obj.discount_amount,
-            total_discount_amount: obj.total_discount_amount,
-            amount: obj.amount,
-            product_id: obj.product_id,
-            product_flash_deal_detail_id: obj.product_flash_deal_detail_id,
-            discount_type: obj.discount_type,
-            claim_type: obj.claim_type,
-            is_flash_deal: obj.is_flash_deal
-          });
+      for (let i = 0; i < data.salesOrderDetails.length; i++) {
+        let obj = data.salesOrderDetails[i];
+        details.push({
+          id: obj.id,
+          sku: obj.sku,
+          variant_details: JSON.parse(obj.variant_details),
+          remarks: obj.remarks,
+          quantity: obj.quantity.toString(),
+          rate_amount: obj.rate_amount,
+          discount_percentage: obj.discount_percentage,
+          discount_amount: obj.discount_amount,
+          total_discount_amount: obj.total_discount_amount,
+          amount: obj.amount,
+          product_id: obj.product_id,
+          product_flash_deal_detail_id: obj.product_flash_deal_detail_id,
+          discount_type: obj.discount_type,
+          claim_type: obj.claim_type,
+          is_flash_deal: obj.is_flash_deal,
+        });
 
-          await this.setProductVariants(i, obj.product_id, "update");
+        await this.setProductVariants(i, obj.product_id, "update");
       }
 
       this.formData.id = data.id;
@@ -755,36 +911,46 @@ export default {
 
         if (this.formType === "new") {
           this.saveSalesOrderData(this.formData)
-            .then(response => {
+            .then((response) => {
               let obj = {
                 alert: true,
                 type: "success",
-                message: response.data.message
+                message: [response.message],
+                outline: true,
               };
-              
-              if (!response.data.result) obj.type = "error"
+
+              if (response.status === "error") {
+                obj.type = "error";
+                obj.message = response.errors;
+              }
+
               this.setAlert(obj);
               this.setLoading({ dialog: false, text: "" });
             })
-            .catch(err => console.log(err));
+            .catch((err) => console.log(err));
         } else if (this.formType === "update") {
           this.updateSalesOrderData(this.formData)
-            .then(response => {
+            .then((response) => {
               let obj = {
                 alert: true,
                 type: "success",
-                message: response.data.message
+                message: [response.message],
+                outline: true,
               };
-              
-              if (!response.data.result) obj.type = "error"
+
+              if (response.status === "error") {
+                obj.type = "error";
+                obj.message = response.errors;
+              }
+
               this.setAlert(obj);
               this.setLoading({ dialog: false, text: "" });
             })
-            .catch(err => console.log(err));
+            .catch((err) => console.log(err));
         }
         this.close();
       }
-    }
-  }
+    },
+  },
 };
 </script>

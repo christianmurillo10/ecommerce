@@ -1,158 +1,216 @@
 import axios from "axios";
-import FormData from 'form-data';
+import FormData from "form-data";
+const apiUrl = process.env.VUE_APP_API_BACKEND;
 
 const imageType = {
   main: 1,
   thumbnail: 2,
   featured: 3,
   flasDeal: 4,
-}
+};
 
 const state = {
   productImageList: [],
   productImageMainList: [],
   productImageThumbnailList: [],
   productImageFeaturedList: [],
-  productImageFlashDealList: []
+  productImageFlashDealList: [],
 };
 
 const getters = {
   getProductImageByIdAndType: (state) => (id, type) => {
-    switch(parseInt(type)) {
+    switch (parseInt(type)) {
       case imageType.main:
-        return state.productImageMainList.find(productImage => productImage.id === id);
+        return state.productImageMainList.find(
+          (productImage) => productImage.id === id
+        );
       case imageType.thumbnail:
-        return state.productImageThumbnailList.find(productImage => productImage.id === id);
+        return state.productImageThumbnailList.find(
+          (productImage) => productImage.id === id
+        );
       case imageType.featured:
-        return state.productImageFeaturedList.find(productImage => productImage.id === id);
+        return state.productImageFeaturedList.find(
+          (productImage) => productImage.id === id
+        );
       case imageType.flasDeal:
-        return state.productImageFlashDealList.find(productImage => productImage.id === id);
+        return state.productImageFlashDealList.find(
+          (productImage) => productImage.id === id
+        );
     }
   },
   getProductImageFileNameById: (state) => (id) => {
-    return state.productImageList.find(productImage => productImage.id === id).file_name;
+    return state.productImageList.find((productImage) => productImage.id === id)
+      .file_name;
   },
   getProductImageList: (state) => {
     return state.productImageList;
-  }
+  },
 };
 
 const actions = {
-  getDataById({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/productImages/${payload}`;
-    let header = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
+  getDataById(
+    { dispatch, commit, state, rootState, getters, rootGetters },
+    payload
+  ) {
+    const url = `${apiUrl}/productImages/${payload}`;
+    const header = {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    };
     return new Promise((resolve, reject) => {
       try {
         axios
           .get(url, header)
-          .then(response => {
-            resolve(response);
+          .then((response) => {
+            const data = response.data;
+            resolve(data);
+          })
+          .catch((err) => {
+            resolve(err.response.data);
           });
       } catch (err) {
         reject(err);
       }
     });
   },
-  getDataByProductIdAndType({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/productImages/findAllbyProductIdAndType/${payload.productId}/${payload.type}`;
-    let header = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
+  getDataByProductIdAndType(
+    { dispatch, commit, state, rootState, getters, rootGetters },
+    payload
+  ) {
+    const url = `${apiUrl}/productImages/findAllbyProductIdAndType/${
+      payload.productId
+    }/${payload.type}`;
+    const header = {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    };
     return new Promise((resolve, reject) => {
       try {
         axios
           .get(url, header)
-          .then(response => {
+          .then((response) => {
             let obj = {
               data: response.data.result,
-              type: payload.type
-            }
+              type: payload.type,
+            };
 
             if (obj.data) {
-              obj.data.forEach(element => {
+              obj.data.forEach((element) => {
                 if (!_.isNull(element.file_name)) {
-                  element.file_path = `${process.env.VUE_APP_API_BACKEND}/productImages/viewImage/${element.file_name}/${element.type}`;
+                  element.file_path = `${apiUrl}/productImages/viewImage/${
+                    element.file_name
+                  }/${element.type}`;
                 } else {
                   element.file_path = require("../../assets/images/no-image.png");
                 }
               });
             }
             commit("SET_DATA", obj);
-            resolve(response);
+            resolve(obj.data);
+          })
+          .catch((err) => {
+            resolve(err.response.data);
           });
       } catch (err) {
         reject(err);
       }
     });
   },
-  saveData({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/productImages/create`;
-    let header = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
+  saveData(
+    { dispatch, commit, state, rootState, getters, rootGetters },
+    payload
+  ) {
+    const url = `${apiUrl}/productImages/create`;
+    const header = {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    };
     return new Promise((resolve, reject) => {
       try {
         var data = new FormData();
-        data.set('file_name', payload.file_name);
-        data.set('order', payload.order);
-        data.set('product_id', payload.product_id);
-        data.set('type', payload.type);
-        data.append('image', payload.file);
+        data.set("file_name", payload.file_name);
+        data.set("order", payload.order);
+        data.set("product_id", payload.product_id);
+        data.set("type", payload.type);
+        data.append("image", payload.file);
 
         axios
           .post(url, data, header)
-          .then(response => {
-            if (response.data.result) {
-              commit("ADD_DATA", response.data.result);
+          .then((response) => {
+            const data = response.data;
+            if (data.result) {
+              commit("ADD_DATA", data.result);
             }
-            resolve(response);
+            resolve(data);
+          })
+          .catch((err) => {
+            resolve(err.response.data);
           });
       } catch (err) {
         reject(err);
       }
     });
   },
-  updateData({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/productImages/update/${payload.id}`;
-    let header = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
+  updateData(
+    { dispatch, commit, state, rootState, getters, rootGetters },
+    payload
+  ) {
+    const url = `${apiUrl}/productImages/update/${payload.id}`;
+    const header = {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    };
     return new Promise((resolve, reject) => {
       try {
         var data = new FormData();
-        data.set('file_name', payload.file_name);
-        data.set('order', payload.order);
-        data.set('product_id', payload.product_id);
-        data.set('type', payload.type);
-        data.append('image', payload.file);
+        data.set("file_name", payload.file_name);
+        data.set("order", payload.order);
+        data.set("product_id", payload.product_id);
+        data.set("type", payload.type);
+        data.append("image", payload.file);
 
         axios
           .put(url, data, header)
-          .then(response => {
-            commit("UPDATE_DATA", response.data.result);
-            resolve(response);
+          .then((response) => {
+            const data = response.data;
+            commit("UPDATE_DATA", data.result);
+            resolve(data);
+          })
+          .catch((err) => {
+            resolve(err.response.data);
           });
       } catch (err) {
         reject(err);
       }
     });
   },
-  deleteData({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/productImages/delete/${payload.id}`;
-    let header = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
+  deleteData(
+    { dispatch, commit, state, rootState, getters, rootGetters },
+    payload
+  ) {
+    const url = `${apiUrl}/productImages/delete/${payload.id}`;
+    const header = {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    };
     return new Promise((resolve, reject) => {
       try {
         axios
-          .put(url, '', header)
-          .then(response => {
+          .put(url, "", header)
+          .then((response) => {
+            const data = response.data;
             commit("DELETE_DATA", payload);
-            resolve(response);
+            resolve(data);
+          })
+          .catch((err) => {
+            resolve(err.response.data);
           });
       } catch (err) {
         reject(err);
       }
     });
-  }
+  },
 };
 
 const mutations = {
   SET_DATA(state, payload) {
     if (payload.data) {
-      switch(parseInt(payload.type)) {
+      switch (parseInt(payload.type)) {
         case imageType.main:
           state.productImageMainList = payload.data;
           break;
@@ -167,7 +225,7 @@ const mutations = {
           break;
       }
     } else {
-      switch(parseInt(payload.type)) {
+      switch (parseInt(payload.type)) {
         case imageType.main:
           state.productImageMainList = [];
           break;
@@ -185,9 +243,13 @@ const mutations = {
   },
   ADD_DATA(state, payload) {
     let obj = payload;
-    obj.file_path = _.isNull(payload.file_name) ? require("../../assets/images/no-image.png") : `${process.env.VUE_APP_API_BACKEND}/productImages/viewImage/${payload.file_name}/${payload.type}`;
+    obj.file_path = _.isNull(payload.file_name)
+      ? require("../../assets/images/no-image.png")
+      : `${apiUrl}/productImages/viewImage/${payload.file_name}/${
+          payload.type
+        }`;
 
-    switch(parseInt(payload.type)) {
+    switch (parseInt(payload.type)) {
       case imageType.main:
         state.productImageMainList.push(obj);
         break;
@@ -209,50 +271,69 @@ const mutations = {
       order: payload.order,
       product_id: payload.product_id,
       type: payload.type,
-      file_path: _.isNull(payload.file_name) ? require("../../assets/images/no-image.png") : `${process.env.VUE_APP_API_BACKEND}/productImages/viewImage/${payload.file_name}/${payload.type}`
-    }
-    
-    switch(parseInt(payload.type)) {
+      file_path: _.isNull(payload.file_name)
+        ? require("../../assets/images/no-image.png")
+        : `${apiUrl}/productImages/viewImage/${payload.file_name}/${
+            payload.type
+          }`,
+    };
+
+    switch (parseInt(payload.type)) {
       case imageType.main:
-        index = state.productImageMainList.map(productImage => productImage.id).indexOf(payload.id);
+        index = state.productImageMainList
+          .map((productImage) => productImage.id)
+          .indexOf(payload.id);
         Object.assign(state.productImageMainList[index], obj);
         break;
       case imageType.thumbnail:
-        index = state.productImageThumbnailList.map(productImage => productImage.id).indexOf(payload.id);
+        index = state.productImageThumbnailList
+          .map((productImage) => productImage.id)
+          .indexOf(payload.id);
         Object.assign(state.productImageThumbnailList[index], obj);
         break;
       case imageType.featured:
-        index = state.productImageFeaturedList.map(productImage => productImage.id).indexOf(payload.id);
+        index = state.productImageFeaturedList
+          .map((productImage) => productImage.id)
+          .indexOf(payload.id);
         Object.assign(state.productImageFeaturedList[index], obj);
         break;
       case imageType.flasDeal:
-        index = state.productImageFlashDealList.map(productImage => productImage.id).indexOf(payload.id);
+        index = state.productImageFlashDealList
+          .map((productImage) => productImage.id)
+          .indexOf(payload.id);
         Object.assign(state.productImageFlashDealList[index], obj);
         break;
     }
   },
   DELETE_DATA(state, payload) {
     let index = null;
-    switch(parseInt(payload.type)) {
+    switch (parseInt(payload.type)) {
       case imageType.main:
-        index = state.productImageMainList.map(productImage => productImage.id).indexOf(payload.id);
+        index = state.productImageMainList
+          .map((productImage) => productImage.id)
+          .indexOf(payload.id);
         state.productImageMainList.splice(index, 1);
         break;
       case imageType.thumbnail:
-        index = state.productImageThumbnailList.map(productImage => productImage.id).indexOf(payload.id);
+        index = state.productImageThumbnailList
+          .map((productImage) => productImage.id)
+          .indexOf(payload.id);
         state.productImageThumbnailList.splice(index, 1);
         break;
       case imageType.featured:
-        index = state.productImageFeaturedList.map(productImage => productImage.id).indexOf(payload.id);
+        index = state.productImageFeaturedList
+          .map((productImage) => productImage.id)
+          .indexOf(payload.id);
         state.productImageFeaturedList.splice(index, 1);
         break;
       case imageType.flasDeal:
-        index = state.productImageFlashDealList.map(productImage => productImage.id).indexOf(payload.id);
+        index = state.productImageFlashDealList
+          .map((productImage) => productImage.id)
+          .indexOf(payload.id);
         state.productImageFlashDealList.splice(index, 1);
         break;
     }
-
-  }
+  },
 };
 
 export default {
@@ -260,5 +341,5 @@ export default {
   state,
   getters,
   actions,
-  mutations
+  mutations,
 };

@@ -31,7 +31,9 @@
                 chips
                 deletable-chips
                 :rules="[rules.required]"
-                :disabled="getFilteredProductVariationDetailList.length ? false : true"
+                :disabled="
+                  getFilteredProductVariationDetailList.length ? false : true
+                "
               ></v-combobox>
             </v-flex>
           </v-layout>
@@ -93,9 +95,15 @@ export default {
 
   watch: {
     "formData.title": function(val) {
-      const productVariation = this.getProductVariationList.find(element => element.name == val);
-      const productVariationId = _.isUndefined(productVariation) ? null : productVariation.id;
-      this.getProductVariationDetailsDataByProductVariationId(productVariationId);
+      const productVariation = this.getProductVariationList.find(
+        (element) => element.name == val
+      );
+      const productVariationId = _.isUndefined(productVariation)
+        ? null
+        : productVariation.id;
+      this.getProductVariationDetailsDataByProductVariationId(
+        productVariationId
+      );
     },
   },
 
@@ -108,7 +116,7 @@ export default {
     }),
     ...mapActions("productVariants", {
       saveProductVariantData: "saveData",
-      updateProductVariantData: "updateData"
+      updateProductVariantData: "updateData",
     }),
 
     editItem(id) {
@@ -130,7 +138,6 @@ export default {
 
     async save() {
       let productId = this.$route.params.id;
-      // save variant
       if (this.formType === "new") {
         this.formData.product_id = productId;
         this.saveProductVariantData(this.formData)
@@ -138,10 +145,15 @@ export default {
             let obj = {
               alert: true,
               type: "success",
-              message: response.data.message,
+              message: [response.message],
+              outline: true,
             };
 
-            if (!response.data.result) obj.type = "error";
+            if (response.status === "error") {
+              obj.type = "error";
+              obj.message = response.errors;
+            }
+
             this.setAlert(obj);
           })
           .catch((err) => console.log(err));
@@ -151,10 +163,15 @@ export default {
             let obj = {
               alert: true,
               type: "success",
-              message: response.data.message,
+              message: [response.message],
+              outline: true,
             };
 
-            if (!response.data.result) obj.type = "error";
+            if (response.status === "error") {
+              obj.type = "error";
+              obj.message = response.errors;
+            }
+
             this.setAlert(obj);
           })
           .catch((err) => console.log(err));

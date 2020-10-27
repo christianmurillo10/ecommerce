@@ -1,112 +1,169 @@
 import axios from "axios";
+const apiUrl = process.env.VUE_APP_API_BACKEND;
 
 const state = {
   productList: [],
   productIsFeaturedList: [],
-  productTotalCount: 0
+  productTotalCount: 0,
 };
 
 const getters = {
   getProductById: (state) => (id) => {
-    return state.productList.find(product => product.id === id);
+    return state.productList.find((product) => product.id === id);
   },
   getProductCodeById: (state) => (id) => {
-    return state.productList.find(product => product.id === id).code;
+    return state.productList.find((product) => product.id === id).code;
   },
   getProductNameById: (state) => (id) => {
-    return state.productList.find(product => product.id === id).name;
+    return state.productList.find((product) => product.id === id).name;
   },
   getProductList: (state) => {
     return state.productList;
-  }
+  },
 };
 
 const actions = {
   getData({ dispatch, commit, state, rootState, getters, rootGetters }) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/products/`;
-    let header = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
-    return new Promise((resolve, reject) => {
-      try {
-        axios.get(url, header)
-          .then(response => {
-            commit("SET_DATA", response.data.result);
-          });
-      } catch (err) {
-        reject(err);
-      }
-    });
-  },
-  getDataByIsFeatured({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/products/featured/${payload}`;
-    let header = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
-    return new Promise((resolve, reject) => {
-      try {
-        axios.get(url, header)
-          .then(response => {
-            let obj = response.data.result;
-
-            if (obj) {
-              obj.forEach(element => {
-                if (element.productImages.length > 0) {
-                  element.productImages.forEach(elementImage => {
-                    elementImage.file_path = `${process.env.VUE_APP_API_BACKEND}/productImages/viewImage/${elementImage.file_name}/${elementImage.type}`;
-                  });
-                } else {
-                  element.productImages.push({ file_path: require("../../assets/images/no-image.png") });
-                }
-              });
-            }
-            
-            commit("SET_DATA_BY_IS_FEATURED", obj);
-          });
-      } catch (err) {
-        reject(err);
-      }
-    });
-  },
-  getDataWithLimitAndOffset({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/products/findAllWithLimitAndOffset/${payload.limit}/${payload.offset}`;
-    let header = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
-    return new Promise((resolve, reject) => {
-      try {
-        axios.get(url, header)
-          .then(response => {
-            let obj = response.data.result;
-
-            obj.data.forEach(element => {
-              obj.data.is_published === 1 ? true : false;
-              if (element.productImages.length > 0) {
-                element.productImages.forEach(elementImage => {
-                  elementImage.file_path = `${process.env.VUE_APP_API_BACKEND}/productImages/viewImage/${elementImage.file_name}/${elementImage.type}`;
-                });
-              } else {
-                element.productImages.push({ file_path: require("../../assets/images/no-image.png") });
-              }
-            });
-            commit("SET_DATA_WITH_COUNT", obj);
-          });
-      } catch (err) {
-        reject(err);
-      }
-    });
-  },
-  getDataById({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/products/${payload}`;
-    let header = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
+    const url = `${apiUrl}/products/`;
+    const header = {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    };
     return new Promise((resolve, reject) => {
       try {
         axios
           .get(url, header)
-          .then(response => {
-            let obj = response;
+          .then((response) => {
+            const data = response.data;
+            commit("SET_DATA", data.result);
+            resolve(data);
+          })
+          .catch((err) => {
+            commit("SET_DATA", []);
+            resolve(err.response.data);
+          });
+      } catch (err) {
+        reject(err);
+      }
+    });
+  },
+  getDataByIsFeatured(
+    { dispatch, commit, state, rootState, getters, rootGetters },
+    payload
+  ) {
+    const url = `${apiUrl}/products/featured/${payload}`;
+    const header = {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    };
+    return new Promise((resolve, reject) => {
+      try {
+        axios
+          .get(url, header)
+          .then((response) => {
+            const data = response.data;
+            let obj = data.result;
 
-            if (obj.data.result.productImages.length !== 0) {
-              obj.data.result.productImages.forEach(element => {
-                element.file_path = `${process.env.VUE_APP_API_BACKEND}/productImages/viewImage/${element.file_name}/${element.type}`;
+            if (obj) {
+              obj.forEach((element) => {
+                if (element.productImages.length > 0) {
+                  element.productImages.forEach((elementImage) => {
+                    elementImage.file_path = `${apiUrl}/productImages/viewImage/${
+                      elementImage.file_name
+                    }/${elementImage.type}`;
+                  });
+                } else {
+                  element.productImages.push({
+                    file_path: require("../../assets/images/no-image.png"),
+                  });
+                }
+              });
+            }
+
+            commit("SET_DATA_BY_IS_FEATURED", obj);
+            resolve(data);
+          })
+          .catch((err) => {
+            commit("SET_DATA_BY_IS_FEATURED", []);
+            resolve(err.response.data);
+          });
+      } catch (err) {
+        reject(err);
+      }
+    });
+  },
+  getDataWithLimitAndOffset(
+    { dispatch, commit, state, rootState, getters, rootGetters },
+    payload
+  ) {
+    const { limit, offset } = payload;
+    const url = `${apiUrl}/products/findAllWithLimitAndOffset?limit=${limit}&offset=${offset}`;
+    const header = {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    };
+    return new Promise((resolve, reject) => {
+      try {
+        axios
+          .get(url, header)
+          .then((response) => {
+            const data = response.data;
+            let obj = data.result;
+
+            if (obj.data) {
+              obj.data.forEach((element) => {
+                obj.data.is_published === 1 ? true : false;
+                if (element.productImages.length > 0) {
+                  element.productImages.forEach((elementImage) => {
+                    elementImage.file_path = `${apiUrl}/productImages/viewImage/${
+                      elementImage.file_name
+                    }/${elementImage.type}`;
+                  });
+                } else {
+                  element.productImages.push({
+                    file_path: require("../../assets/images/no-image.png"),
+                  });
+                }
+              });
+            }
+
+            commit("SET_DATA_WITH_COUNT", obj);
+            resolve(data);
+          })
+          .catch((err) => {
+            commit("SET_DATA_WITH_COUNT", []);
+            resolve(err.response.data);
+          });
+      } catch (err) {
+        reject(err);
+      }
+    });
+  },
+  getDataById(
+    { dispatch, commit, state, rootState, getters, rootGetters },
+    payload
+  ) {
+    const url = `${apiUrl}/products/${payload}`;
+    const header = {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    };
+    return new Promise((resolve, reject) => {
+      try {
+        axios
+          .get(url, header)
+          .then((response) => {
+            const data = response.data;
+            let obj = data.result;
+
+            if (obj.productImages.length !== 0) {
+              obj.productImages.forEach((element) => {
+                element.file_path = `${apiUrl}/productImages/viewImage/${
+                  element.file_name
+                }/${element.type}`;
               });
             }
 
             resolve(obj);
+          })
+          .catch((err) => {
+            resolve(err.response.data);
           });
       } catch (err) {
         reject(err);
@@ -114,23 +171,36 @@ const actions = {
     });
   },
   getTotalCount({ dispatch, commit, state, rootState, getters, rootGetters }) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/products/count/all`;
-    let header = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
+    const url = `${apiUrl}/products/count/all`;
+    const header = {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    };
     return new Promise((resolve, reject) => {
       try {
-        axios.get(url, header)
-          .then(response => {
-            commit("SET_TOTAL_COUNT", response.data.result);
-            resolve(response);
+        axios
+          .get(url, header)
+          .then((response) => {
+            const data = response.data;
+            commit("SET_TOTAL_COUNT", data.result);
+            resolve(data);
+          })
+          .catch((err) => {
+            commit("SET_TOTAL_COUNT", 0);
+            resolve(err.response.data);
           });
       } catch (err) {
         reject(err);
       }
     });
   },
-  saveData({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/products/create`;
-    let header = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
+  saveData(
+    { dispatch, commit, state, rootState, getters, rootGetters },
+    payload
+  ) {
+    const url = `${apiUrl}/products/create`;
+    const header = {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    };
     return new Promise((resolve, reject) => {
       try {
         let obj = {
@@ -146,25 +216,34 @@ const actions = {
           product_sub_category_id: payload.product_sub_category_id,
           product_sub_sub_category_id: payload.product_sub_sub_category_id,
           is_featured: payload.is_featured,
-          is_published: payload.is_published
+          is_published: payload.is_published,
         };
 
         axios
           .post(url, obj, header)
-          .then(response => {
-            if (response.data.result) {
-              commit("ADD_DATA", response.data.result);
+          .then((response) => {
+            const data = response.data;
+            if (data.result) {
+              commit("ADD_DATA", data.result);
             }
-            resolve(response);
+            resolve(data);
+          })
+          .catch((err) => {
+            resolve(err.response.data);
           });
       } catch (err) {
         reject(err);
       }
     });
   },
-  updateData({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/products/update/${payload.id}`;
-    let header = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
+  updateData(
+    { dispatch, commit, state, rootState, getters, rootGetters },
+    payload
+  ) {
+    const url = `${apiUrl}/products/update/${payload.id}`;
+    const header = {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    };
     return new Promise((resolve, reject) => {
       try {
         let obj = {
@@ -180,23 +259,32 @@ const actions = {
           product_sub_category_id: payload.product_sub_category_id,
           product_sub_sub_category_id: payload.product_sub_sub_category_id,
           is_featured: payload.is_featured,
-          is_published: payload.is_published
+          is_published: payload.is_published,
         };
 
         axios
           .put(url, obj, header)
-          .then(response => {
-            commit("UPDATE_DATA", response.data.result);
-            resolve(response);
+          .then((response) => {
+            const data = response.data;
+            commit("UPDATE_DATA", data.result);
+            resolve(data);
+          })
+          .catch((err) => {
+            resolve(err.response.data);
           });
       } catch (err) {
         reject(err);
       }
     });
   },
-  updateStatusData({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/products/updateStatus/${payload.id}`;
-    let header = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
+  updateStatusData(
+    { dispatch, commit, state, rootState, getters, rootGetters },
+    payload
+  ) {
+    const url = `${apiUrl}/products/updateStatus/${payload.id}`;
+    const header = {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    };
     return new Promise((resolve, reject) => {
       try {
         let fieldName = payload.fieldName;
@@ -206,31 +294,44 @@ const actions = {
 
         axios
           .put(url, obj, header)
-          .then(response => {
-            commit("UPDATE_DATA", response.data.result);
-            resolve(response);
+          .then((response) => {
+            const data = response.data;
+            commit("UPDATE_DATA", data.result);
+            resolve(data);
+          })
+          .catch((err) => {
+            resolve(err.response.data);
           });
       } catch (err) {
         reject(err);
       }
     });
   },
-  deleteData({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/products/delete/${payload}`;
-    let header = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
+  deleteData(
+    { dispatch, commit, state, rootState, getters, rootGetters },
+    payload
+  ) {
+    const url = `${apiUrl}/products/delete/${payload}`;
+    const header = {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    };
     return new Promise((resolve, reject) => {
       try {
         axios
-          .put(url, '', header)
-          .then(response => {
+          .put(url, "", header)
+          .then((response) => {
+            const data = response.data;
             commit("DELETE_DATA", payload);
-            resolve(response);
+            resolve(data);
+          })
+          .catch((err) => {
+            resolve(err.response.data);
           });
       } catch (err) {
         reject(err);
       }
     });
-  }
+  },
 };
 
 const mutations = {
@@ -268,7 +369,9 @@ const mutations = {
     state.productList.push(payload);
   },
   UPDATE_DATA(state, payload) {
-    let index = state.productList.map(product => product.id).indexOf(payload.id);
+    const index = state.productList
+      .map((product) => product.id)
+      .indexOf(payload.id);
     Object.assign(state.productList[index], {
       code: payload.code,
       name: payload.name,
@@ -282,13 +385,15 @@ const mutations = {
       product_sub_category_id: payload.product_sub_category_id,
       product_sub_sub_category_id: payload.product_sub_sub_category_id,
       is_featured: payload.is_featured,
-      is_published: payload.is_published
+      is_published: payload.is_published,
     });
   },
   DELETE_DATA(state, payload) {
-    let index = state.productList.map(product => product.id).indexOf(payload);
+    const index = state.productList
+      .map((product) => product.id)
+      .indexOf(payload);
     state.productList.splice(index, 1);
-  }
+  },
 };
 
 export default {
@@ -296,5 +401,5 @@ export default {
   state,
   getters,
   actions,
-  mutations
+  mutations,
 };

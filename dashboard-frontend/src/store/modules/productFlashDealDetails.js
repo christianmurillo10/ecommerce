@@ -1,77 +1,119 @@
 import axios from "axios";
+const apiUrl = process.env.VUE_APP_API_BACKEND;
 
 const state = {
-  productFlashDealDetailList: []
+  productFlashDealDetailList: [],
 };
 
 const getters = {
   getProductFlashDealDetailById: (state) => (id) => {
-    return state.productFlashDealDetailList.find(productFlashDealDetail => productFlashDealDetail.id === id);
+    return state.productFlashDealDetailList.find(
+      (productFlashDealDetail) => productFlashDealDetail.id === id
+    );
   },
   getProductFlashDealDetailList: (state) => {
     return state.productFlashDealDetailList;
-  }
+  },
 };
 
 const actions = {
   getData({ dispatch, commit, state, rootState, getters, rootGetters }) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/productFlashDealDetails/`;
-    let header = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
-    return new Promise((resolve, reject) => {
-      try {
-        axios.get(url, header)
-          .then(response => {
-            commit("SET_DATA", response.data.result);
-          });
-      } catch (err) {
-        reject(err);
-      }
-    });
-  },
-  getDataByProductFlashDealId({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/productFlashDealDetails/findAllbyProductFlashDealId/${payload}`;
-    let header = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
-    return new Promise((resolve, reject) => {
-      try {
-        axios.get(url, header)
-          .then(response => {
-            let obj = response.data.result;
-            if (obj) {
-              obj.forEach(element => {
-                if (element.products.productImages.length > 0) {
-                  element.products.productImages.forEach(elementImage => {
-                    elementImage.file_path = `${process.env.VUE_APP_API_BACKEND}/productImages/viewImage/${elementImage.file_name}/${elementImage.type}`;
-                  });
-                } else {
-                  element.products.productImages.push({ file_path: require("../../assets/images/no-image.png") });
-                }
-              });
-            }
-            commit("SET_DATA", obj);
-          });
-      } catch (err) {
-        reject(err);
-      }
-    });
-  },
-  getDataById({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/productFlashDealDetails/${payload}`;
-    let header = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
+    const url = `${apiUrl}/productFlashDealDetails/`;
+    const header = {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    };
     return new Promise((resolve, reject) => {
       try {
         axios
           .get(url, header)
-          .then(response => {
-            resolve(response);
+          .then((response) => {
+            const data = response.data;
+            commit("SET_DATA", data.result);
+            resolve(data);
+          })
+          .catch((err) => {
+            commit("SET_DATA", []);
+            resolve(err.response.data);
           });
       } catch (err) {
         reject(err);
       }
     });
   },
-  saveData({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/productFlashDealDetails/create`;
-    let header = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
+  getDataByProductFlashDealId(
+    { dispatch, commit, state, rootState, getters, rootGetters },
+    payload
+  ) {
+    const url = `${apiUrl}/productFlashDealDetails/findAllbyProductFlashDealId/${payload}`;
+    const header = {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    };
+    return new Promise((resolve, reject) => {
+      try {
+        axios
+          .get(url, header)
+          .then((response) => {
+            const data = response.data;
+            let obj = data.result;
+            if (obj) {
+              obj.forEach((element) => {
+                if (element.products.productImages.length > 0) {
+                  element.products.productImages.forEach((elementImage) => {
+                    elementImage.file_path = `${apiUrl}/productImages/viewImage/${
+                      elementImage.file_name
+                    }/${elementImage.type}`;
+                  });
+                } else {
+                  element.products.productImages.push({
+                    file_path: require("../../assets/images/no-image.png"),
+                  });
+                }
+              });
+            }
+            commit("SET_DATA", obj);
+            resolve(data);
+          })
+          .catch((err) => {
+            commit("SET_DATA", []);
+            resolve(err.response.data);
+          });
+      } catch (err) {
+        reject(err);
+      }
+    });
+  },
+  getDataById(
+    { dispatch, commit, state, rootState, getters, rootGetters },
+    payload
+  ) {
+    const url = `${apiUrl}/productFlashDealDetails/${payload}`;
+    const header = {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    };
+    return new Promise((resolve, reject) => {
+      try {
+        axios
+          .get(url, header)
+          .then((response) => {
+            const data = response.data;
+            resolve(data);
+          })
+          .catch((err) => {
+            resolve(err.response.data);
+          });
+      } catch (err) {
+        reject(err);
+      }
+    });
+  },
+  saveData(
+    { dispatch, commit, state, rootState, getters, rootGetters },
+    payload
+  ) {
+    const url = `${apiUrl}/productFlashDealDetails/create`;
+    const header = {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    };
     return new Promise((resolve, reject) => {
       try {
         let obj = {
@@ -82,33 +124,46 @@ const actions = {
           quantity: payload.quantity,
           product_id: payload.product_id,
           product_flash_deal_id: payload.product_flash_deal_id,
-          discount_type: payload.discount_type
+          discount_type: payload.discount_type,
         };
 
         axios
           .post(url, obj, header)
-          .then(response => {
-            if (response.data.result) {
-              let obj = response.data.result;
+          .then((response) => {
+            const data = response.data;
+            let obj = data.result;
+            if (obj) {
               if (obj.products.productImages.length > 0) {
-                obj.products.productImages.forEach(elementImage => {
-                  elementImage.file_path = `${process.env.VUE_APP_API_BACKEND}/productImages/viewImage/${elementImage.file_name}/${elementImage.type}`;
+                obj.products.productImages.forEach((elementImage) => {
+                  elementImage.file_path = `${apiUrl}/productImages/viewImage/${
+                    elementImage.file_name
+                  }/${elementImage.type}`;
                 });
               } else {
-                obj.products.productImages.push({ file_path: require("../../assets/images/no-image.png") });
+                obj.products.productImages.push({
+                  file_path: require("../../assets/images/no-image.png"),
+                });
               }
               commit("ADD_DATA", obj);
             }
-            resolve(response);
+            resolve(data);
+          })
+          .catch((err) => {
+            resolve(err.response.data);
           });
       } catch (err) {
         reject(err);
       }
     });
   },
-  updateData({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/productFlashDealDetails/update/${payload.id}`;
-    let header = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
+  updateData(
+    { dispatch, commit, state, rootState, getters, rootGetters },
+    payload
+  ) {
+    const url = `${apiUrl}/productFlashDealDetails/update/${payload.id}`;
+    const header = {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    };
     return new Promise((resolve, reject) => {
       try {
         let obj = {
@@ -118,44 +173,61 @@ const actions = {
           quantity: payload.quantity,
           product_id: payload.product_id,
           product_flash_deal_id: payload.product_flash_deal_id,
-          discount_type: payload.discount_type
+          discount_type: payload.discount_type,
         };
 
         axios
           .put(url, obj, header)
-          .then(response => {
-            let obj = response.data.result;
+          .then((response) => {
+            const data = response.data;
+            let obj = data.result;
             if (obj.products.productImages.length > 0) {
-              obj.products.productImages.forEach(elementImage => {
-                elementImage.file_path = `${process.env.VUE_APP_API_BACKEND}/productImages/viewImage/${elementImage.file_name}/${elementImage.type}`;
+              obj.products.productImages.forEach((elementImage) => {
+                elementImage.file_path = `${apiUrl}/productImages/viewImage/${
+                  elementImage.file_name
+                }/${elementImage.type}`;
               });
             } else {
-              obj.products.productImages.push({ file_path: require("../../assets/images/no-image.png") });
+              obj.products.productImages.push({
+                file_path: require("../../assets/images/no-image.png"),
+              });
             }
             commit("UPDATE_DATA", obj);
-            resolve(response);
+            resolve(data);
+          })
+          .catch((err) => {
+            resolve(err.response.data);
           });
       } catch (err) {
         reject(err);
       }
     });
   },
-  deleteData({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/productFlashDealDetails/delete/${payload}`;
-    let header = { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } };
+  deleteData(
+    { dispatch, commit, state, rootState, getters, rootGetters },
+    payload
+  ) {
+    const url = `${apiUrl}/productFlashDealDetails/delete/${payload}`;
+    const header = {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    };
     return new Promise((resolve, reject) => {
       try {
         axios
-          .put(url, '', header)
-          .then(response => {
+          .put(url, "", header)
+          .then((response) => {
+            const data = response.data;
             commit("DELETE_DATA", payload);
-            resolve(response);
+            resolve(data);
+          })
+          .catch((err) => {
+            resolve(err.response.data);
           });
       } catch (err) {
         reject(err);
       }
     });
-  }
+  },
 };
 
 const mutations = {
@@ -170,7 +242,9 @@ const mutations = {
     state.productFlashDealDetailList.push(payload);
   },
   UPDATE_DATA(state, payload) {
-    let index = state.productFlashDealDetailList.map(productFlashDealDetail => productFlashDealDetail.id).indexOf(payload.id);
+    const index = state.productFlashDealDetailList
+      .map((productFlashDealDetail) => productFlashDealDetail.id)
+      .indexOf(payload.id);
     Object.assign(state.productFlashDealDetailList[index], {
       discount_percentage: payload.discount_percentage,
       discount_amount: payload.discount_amount,
@@ -178,13 +252,15 @@ const mutations = {
       quantity: payload.quantity,
       product_id: payload.product_id,
       product_flash_deal_id: payload.product_flash_deal_id,
-      discount_type: payload.discount_type
+      discount_type: payload.discount_type,
     });
   },
   DELETE_DATA(state, payload) {
-    let index = state.productFlashDealDetailList.map(productFlashDealDetail => productFlashDealDetail.id).indexOf(payload);
+    const index = state.productFlashDealDetailList
+      .map((productFlashDealDetail) => productFlashDealDetail.id)
+      .indexOf(payload);
     state.productFlashDealDetailList.splice(index, 1);
-  }
+  },
 };
 
 export default {
@@ -192,5 +268,5 @@ export default {
   state,
   getters,
   actions,
-  mutations
+  mutations,
 };

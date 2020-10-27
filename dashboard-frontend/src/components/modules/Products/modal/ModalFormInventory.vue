@@ -2,8 +2,8 @@
   <v-form ref="form" @submit.prevent="save" v-model="valid" lazy-validation>
     <v-card>
       <v-card-title>
-        <v-icon class="black--text">{{ formIcon }}</v-icon
-        ><span class="title">{{ formTitle }}</span>
+        <v-icon class="black--text">{{ formIcon }}</v-icon>
+        <span class="title">{{ formTitle }}</span>
       </v-card-title>
       <v-card-text>
         <v-container grid-list-md>
@@ -107,10 +107,15 @@ export default {
             let obj = {
               alert: true,
               type: "success",
-              message: response.data.message,
+              message: [response.message],
+              outline: true,
             };
 
-            if (!response.data.result) obj.type = "error";
+            if (response.status === "error") {
+              obj.type = "error";
+              obj.message = response.errors;
+            }
+
             this.setAlert(obj);
           })
           .catch((err) => console.log(err));
