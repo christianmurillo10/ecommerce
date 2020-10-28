@@ -64,7 +64,7 @@ const actions = {
             resolve(data);
           })
           .catch((err) => {
-            commit("SET_DATA", []);
+            commit("SET_DATA_ALL_TOTAL_QUANTITY", []);
             resolve(err.response.data);
           });
       } catch (err) {

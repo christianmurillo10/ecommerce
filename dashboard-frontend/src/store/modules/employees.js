@@ -78,7 +78,7 @@ const actions = {
             resolve(data);
           })
           .catch((err) => {
-            commit("SET_DATA", []);
+            commit("SET_TOTAL_COUNT_BY_IS_ACTIVE", 0);
             resolve(err.response.data);
           });
       } catch (err) {
