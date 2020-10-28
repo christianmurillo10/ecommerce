@@ -232,7 +232,6 @@ module.exports = {
         "middlename",
         "lastname",
         "email",
-        "password",
         "primary_address",
         "secondary_address",
         "contact_no",
