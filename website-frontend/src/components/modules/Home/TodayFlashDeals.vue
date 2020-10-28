@@ -84,9 +84,7 @@ export default {
   },
 
   computed: {
-    ...mapState("productFlashDeals", [
-      "productFlashDealTodayFlashDeal",
-    ]),
+    ...mapState("productFlashDeals", ["productFlashDealTodayFlashDeal"]),
   },
 
   methods: {

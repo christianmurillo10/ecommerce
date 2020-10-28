@@ -1,4 +1,5 @@
 import axios from "axios";
+const apiUrl = process.env.VUE_APP_API_BACKEND;
 
 const state = {
   isLogin: false,
@@ -16,9 +17,9 @@ const actions = {
     { dispatch, commit, state, rootState, getters, rootGetters },
     payload
   ) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/customers/login`;
-    let data = payload;
-    let config = {
+    const url = `${apiUrl}/customers/login`;
+    const data = payload;
+    const config = {
       "Content-Type": "application/json",
     };
     return new Promise((resolve, reject) => {
@@ -26,28 +27,27 @@ const actions = {
         axios
           .post(url, data, config)
           .then((response) => {
-            let result = response.data.result;
-            let token = result.token;
+            let { token, data } = response.data.result;
 
-            if (!result) {
-              resolve(response.data);
+            if (
+              _.isEmpty(data.file_name) &&
+              data.file_name !== null &&
+              _.isUndefined(data.file_name)
+            ) {
+              data.file_path = `${apiUrl}/customers/viewImage/${data.file_name}`;
             } else {
-              let details = result.data;
-              if (_.isEmpty(details.file_name) && details.file_name !== null && _.isUndefined(details.file_name))
-                details.file_path = `${process.env.VUE_APP_API_BACKEND}/customers/viewImage/${details.file_name}`;
-              else
-                details.file_path = require("../../assets/images/no-image.png");
-
-              localStorage.setItem("cDetails", JSON.stringify(details));
-              localStorage.setItem("cToken", token);
-              axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-
-              commit("SET_LOGIN", result);
-              resolve(response.data);
+              data.file_path = require("../../assets/images/no-image.png");
             }
+
+            localStorage.setItem("cDetails", JSON.stringify(data));
+            localStorage.setItem("cToken", token);
+            axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+
+            commit("SET_LOGIN", { token, data });
+            resolve(data);
           })
           .catch((err) => {
-            console.log(err);
+            resolve(err.response.data);
             localStorage.removeItem("cDetails");
             localStorage.removeItem("cToken");
           });
@@ -57,12 +57,12 @@ const actions = {
     });
   },
   setLogout({ dispatch, commit, state, rootState, getters, rootGetters }) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/customers/logout`;
-    let data = {
+    const url = `${apiUrl}/customers/logout`;
+    const data = {
       email: state.customerInfo.email,
       token: localStorage.getItem("cToken"),
     };
-    let config = {
+    const config = {
       "Content-Type": "application/json",
     };
     return new Promise((resolve, reject) => {
@@ -70,18 +70,18 @@ const actions = {
         axios
           .post(url, data, config)
           .then((response) => {
-            let status = response.data.status;
+            const data = response.data;
 
-            if (status === 200) {
+            if (data.status === "success") {
               commit("SET_LOGOUT");
               localStorage.removeItem("cDetails");
               localStorage.removeItem("cToken");
               delete axios.defaults.headers.common["Authorization"];
-              resolve(response.data);
+              resolve(data);
             }
           })
           .catch((err) => {
-            console.log(err);
+            resolve(err.response.data);
             localStorage.removeItem("cDetails");
             localStorage.removeItem("cToken");
           });
@@ -91,37 +91,40 @@ const actions = {
     });
   },
   validateToken({ dispatch, commit, state, rootState, getters, rootGetters }) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/authorizations/validateToken`;
-    let data = {
-      token: localStorage.getItem("cToken"),
-    };
-    let config = {
-      "Content-Type": "application/json",
-    };
-    return new Promise((resolve, reject) => {
-      try {
-        axios
-          .post(url, data, config)
-          .then((response) => {
-            let result = response.data.result;
+    const token = localStorage.getItem("cToken");
+    if (token) {
+      const url = `${apiUrl}/authorizations/validateToken`;
+      const data = {
+        token: token,
+      };
+      const config = {
+        "Content-Type": "application/json",
+      };
+      return new Promise((resolve, reject) => {
+        try {
+          axios
+            .post(url, data, config)
+            .then((response) => {
+              const data = response.data;
 
-            if (!result) {
-              commit("SET_LOGOUT");
+              if (!data.result) {
+                commit("SET_LOGOUT");
+                localStorage.removeItem("cDetails");
+                localStorage.removeItem("cToken");
+                delete axios.defaults.headers.common["Authorization"];
+                resolve(data);
+              }
+            })
+            .catch((err) => {
+              resolve(err.response.data);
               localStorage.removeItem("cDetails");
               localStorage.removeItem("cToken");
-              delete axios.defaults.headers.common["Authorization"];
-              resolve(response.data);
-            }
-          })
-          .catch((err) => {
-            console.log(err);
-            localStorage.removeItem("cDetails");
-            localStorage.removeItem("cToken");
-          });
-      } catch (err) {
-        reject(err);
-      }
-    });
+            });
+        } catch (err) {
+          reject(err);
+        }
+      });
+    }
   },
 };
 

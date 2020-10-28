@@ -202,9 +202,7 @@ export default {
   computed: {
     ...mapGetters("products", ["getProductAvailableQuantityBySku"]),
     ...mapGetters("customerAuthentication", ["isLoggedIn"]),
-    ...mapState("productFlashDeals", [
-      "productFlashDealTodayFlashDeal",
-    ]),
+    ...mapState("productFlashDeals", ["productFlashDealTodayFlashDeal"]),
 
     countdownDate() {
       return this.countdown_date;

@@ -92,7 +92,9 @@
     <v-card-actions>
       <v-spacer></v-spacer>
       <v-btn small text color="blue darken-1" @click="reset">Reset</v-btn>
-      <v-btn small text color="blue darken-1" type="submit" :disabled="!valid">Update</v-btn>
+      <v-btn small text color="blue darken-1" type="submit" :disabled="!valid">
+        Update
+      </v-btn>
     </v-card-actions>
   </v-form>
 </template>
@@ -118,7 +120,7 @@ export default {
       primary_address: "",
       secondary_address: "",
       contact_no: "",
-      gender_type: ""
+      gender_type: "",
     },
   }),
 
@@ -131,19 +133,23 @@ export default {
   },
 
   methods: {
-    ...mapMutations("snackbars", { setSnackbar: "SET_SNACKBAR"}),
-    ...mapMutations("customerAuthentication", { setCustomerInfo: "SET_CUSTOMER_INFO"}),
-    ...mapActions("customers", { getCustomerDataById: "getDataById", updateCustomerData: "updateData" }),
+    ...mapMutations("snackbars", { setSnackbar: "SET_SNACKBAR" }),
+    ...mapMutations("customerAuthentication", {
+      setCustomerInfo: "SET_CUSTOMER_INFO",
+    }),
+    ...mapActions("customers", {
+      getCustomerDataById: "getDataById",
+      updateCustomerData: "updateData",
+    }),
 
     initialLoad() {
-      this.getCustomerDataById(this.customerInfo.id)
-      .then(response => {
-        let obj = response.data.result;
+      this.getCustomerDataById(this.customerInfo.id).then((response) => {
+        let obj = response.result;
         if (obj) {
           this.defaultFormData = obj;
           this.setFormData(obj);
         }
-      })
+      });
     },
 
     pickFile() {
@@ -176,12 +182,15 @@ export default {
       this.formData.middlename = obj.middlename === null ? "" : obj.middlename;
       this.formData.lastname = obj.lastname === null ? "" : obj.lastname;
       this.formData.email = obj.email === null ? "" : obj.email;
-      this.formData.primary_address = obj.primary_address === null ? "" : obj.primary_address;
-      this.formData.secondary_address = obj.secondary_address === null ? "" : obj.secondary_address;
+      this.formData.primary_address =
+        obj.primary_address === null ? "" : obj.primary_address;
+      this.formData.secondary_address =
+        obj.secondary_address === null ? "" : obj.secondary_address;
       this.formData.contact_no = obj.contact_no === null ? "" : obj.contact_no;
       this.formData.file_name = obj.contact_no === null ? "" : obj.file_name;
       this.formData.file_path = obj.contact_no === null ? "" : obj.file_path;
-      this.formData.gender_type = obj.gender_type === null ? "" : parseInt(obj.gender_type);
+      this.formData.gender_type =
+        obj.gender_type === null ? "" : parseInt(obj.gender_type);
     },
 
     reset() {
@@ -191,27 +200,26 @@ export default {
     update() {
       if (this.$refs.form.validate()) {
         this.updateCustomerData(this.formData)
-          .then(response => {
-            let result = response.data.result;
+          .then((response) => {
             let obj = {
               color: "success",
               snackbar: true,
-              text: response.data.message,
-              timeout: 3000
+              text: response.message,
+              timeout: 3000,
             };
-            
-            if (result) {
+
+            if (response.status === "success") {
               this.setFormData(result);
               this.setCustomerInfo(result);
             } else {
-              obj.color = "error"
+              obj.color = "error";
             }
-            
+
             this.setSnackbar(obj);
           })
-          .catch(err => console.log(err));
+          .catch((err) => console.log(err));
       }
-    }
-  }
+    },
+  },
 };
 </script>

@@ -1,32 +1,39 @@
 import axios from "axios";
+const apiUrl = process.env.VUE_APP_API_BACKEND;
 
 const state = {
-  frontendSliderImageList: []
+  frontendSliderImageList: [],
 };
 
-const getters = { };
+const getters = {};
 
 const actions = {
   getData({ dispatch, commit, state, rootState, getters, rootGetters }) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/frontendSliderImages/`;
+    const url = `${apiUrl}/frontendSliderImages/`;
     return new Promise((resolve, reject) => {
       try {
-        axios.get(url)
-          .then(response => {
-            let obj = response.data.result;
+        axios
+          .get(url)
+          .then((response) => {
+            const data = response.data;
+            let obj = data.result;
             if (obj) {
-              obj.forEach(element => {
-                element.file_path = `${process.env.VUE_APP_API_BACKEND}/frontendSliderImages/viewImage/${element.file_name}`;
+              obj.forEach((element) => {
+                element.file_path = `${apiUrl}/frontendSliderImages/viewImage/${element.file_name}`;
               });
             }
             commit("SET_DATA", obj);
-            resolve(response);
+            resolve(data);
+          })
+          .catch((err) => {
+            commit("SET_DATA", []);
+            resolve(err.response.data);
           });
       } catch (err) {
         reject(err);
       }
     });
-  }
+  },
 };
 
 const mutations = {
@@ -36,7 +43,7 @@ const mutations = {
     } else {
       state.frontendSliderImageList = [];
     }
-  }
+  },
 };
 
 export default {
@@ -44,5 +51,5 @@ export default {
   state,
   getters,
   actions,
-  mutations
+  mutations,
 };

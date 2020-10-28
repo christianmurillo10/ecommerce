@@ -118,11 +118,11 @@ export default {
 
         this.setLogin(obj)
           .then((response) => {
-            if (!response.result) {
+            if (response.status === "error") {
               let obj = {
                 color: "error",
                 snackbar: true,
-                text: response.message,
+                text: response.errors[0],
                 timeout: 3000,
               };
               this.setSnackbar(obj);

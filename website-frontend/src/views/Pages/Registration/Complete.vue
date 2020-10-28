@@ -56,11 +56,11 @@ export default {
       if (this.$refs.form.validate()) {
         this.saveCustomerData(this.formData)
           .then((response) => {
-            if (!response.data.result) {
+            if (response.status === "error") {
               let obj = {
                 color: "error",
                 snackbar: true,
-                text: response.data.message,
+                text: response.errors[0],
                 timeout: 3000,
               };
               this.setSnackbar(obj);

@@ -1,27 +1,37 @@
 import axios from "axios";
+const apiUrl = process.env.VUE_APP_API_BACKEND;
 
 const state = {
-  frontendUsefulLinkList: []
+  frontendUsefulLinkList: [],
 };
 
-const getters = { };
+const getters = {};
 
 const actions = {
-  getData({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/frontendUsefulLinks/`;
+  getData(
+    { dispatch, commit, state, rootState, getters, rootGetters },
+    payload
+  ) {
+    const url = `${apiUrl}/frontendUsefulLinks/`;
     return new Promise((resolve, reject) => {
       try {
-        axios.get(url)
-          .then(response => {
-            let obj = response.data.result;
+        axios
+          .get(url)
+          .then((response) => {
+            const data = response.data;
+            let obj = data.result;
             commit("SET_DATA", obj);
-            resolve(response);
+            resolve(data);
+          })
+          .catch((err) => {
+            commit("SET_DATA", []);
+            resolve(err.response.data);
           });
       } catch (err) {
         reject(err);
       }
     });
-  }
+  },
 };
 
 const mutations = {
@@ -31,7 +41,7 @@ const mutations = {
     } else {
       state.frontendUsefulLinkList = [];
     }
-  }
+  },
 };
 
 export default {
@@ -39,5 +49,5 @@ export default {
   state,
   getters,
   actions,
-  mutations
+  mutations,
 };

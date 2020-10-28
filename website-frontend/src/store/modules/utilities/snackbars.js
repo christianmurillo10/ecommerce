@@ -4,7 +4,7 @@ const state = {
     snackbar: false,
     text: "",
     timeout: 3000,
-  }
+  },
 };
 
 const getters = {};
@@ -17,7 +17,7 @@ const mutations = {
   },
   CLOSE_SNACKBAR(state, payload) {
     state.snackbarDetails.snackbar = false;
-  }
+  },
 };
 
 export default {
@@ -25,5 +25,5 @@ export default {
   state,
   getters,
   actions,
-  mutations
+  mutations,
 };

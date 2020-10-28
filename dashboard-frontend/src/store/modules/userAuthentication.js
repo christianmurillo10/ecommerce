@@ -108,7 +108,6 @@ const actions = {
               resolve(err.response.data);
               localStorage.removeItem("details");
               localStorage.removeItem("token");
-              reject(err);
             });
         } catch (err) {
           reject(err);

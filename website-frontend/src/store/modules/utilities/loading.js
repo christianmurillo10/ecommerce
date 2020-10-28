@@ -1,8 +1,8 @@
 const state = {
   loadingDetails: {
     dialog: false,
-    text: "Please wait"
-  }
+    text: "Please wait",
+  },
 };
 
 const getters = {};
@@ -12,7 +12,7 @@ const actions = {};
 const mutations = {
   SET_LOADING(state, payload) {
     state.loadingDetails = payload;
-  }
+  },
 };
 
 export default {
@@ -20,5 +20,5 @@ export default {
   state,
   getters,
   actions,
-  mutations
+  mutations,
 };

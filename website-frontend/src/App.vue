@@ -22,17 +22,16 @@ export default {
     Content,
     Footer,
   },
-  data: () => ({}),
   mounted() {
     this.validateToken();
   },
   methods: {
-    ...mapActions("customerAuthentication", ["validateToken"])
-  }
+    ...mapActions("customerAuthentication", ["validateToken"]),
+  },
 };
 </script>
 
 <style lang="scss">
-@import '../node_modules/typeface-roboto/index.css';
-@import './assets/scss/global.scss';
+@import "../node_modules/typeface-roboto/index.css";
+@import "./assets/scss/global.scss";
 </style>

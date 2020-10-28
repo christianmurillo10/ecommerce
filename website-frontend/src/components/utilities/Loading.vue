@@ -5,10 +5,7 @@
     no-click-animation
     width="300"
   >
-    <v-card
-      color="primary"
-      dark
-    >
+    <v-card color="primary" dark>
       <v-card-text>
         {{ loadingDetails.text }}
         <v-progress-linear
@@ -26,7 +23,7 @@ import { mapState, mapMutations } from "vuex";
 
 export default {
   computed: {
-    ...mapState("loading", ["loadingDetails"])
-  }
+    ...mapState("loading", ["loadingDetails"]),
+  },
 };
 </script>

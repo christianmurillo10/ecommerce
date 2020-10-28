@@ -1,27 +1,39 @@
 import axios from "axios";
+const apiUrl = process.env.VUE_APP_API_BACKEND;
 
 const state = {
-  salesOrderDataByCustomerIdList: []
+  salesOrderDataByCustomerIdList: [],
 };
 
-const getters = { };
+const getters = {};
 
 const actions = {
-  getDataByCustomerId({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/salesOrders/findAllbyCustomerId/${payload}`;
-    let header = { headers: { Authorization: `Bearer ${localStorage.getItem("cToken")}` } };
+  getDataByCustomerId(
+    { dispatch, commit, state, rootState, getters, rootGetters },
+    payload
+  ) {
+    const url = `${apiUrl}/salesOrders/findAllbyCustomerId/${payload}`;
+    const header = {
+      headers: { Authorization: `Bearer ${localStorage.getItem("cToken")}` },
+    };
     return new Promise((resolve, reject) => {
       try {
         axios
           .get(url, header)
-          .then(response => {
-            commit("SET_DATA_BY_ID", response.data.result);
+          .then((response) => {
+            const data = response.data;
+            commit("SET_DATA_BY_ID", data.result);
+            resolve(data);
+          })
+          .catch((err) => {
+            commit("SET_DATA_BY_ID", []);
+            resolve(err.response.data);
           });
       } catch (err) {
         reject(err);
       }
     });
-  }
+  },
 };
 
 const mutations = {
@@ -31,7 +43,7 @@ const mutations = {
     } else {
       state.salesOrderDataByCustomerIdList = [];
     }
-  }
+  },
 };
 
 export default {
@@ -39,5 +51,5 @@ export default {
   state,
   getters,
   actions,
-  mutations
+  mutations,
 };

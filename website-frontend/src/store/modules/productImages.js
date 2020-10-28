@@ -1,60 +1,77 @@
 import axios from "axios";
+const apiUrl = process.env.VUE_APP_API_BACKEND;
 
 const state = {
-  productImageList: []
+  productImageList: [],
 };
 
 const getters = {
   getProductImageById: (state) => (id) => {
-    return state.productImageList.find(productImage => productImage.id === id);
+    return state.productImageList.find(
+      (productImage) => productImage.id === id
+    );
   },
   getProductImageFileNameById: (state) => (id) => {
-    return state.productImageList.find(productImage => productImage.id === id).file_name;
+    return state.productImageList.find((productImage) => productImage.id === id)
+      .file_name;
   },
   getProductImageList: (state) => {
     return state.productImageList;
-  }
+  },
 };
 
 const actions = {
-  getDataById({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/productImage/${payload}`;
-    let header = { headers: { Authorization: `Bearer ${localStorage.getItem("cToken")}` } };
+  getDataById(
+    { dispatch, commit, state, rootState, getters, rootGetters },
+    payload
+  ) {
+    const url = `${apiUrl}/productImage/${payload}`;
+    const header = {
+      headers: { Authorization: `Bearer ${localStorage.getItem("cToken")}` },
+    };
     return new Promise((resolve, reject) => {
       try {
-        axios
-          .get(url, header)
-          .then(response => {
-            resolve(response);
-          });
+        axios.get(url, header).then((response) => {
+          resolve(response);
+        });
       } catch (err) {
         reject(err);
       }
     });
   },
-  getDataByProductId({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/productImage/findAllbyProductId/${payload}`;
-    let header = { headers: { Authorization: `Bearer ${localStorage.getItem("cToken")}` } };
+  getDataByProductId(
+    { dispatch, commit, state, rootState, getters, rootGetters },
+    payload
+  ) {
+    const url = `${apiUrl}/productImage/findAllbyProductId/${payload}`;
+    const header = {
+      headers: { Authorization: `Bearer ${localStorage.getItem("cToken")}` },
+    };
     return new Promise((resolve, reject) => {
       try {
         axios
           .get(url, header)
-          .then(response => {
-            let obj = response.data.result;
+          .then((response) => {
+            const data = response.data;
+            let obj = data.result;
             if (obj) {
-              obj.forEach(element => {
-                element.file_path = `${process.env.VUE_APP_API_BACKEND}/productImage/viewImage/${element.file_name}`;
+              obj.forEach((element) => {
+                element.file_path = `${apiUrl}/productImage/viewImage/${element.file_name}`;
               });
             }
 
             commit("SET_DATA", obj);
-            resolve(response);
+            resolve(data);
+          })
+          .catch((err) => {
+            commit("SET_DATA", []);
+            resolve(err.response.data);
           });
       } catch (err) {
         reject(err);
       }
     });
-  }
+  },
 };
 
 const mutations = {
@@ -64,7 +81,7 @@ const mutations = {
     } else {
       state.productImageList = [];
     }
-  }
+  },
 };
 
 export default {
@@ -72,5 +89,5 @@ export default {
   state,
   getters,
   actions,
-  mutations
+  mutations,
 };

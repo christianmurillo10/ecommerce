@@ -25,7 +25,9 @@
                   {{ `&#8369; ${item.price_amount} x ${item.quantity}` }}
                 </td>
                 <td class="text-left">{{ `${item.name}` }}</td>
-                <td class="text-right">{{ `&#8369; ${item.total_price_amount}` }}</td>
+                <td class="text-right">
+                  {{ `&#8369; ${item.total_price_amount}` }}
+                </td>
               </tr>
             </tbody>
           </template>

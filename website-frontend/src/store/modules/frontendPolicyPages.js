@@ -1,27 +1,36 @@
 import axios from "axios";
+const apiUrl = process.env.VUE_APP_API_BACKEND;
 
 const state = {
-  frontendPolicyPageDataByType: ""
+  frontendPolicyPageDataByType: "",
 };
 
-const getters = { };
+const getters = {};
 
 const actions = {
-  getDataByType({ dispatch, commit, state, rootState, getters, rootGetters }, payload) {
-    let url = `${process.env.VUE_APP_API_BACKEND}/frontendPolicyPages/findOneByType/${payload}`;
+  getDataByType(
+    { dispatch, commit, state, rootState, getters, rootGetters },
+    payload
+  ) {
+    const url = `${apiUrl}/frontendPolicyPages/findOneByType/${payload}`;
     return new Promise((resolve, reject) => {
       try {
-        axios.get(url)
-          .then(response => {
-            let obj = response.data.result;
-            commit("SET_DATA_BY_TYPE", obj);
-            resolve(response);
+        axios
+          .get(url)
+          .then((response) => {
+            const data = response.data;
+            commit("SET_DATA_BY_TYPE", data.result);
+            resolve(data);
+          })
+          .catch((err) => {
+            commit("SET_DATA_BY_TYPE", "");
+            resolve(err.response.data);
           });
       } catch (err) {
         reject(err);
       }
     });
-  }
+  },
 };
 
 const mutations = {
@@ -31,7 +40,7 @@ const mutations = {
     } else {
       state.frontendPolicyPageDataByType = "";
     }
-  }
+  },
 };
 
 export default {
@@ -39,5 +48,5 @@ export default {
   state,
   getters,
   actions,
-  mutations
+  mutations,
 };

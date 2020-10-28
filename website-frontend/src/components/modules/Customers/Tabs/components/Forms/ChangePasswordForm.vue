@@ -42,7 +42,9 @@
     <v-card-actions>
       <v-spacer></v-spacer>
       <v-btn small text color="blue darken-1" @click="reset">Reset</v-btn>
-      <v-btn small text color="blue darken-1" type="submit" :disabled="!valid">Update</v-btn>
+      <v-btn small text color="blue darken-1" type="submit" :disabled="!valid">
+        Update
+      </v-btn>
     </v-card-actions>
   </v-form>
 </template>
@@ -62,12 +64,12 @@ export default {
     defaultFormData: {
       old_password: "",
       new_password: "",
-      confirm_password: ""
+      confirm_password: "",
     },
     formData: {
       old_password: "",
       new_password: "",
-      confirm_password: ""
+      confirm_password: "",
     },
   }),
 
@@ -76,7 +78,7 @@ export default {
   },
 
   methods: {
-    ...mapMutations("snackbars", { setSnackbar: "SET_SNACKBAR"}),
+    ...mapMutations("snackbars", { setSnackbar: "SET_SNACKBAR" }),
     ...mapActions("customers", { changeCustomerPassword: "changePassword" }),
 
     reset() {
@@ -88,25 +90,28 @@ export default {
         if (this.formData.new_password === this.formData.confirm_password) {
           this.formData.id = this.customerInfo.id;
           this.changeCustomerPassword(this.formData)
-            .then(response => {
+            .then((response) => {
               let obj = {
                 color: "success",
                 snackbar: true,
-                text: response.data.message,
-                timeout: 3000
+                text: response.message,
+                timeout: 3000,
               };
-              
-              if (response.data.result) this.reset();
-              else obj.color = "error";
+
+              if (response.status === "success") {
+                this.reset();
+              } else {
+                obj.color = "error";
+              }
               this.setSnackbar(obj);
             })
-            .catch(err => console.log(err));
+            .catch((err) => console.log(err));
         } else {
           this.setSnackbar({
             color: "error",
             snackbar: true,
             text: "New password and confirm password must be the same.",
-            timeout: 3000
+            timeout: 3000,
           });
         }
       }

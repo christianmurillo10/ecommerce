@@ -115,31 +115,39 @@ export default {
   },
 
   computed: {
-    ...mapState("productFlashDeals", [
-      "productFlashDealTodayFlashDeal",
-    ]),
+    ...mapState("productFlashDeals", ["productFlashDealTodayFlashDeal"]),
 
     priceAmount() {
-      return this.price_amount ? this.price_amount : this.productDetails.price_amount;
+      return this.price_amount
+        ? this.price_amount
+        : this.productDetails.price_amount;
     },
 
     basePriceAmount() {
-      return this.base_price_amount ? this.base_price_amount : this.productDetails.base_price_amount;
+      return this.base_price_amount
+        ? this.base_price_amount
+        : this.productDetails.base_price_amount;
     },
 
     discountType() {
-      return this.discount_type ? this.discount_type : this.productDetails.discount_type;
+      return this.discount_type
+        ? this.discount_type
+        : this.productDetails.discount_type;
     },
 
     discountValue() {
-      return this.discount_value ? this.discount_value : this.productDetails.discount_value;
+      return this.discount_value
+        ? this.discount_value
+        : this.productDetails.discount_value;
     },
   },
 
   watch: {
     productFlashDealTodayFlashDeal(val) {
       if (val && this.item.type !== "flashDeal") {
-        const flashDeal = val.productFlashDealDetails.find(val => val.product_id == this.item.id);
+        const flashDeal = val.productFlashDealDetails.find(
+          (val) => val.product_id == this.item.id
+        );
         if (flashDeal) {
           this.price_amount = flashDeal.current_price_amount;
           this.base_price_amount = flashDeal.base_price_amount;

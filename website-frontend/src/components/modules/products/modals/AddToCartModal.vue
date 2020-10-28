@@ -58,7 +58,13 @@
                       </v-flex>
                     </v-layout>
                   </v-flex>
-                  <v-flex xs12 sm12 md12 lg12 v-if="productDetails.is_today_deal">
+                  <v-flex
+                    xs12
+                    sm12
+                    md12
+                    lg12
+                    v-if="productDetails.is_today_deal"
+                  >
                     <v-layout wrap row>
                       <v-flex xs4 sm4 md4 lg4>
                         <span class="body-2 black--text">Base Price: </span>
@@ -73,7 +79,12 @@
                       </v-flex>
                       <v-flex xs8 sm8 md8 lg8>
                         <span class="body-2 font-weight-bold blue--text">
-                          {{ setRateTypeValue(productDetails.discount_value, productDetails.discount_type) }}
+                          {{
+                            setRateTypeValue(
+                              productDetails.discount_value,
+                              productDetails.discount_type
+                            )
+                          }}
                           OFF
                         </span>
                       </v-flex>

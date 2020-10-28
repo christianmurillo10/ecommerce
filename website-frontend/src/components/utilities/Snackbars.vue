@@ -15,15 +15,15 @@ import { mapState, mapMutations } from "vuex";
 
 export default {
   computed: {
-    ...mapState("snackbars", ["snackbarDetails"])
+    ...mapState("snackbars", ["snackbarDetails"]),
   },
 
   methods: {
-    ...mapMutations("snackbars", { closeSnackbar: "CLOSE_SNACKBAR"}),
+    ...mapMutations("snackbars", { closeSnackbar: "CLOSE_SNACKBAR" }),
 
     close() {
-      this.closeSnackbar()
-    }
-  }
+      this.closeSnackbar();
+    },
+  },
 };
 </script>

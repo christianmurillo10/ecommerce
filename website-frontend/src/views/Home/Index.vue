@@ -14,10 +14,7 @@
             <v-flex xs12 sm12 md3 lg3>
               <v-container>
                 <v-hover v-slot:default="{ hover }">
-                  <v-card
-                    height="100"
-                    :class="`elevation-${hover ? 3 : 1}`"
-                  >
+                  <v-card height="100" :class="`elevation-${hover ? 3 : 1}`">
                     <v-container fill-height justify-center>
                       <v-icon large left color="blue">
                         mdi-truck-fast-outline
@@ -31,10 +28,7 @@
             <v-flex xs12 sm12 md3 lg3>
               <v-container>
                 <v-hover v-slot:default="{ hover }">
-                  <v-card
-                    height="100"
-                    :class="`elevation-${hover ? 3 : 1}`"
-                  >
+                  <v-card height="100" :class="`elevation-${hover ? 3 : 1}`">
                     <v-container fill-height justify-center>
                       <v-icon large left color="blue">
                         mdi-basket-outline
@@ -48,10 +42,7 @@
             <v-flex xs12 sm12 md3 lg3>
               <v-container>
                 <v-hover v-slot:default="{ hover }">
-                  <v-card
-                    height="100"
-                    :class="`elevation-${hover ? 3 : 1}`"
-                  >
+                  <v-card height="100" :class="`elevation-${hover ? 3 : 1}`">
                     <v-container fill-height justify-center>
                       <v-icon large left color="blue">
                         mdi-cash
@@ -65,10 +56,7 @@
             <v-flex xs12 sm12 md3 lg3>
               <v-container>
                 <v-hover v-slot:default="{ hover }">
-                  <v-card
-                    height="100"
-                    :class="`elevation-${hover ? 3 : 1}`"
-                  >
+                  <v-card height="100" :class="`elevation-${hover ? 3 : 1}`">
                     <v-container fill-height justify-center>
                       <v-icon large left color="blue">
                         mdi-chat-outline
@@ -90,7 +78,12 @@
             <v-layout row wrap>
               <v-flex xs12 sm12 md5 lg5>
                 <v-container>
-                  <v-card shaped class="blue-border elevation-5" height="475" width="480">
+                  <v-card
+                    shaped
+                    class="blue-border elevation-5"
+                    height="475"
+                    width="480"
+                  >
                     <v-container>
                       <TodayFlashDeals />
                     </v-container>
@@ -110,12 +103,7 @@
     <v-layout wrap>
       <v-container class="content">
         <v-flex xs12 sm12 md12 lg12>
-          <v-card
-            flat
-            class="grey white--text"
-            height="150"
-            width="1280"
-          >
+          <v-card flat class="grey white--text" height="150" width="1280">
             <v-container fill-height justify-center>
               <span class="display-3">150 x 1280</span>
             </v-container>
@@ -180,13 +168,5 @@ export default {
     LatestProduct,
     FeaturedProducts,
   },
-
-  data: () => ({}),
-
-  mounted() {},
-
-  computed: {},
-
-  methods: {},
 };
 </script>
