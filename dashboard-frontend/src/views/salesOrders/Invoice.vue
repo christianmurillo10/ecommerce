@@ -13,6 +13,14 @@
           </template>
           <span>Download</span>
         </v-tooltip>
+        <v-tooltip left>
+          <template v-slot:activator="{ on }">
+            <v-btn icon v-on="on" v-on:click="back">
+              <v-icon>arrow_back</v-icon>
+            </v-btn>
+          </template>
+          <span>Back</span>
+        </v-tooltip>
         <v-flex xs12 sm12 md12 lg12>
           <v-layout wrap row>
             <v-spacer></v-spacer>
@@ -243,6 +251,10 @@ export default {
           orientation: this.options.orientation,
         },
       });
+    },
+
+    back() {
+      this.$router.go(-1);
     },
   },
 };

@@ -406,7 +406,7 @@ export default {
 
   mounted() {
     this.getProductDataById(this.$route.params.id).then((response) => {
-      this.productDetails = response.result;
+      this.productDetails = response;
     });
     this.getProductImageDataByProductIdAndType({
       productId: this.$route.params.id,

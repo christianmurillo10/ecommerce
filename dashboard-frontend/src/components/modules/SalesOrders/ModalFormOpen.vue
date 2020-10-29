@@ -642,7 +642,12 @@ export default {
     async setProductDetailsByIndexAndSku(index, sku) {
       try {
         const response = await this.getInventoryDataBySku(sku);
-        const productDetails = await this.getProductDetails(sku);
+        let productDetails = "";
+
+        if (response.status === "success") {
+          productDetails = await this.getProductDetails(sku, response.result);
+        }
+
         this.formData.details[index].quantity = _.isUndefined(
           productDetails.quantity_available
         )
@@ -686,11 +691,10 @@ export default {
       }
     },
 
-    getProductDetails(sku) {
+    getProductDetails(sku, inventoryDataBySKU) {
       return new Promise(async (resolve, reject) => {
         try {
-          const response = await this.getInventoryDataBySku(sku);
-          const productDetails = response.result;
+          const productDetails = inventoryDataBySKU;
           const productTodayFlashDealDetails = this
             .getProductFlashDealTodayFlashDeal.productFlashDealDetails;
           const productFlashDealDetails = _.isUndefined(
@@ -795,8 +799,8 @@ export default {
       const details = this.formData.details;
       let subTotalAmount = 0;
       details.forEach((element) => {
-        let amount =
-          parseFloat(element.rate_amount) * parseInt(element.quantity);
+        const quantity = element.quantity ? parseInt(element.quantity) : 0;
+        let amount = parseFloat(element.rate_amount) * quantity;
         subTotalAmount = subTotalAmount + parseFloat(amount);
       });
       this.formData.sub_total_amount = subTotalAmount.toFixed(2);

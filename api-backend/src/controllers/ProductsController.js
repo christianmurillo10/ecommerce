@@ -65,8 +65,6 @@ module.exports = {
         errors.push("Product Category is required.");
       if (_.isEmpty(params.product_sub_category_id))
         errors.push("Product Sub-Category is required.");
-      if (_.isEmpty(params.product_sub_sub_category_id))
-        errors.push("Product Sub Sub-Category is required.");
       if (errors.length > 0) {
         throw new ErrorHandler(400, errors);
       }

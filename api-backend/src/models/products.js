@@ -85,7 +85,7 @@ module.exports = (sequelize, DataTypes) => {
         key: 'id'
       },
       comment: 'refd to product_sub_sub_categories.id',
-      allowNull: false
+      allowNull: true
     },
     'created_at': {
       type: 'TIMESTAMP',

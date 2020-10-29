@@ -263,6 +263,8 @@ export default {
           this.formData.product_sub_sub_category_id = this.defaultFormData.product_sub_sub_category_id;
         }
         this.getProductSubCategoriesDataByProductCategoryId(obj.categoryId);
+      }
+      if (obj.subCategoryId) {
         this.getProductSubCategoriesDataByProductCategoryIdAndProductSubCategoryId(
           obj
         );

@@ -223,8 +223,14 @@ const actions = {
           .post(url, obj, header)
           .then((response) => {
             const data = response.data;
-            if (data.result) {
-              commit("ADD_DATA", data.result);
+            let obj = data.result;
+            if (obj) {
+              obj.productImages = [
+                {
+                  file_path: require("../../assets/images/no-image.png"),
+                },
+              ];
+              commit("ADD_DATA", obj);
             }
             resolve(data);
           })
