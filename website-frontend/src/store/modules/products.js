@@ -76,11 +76,14 @@ const actions = {
     payload
   ) {
     const { limit, offset } = payload;
-    const url = `${apiUrl}/products/findAllWithLimitAndOffset?limit=${limit}&offset=${offset}`;
+    const url = `${apiUrl}/products/findAllWithLimitAndOffset`;
+    const params = {
+      params: { limit: limit, offset: offset },
+    };
     return new Promise((resolve, reject) => {
       try {
         axios
-          .get(url)
+          .get(url, params)
           .then((response) => {
             const data = response.data;
             let obj = data.result;
@@ -114,11 +117,14 @@ const actions = {
     payload
   ) {
     const { limit, offset } = payload;
-    const url = `${apiUrl}/products/findAllByProductCategoryIdWithLimitAndOffset/${payload.category_id}?limit=${limit}&offset=${offset}`;
+    const url = `${apiUrl}/products/findAllByProductCategoryIdWithLimitAndOffset/${payload.category_id}`;
+    const params = {
+      params: { limit: limit, offset: offset },
+    };
     return new Promise((resolve, reject) => {
       try {
         axios
-          .get(url)
+          .get(url, params)
           .then((response) => {
             const data = response.data;
             let obj = data.result;
@@ -152,11 +158,14 @@ const actions = {
     payload
   ) {
     const { limit, offset } = payload;
-    const url = `${apiUrl}/products/findAllByProductSubCategoryIdWithLimitAndOffset/${payload.sub_category_id}?limit=${limit}&offset=${offset}`;
+    const url = `${apiUrl}/products/findAllByProductSubCategoryIdWithLimitAndOffset/${payload.sub_category_id}`;
+    const params = {
+      params: { limit: limit, offset: offset },
+    };
     return new Promise((resolve, reject) => {
       try {
         axios
-          .get(url)
+          .get(url, params)
           .then((response) => {
             const data = response.data;
             let obj = data.result;
@@ -190,11 +199,14 @@ const actions = {
     payload
   ) {
     const { limit, offset } = payload;
-    const url = `${apiUrl}/products/findAllByProductSubSubCategoryIdWithLimitAndOffset/${payload.sub_sub_category_id}?limit=${limit}&offset=${offset}`;
+    const url = `${apiUrl}/products/findAllByProductSubSubCategoryIdWithLimitAndOffset/${payload.sub_sub_category_id}`;
+    const params = {
+      params: { limit: limit, offset: offset },
+    };
     return new Promise((resolve, reject) => {
       try {
         axios
-          .get(url)
+          .get(url, params)
           .then((response) => {
             const data = response.data;
             let obj = data.result;
@@ -228,11 +240,14 @@ const actions = {
     payload
   ) {
     const { limit, offset } = payload;
-    const url = `${apiUrl}/products/search/${payload.keyword}?limit=${limit}&offset=${offset}`;
+    const url = `${apiUrl}/products/search/${payload.keyword}`;
+    const params = {
+      params: { limit: limit, offset: offset },
+    };
     return new Promise((resolve, reject) => {
       try {
         axios
-          .get(url)
+          .get(url, params)
           .then((response) => {
             const data = response.data;
             let obj = data.result;
@@ -266,11 +281,14 @@ const actions = {
     payload
   ) {
     const { limit, offset } = payload;
-    const url = `${apiUrl}/products/searchWithRelatedCategories/${payload.keyword}?limit=${limit}&offset=${offset}`;
+    const url = `${apiUrl}/products/searchWithRelatedCategories/${payload.keyword}`;
+    const params = {
+      params: { limit: limit, offset: offset },
+    };
     return new Promise((resolve, reject) => {
       try {
         axios
-          .get(url)
+          .get(url, params)
           .then((response) => {
             const data = response.data;
             let obj = data.result;
@@ -313,11 +331,14 @@ const actions = {
     payload
   ) {
     const { limit, offset } = payload;
-    const url = `${apiUrl}/products/searchBySubCategoryIdWithRelatedCategories/${payload.sub_category_id}/${payload.keyword}?limit=${limit}&offset=${offset}`;
+    const url = `${apiUrl}/products/searchBySubCategoryIdWithRelatedCategories/${payload.sub_category_id}/${payload.keyword}`;
+    const params = {
+      params: { limit: limit, offset: offset },
+    };
     return new Promise((resolve, reject) => {
       try {
         axios
-          .get(url)
+          .get(url, params)
           .then((response) => {
             const data = response.data;
             let obj = data.result;

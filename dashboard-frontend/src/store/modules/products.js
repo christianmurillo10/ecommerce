@@ -95,14 +95,17 @@ const actions = {
     payload
   ) {
     const { limit, offset } = payload;
-    const url = `${apiUrl}/products/findAllWithLimitAndOffset?limit=${limit}&offset=${offset}`;
+    const url = `${apiUrl}/products/findAllWithLimitAndOffset`;
+    const params = {
+      params: { limit: limit, offset: offset },
+    };
     const header = {
       headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
     };
     return new Promise((resolve, reject) => {
       try {
         axios
-          .get(url, header)
+          .get(url, params, header)
           .then((response) => {
             const data = response.data;
             let obj = data.result;
