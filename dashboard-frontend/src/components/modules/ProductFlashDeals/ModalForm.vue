@@ -55,6 +55,49 @@
             </v-flex>
             <v-flex xs12 sm12 md6>
               <v-menu
+                ref="time_from"
+                v-model="time_from"
+                :close-on-content-click="false"
+                :nudge-right="40"
+                :return-value.sync="formData.time_from"
+                lazy
+                transition="scale-transition"
+                offset-y
+                full-width
+                max-width="290px"
+                min-width="290px"
+              >
+                <template v-slot:activator="{ on }">
+                  <v-text-field
+                    v-model="formData.time_from"
+                    label="Time From"
+                    prepend-icon="access_time"
+                    readonly
+                    v-on="on"
+                  ></v-text-field>
+                </template>
+                <v-time-picker
+                  v-if="time_from"
+                  v-model="formData.time_from"
+                  format="24hr"
+                  full-width
+                >
+                  <v-spacer></v-spacer>
+                  <v-btn flat color="primary" @click="time_from = false">
+                    Cancel
+                  </v-btn>
+                  <v-btn
+                    flat
+                    color="primary"
+                    @click="$refs.time_from.save(formData.time_from)"
+                  >
+                    OK
+                  </v-btn>
+                </v-time-picker>
+              </v-menu>
+            </v-flex>
+            <v-flex xs12 sm12 md6>
+              <v-menu
                 ref="date_to"
                 v-model="date_to"
                 :close-on-content-click="false"
@@ -90,6 +133,49 @@
                 </v-date-picker>
               </v-menu>
             </v-flex>
+            <v-flex xs12 sm12 md6>
+              <v-menu
+                ref="time_to"
+                v-model="time_to"
+                :close-on-content-click="false"
+                :nudge-right="40"
+                :return-value.sync="formData.time_to"
+                lazy
+                transition="scale-transition"
+                offset-y
+                full-width
+                max-width="290px"
+                min-width="290px"
+              >
+                <template v-slot:activator="{ on }">
+                  <v-text-field
+                    v-model="formData.time_to"
+                    label="Time To"
+                    prepend-icon="access_time"
+                    readonly
+                    v-on="on"
+                  ></v-text-field>
+                </template>
+                <v-time-picker
+                  v-if="time_to"
+                  v-model="formData.time_to"
+                  format="24hr"
+                  full-width
+                >
+                  <v-spacer></v-spacer>
+                  <v-btn flat color="primary" @click="time_to = false">
+                    Cancel
+                  </v-btn>
+                  <v-btn
+                    flat
+                    color="primary"
+                    @click="$refs.time_to.save(formData.time_to)"
+                  >
+                    OK
+                  </v-btn>
+                </v-time-picker>
+              </v-menu>
+            </v-flex>
           </v-layout>
         </v-container>
       </v-card-text>
@@ -108,6 +194,7 @@
 </template>
 
 <script>
+import moment from "moment";
 import Mixins from "@/helpers/Mixins.js";
 import { mapGetters, mapActions } from "vuex";
 
@@ -117,16 +204,22 @@ export default {
   data: () => ({
     date_from: false,
     date_to: false,
+    time_from: false,
+    time_to: false,
     defaultFormData: {
       title: "",
       date_from: new Date().toISOString().substr(0, 10),
       date_to: new Date().toISOString().substr(0, 10),
+      time_from: null,
+      time_to: null,
     },
     formType: "new",
     formData: {
       title: "",
       date_from: new Date().toISOString().substr(0, 10),
       date_to: new Date().toISOString().substr(0, 10),
+      time_from: null,
+      time_to: null,
     },
     valid: true,
   }),
@@ -152,10 +245,17 @@ export default {
 
     editItem(id) {
       let data = this.getProductFlashDealById(id);
+      const dateFrom = moment(data.date_from).format("YYYY-MM-DD");
+      const dateTo = moment(data.date_to).format("YYYY-MM-DD");
+      const timeFrom = moment(data.date_from).format("HH:mm");
+      const timeTo = moment(data.date_to).format("HH:mm");
+
       this.formData.id = data.id;
       this.formData.title = data.title;
-      this.formData.date_from = data.date_from;
-      this.formData.date_to = data.date_to;
+      this.formData.date_from = dateFrom;
+      this.formData.date_to = dateTo;
+      this.formData.time_from = timeFrom;
+      this.formData.time_to = timeTo;
       this.formType = "update";
     },
 

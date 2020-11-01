@@ -21,12 +21,12 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false
     },
     'date_from': {
-      type: 'DATE',
+      type: DataTypes.DATE,
       allowNull: false,
       defaultValue: sequelize.NOW
     },
     'date_to': {
-      type: 'DATE',
+      type: DataTypes.DATE,
       allowNull: false,
       defaultValue: sequelize.NOW
     },
