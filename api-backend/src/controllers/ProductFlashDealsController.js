@@ -50,19 +50,18 @@ module.exports = {
         throw new ErrorHandler(409, errors);
       }
 
-      criteriaFindExistingDate = {
-        attributes: ["id", "title", "date_from", "date_to"],
-        where: {
-          date_from: { $lte: params.date_from },
-          date_to: { $gte: params.date_from },
-          is_deleted: NO,
-        },
-      };
-      dataFindExistingDate = await Model.ProductFlashDeals.findOne(
-        criteriaFindExistingDate
-      );
-      if (!_.isEmpty(dataFindExistingDate)) {
-        errors.push("Data already exist.");
+      const currentDate = moment().utc(8).format("YYYY-MM-DD HH:mm:ss");
+      const dateFrom = moment(params.date_from)
+        .utc(8)
+        .format("YYYY-MM-DD HH:mm:ss");
+      const dateTo = moment(params.date_to)
+        .utc(8)
+        .format("YYYY-MM-DD HH:mm:ss");
+      if (
+        moment(dateFrom).isBefore(currentDate) ||
+        moment(dateFrom).isAfter(dateTo)
+      ) {
+        errors.push("Conflict on setting date.");
         throw new ErrorHandler(409, errors);
       }
 
@@ -94,10 +93,8 @@ module.exports = {
     const params = req.body;
     let errors = [],
       message = "Successfully updated data.",
-      criteria,
       initialValues,
-      data,
-      dataFindExistingDate;
+      data;
 
     try {
       // Validators
@@ -110,23 +107,26 @@ module.exports = {
       params.updated_at = moment().utc(8).format("YYYY-MM-DD HH:mm:ss");
 
       // Validate Data
-      criteria = {
-        attributes: ["id", "title", "date_from", "date_to", "updated_at"],
-        where: {
-          date_from: { $lte: params.date_from },
-          date_to: { $gte: params.date_from },
-          is_deleted: NO,
-        },
-      };
       data = await Model.ProductFlashDeals.findByPk(req.params.id);
       if (_.isEmpty(data)) {
         errors.push("Data doesn't exist.");
         throw new ErrorHandler(404, errors);
       }
 
-      dataFindExistingDate = await Model.ProductFlashDeals.findOne(criteria);
-      if (!_.isEmpty(dataFindExistingDate)) {
-        errors.push("Data already exist.");
+      const oldDateFrom = moment(data.date_from)
+        .utc(8)
+        .format("YYYY-MM-DD HH:mm:ss");
+      const dateFrom = moment(params.date_from)
+        .utc(8)
+        .format("YYYY-MM-DD HH:mm:ss");
+      const dateTo = moment(params.date_to)
+        .utc(8)
+        .format("YYYY-MM-DD HH:mm:ss");
+      if (
+        moment(dateFrom).isBefore(oldDateFrom) ||
+        moment(dateFrom).isAfter(dateTo)
+      ) {
+        errors.push("Conflict on setting date.");
         throw new ErrorHandler(409, errors);
       }
 

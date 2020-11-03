@@ -34,6 +34,8 @@
                     v-model="formData.date_from"
                     label="Date From"
                     prepend-icon="event"
+                    :rules="[rules.required]"
+                    required
                     readonly
                     v-on="on"
                   ></v-text-field>
@@ -72,6 +74,8 @@
                     v-model="formData.time_from"
                     label="Time From"
                     prepend-icon="access_time"
+                    :rules="[rules.required]"
+                    required
                     readonly
                     v-on="on"
                   ></v-text-field>
@@ -114,6 +118,8 @@
                     v-model="formData.date_to"
                     label="Date To"
                     prepend-icon="event"
+                    :rules="[rules.required]"
+                    required
                     readonly
                     v-on="on"
                   ></v-text-field>
@@ -152,6 +158,8 @@
                     v-model="formData.time_to"
                     label="Time To"
                     prepend-icon="access_time"
+                    :rules="[rules.required]"
+                    required
                     readonly
                     v-on="on"
                   ></v-text-field>

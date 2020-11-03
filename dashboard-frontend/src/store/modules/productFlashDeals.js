@@ -136,8 +136,8 @@ const actions = {
       try {
         let obj = {
           title: payload.title,
-          date_from: `${payload.date_from} ${payload.time_from}`,
-          date_to: `${payload.date_to} ${payload.time_to}`,
+          date_from: `${payload.date_from} ${payload.time_from}:00`,
+          date_to: `${payload.date_to} ${payload.time_to}:00`,
         };
 
         axios
@@ -169,8 +169,8 @@ const actions = {
       try {
         let obj = {
           title: payload.title,
-          date_from: payload.date_from,
-          date_to: payload.date_to,
+          date_from: `${payload.date_from} ${payload.time_from}:00`,
+          date_to: `${payload.date_to} ${payload.time_to}:00`,
           is_active: payload.is_active,
         };
 
