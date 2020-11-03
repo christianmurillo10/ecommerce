@@ -50,6 +50,22 @@ module.exports = {
         throw new ErrorHandler(409, errors);
       }
 
+      criteriaFindExistingDate = {
+        attributes: ["id", "title", "date_from", "date_to"],
+        where: {
+          date_from: { $lte: params.date_from },
+          date_to: { $gte: params.date_from },
+          is_deleted: NO,
+        },
+      };
+      dataFindExistingDate = await Model.ProductFlashDeals.findOne(
+        criteriaFindExistingDate
+      );
+      if (!_.isEmpty(dataFindExistingDate)) {
+        errors.push("Data already exist.");
+        throw new ErrorHandler(409, errors);
+      }
+
       const currentDate = moment().utc(8).format("YYYY-MM-DD HH:mm:ss");
       const dateFrom = moment(params.date_from)
         .utc(8)

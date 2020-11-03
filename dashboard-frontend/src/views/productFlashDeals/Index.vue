@@ -39,8 +39,10 @@
         >
           <template v-slot:items="props">
             <td class="text-xs-left">{{ props.item.title }}</td>
-            <td class="text-xs-left">{{ props.item.date_from }}</td>
-            <td class="text-xs-left">{{ props.item.date_to }}</td>
+            <td class="text-xs-left">{{ setDate(props.item.date_from) }}</td>
+            <td class="text-xs-left">{{ setTime(props.item.date_from) }}</td>
+            <td class="text-xs-left">{{ setDate(props.item.date_to) }}</td>
+            <td class="text-xs-left">{{ setTime(props.item.date_to) }}</td>
             <td class="text-xs-left">
               <v-switch
                 v-model="props.item.is_active"
@@ -131,10 +133,12 @@
 
 <script>
 import Alerts from "@/components/utilities/Alerts";
+import Mixins from "@/helpers/Mixins.js";
 import ModalForm from "@/components/modules/ProductFlashDeals/ModalForm";
 import { mapState, mapActions } from "vuex";
 
 export default {
+  mixins: [Mixins],
   components: {
     Alerts,
     ModalForm,
@@ -149,8 +153,10 @@ export default {
     search: "",
     headers: [
       { text: "Name", value: "title" },
-      { text: "From Date", value: "date_from" },
-      { text: "To Date", value: "date_to" },
+      { text: "From Date", value: "" },
+      { text: "From Time", value: "" },
+      { text: "To Date", value: "" },
+      { text: "To Time", value: "" },
       { text: "Active", value: "" },
       { text: "Actions", align: "center", value: "title", sortable: false },
     ],

@@ -44,8 +44,14 @@ export default {
       { id: CUSTOMER_STATUS_DECLINED, name: "Declined" },
       { id: CUSTOMER_STATUS_PENDING, name: "Pending" },
     ],
-    rateTypeList: [{ id: RATE_TYPE_AMOUNT, name: "Amount" }, { id: RATE_TYPE_PERCENTAGE, name: "Percentage" }],
-    creditDebitTypeList: [{ id: CREDIT, name: "Credit" }, { id: DEBIT, name: "Debit" }],
+    rateTypeList: [
+      { id: RATE_TYPE_AMOUNT, name: "Amount" },
+      { id: RATE_TYPE_PERCENTAGE, name: "Percentage" },
+    ],
+    creditDebitTypeList: [
+      { id: CREDIT, name: "Credit" },
+      { id: DEBIT, name: "Debit" },
+    ],
     paymentMethodTypeList: [
       { id: PAYMENT_METHOD_CASH, name: "Cash" },
       { id: PAYMENT_METHOD_DEPOSIT, name: "Deposit" },
@@ -65,7 +71,10 @@ export default {
       { id: SALES_ORDER_STATUS_CANCELLED, name: "Cancelled" },
       { id: SALES_ORDER_STATUS_FAILED, name: "Failed" },
     ],
-    claimTypeList: [{ id: CLAIM_TYPE_DELIVERY, name: "Delivery" }, { id: CLAIM_TYPE_PICK_UP, name: "Pick up" }],
+    claimTypeList: [
+      { id: CLAIM_TYPE_DELIVERY, name: "Delivery" },
+      { id: CLAIM_TYPE_PICK_UP, name: "Pick up" },
+    ],
     rules: {
       required: (value) => !!value || "Required.",
       max50Chars: (value) => value.length <= 50 || "Max 50 characters",
@@ -169,6 +178,16 @@ export default {
     setDateTime(dateTime) {
       let newDateTime = new Date(dateTime);
       return moment(newDateTime).format("YYYY-MM-DD HH:mm:ss");
+    },
+
+    setDate(date) {
+      let newDateTime = new Date(date);
+      return moment(newDateTime).format("YYYY-MM-DD");
+    },
+
+    setTime(time) {
+      let newDateTime = new Date(time);
+      return moment(newDateTime).format("HH:mm:ss");
     },
 
     camelCase(value) {

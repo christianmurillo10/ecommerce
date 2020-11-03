@@ -4,25 +4,25 @@ export default {
   data: () => ({
     yesOrNoList: [
       { id: 0, name: "No" },
-      { id: 1, name: "Yes" }
+      { id: 1, name: "Yes" },
     ],
     genderTypeList: [
       { id: 1, name: "Male" },
       { id: 2, name: "Female" },
-      { id: 3, name: "Other" }
+      { id: 3, name: "Other" },
     ],
     customerStatusList: [
       { id: 1, name: "Approved" },
       { id: 2, name: "Declined" },
-      { id: 3, name: "Pending" }
+      { id: 3, name: "Pending" },
     ],
     rateTypeList: [
       { id: 1, name: "Amount" },
-      { id: 2, name: "Percentage" }
+      { id: 2, name: "Percentage" },
     ],
     creditDebitTypeList: [
       { id: 1, name: "Credit" },
-      { id: 2, name: "Debit" }
+      { id: 2, name: "Debit" },
     ],
     paymentMethodTypeList: [
       { id: 1, name: "Cash" },
@@ -31,7 +31,7 @@ export default {
       { id: 4, name: "Bank Transfer" },
       { id: 5, name: "E-Wallet" },
       { id: 6, name: "Cheque" },
-      { id: 7, name: "PDC" }
+      { id: 7, name: "PDC" },
     ],
     salesOrderStatusList: [
       { id: 1, name: "Closed" },
@@ -41,24 +41,25 @@ export default {
       { id: 5, name: "Reviewed" },
       { id: 6, name: "Open" },
       { id: 7, name: "Cancelled" },
-      { id: 8, name: "Failed" }
+      { id: 8, name: "Failed" },
     ],
     claimTypeList: [
       { id: 1, name: "Delivery" },
-      { id: 2, name: "Pick up" }
+      { id: 2, name: "Pick up" },
     ],
     rules: {
-      required: value => !!value || 'Required.',
-      max50Chars: value => value.length <= 50 || 'Max 50 characters',
-      max100Chars: value => value.length <= 100 || 'Max 100 characters',
-      max255Chars: value => value.length <= 255 || 'Max 255 characters',
-      max500Chars: value => value.length <= 500 || 'Max 500 characters',
-      lessThanOrEqualTo10: value => value <= 10 || 'Must be less than or equal 10',
-      email: value => {
-        const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-        return pattern.test(value) || 'Invalid e-mail.'
-      }
-    }
+      required: (value) => !!value || "Required.",
+      max50Chars: (value) => value.length <= 50 || "Max 50 characters",
+      max100Chars: (value) => value.length <= 100 || "Max 100 characters",
+      max255Chars: (value) => value.length <= 255 || "Max 255 characters",
+      max500Chars: (value) => value.length <= 500 || "Max 500 characters",
+      lessThanOrEqualTo10: (value) =>
+        value <= 10 || "Must be less than or equal 10",
+      email: (value) => {
+        const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        return pattern.test(value) || "Invalid e-mail.";
+      },
+    },
   }),
 
   methods: {
@@ -131,11 +132,13 @@ export default {
     },
 
     setFullnameLastnameFirst(fname, mname, lname) {
-      let firstname = fname ? fname.charAt(0).toUpperCase() + fname.slice(1) : "";
+      let firstname = fname
+        ? fname.charAt(0).toUpperCase() + fname.slice(1)
+        : "";
       let middlename = mname ? `${mname.charAt(0).toUpperCase()}.` : "";
       let lastname = lname ? `${lname.toUpperCase()},` : "";
 
-      return `${lastname} ${firstname} ${middlename}`
+      return `${lastname} ${firstname} ${middlename}`;
     },
 
     setDateTime(dateTime) {
@@ -143,21 +146,34 @@ export default {
       return moment(newDateTime).format("YYYY-MM-DD HH:mm:ss");
     },
 
+    setDate(date) {
+      let newDateTime = new Date(date);
+      return moment(newDateTime).format("YYYY-MM-DD");
+    },
+
+    setTime(time) {
+      let newDateTime = new Date(time);
+      return moment(newDateTime).format("HH:mm:ss");
+    },
+
     setRateTypeValue(value, type) {
       if (type === 1) return `₱ ${value}`;
-      else if  (type === 2) return `${value}%`;
+      else if (type === 2) return `${value}%`;
       else return "";
     },
 
     camelCase(value) {
-      return value.replace(/[$&+,:;=?@#_|'<>.^*()%!-]/g, '').replace(/(?:^\w|[A-Z]|\b\w)/g, function (word, index) {
-        return index == 0 ? word.toLowerCase() : word.toUpperCase();
-      }).replace(/\s+/g, '');
+      return value
+        .replace(/[$&+,:;=?@#_|'<>.^*()%!-]/g, "")
+        .replace(/(?:^\w|[A-Z]|\b\w)/g, function(word, index) {
+          return index == 0 ? word.toLowerCase() : word.toUpperCase();
+        })
+        .replace(/\s+/g, "");
     },
 
     truncateText(text, length) {
       if (text.length > length) return text.substring(0, length) + "...";
       else return text;
-    }
-  }
-}
+    },
+  },
+};
