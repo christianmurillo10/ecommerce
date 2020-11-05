@@ -3,7 +3,7 @@
     <Snackbars />
     <v-flex xs12 sm12 md6 lg6>
       <v-container>
-        <v-card outlined color="grey lighten-4">
+        <v-card outlined>
           <v-card-title>Information</v-card-title>
           <InformationForm />
         </v-card>
@@ -11,7 +11,7 @@
     </v-flex>
     <v-flex xs12 sm12 md6 lg6>
       <v-container>
-        <v-card outlined color="blue lighten-5">
+        <v-card outlined>
           <v-card-title>Change Password</v-card-title>
           <ChangePasswordForm />
         </v-card>

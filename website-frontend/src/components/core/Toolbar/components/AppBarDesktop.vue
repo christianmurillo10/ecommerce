@@ -1,5 +1,5 @@
 <template>
-  <v-app-bar app fixed flat>
+  <v-app-bar app fixed flat color="white">
     <v-container class="content mx-auto mt-2">
       <v-layout row wrap>
         <v-flex xs8 sm8 md4 lg4>

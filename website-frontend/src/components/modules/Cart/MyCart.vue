@@ -80,35 +80,40 @@
           </v-icon>
         </template>
         <template v-slot:expanded-item="{ headers, item }">
-          <td :colspan="headers.length">
-            <table>
-              <thead>
-                <tr>
-                  <th>Base Price</th>
-                  <th>Discount</th>
-                  <th
-                    class="text-left"
-                    v-for="(variant, i) in item.variants"
-                    :key="i"
-                  >
-                    {{ variant.title }}
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>{{ item.base_price_amount }}</td>
-                  <td>
-                    {{
-                      setRateTypeValue(item.discount_value, item.discount_type)
-                    }}
-                  </td>
-                  <td v-for="(variant, i) in item.variants" :key="i">
-                    {{ variant.value.name }}
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+          <td :colspan="headers.length" class="py-1">
+            <v-simple-table dense>
+              <template v-slot:default>
+                <thead>
+                  <tr>
+                    <th>Base Price</th>
+                    <th>Discount</th>
+                    <th
+                      class="text-left"
+                      v-for="(variant, i) in item.variants"
+                      :key="i"
+                    >
+                      {{ variant.title }}
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>{{ item.base_price_amount }}</td>
+                    <td>
+                      {{
+                        setRateTypeValue(
+                          item.discount_value,
+                          item.discount_type
+                        )
+                      }}
+                    </td>
+                    <td v-for="(variant, i) in item.variants" :key="i">
+                      {{ variant.value.name }}
+                    </td>
+                  </tr>
+                </tbody>
+              </template>
+            </v-simple-table>
           </td>
         </template>
       </v-data-table>

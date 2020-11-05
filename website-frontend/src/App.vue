@@ -2,7 +2,7 @@
   <v-app>
     <Drawer />
     <Toolbar />
-    <Content />
+    <Main />
     <Footer />
   </v-app>
 </template>
@@ -10,7 +10,7 @@
 <script>
 import Drawer from "./components/core/Drawer";
 import Toolbar from "./components/core/Toolbar/Index";
-import Content from "./components/core/Content";
+import Main from "./components/core/Main";
 import Footer from "./components/core/Footer";
 import { mapActions } from "vuex";
 
@@ -19,7 +19,7 @@ export default {
   components: {
     Drawer,
     Toolbar,
-    Content,
+    Main,
     Footer,
   },
   mounted() {

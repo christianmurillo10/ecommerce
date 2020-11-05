@@ -4,7 +4,7 @@
     :temporary="primaryDrawer.type"
     overflow
     app
-    mobile-break-point="991"
+    mobile-breakpoint="991"
     width="80%"
   >
     <v-card outlined tile color="blue">
