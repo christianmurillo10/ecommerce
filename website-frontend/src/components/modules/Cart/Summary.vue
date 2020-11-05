@@ -14,17 +14,17 @@
           <template v-slot:default>
             <thead>
               <tr>
-                <th class="text-left">Quantity</th>
                 <th class="text-left">Item</th>
+                <th class="text-left">Quantity</th>
                 <th class="text-right">Total</th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="item in items" :key="item.index">
+                <td class="text-left">{{ `${item.name}` }}</td>
                 <td class="text-left">
                   {{ `&#8369; ${item.price_amount} x ${item.quantity}` }}
                 </td>
-                <td class="text-left">{{ `${item.name}` }}</td>
                 <td class="text-right">
                   {{ `&#8369; ${item.total_price_amount}` }}
                 </td>
@@ -95,19 +95,6 @@
             </v-layout>
           </v-flex>
         </v-list-item>
-      </v-flex>
-      <v-flex xs12 sm12 md12 lg12>
-        <v-layout wrap class="text-center">
-          <v-btn
-            block
-            rounded
-            color="blue"
-            class="white--text"
-            @click="cart = false"
-          >
-            <v-icon left dark>mdi-basket</v-icon>CHECKOUT
-          </v-btn>
-        </v-layout>
       </v-flex>
     </v-card-text>
   </v-card>

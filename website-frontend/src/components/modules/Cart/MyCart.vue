@@ -197,9 +197,13 @@ export default {
     },
 
     quantityValueChecker(val, index) {
-      if (val < 1) this.items[index].quantity = "";
-      else if (val > 10) this.items[index].quantity = 10;
-      else this.items[index].quantity = val;
+      if (val < 1) {
+        this.items[index].quantity = 1;
+      } else if (val > 10) {
+        this.items[index].quantity = 10;
+      } else {
+        this.items[index].quantity = val;
+      }
 
       let obj = {
         index: index,

@@ -1,5 +1,6 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
+import NotFound from "../views/Pages/Errors/NotFound";
 import Login from "../views/Pages/Login.vue";
 import Register from "../views/Pages/Registration/Index.vue";
 import RegisterComplete from "../views/Pages/Registration/Complete.vue";
@@ -13,7 +14,8 @@ import ContactUs from "../views/Pages/ContactUs.vue";
 import TrackOrder from "../views/Pages/TrackOrder.vue";
 import Home from "../views/Home/Index.vue";
 import Customers from "../views/Customers/Index.vue";
-import CustomerCart from "../views/CustomerCarts/Index.vue";
+import Cart from "../views/Cart/Index.vue";
+import Checkout from "../views/Checkout/Index.vue";
 import Products from "../views/Products/Index.vue";
 import ProductSearch from "../views/Products/Search.vue";
 import ProductDetails from "../views/Products/Details.vue";
@@ -22,6 +24,11 @@ import store from "../store";
 Vue.use(VueRouter);
 
 const routes = [
+  {
+    path: "*",
+    name: "Not Found",
+    component: NotFound,
+  },
   {
     path: "/login",
     name: "login",
@@ -117,8 +124,20 @@ const routes = [
   },
   {
     path: "/cart",
-    name: "customerCart",
-    component: CustomerCart,
+    name: "cart",
+    component: Cart,
+    beforeEnter: (to, from, next) => {
+      if (store.state.customerAuthentication.token) {
+        next();
+      } else {
+        next("/login");
+      }
+    },
+  },
+  {
+    path: "/checkout",
+    name: "checkout",
+    component: Checkout,
     beforeEnter: (to, from, next) => {
       if (store.state.customerAuthentication.token) {
         next();

@@ -38,7 +38,10 @@
             <tbody>
               <tr v-for="item in customerCartList" :key="item.index">
                 <td>
-                  <router-link v-bind:to="`/products/${item.product_id}`">
+                  <router-link
+                    v-on:click.native="hideCart()"
+                    v-bind:to="`/products/${item.product_id}`"
+                  >
                     <v-img
                       :src="item.file_path"
                       max-height="60px"
@@ -56,7 +59,7 @@
                   <v-icon
                     small
                     color="error"
-                    @click="deleteCartData(item.index)"
+                    v:on:click="deleteCartData(item.index)"
                   >
                     mdi-delete
                   </v-icon>
@@ -83,14 +86,22 @@
       <v-layout row wrap justify-center>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn small color="blue" outlined class="ma-2" to="/cart">
+          <v-btn
+            small
+            color="blue"
+            outlined
+            class="ma-2"
+            v-on:click="hideCart()"
+            to="/cart"
+          >
             <v-icon left>mdi-cart</v-icon>VIEW CART
           </v-btn>
           <v-btn
             small
             color="blue"
             class="ma-2 white--text"
-            @click="cart = false"
+            v-on:click="hideCart()"
+            to="/checkout"
           >
             <v-icon left>mdi-basket</v-icon>CHECKOUT
           </v-btn>
@@ -138,6 +149,10 @@ export default {
       deleteCartData: "DELETE_DATA",
       setCardData: "SET_DATA",
     }),
+
+    hideCart() {
+      this.cart = false;
+    },
   },
 };
 </script>

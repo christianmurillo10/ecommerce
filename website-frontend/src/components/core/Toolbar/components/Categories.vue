@@ -1,6 +1,7 @@
 <template>
   <v-menu
     content-class="blue-border"
+    v-model="category"
     :close-on-content-click="false"
     open-on-click
     :nudge-width="200"
@@ -63,7 +64,7 @@
                 </v-list-item>
                 <v-divider></v-divider>
               </template>
-              <v-card outlined width="850">
+              <v-card outlined>
                 <v-container fluid grid-list-sm class="pa-5">
                   <v-layout row wrap>
                     <v-flex
@@ -80,6 +81,7 @@
                         <li class="remove-bullet pb-1">
                           <router-link
                             class="text-decoration black--text"
+                            v-on:click.native="hideCategory()"
                             :to="{
                               path: '/products',
                               query: {
@@ -102,6 +104,7 @@
                         >
                           <router-link
                             class="text-decoration black--text"
+                            v-on:click.native="hideCategory()"
                             :to="{
                               path: '/products',
                               query: {
@@ -143,6 +146,7 @@ import { mapState, mapActions } from "vuex";
 
 export default {
   data: () => ({
+    category: false,
     model: null,
   }),
 
@@ -170,7 +174,12 @@ export default {
     },
 
     redirectTo(path, query) {
+      this.hideCategory();
       this.$router.push({ path: path, query: query });
+    },
+
+    hideCategory() {
+      this.category = false;
     },
   },
 };
@@ -186,6 +195,7 @@ export default {
 
 .sub-category-card {
   top: 114px !important;
+  width: 60%;
 }
 
 .v-application .black--text span:hover {

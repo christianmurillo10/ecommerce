@@ -6,7 +6,7 @@
           <v-layout wrap>
             <v-flex xs12 sm12 md8 lg8>
               <v-container>
-                <MyCart :items="customerCartList" />
+                <Details :items="customerCartList" />
               </v-container>
             </v-flex>
             <v-flex xs12 sm12 md4 lg4>
@@ -22,13 +22,13 @@
 </template>
 
 <script>
-import MyCart from "@/components/modules/CustomerCarts/MyCart";
-import Summary from "@/components/modules/CustomerCarts/Summary";
+import Details from "@/components/modules/Checkout/Details";
+import Summary from "@/components/modules/Cart/Summary";
 import { mapState } from "vuex";
 
 export default {
   components: {
-    MyCart,
+    Details,
     Summary,
   },
 
