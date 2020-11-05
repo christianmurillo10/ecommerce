@@ -55,9 +55,9 @@
             <v-chip
               v-for="(value, j) in JSON.parse(variant.values)"
               :key="j"
-              :value="value"
               outlined
               color="blue"
+              filter
               @click="setVariantValues(i, value)"
             >
               {{ value.name }}

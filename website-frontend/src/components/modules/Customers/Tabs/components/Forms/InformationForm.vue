@@ -209,8 +209,8 @@ export default {
             };
 
             if (response.status === "success") {
-              this.setFormData(result);
-              this.setCustomerInfo(result);
+              this.setFormData(response.result);
+              this.setCustomerInfo(response.result);
             } else {
               obj.color = "error";
             }

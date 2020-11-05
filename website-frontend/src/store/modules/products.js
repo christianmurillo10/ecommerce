@@ -23,9 +23,13 @@ const state = {
 
 const getters = {
   getProductAvailableQuantityBySku: (state) => (sku) => {
-    return state.productDataById.inventories.find(
-      (inventory) => inventory.sku === sku
-    ).quantity_available;
+    const productInventories = state.productDataById.inventories;
+    const quantityAvailable =
+      productInventories.length > 0
+        ? productInventories.find((inventory) => inventory.sku === sku)
+            .quantity_available
+        : 0;
+    return quantityAvailable;
   },
 };
 
