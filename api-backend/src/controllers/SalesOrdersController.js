@@ -116,10 +116,10 @@ module.exports = {
         .then(async ([finalData, created]) => {
           let plainData = finalData.get({ plain: true });
 
-          // // 1. Insert Sales Order Shipping Details
-          // await SalesOrderShippingDetailsController.insertSalesOrderShippingDetails(
-          //   params.shippingDetails
-          // );
+          // 1. Insert Sales Order Shipping Details
+          await SalesOrderShippingDetailsController.insertSalesOrderShippingDetails(
+            params.shippingDetails
+          );
 
           // 2. Set and filtering Bulk Data of Sales Order Details
           let salesOrderDetailsInitialValue = [];
@@ -235,10 +235,10 @@ module.exports = {
           async (finalData) => {
             let plainData = finalData.get({ plain: true });
 
-            // // 1. Insert Sales Order Shipping Details
-            // await SalesOrderShippingDetailsController.insertSalesOrderShippingDetails(
-            //   params.shippingDetails
-            // );
+            // 1. Update Sales Order Shipping Details
+            await SalesOrderShippingDetailsController.updateSalesOrderShippingDetails(
+              params.shippingDetails
+            );
 
             const salesOrderDetails = params.details;
             if (salesOrderDetails) {

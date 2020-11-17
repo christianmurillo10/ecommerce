@@ -324,6 +324,7 @@ module.exports = {
         let initialValues;
 
         // Pre-setting variables
+        obj.shipping_no = await generateShippingNo();
         obj.created_at = moment().utc(8).format("YYYY-MM-DD HH:mm:ss");
         initialValues = _.pick(obj, [
           "shipping_no",
@@ -346,4 +347,75 @@ module.exports = {
       }
     });
   },
+
+  /**
+   * Update Sales Order Shipping Details
+   */
+  updateSalesOrderShippingDetails: (obj) => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        let initialValues, data;
+
+        // Pre-setting variables
+        obj.updated_at = moment().utc(8).format("YYYY-MM-DD HH:mm:ss");
+        initialValues = _.pick(obj, [
+          "shipping_no",
+          "address",
+          "amount",
+          "shipping_method_id",
+          "shipping_method_rate_id",
+          "updated_at",
+        ]);
+
+        data = await Model.SalesOrderShippingDetails.findByPk(obj.id);
+        data
+          .update(initialValues)
+          .then((response) => {
+            resolve(true);
+          })
+          .catch((err) => {
+            resolve(false);
+          });
+      } catch (err) {
+        reject(err);
+      }
+    });
+  },
+};
+
+/**
+ * Private Functions
+ */
+const generateShippingNo = () => {
+  return new Promise(async (resolve, reject) => {
+    let data, criteria, value;
+
+    try {
+      let date = moment().utc(8).format("YYYY-MM-DD");
+      date = date.split("-").join("");
+      // Pre-setting variables
+      criteria = {
+        attributes: ["shipping_no"],
+        where: { shipping_no: { $ne: null }, is_deleted: NO },
+        order: [["id", "DESC"]],
+      };
+      // Execute findOne query
+      data = await Model.SalesOrderShippingDetails.findOne(criteria);
+      if (_.isEmpty(data)) {
+        value = `SH${date}-000001`;
+      } else {
+        let numLength = 6;
+        let stringNumber = data.shipping_no.substring(11);
+        let newNumber = parseInt(stringNumber) + 1;
+        let leadingZero = Array(
+          numLength - newNumber.toString().length + 1
+        ).join(0);
+        value = `SH${date}-${leadingZero}${newNumber}`;
+      }
+      resolve(value);
+    } catch (err) {
+      console.log(err);
+      reject(err);
+    }
+  });
 };
