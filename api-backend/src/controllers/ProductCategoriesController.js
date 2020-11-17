@@ -357,7 +357,7 @@ module.exports = {
 };
 
 /**
- * Other Functions
+ * Private Functions
  */
 const uploadImage = (data, files) => {
   try {

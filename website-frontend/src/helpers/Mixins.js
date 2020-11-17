@@ -1,51 +1,79 @@
 import moment from "moment";
+import {
+  NO,
+  YES,
+  MALE,
+  FEMALE,
+  OTHER,
+  CUSTOMER_STATUS_APPROVED,
+  CUSTOMER_STATUS_DECLINED,
+  CUSTOMER_STATUS_PENDING,
+  RATE_TYPE_AMOUNT,
+  RATE_TYPE_PERCENTAGE,
+  CREDIT,
+  DEBIT,
+  PAYMENT_METHOD_CASH,
+  PAYMENT_METHOD_DEPOSIT,
+  PAYMENT_METHOD_CREDIT_CARD,
+  PAYMENT_METHOD_BANK_TRANSFER,
+  PAYMENT_METHOD_E_WALLET,
+  PAYMENT_METHOD_CHEQUE,
+  PAYMENT_METHOD_PDC,
+  SALES_ORDER_STATUS_CLOSED,
+  SALES_ORDER_STATUS_DELIVERED,
+  SALES_ORDER_STATUS_ON_PROCESS,
+  SALES_ORDER_STATUS_APPROVED,
+  SALES_ORDER_STATUS_REVIEWED,
+  SALES_ORDER_STATUS_OPEN,
+  SALES_ORDER_STATUS_CANCELLED,
+  SALES_ORDER_STATUS_FAILED,
+  CLAIM_TYPE_DELIVERY,
+  CLAIM_TYPE_PICK_UP,
+} from "./Constant";
 
 export default {
   data: () => ({
-    yesOrNoList: [
-      { id: 0, name: "No" },
-      { id: 1, name: "Yes" },
-    ],
+    yesOrNoList: [{ id: NO, name: "No" }, { id: YES, name: "Yes" }],
     genderTypeList: [
-      { id: 1, name: "Male" },
-      { id: 2, name: "Female" },
-      { id: 3, name: "Other" },
+      { id: MALE, name: "Male" },
+      { id: FEMALE, name: "Female" },
+      { id: OTHER, name: "Other" },
     ],
     customerStatusList: [
-      { id: 1, name: "Approved" },
-      { id: 2, name: "Declined" },
-      { id: 3, name: "Pending" },
+      { id: CUSTOMER_STATUS_APPROVED, name: "Approved" },
+      { id: CUSTOMER_STATUS_DECLINED, name: "Declined" },
+      { id: CUSTOMER_STATUS_PENDING, name: "Pending" },
     ],
     rateTypeList: [
-      { id: 1, name: "Amount" },
-      { id: 2, name: "Percentage" },
+      { id: RATE_TYPE_AMOUNT, name: "Amount" },
+      { id: RATE_TYPE_PERCENTAGE, name: "Percentage" },
     ],
     creditDebitTypeList: [
-      { id: 1, name: "Credit" },
-      { id: 2, name: "Debit" },
+      { id: CREDIT, name: "Credit" },
+      { id: DEBIT, name: "Debit" },
     ],
     paymentMethodTypeList: [
-      { id: 1, name: "Cash" },
-      { id: 2, name: "Deposit" },
-      { id: 3, name: "Credit Card" },
-      { id: 4, name: "Bank Transfer" },
-      { id: 5, name: "E-Wallet" },
-      { id: 6, name: "Cheque" },
-      { id: 7, name: "PDC" },
+      { id: PAYMENT_METHOD_CASH, name: "Cash" },
+      // { id: PAYMENT_METHOD_DEPOSIT, name: "Deposit" },
+      { id: PAYMENT_METHOD_CREDIT_CARD, name: "Credit Card" },
+      // { id: PAYMENT_METHOD_BANK_TRANSFER, name: "Bank Transfer" },
+      { id: PAYMENT_METHOD_E_WALLET, name: "E-Wallet" },
+      // { id: PAYMENT_METHOD_CHEQUE, name: "Cheque" },
+      // { id: PAYMENT_METHOD_PDC, name: "PDC" },
     ],
     salesOrderStatusList: [
-      { id: 1, name: "Closed" },
-      { id: 2, name: "Delivered" },
-      { id: 3, name: "On Process" },
-      { id: 4, name: "Approved" },
-      { id: 5, name: "Reviewed" },
-      { id: 6, name: "Open" },
-      { id: 7, name: "Cancelled" },
-      { id: 8, name: "Failed" },
+      { id: SALES_ORDER_STATUS_CLOSED, name: "Closed" },
+      { id: SALES_ORDER_STATUS_DELIVERED, name: "Delivered" },
+      { id: SALES_ORDER_STATUS_ON_PROCESS, name: "On Process" },
+      { id: SALES_ORDER_STATUS_APPROVED, name: "Approved" },
+      { id: SALES_ORDER_STATUS_REVIEWED, name: "Reviewed" },
+      { id: SALES_ORDER_STATUS_OPEN, name: "Open" },
+      { id: SALES_ORDER_STATUS_CANCELLED, name: "Cancelled" },
+      { id: SALES_ORDER_STATUS_FAILED, name: "Failed" },
     ],
     claimTypeList: [
-      { id: 1, name: "Delivery" },
-      { id: 2, name: "Pick up" },
+      { id: CLAIM_TYPE_DELIVERY, name: "Delivery" },
+      { id: CLAIM_TYPE_PICK_UP, name: "Pick up" },
     ],
     rules: {
       required: (value) => !!value || "Required.",
@@ -64,70 +92,76 @@ export default {
 
   methods: {
     getYesNoStatus(value) {
-      if (value == 0) return "NO";
-      else if (value == 1) return "YES";
+      if (value == NO) return "NO";
+      else if (value == YES) return "YES";
       else return "";
     },
 
     getYesNoStatusColor(value) {
-      if (value == 1) return "green";
-      else if (value == 0) return "red";
+      if (value == YES) return "green";
+      else if (value == NO) return "red";
       else return "";
     },
 
     getGenderTypes(value) {
-      if (value == 1) return "Male";
-      else if (value == 2) return "Female";
-      else if (value == 3) return "Other";
+      if (value == MALE) return "Male";
+      else if (value == FEMALE) return "Female";
+      else if (value == OTHER) return "Other";
       else return "";
     },
 
     getCustomerStatus(value) {
-      if (value == 1) return "Approved";
-      else if (value == 2) return "Declined";
-      else if (value == 3) return "Pending";
+      if (value == CUSTOMER_STATUS_APPROVED) return "Approved";
+      else if (value == CUSTOMER_STATUS_DECLINED) return "Declined";
+      else if (value == CUSTOMER_STATUS_PENDING) return "Pending";
       else return "";
     },
 
     getCustomerStatusColor(value) {
-      if (value == 1) return "green";
-      else if (value == 2) return "red";
-      else if (value == 3) return "primary";
+      if (value == CUSTOMER_STATUS_APPROVED) return "green";
+      else if (value == CUSTOMER_STATUS_DECLINED) return "red";
+      else if (value == CUSTOMER_STATUS_PENDING) return "primary";
       else return "";
     },
 
     getCreditDebitTypes(value) {
-      if (value == 1) return "Credit";
-      else if (value == 2) return "Debit";
+      if (value == CREDIT) return "Credit";
+      else if (value == DEBIT) return "Debit";
       else return "";
     },
 
     getPaymentMethodTypes(value) {
-      if (value == 1) return "Cash";
-      else if (value == 2) return "Deposit";
-      else if (value == 3) return "Credit Card";
-      else if (value == 4) return "Bank Transfer";
-      else if (value == 5) return "E-Wallet";
-      else if (value == 6) return "Cheque";
-      else if (value == 7) return "PDC";
+      if (value == PAYMENT_METHOD_CASH) return "Cash";
+      else if (value == PAYMENT_METHOD_DEPOSIT) return "Deposit";
+      else if (value == PAYMENT_METHOD_CREDIT_CARD) return "Credit Card";
+      else if (value == PAYMENT_METHOD_BANK_TRANSFER) return "Bank Transfer";
+      else if (value == PAYMENT_METHOD_E_WALLET) return "E-Wallet";
+      else if (value == PAYMENT_METHOD_CHEQUE) return "Cheque";
+      else if (value == PAYMENT_METHOD_PDC) return "PDC";
       else return "";
     },
 
     getSalesOrderStatus(value) {
-      if (value == 1) return "Closed";
-      else if (value == 2) return "Delivered";
-      else if (value == 3) return "On Process";
-      else if (value == 4) return "Approved";
-      else if (value == 5) return "Reviewed";
-      else if (value == 6) return "Open";
-      else if (value == 7) return "Cancelled";
-      else if (value == 8) return "Failed";
+      if (value == SALES_ORDER_STATUS_CLOSED) return "Closed";
+      else if (value == SALES_ORDER_STATUS_DELIVERED) return "Delivered";
+      else if (value == SALES_ORDER_STATUS_ON_PROCESS) return "On Process";
+      else if (value == SALES_ORDER_STATUS_APPROVED) return "Approved";
+      else if (value == SALES_ORDER_STATUS_REVIEWED) return "Reviewed";
+      else if (value == SALES_ORDER_STATUS_OPEN) return "Open";
+      else if (value == SALES_ORDER_STATUS_CANCELLED) return "Cancelled";
+      else if (value == SALES_ORDER_STATUS_FAILED) return "Failed";
       else return "";
     },
 
     getClaimTypes(value) {
-      if (value == 1) return "Delivery";
-      else if (value == 2) return "Pick up";
+      if (value == CLAIM_TYPE_DELIVERY) return "Delivery";
+      else if (value == CLAIM_TYPE_PICK_UP) return "Pick up";
+      else return "";
+    },
+
+    setRateTypeValue(value, type) {
+      if (type === RATE_TYPE_AMOUNT) return `₱ ${value}`;
+      else if (type === RATE_TYPE_PERCENTAGE) return `${value}%`;
       else return "";
     },
 
@@ -154,12 +188,6 @@ export default {
     setTime(time) {
       let newDateTime = new Date(time);
       return moment(newDateTime).format("HH:mm:ss");
-    },
-
-    setRateTypeValue(value, type) {
-      if (type === 1) return `₱ ${value}`;
-      else if (type === 2) return `${value}%`;
-      else return "";
     },
 
     camelCase(value) {

@@ -10,22 +10,26 @@
               </v-container>
             </v-flex>
             <v-flex xs12 sm12 md4 lg4>
-              <v-container>
-                <Summary :items="customerCartList" />
-              </v-container>
-            </v-flex>
-            <v-flex xs12 sm12 md4 lg4 offset-md8 offset-lg8>
-              <v-container>
-                <v-btn
-                  block
-                  rounded
-                  color="blue"
-                  class="white--text"
-                  to="/checkout"
-                >
-                  <v-icon left dark>mdi-basket</v-icon>CHECKOUT
-                </v-btn>
-              </v-container>
+              <v-layout wrap>
+                <v-flex xs12 sm12 md12 lg12>
+                  <v-container>
+                    <Summary :items="customerCartList" />
+                  </v-container>
+                </v-flex>
+                <v-flex xs12 sm12 md12 lg12>
+                  <v-container>
+                    <v-btn
+                      block
+                      rounded
+                      color="blue"
+                      class="white--text"
+                      to="/checkout"
+                    >
+                      <v-icon left dark>mdi-basket</v-icon>CHECKOUT
+                    </v-btn>
+                  </v-container>
+                </v-flex>
+              </v-layout>
             </v-flex>
           </v-layout>
         </v-flex>

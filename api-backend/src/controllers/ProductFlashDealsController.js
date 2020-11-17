@@ -330,4 +330,47 @@ module.exports = {
       next(err);
     }
   },
+
+  /**
+   * Get today flash deal
+   */
+  getTodayFlashDeal: () => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        let dateToday = moment().utc(8).format("YYYY-MM-DD");
+        criteria = {
+          attributes: ["id", "title", "date_from", "date_to"],
+          where: {
+            date_from: { $lte: dateToday },
+            date_to: { $gte: dateToday },
+            is_active: YES,
+            is_deleted: NO,
+          },
+          order: [["id", "DESC"]],
+          include: [
+            {
+              model: Model.ProductFlashDealDetails,
+              as: "productFlashDealDetails",
+              attributes: [
+                "id",
+                "discount_percentage",
+                "discount_amount",
+                "base_price_amount",
+                "current_price_amount",
+                "product_id",
+                "discount_type",
+              ],
+              where: { is_deleted: NO },
+              order: [["id", "ASC"]],
+              required: false,
+            },
+          ],
+        };
+        data = await Model.ProductFlashDeals.findOne(criteria);
+        resolve(data);
+      } catch (err) {
+        reject(err);
+      }
+    });
+  },
 };

@@ -761,10 +761,35 @@ module.exports = {
       }
     });
   },
+
+  /**
+   * Get data by SKU
+   */
+  getDataBySKU: (sku) => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        criteria = {
+          attributes: [
+            "sku",
+            "quantity_available",
+            "unit",
+            "price_amount",
+            "product_id",
+          ],
+          where: { sku: sku, is_deleted: NO },
+          order: [["created_at", "DESC"]],
+        };
+        data = await Model.Inventories.findOne(criteria);
+        resolve(data);
+      } catch (err) {
+        reject(err);
+      }
+    });
+  },
 };
 
 /**
- * Other Functions
+ * Private Functions
  */
 const setBulkInventoryData = (params, data, product) => {
   let multiplyLength = 1,

@@ -1,11 +1,15 @@
 const Model = require("../models");
 const { ErrorHandler, handleSuccess } = require("../helpers/response-helper");
 const InventoriesController = require("./InventoriesController");
+const ProductFlashDealsController = require("./ProductFlashDealsController");
 const ProductFlashDealDetailsController = require("./ProductFlashDealDetailsController");
 const CustomerBalanceController = require("./CustomerBalanceController");
+const SalesOrderShippingDetailsController = require("./SalesOrderShippingDetailsController");
 const {
   NO,
   YES,
+  DISCOUNT_TYPE_AMOUNT,
+  DISCOUNT_TYPE_PERCENTAGE,
   SO_STATUS_CLOSED,
   SO_STATUS_DELIVERED,
   SO_STATUS_ON_PROCESS,
@@ -28,7 +32,7 @@ module.exports = {
    * @routes POST /salesOrders/create
    */
   create: async (req, res, next) => {
-    const params = req.body;
+    let params = req.body;
     let errors = [],
       message = "Successfully created data.",
       criteria,
@@ -45,22 +49,6 @@ module.exports = {
       // Override variables
       params.order_no = await generateOrderNo();
       params.created_at = moment().utc(8).format("YYYY-MM-DD HH:mm:ss");
-      params.sub_total_amount = params.sub_total_amount
-        ? params.sub_total_amount.toLocaleString()
-        : null;
-      params.vat_amount = params.vat_amount
-        ? params.vat_amount.toLocaleString()
-        : null;
-      params.shipping_fee_amount = params.shipping_fee_amount
-        ? params.shipping_fee_amount.toLocaleString()
-        : null;
-      params.total_discount_amount = params.total_discount_amount
-        ? params.total_discount_amount.toLocaleString()
-        : null;
-      params.total_amount = params.total_amount
-        ? params.total_amount.toLocaleString()
-        : null;
-      params.total_balance_amount = params.total_amount;
       params.customer_id = params.customer_id
         ? params.customer_id.toLocaleString()
         : null;
@@ -72,10 +60,6 @@ module.exports = {
         : null;
 
       if (_.isEmpty(params.order_no)) errors.push("Order No. is required.");
-      if (_.isEmpty(params.sub_total_amount))
-        errors.push("Sub-total Amount is required.");
-      if (_.isEmpty(params.total_amount))
-        errors.push("Total Amount is required.");
       if (_.isEmpty(params.customer_id)) errors.push("Customer is required.");
       if (_.isEmpty(params.date_ordered))
         errors.push("Date Ordered is required.");
@@ -83,6 +67,8 @@ module.exports = {
         errors.push("Payment Method is required.");
       if (_.isEmpty(params.details) || params.details.length < 1)
         errors.push("Details is required.");
+      if (_.isEmpty(params.shippingDetails))
+        errors.push("Shipping Details is required.");
       if (errors.length > 0) {
         throw new ErrorHandler(400, errors);
       }
@@ -103,6 +89,9 @@ module.exports = {
         errors.push("Data already exist.");
         throw new ErrorHandler(409, errors);
       }
+
+      // Set Parameters
+      params = await setSalesOrderParameters(params);
 
       // Pre-setting variables
       initialValues = _.pick(params, [
@@ -127,9 +116,14 @@ module.exports = {
         .then(async ([finalData, created]) => {
           let plainData = finalData.get({ plain: true });
 
-          // 1. Set and filtering Bulk Data of Sales Order Details
-          const salesOrderDetails = params.details;
+          // // 1. Insert Sales Order Shipping Details
+          // await SalesOrderShippingDetailsController.insertSalesOrderShippingDetails(
+          //   params.shippingDetails
+          // );
+
+          // 2. Set and filtering Bulk Data of Sales Order Details
           let salesOrderDetailsInitialValue = [];
+          let salesOrderDetails = params.details;
           salesOrderDetails.forEach((element) => {
             let salesOrderDetailsData = {
               sku: element.sku,
@@ -173,7 +167,7 @@ module.exports = {
    * @route PUT /salesOrders/update/:id
    */
   update: async (req, res, next) => {
-    const params = req.body;
+    let params = req.body;
     let errors = [],
       message = "Successfully updated data.",
       criteria,
@@ -207,6 +201,9 @@ module.exports = {
         throw new ErrorHandler(404, errors);
       }
 
+      // Set Parameters
+      params = await setSalesOrderParameters(params);
+
       // Pre-setting variables
       initialValues = _.pick(params, [
         "remarks",
@@ -238,9 +235,14 @@ module.exports = {
           async (finalData) => {
             let plainData = finalData.get({ plain: true });
 
-            if (params.details) {
-              // 1. Set and filtering Bulk Data of Sales Order Details
-              const salesOrderDetails = params.details;
+            // // 1. Insert Sales Order Shipping Details
+            // await SalesOrderShippingDetailsController.insertSalesOrderShippingDetails(
+            //   params.shippingDetails
+            // );
+
+            const salesOrderDetails = params.details;
+            if (salesOrderDetails) {
+              // 2. Set and filtering Bulk Data of Sales Order Details
               let salesOrderDetailsInitialUpdateValue = [];
               let salesOrderDetailsInitialCreateValue = [];
               let existingIds = [];
@@ -277,9 +279,9 @@ module.exports = {
                 }
               });
 
-              // 2. UPDATE
+              // 3. UPDATE
               if (salesOrderDetailsInitialUpdateValue.length > 0) {
-                // 2.1 Update sales order details
+                // 3.1 Update sales order details
                 for (
                   let i = 0;
                   i < salesOrderDetailsInitialUpdateValue.length;
@@ -291,12 +293,12 @@ module.exports = {
                     detailsUpdateValue.id
                   );
                   if (!_.isEmpty(dataDetails)) {
-                    // 2.1.1 Update sales order details
+                    // 3.1.1 Update sales order details
                     await dataDetails.update(detailsUpdateValue);
                   }
                 }
 
-                // 2.2 Delete sales order details
+                // 3.2 Delete sales order details
                 let criteriaDetails = {
                   where: {
                     id: { $notIn: existingIds },
@@ -310,9 +312,9 @@ module.exports = {
                 );
               }
 
-              // 3. CREATE
+              // 4. CREATE
               if (salesOrderDetailsInitialCreateValue.length > 0) {
-                // 3.1 Create bulk sales order details
+                // 4.1 Create bulk sales order details
                 await Model.SalesOrderDetails.bulkCreate(
                   salesOrderDetailsInitialCreateValue
                 );
@@ -483,7 +485,9 @@ module.exports = {
       // Override variables
       params.updated_at = moment().utc(8).format("YYYY-MM-DD HH:mm:ss");
       params.user_id = req.user.id.toLocaleString();
-      params.employee_id = params.employee_id ? params.employee_id.toLocaleString() : null;
+      params.employee_id = params.employee_id
+        ? params.employee_id.toLocaleString()
+        : null;
       params.status = params.status ? params.status.toLocaleString() : null;
 
       if (_.isEmpty(params.status)) errors.push("Status is required.");
@@ -1065,7 +1069,7 @@ module.exports = {
 };
 
 /**
- * Other Functions
+ * Private Functions
  */
 const generateOrderNo = () => {
   return new Promise(async (resolve, reject) => {
@@ -1094,6 +1098,86 @@ const generateOrderNo = () => {
         value = `SO${date}-${leadingZero}${newNumber}`;
       }
       resolve(value);
+    } catch (err) {
+      console.log(err);
+      reject(err);
+    }
+  });
+};
+
+const setSalesOrderParameters = (params) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      // Setting data of sales order details
+      const todayFlashDeal = await ProductFlashDealsController.getTodayFlashDeal();
+      // let salesOrderDetails = params.details;
+      params.sub_total_amount = 0;
+      params.vat_amount = null;
+      params.shipping_fee_amount = null;
+      params.total_discount_amount = null;
+      params.total_amount = 0;
+      params.total_balance_amount = 0;
+
+      // Override sales order details value
+      for (let index = 0; index < params.details.length; index++) {
+        const details = params.details[index];
+        const inventoryDataBySKU = await InventoriesController.getDataBySKU(
+          details.sku
+        );
+        const rateAmount = parseFloat(inventoryDataBySKU.price_amount);
+        const quantity = parseFloat(details.quantity);
+
+        // Computation for discount amount via Flash Deal
+        if (
+          details.is_flash_deal &&
+          todayFlashDeal &&
+          todayFlashDeal.productFlashDealDetails
+        ) {
+          const productFlashDeal = todayFlashDeal.productFlashDealDetails.find(
+            (detail) => detail.product_id === details.product_id
+          );
+          const discountPercentage = parseFloat(
+            productFlashDeal.discount_percentage
+          );
+
+          params.details[index].discount_percentage = discountPercentage;
+          params.details[index].discount_amount =
+            productFlashDeal.discount_amount;
+          params.details[index].product_flash_deal_detail_id =
+            productFlashDeal.id;
+          params.details[index].discount_type = productFlashDeal.discount_type;
+        }
+
+        // Computation for standard amount
+        const discountAmount =
+          details.discount_type === DISCOUNT_TYPE_PERCENTAGE
+            ? (rateAmount * details.discount_percentage) / 100
+            : details.discount_amount;
+
+        params.details[index].discount_amount = discountAmount;
+        params.details[index].total_discount_amount = details.discount_amount
+          ? details.discount_amount * quantity
+          : 0;
+        params.details[index].rate_amount = rateAmount;
+        params.details[index].amount = rateAmount * quantity;
+
+        // Computation for sales order amount
+        params.sub_total_amount += params.details[index].amount;
+        params.total_discount_amount +=
+          params.details[index].total_discount_amount;
+      }
+
+      params.vat_amount = params.is_with_vat
+        ? (params.sub_total_amount * 12) / 100
+        : null;
+      params.total_amount =
+        params.sub_total_amount -
+        (params.vat_amount +
+          params.shipping_fee_amount +
+          params.total_discount_amount);
+      params.total_balance_amount = params.total_amount;
+
+      resolve(params);
     } catch (err) {
       console.log(err);
       reject(err);

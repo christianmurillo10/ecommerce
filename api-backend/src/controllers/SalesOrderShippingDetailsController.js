@@ -310,4 +310,40 @@ module.exports = {
       next(err);
     }
   },
+
+  /**
+   * Public Functions
+   */
+
+  /**
+   * Insert Sales Order Shipping Details
+   */
+  insertSalesOrderShippingDetails: (obj) => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        let initialValues;
+
+        // Pre-setting variables
+        obj.created_at = moment().utc(8).format("YYYY-MM-DD HH:mm:ss");
+        initialValues = _.pick(obj, [
+          "shipping_no",
+          "address",
+          "amount",
+          "shipping_method_id",
+          "shipping_method_rate_id",
+          "sales_order_id",
+          "created_at",
+        ]);
+        Model.SalesOrderShippingDetails.create(initialValues)
+          .then((response) => {
+            resolve(true);
+          })
+          .catch((err) => {
+            resolve(false);
+          });
+      } catch (err) {
+        reject(err);
+      }
+    });
+  },
 };

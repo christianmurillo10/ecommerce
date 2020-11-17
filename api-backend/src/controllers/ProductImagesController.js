@@ -378,7 +378,7 @@ module.exports = {
 };
 
 /**
- * Other Functions
+ * Private Functions
  */
 const uploadImage = (name, type, file) => {
   try {

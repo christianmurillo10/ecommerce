@@ -337,7 +337,7 @@ module.exports = {
 };
 
 /**
- * Other Functions
+ * Private Functions
  */
 const generateReferenceNo = () => {
   return new Promise(async (resolve, reject) => {
