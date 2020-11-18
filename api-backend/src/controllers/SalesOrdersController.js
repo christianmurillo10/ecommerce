@@ -117,8 +117,14 @@ module.exports = {
           let plainData = finalData.get({ plain: true });
 
           // 1. Insert Sales Order Shipping Details
+          let shippingDetails = params.shippingDetails;
+          shippingDetails.sales_order_id = plainData.id;
+          // Temporary Value (No logic for rates yet)
+          shippingDetails.amount = "0.00";
+          shippingDetails.shipping_method_rate_id = 1;
+          // End of temporary value
           await SalesOrderShippingDetailsController.insertSalesOrderShippingDetails(
-            params.shippingDetails
+            shippingDetails
           );
 
           // 2. Set and filtering Bulk Data of Sales Order Details
@@ -236,8 +242,14 @@ module.exports = {
             let plainData = finalData.get({ plain: true });
 
             // 1. Update Sales Order Shipping Details
+            let shippingDetails = params.shippingDetails;
+            shippingDetails.sales_order_id = plainData.id;
+            // Temporary Value (No logic for rates yet)
+            shippingDetails.amount = "0.00";
+            shippingDetails.shipping_method_rate_id = 1;
+            // End of temporary value
             await SalesOrderShippingDetailsController.updateSalesOrderShippingDetails(
-              params.shippingDetails
+              shippingDetails
             );
 
             const salesOrderDetails = params.details;
